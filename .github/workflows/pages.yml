@@ -48,16 +48,30 @@ jobs:
 
       - name: Restore the town file on the first publish
         run: |
-          set -euo pipefail
-          if [ -f public/data/bushnell-1880.json ]; then
-            exit 0
-          fi
-          cat scripts/town-b64/part-?? | base64 -d | gzip -dc > public/data/bushnell-1880.json
+          set +e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/bushnell-1880.json
-          git commit -m "Add the downtown Bushnell town file"
-          git push
+          {
+            echo "head $(git rev-parse --abbrev-ref HEAD)"
+            ls -la scripts/town-b64
+            if [ ! -f public/data/bushnell-1880.json ]; then
+              cat scripts/town-b64/part-?? | base64 -d | gzip -dc > public/data/bushnell-1880.json
+              echo "decode_exit:$?"
+            fi
+            wc -c public/data/bushnell-1880.json
+            git add public/data/bushnell-1880.json
+            git commit -m "Add the downtown Bushnell town file"
+            echo "commit_exit:$?"
+            git push origin HEAD:main
+            echo "push_exit:$?"
+            git status
+          } > restore-log.txt 2>&1
+          git add restore-log.txt
+          git commit -m "Record the town file restore log"
+          git push origin HEAD:main
+          if [ ! -s public/data/bushnell-1880.json ]; then
+            exit 1
+          fi
 
       - name: Set up Node
         uses: actions/setup-node@v4
