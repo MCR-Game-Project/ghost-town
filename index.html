@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ghost Town — Bushnell, 1880</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="view"></canvas>
+
+      <header id="topbar">
+        <div>
+          <p class="eyebrow">McDonough County, Illinois</p>
+          <h1>Ghost Town</h1>
+        </div>
+        <p id="where">Downtown Bushnell, about 1880</p>
+      </header>
+
+      <aside id="card" hidden>
+        <p class="tag" id="card-tag"></p>
+        <h2 id="card-title"></h2>
+        <p class="use" id="card-use"></p>
+        <p id="card-notes"></p>
+      </aside>
+
+      <div id="help">
+        <div class="sheet">
+          <p class="eyebrow">A walk around downtown</p>
+          <h2>Bushnell, about 1880</h2>
+          <p>
+            Two railroads crossed in the middle of town. The wide streets on
+            either side of the Burlington tracks are East Main and West Main.
+            Hail Street and Hurst Street cross them where the stores and the
+            depot stood.
+          </p>
+          <ul>
+            <li><b>Click the picture</b>, then look around with the mouse. You can also drag it.</li>
+            <li><b>W A S D</b> walks. <b>Shift</b> hurries.</li>
+            <li><b>M</b>, or the button below, lifts you up to see the whole town.</li>
+            <li>Press <b>Esc</b> when you want the mouse back.</li>
+          </ul>
+          <div class="row">
+            <button id="start" type="button">Start walking</button>
+            <button id="overview" type="button" class="ghost">See the whole town</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="tools">
+        <label>
+          Go to
+          <select id="places"></select>
+        </label>
+        <button id="mode" type="button">See the whole town</button>
+      </div>
+
+      <div id="touch">
+        <div class="pad">
+          <button type="button" data-key="KeyW">Forward</button>
+          <div>
+            <button type="button" data-key="KeyA">Left</button>
+            <button type="button" data-key="KeyS">Back</button>
+            <button type="button" data-key="KeyD">Right</button>
+          </div>
+        </div>
+      </div>
+
+      <p id="status">Opening the plat…</p>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
