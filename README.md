@@ -39,7 +39,7 @@ The published copy is at [https://mcr-game-project.github.io/ghost-town/](https:
 - **W** walks forward, **S** back, **A** left, **D** right. The arrow keys do the same.
 - Hold **Shift** to walk faster.
 - You can also drag the picture with the mouse if you would rather not capture the pointer.
-- Press **Esc** when you want the normal mouse cursor back.
+- Press **Esc** or **Q** to let go of the mouse and bring the menu back. After the mouse is free, **Stop walking** does the same.
 - Press **M**, or **See the whole town**, to rise above the streets and orbit. Drag to turn. Press **M** again, or **Walk the streets**, to come back down.
 - The **Go to** menu puts you at the depot, German row, the parks, or the railroad crossing.
 - Look at a building and a card in the corner tells you what it is. A card that says “Named in the old records” comes from a history or a map. A card that says “A stand-in for this block” is a plausible shop or house, not a specific one we can prove.

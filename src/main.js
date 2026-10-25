@@ -122,17 +122,56 @@ function setShadow(size) {
   cam.updateProjectionMatrix();
 }
 
+let lockExitReason = null;
+let wasLocked = false;
+let lockCooldown = false;
+
+function menuIsOpen() {
+  return !document.getElementById("help").hidden;
+}
+
+function syncHint() {
+  const hint = document.getElementById("walk-hint");
+  hint.hidden = document.body.classList.contains("clean") || mode !== "walk" || menuIsOpen();
+}
+
+function showMenu(focusStart) {
+  if (lockExitReason === "overview") return;
+  if (document.pointerLockElement) {
+    lockExitReason = "menu";
+    document.exitPointerLock();
+  }
+  document.getElementById("help").hidden = false;
+  if (focusStart) document.getElementById("menu-stop").hidden = false;
+  syncHint();
+  if (focusStart) document.getElementById("menu-stop").focus({ preventScroll: true });
+}
+
+function releaseToMenu() {
+  lockCooldown = true;
+  lockExitReason = "menu";
+  keys.clear();
+  showMenu(true);
+  window.setTimeout(() => {
+    lockCooldown = false;
+  }, 400);
+}
+
 function enterOverview() {
   mode = "overview";
+  lockExitReason = "overview";
   if (document.pointerLockElement) document.exitPointerLock();
+  else lockExitReason = null;
   canvas.classList.remove("looking");
   orbit.enabled = true;
   orbit.target.set(-160, 0, 20);
   camera.position.set(220, 860, 620);
   orbit.update();
+  document.getElementById("help").hidden = true;
   document.getElementById("mode").textContent = "Walk the streets";
   document.getElementById("where").textContent = "Looking down on Hail, Hurst, and the two railroads";
   document.getElementById("card").hidden = true;
+  syncHint();
 }
 
 function enterWalk() {
@@ -140,6 +179,7 @@ function enterWalk() {
   orbit.enabled = false;
   document.getElementById("mode").textContent = "See the whole town";
   applyWalkCamera();
+  syncHint();
 }
 
 function goToPlace(place) {
@@ -172,23 +212,47 @@ window.addEventListener("pointermove", (event) => {
 });
 
 document.addEventListener("pointerlockchange", () => {
-  canvas.classList.toggle("looking", document.pointerLockElement === canvas);
+  const locked = document.pointerLockElement === canvas;
+  canvas.classList.toggle("looking", locked);
+  if (!locked && wasLocked && mode === "walk" && lockExitReason !== "overview") showMenu(true);
+  wasLocked = locked;
+  if (!locked) lockExitReason = null;
+  syncHint();
 });
 
+function exitKey(event) {
+  return event.code === "Escape" || event.code === "KeyQ" || event.code === "Tab";
+}
+
 window.addEventListener("keydown", (event) => {
+  if (exitKey(event) && mode === "walk" && !menuIsOpen()) {
+    if (event.code !== "Escape") event.preventDefault();
+    releaseToMenu();
+    return;
+  }
   keys.add(event.code);
   if (event.code === "KeyM") {
     document.getElementById("help").hidden = true;
     if (mode === "walk") enterOverview();
     else enterWalk();
   }
-});
-window.addEventListener("keyup", (event) => keys.delete(event.code));
+}, true);
+window.addEventListener("keyup", (event) => {
+  keys.delete(event.code);
+  if (event.code === "Escape" && mode === "walk" && !menuIsOpen()) releaseToMenu();
+}, true);
 
 document.getElementById("start").addEventListener("click", () => {
+  lockCooldown = false;
   document.getElementById("help").hidden = true;
   enterWalk();
   canvas.requestPointerLock?.();
+});
+document.getElementById("stop").addEventListener("click", () => {
+  releaseToMenu();
+});
+document.getElementById("menu-stop").addEventListener("click", () => {
+  releaseToMenu();
 });
 document.getElementById("overview").addEventListener("click", () => {
   document.getElementById("help").hidden = true;
@@ -200,7 +264,8 @@ document.getElementById("mode").addEventListener("click", () => {
   else enterWalk();
 });
 canvas.addEventListener("click", () => {
-  if (mode === "walk" && document.getElementById("help").hidden) canvas.requestPointerLock?.();
+  if (lockCooldown || mode !== "walk" || menuIsOpen()) return;
+  canvas.requestPointerLock?.();
 });
 
 document.querySelectorAll("#touch button").forEach((btn) => {
@@ -359,6 +424,7 @@ async function main() {
     const place = town.places.find((item) => item.id === select.value);
     if (place) goToPlace(place);
     document.getElementById("help").hidden = true;
+    syncHint();
   });
 
   goToPlace(town.places[0]);
@@ -379,6 +445,7 @@ async function main() {
     } else {
       goToPlace(town.places.find((place) => place.id === "hail-main"));
     }
+    syncHint();
   }
 
   window.__townReady = true;

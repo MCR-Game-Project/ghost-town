@@ -39,10 +39,11 @@
             <li><b>Click the picture</b>, then look around with the mouse. You can also drag it.</li>
             <li><b>W A S D</b> walks. <b>Shift</b> hurries.</li>
             <li><b>M</b>, or the button below, lifts you up to see the whole town.</li>
-            <li>Press <b>Esc</b> when you want the mouse back.</li>
+            <li>Press <b>Esc</b> or <b>Q</b> to let go of the mouse and come back to this menu.</li>
           </ul>
           <div class="row">
             <button id="start" type="button">Start walking</button>
+            <button id="menu-stop" type="button" class="ghost" hidden>Stop walking</button>
             <button id="overview" type="button" class="ghost">See the whole town</button>
           </div>
         </div>
@@ -65,6 +66,11 @@
             <button type="button" data-key="KeyD">Right</button>
           </div>
         </div>
+      </div>
+
+      <div id="walk-hint" hidden>
+        <p>Press <b>Esc</b> or <b>Q</b> to stop walking</p>
+        <button id="stop" type="button">Stop walking</button>
       </div>
 
       <p id="status">Opening the plat…</p>

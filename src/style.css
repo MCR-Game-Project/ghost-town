@@ -152,6 +152,21 @@ button:hover { filter: brightness(1.08); }
   margin: 0;
 }
 
+#walk-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  z-index: 4;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100% - 28px);
+  padding: 8px 8px 8px 14px;
+}
+
+#walk-hint p { margin: 0; white-space: nowrap; }
+
 #touch {
   display: none;
   position: absolute;
@@ -166,13 +181,23 @@ body.clean #help,
 body.clean #tools,
 body.clean #status,
 body.clean #card,
-body.clean #touch { display: none !important; }
+body.clean #touch,
+body.clean #walk-hint { display: none !important; }
 
 @media (max-width: 720px) {
   #topbar { flex-direction: column; align-items: start; }
   #where { text-align: left; }
   #tools { top: auto; bottom: 14px; right: 14px; left: auto; }
   h1 { font-size: 24px; }
+  #walk-hint {
+    left: 14px;
+    right: 14px;
+    bottom: auto;
+    top: 108px;
+    transform: none;
+    flex-wrap: wrap;
+  }
+  #walk-hint p { white-space: normal; }
 }
 
 @media (pointer: coarse) {
