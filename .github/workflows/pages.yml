@@ -21,57 +21,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Enable GitHub Pages
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set +e
-          repo="${{ github.repository }}"
-          branch="${{ github.event.repository.default_branch }}"
-          {
-            echo "GET"
-            gh api "repos/${repo}/pages"
-            echo "get_exit:$?"
-            echo "POST with source"
-            jq -n --arg branch "$branch" '{build_type:"workflow",source:{branch:$branch,path:"/"}}' | gh api -X POST "repos/${repo}/pages" --input -
-            echo "post1_exit:$?"
-            echo "POST build_type only"
-            jq -n '{build_type:"workflow"}' | gh api -X POST "repos/${repo}/pages" --input -
-            echo "post2_exit:$?"
-          } > pages-api.txt 2>&1
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pages-api.txt
-          git diff --cached --quiet || git commit -m "Record the GitHub Pages API response"
-          git push
-          exit 0
-
       - name: Restore the town file on the first publish
         run: |
-          set +e
+          set -euo pipefail
+          if [ -f public/data/bushnell-1880.json ]; then
+            exit 0
+          fi
+          mkdir -p public/data
+          cat scripts/town-b64/part-?? | base64 -d | gzip -dc > public/data/bushnell-1880.json
+          test -s public/data/bushnell-1880.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          {
-            echo "head $(git rev-parse --abbrev-ref HEAD)"
-            ls -la scripts/town-b64
-            if [ ! -f public/data/bushnell-1880.json ]; then
-              cat scripts/town-b64/part-?? | base64 -d | gzip -dc > public/data/bushnell-1880.json
-              echo "decode_exit:$?"
-            fi
-            wc -c public/data/bushnell-1880.json
-            git add public/data/bushnell-1880.json
-            git commit -m "Add the downtown Bushnell town file"
-            echo "commit_exit:$?"
-            git push origin HEAD:main
-            echo "push_exit:$?"
-            git status
-          } > restore-log.txt 2>&1
-          git add restore-log.txt
-          git commit -m "Record the town file restore log"
+          git add public/data/bushnell-1880.json
+          git commit -m "Add the downtown Bushnell town file"
           git push origin HEAD:main
-          if [ ! -s public/data/bushnell-1880.json ]; then
-            exit 1
-          fi
 
       - name: Set up Node
         uses: actions/setup-node@v4
