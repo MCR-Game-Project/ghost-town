@@ -1,0 +1,20 @@
+{
+  "name": "ghost-town",
+  "private": true,
+  "version": "1.0.0",
+  "description": "A walkable 3D recreation of downtown Bushnell, Illinois, around 1880.",
+  "type": "module",
+  "scripts": {
+    "data": "python3 scripts/build-town-data.py",
+    "dev": "vite --host 0.0.0.0 --port 4179 --strictPort",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 4179 --strictPort",
+    "check": "node scripts/check-town.mjs"
+  },
+  "dependencies": {
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}
