@@ -25,20 +25,26 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -euo pipefail
+          set +e
           repo="${{ github.repository }}"
           branch="${{ github.event.repository.default_branch }}"
-          if gh api "repos/${repo}/pages" > /tmp/pages-get.json 2> /tmp/pages-get.err; then
-            build_type="$(jq -r .build_type /tmp/pages-get.json)"
-            if [ "$build_type" != "workflow" ]; then
-              gh api -X PUT "repos/${repo}/pages" -f build_type=workflow > /tmp/pages-put.json 2> /tmp/pages-put.err
-            fi
-          else
-            jq -n --arg branch "$branch" '{build_type:"workflow",source:{branch:$branch,path:"/"}}' \
-              | gh api -X POST "repos/${repo}/pages" --input - > /tmp/pages-post.json 2> /tmp/pages-post.err \
-              || jq -n '{build_type:"workflow"}' \
-              | gh api -X POST "repos/${repo}/pages" --input - > /tmp/pages-post.json 2> /tmp/pages-post.err
-          fi
+          {
+            echo "GET"
+            gh api "repos/${repo}/pages"
+            echo "get_exit:$?"
+            echo "POST with source"
+            jq -n --arg branch "$branch" '{build_type:"workflow",source:{branch:$branch,path:"/"}}' | gh api -X POST "repos/${repo}/pages" --input -
+            echo "post1_exit:$?"
+            echo "POST build_type only"
+            jq -n '{build_type:"workflow"}' | gh api -X POST "repos/${repo}/pages" --input -
+            echo "post2_exit:$?"
+          } > pages-api.txt 2>&1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pages-api.txt
+          git diff --cached --quiet || git commit -m "Record the GitHub Pages API response"
+          git push
+          exit 0
 
       - name: Restore the town file on the first publish
         run: |
