@@ -159,6 +159,78 @@ export function buildTown(data, scene) {
     }
   };
 
+  // Triangular false front, the shape in the Ball Bros. photograph.
+  const drawFrontGable = (mat, width, rise, yBase, z) => {
+    const shape = new THREE.Shape();
+    shape.moveTo(-width / 2, 0);
+    shape.lineTo(width / 2, 0);
+    shape.lineTo(0, rise);
+    shape.closePath();
+    const geo = new THREE.ExtrudeGeometry(shape, { depth: 0.55, bevelEnabled: false, curveSegments: 1 });
+    geo.translate(0, yBase, z - 0.28);
+    for (const key of Object.keys(geo.attributes)) {
+      if (key !== "position" && key !== "normal" && key !== "uv") geo.deleteAttribute(key);
+    }
+    // ExtrudeGeometry has no index. The wall boxes do, and the merger requires one or the other.
+    const count = geo.attributes.position.count;
+    const index = new Array(count);
+    for (let i = 0; i < count; i++) index[i] = i;
+    geo.setIndex(index);
+    geo.applyMatrix4(buildingMatrix);
+    put(mat, geo);
+    box(mats.trim, 0, yBase + 0.2, z + 0.08, width + 0.35, 0.42, 0.7);
+    const slope = Math.hypot(width / 2, rise);
+    const tilt = Math.atan2(rise, width / 2);
+    for (const side of [-1, 1]) {
+      const rake = new THREE.BoxGeometry(slope + 0.5, 0.62, 0.85);
+      scaleBoxUVs(rake, slope, 0.42, 0.72);
+      rake.applyMatrix4(new THREE.Matrix4().makeRotationZ(side * tilt));
+      rake.applyMatrix4(new THREE.Matrix4().makeTranslation(side * width / 4, yBase + rise / 2, z + 0.16));
+      rake.applyMatrix4(buildingMatrix);
+      put(mats.trimDark, rake);
+    }
+  };
+
+  // Ground floor and upstairs windows copied from the Ball Bros. corner photograph.
+  const drawPeakedStorefront = (b, wallH) => {
+    const fz = b.depth / 2 + 0.16;
+    const gap = b.width / 3;
+    for (let col = 0; col < 3; col++) {
+      const x = -b.width / 2 + gap * (col + 0.5);
+      frontSash(x, wallH * 0.62, fz, Math.min(3.5, gap - 2.6), 5.6, "flat");
+    }
+    const winW = Math.min(6.4, gap - 1.5);
+    for (const x of [-gap, gap]) {
+      box(mats.trimDark, x, 1.15, fz, winW, 1.5, 0.22);
+      box(mats.glass, x, 5.15, fz, winW, 6.2, 0.12);
+      box(mats.trim, x, 5.15, fz + 0.08, winW + 0.35, 6.5, 0.1);
+      box(mats.trim, x, 5.15, fz + 0.16, 0.1, 6.0, 0.06);
+      box(mats.trim, x, 5.15, fz + 0.16, winW, 0.1, 0.06);
+    }
+    box(mats.trimDark, 0, 4.3, fz, 5.1, 8.2, 0.24);
+    box(mats.trim, 0, 4.2, fz + 0.14, 0.14, 7.6, 0.08);
+    box(mats.glass, -1.15, 6.15, fz + 0.16, 1.5, 2.3, 0.05);
+    box(mats.glass, 1.15, 6.15, fz + 0.16, 1.5, 2.3, 0.05);
+    box(mats.trim, 0, 8.55, fz + 0.08, 5.5, 0.45, 0.12);
+    const porchZ = b.depth / 2 + 3.4;
+    box(mats.plank, 0, 0.42, porchZ, b.width * 0.96, 0.22, 6.4);
+    localBox(mats.roofDark, 0, 9.15, porchZ + 0.15, b.width + 0.8, 0.16, 6.8, -0.22);
+    for (const x of [-b.width / 2 + 0.4, -2.4, 2.4, b.width / 2 - 0.4]) {
+      box(mats.trimDark, x, 4.7, porchZ + 2.7, 0.36, 8.6, 0.36);
+    }
+    const party = b.party || [];
+    const sideCount = b.facade?.sideBays || 0;
+    for (const side of [-1, 1]) {
+      if (!sideCount) break;
+      if (party.includes(side === -1 ? "left" : "right")) continue;
+      const x = side * (b.width / 2 + 0.1);
+      for (let i = 0; i < sideCount; i++) {
+        const z = -b.depth / 2 + ((i + 0.6) * b.depth) / (sideCount + 0.5);
+        sideSash(x, wallH * 0.62, z, side, 2.6, 5.2, "flat");
+      }
+    }
+  };
+
   const tiled = (mat, tilesU, tilesV) => {
     const copy = mat.clone();
     copy.map = mat.map.clone();
@@ -262,13 +334,17 @@ export function buildTown(data, scene) {
     if (!b.sign) return;
     const rot = (FACING[b.facing] ?? 0) + THREE.MathUtils.degToRad(b.rotation || 0);
     const outward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
-    const y = Math.min(wallH - 1.2, b.kind === "depot" ? 12.5 : b.stories * 8 + 4);
+    // A peaked false front carries its name in the gable, where the 1880s photograph puts BALL BROS.
+    const y = b.facade?.peak
+      ? b.stories * 12 + 6.5
+      : Math.min(wallH - 1.2, b.kind === "depot" ? 12.5 : b.stories * 8 + 4);
     signs.push({
       title: b.sign,
-      subtitle: b.confidence === "sourced" ? b.use : "",
-      position: new THREE.Vector3(b.x, y, b.z).addScaledVector(outward, b.depth / 2 + 0.45),
+      subtitle: b.facade?.peak ? "" : b.confidence === "sourced" ? b.use : "",
+      style: b.facade?.peak ? "painted" : "board",
+      position: new THREE.Vector3(b.x, y, b.z).addScaledVector(outward, b.depth / 2 + 0.55),
       rotation: rot,
-      width: Math.min(Math.max(b.width * 0.62, 10), 28),
+      width: b.facade?.peak ? Math.min(b.width * 0.36, 10.5) : Math.min(Math.max(b.width * 0.62, 10), 28),
     });
   };
 
@@ -300,13 +376,11 @@ export function buildTown(data, scene) {
     box(mats.stone, 0, 0.45, 0, b.width + 0.3, 0.9, b.depth + 0.3);
     if (frame) {
       gable(b.width, b.depth, 5, wallH - 1, mats.roofDark);
-      // False front stands above the roof. A peaked one matches the Ball Bros. photograph.
-      const frontH = b.facade?.peak ? 5.2 : 6.2;
-      box(body, 0, wallH + 2.2, b.depth / 2 - 0.5, b.width + 0.4, frontH, 1);
       if (b.facade?.peak) {
-        box(body, 0, wallH + 6.2, b.depth / 2 - 0.42, b.width * 0.42, 4.2, 1.05);
-        box(mats.trim, 0, wallH + 8.2, b.depth / 2 - 0.28, b.width * 0.16, 1.4, 1.1);
+        // The centennial photograph is a full-width triangular false front, not a flat parapet.
+        drawFrontGable(body, b.width + 0.6, 15, wallH - 1.2, b.depth / 2 + 0.22);
       } else {
+        box(body, 0, wallH + 2.2, b.depth / 2 - 0.5, b.width + 0.4, 6.2, 1);
         box(mats.trim, 0, wallH + 5.2, b.depth / 2 - 0.35, b.width * 0.55, 2.2, 1.1);
       }
     } else if (b.facade?.cornice) {
@@ -315,7 +389,8 @@ export function buildTown(data, scene) {
       box(brickOf(b), 0, wallH + 1.4, 0, b.width + 0.6, 2.8, b.depth + 0.6);
       box(mats.trim, 0, wallH + 0.3, b.depth / 2 + 0.15, b.width + 1, 0.7, 0.8);
     }
-    if (b.facade?.bays) drawFacade(b, wallH);
+    if (b.facade?.peak) drawPeakedStorefront(b, wallH);
+    else if (b.facade?.bays) drawFacade(b, wallH);
     else {
       punch(b.width, b.depth, b.stories, floorH, wallH, b.party || [], true);
       if (b.facade?.awning) drawAwning(b.width * 0.88, b.depth / 2 + 0.14);
@@ -602,18 +677,7 @@ export function buildTown(data, scene) {
   leaves.castShadow = true;
   scene.add(trunks, leaves);
 
-  // Street name boards at the Main crossings.
-  const mains = data.streets.filter((s) => s.name.startsWith("East Main") || s.name.startsWith("West Main"));
-  const crosses = data.streets.filter((s) =>
-    ["Hail Street", "Hurst Street", "Barnes Street", "Gridley Street", "Davis Street"].includes(s.name),
-  );
-  for (const main of mains) {
-    for (const cross of crosses) {
-      const sign = makeStreetSign(`${cross.name.replace(" Street", "")}  ·  ${main.name.replace(" Street", "")}`, mats);
-      sign.position.set(cross.at + 16, 0, main.at + (main.name.startsWith("East") ? -16 : 16));
-      scene.add(sign);
-    }
-  }
+  const streetNames = addStreetNames(data, mats, scene);
 
   // Merge static building parts.
   for (const [mat, geos] of buckets) {
@@ -628,7 +692,7 @@ export function buildTown(data, scene) {
   }
 
   for (const s of signs) {
-    const tex = makeSignTexture(s.title, s.subtitle);
+    const tex = makeSignTexture(s.title, s.subtitle, s.style);
     const mat = new THREE.MeshLambertMaterial({ map: tex });
     const h = s.subtitle ? s.width * 0.36 : s.width * 0.28;
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(s.width, h), mat);
@@ -639,36 +703,287 @@ export function buildTown(data, scene) {
 
   scene.add(picks);
 
-  return { colliders, picks, materials: mats };
+  return { colliders, picks, materials: mats, overviewLabels: streetNames.overviewLabels };
 }
 
-function makeStreetSign(text, mats) {
-  const group = new THREE.Group();
-  const post = new THREE.Mesh(new THREE.BoxGeometry(0.4, 8, 0.4), mats.trimDark);
-  post.position.y = 4;
+const streetLabelCache = new Map();
+
+function streetLabelTexture(name, ink) {
+  const key = `${ink}:${name}`;
+  if (streetLabelCache.has(key)) return streetLabelCache.get(key);
+  const upper = name.toUpperCase();
+  const split = upper.endsWith(" STREET") ? [upper.slice(0, -7), "STREET"] : [upper];
+  const lines = ink === "aerial" ? split : [upper];
+  const measure = document.createElement("canvas").getContext("2d");
+  measure.font = '700 150px Georgia, "Palatino Linotype", Palatino, serif';
+  const textWidth = Math.max(...lines.map((line) => Math.ceil(measure.measureText(line).width)));
   const c = document.createElement("canvas");
-  c.width = 512;
-  c.height = 96;
+  c.width = textWidth + (lines.length > 1 ? 72 : 96);
+  c.height = lines.length > 1 ? 340 : 210;
   const g = c.getContext("2d");
-  g.fillStyle = "#f4ead4";
-  g.fillRect(0, 0, 512, 96);
-  g.strokeStyle = "#3b2718";
-  g.lineWidth = 8;
-  g.strokeRect(4, 4, 504, 88);
-  g.fillStyle = "#2a1c12";
-  g.font = "600 40px Georgia, serif";
+  g.clearRect(0, 0, c.width, c.height);
+  if (ink === "board") {
+    g.fillStyle = "#f3e6c8";
+    g.fillRect(0, 0, c.width, c.height);
+    g.strokeStyle = "#2a1c12";
+    g.lineWidth = 14;
+    g.strokeRect(8, 8, c.width - 16, c.height - 16);
+    g.fillStyle = "#24180f";
+  } else if (ink === "aerial") {
+    g.fillStyle = "#24180f";
+    g.fillRect(0, 0, c.width, c.height);
+    g.strokeStyle = "#f3e6c8";
+    g.lineWidth = 16;
+    g.strokeRect(10, 10, c.width - 20, c.height - 20);
+    g.fillStyle = "#f6edd6";
+  } else {
+    g.lineWidth = 22;
+    g.strokeStyle = "rgba(28, 18, 10, 0.92)";
+    g.fillStyle = "#f7edd4";
+  }
+  g.font = '700 150px Georgia, "Palatino Linotype", Palatino, serif';
   g.textAlign = "center";
   g.textBaseline = "middle";
-  g.fillText(text, 256, 50);
+  lines.forEach((line, i) => {
+    const y = lines.length > 1 ? (i === 0 ? c.height * 0.32 : c.height * 0.73) : c.height / 2 + 4;
+    if (ink === "road") g.strokeText(line, c.width / 2, y);
+    g.fillText(line, c.width / 2, y);
+  });
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
-  const board = new THREE.Mesh(
-    new THREE.BoxGeometry(Math.min(18, 7 + text.length * 0.22), 1.5, 0.2),
-    new THREE.MeshLambertMaterial({ map: tex }),
-  );
-  board.position.y = 8;
-  group.add(post, board);
+  tex.anisotropy = 8;
+  const record = { tex, aspect: c.width / c.height };
+  streetLabelCache.set(key, record);
+  return record;
+}
+
+function addStreetNames(data, mats, scene) {
+  const overviewLabels = new THREE.Group();
+  overviewLabels.name = "overview-street-names";
+  const roads = data.streets.filter((street) => street.name.endsWith("Street"));
+    roads.forEach((street) => {
+    const painted = streetLabelTexture(street.name, "road");
+    const letterH = Math.min(street.width * 0.48, 32);
+    const letterW = letterH * painted.aspect;
+    const roadMat = new THREE.MeshBasicMaterial({
+      map: painted.tex,
+      transparent: true,
+      depthWrite: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -4,
+    });
+    const span = street.to - street.from;
+    const count = Math.max(2, Math.round(span / 780));
+    for (let i = 0; i < count; i++) {
+      const along = street.from + ((i + 0.5) * span) / count;
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(letterW, letterH), roadMat);
+      mesh.rotation.order = "YXZ";
+      mesh.rotation.y = street.axis === "z" ? Math.PI / 2 : 0;
+      mesh.rotation.x = -Math.PI / 2;
+      mesh.position.set(street.axis === "x" ? along : street.at, 0.2, street.axis === "z" ? along : street.at);
+      mesh.renderOrder = 2;
+      scene.add(mesh);
+    }
+
+    const aerial = streetLabelTexture(street.name, "aerial");
+    const sprite = new THREE.Sprite(
+      new THREE.SpriteMaterial({ map: aerial.tex, transparent: true, depthTest: false, sizeAttenuation: false }),
+    );
+    // Constant screen size. 0.064 is about 44px tall at this camera, narrow enough that neighbors stay apart.
+    const spriteH = 0.064;
+    sprite.scale.set(spriteH * aerial.aspect, spriteH, 1);
+    sprite.center.set(0.5, 0.5);
+    sprite.renderOrder = 10;
+    // Cross streets are labeled in the block between Crafford and East Main.
+    // The parallel streets are labeled between Hurst and Hail, so the two sets do not pile up.
+    if (street.axis === "z") sprite.position.set(street.at, 48, -360);
+    else sprite.position.set(-220, 48, street.at);
+    overviewLabels.add(sprite);
+  });
+  overviewLabels.visible = false;
+  scene.add(overviewLabels);
+
+  const crosses = roads.filter((street) => street.axis === "z");
+  const parallels = roads.filter((street) => street.axis === "x");
+  for (const cross of crosses) {
+    for (const parallel of parallels) {
+      const cw = cross.width / 2;
+      const pw = parallel.width / 2;
+      for (const corner of [
+        [cw - 8, pw - 8],
+        [-cw + 8, -pw + 8],
+      ]) {
+        scene.add(makeCornerPost(cross.name, parallel.name, cross.at + corner[0], parallel.at + corner[1]));
+      }
+    }
+  }
+  return { overviewLabels };
+}
+
+function makeCornerPost(crossName, parallelName, x, z) {
+  const group = new THREE.Group();
+  const post = new THREE.Mesh(new THREE.BoxGeometry(0.42, 8.4, 0.42), new THREE.MeshLambertMaterial({ color: "#4a3424" }));
+  post.position.y = 4.2;
+  post.castShadow = true;
+  group.add(post);
+  // The cross-street board faces traffic on the parallel street. The other board faces the cross street.
+  group.add(nameBoard(crossName, "z", 7.55));
+  group.add(nameBoard(parallelName, "x", 6.15));
+  group.position.set(x, 0, z);
   return group;
+}
+
+function nameBoard(text, axis, y) {
+  const { tex, aspect } = streetLabelTexture(text, "board");
+  const height = 1.7;
+  const length = height * aspect;
+  const geo = new THREE.PlaneGeometry(length, height);
+  const mat = new THREE.MeshLambertMaterial({ map: tex });
+  const group = new THREE.Group();
+  const front = new THREE.Mesh(geo, mat);
+  const back = new THREE.Mesh(geo, mat);
+  back.rotation.y = Math.PI;
+  if (axis === "z") {
+    front.rotation.y = Math.PI / 2;
+    back.rotation.y = Math.PI / 2 + Math.PI;
+  }
+  front.position.y = y;
+  back.position.y = y;
+  group.add(front, back);
+  return group;
+}
+
+function makeHorse(mats) {
+  const g = new THREE.Group();
+  const add = (geo, mat, x, y, z, rotX = 0) => {
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(x, y, z);
+    mesh.rotation.x = rotX;
+    mesh.castShadow = true;
+    g.add(mesh);
+    return mesh;
+  };
+
+  // Light harness horse, about fifteen hands at the withers, facing +z.
+  add(new THREE.CylinderGeometry(0.82, 0.9, 3.5, 10), mats.horse, 0, 3.7, 0, Math.PI / 2);
+  const chest = add(new THREE.SphereGeometry(0.78, 10, 8), mats.horse, 0, 3.55, 1.45);
+  chest.scale.set(0.9, 1.02, 1.08);
+  const rump = add(new THREE.SphereGeometry(0.9, 10, 8), mats.horse, 0, 3.85, -1.45);
+  rump.scale.set(0.95, 1.05, 1.02);
+  const shoulder = add(new THREE.SphereGeometry(0.42, 8, 6), mats.horse, 0, 4.25, 1.2);
+  shoulder.scale.set(0.8, 0.65, 1.05);
+
+  add(new THREE.CylinderGeometry(0.22, 0.42, 2.05, 7), mats.horse, 0, 5.4, 2.0, 0.78);
+  add(new THREE.BoxGeometry(0.42, 0.48, 1.55), mats.horse, 0, 5.72, 3.1, 0.7);
+  add(new THREE.BoxGeometry(0.32, 0.28, 0.62), mats.horseDark, 0, 5.22, 4.02, 0.5);
+  add(new THREE.BoxGeometry(0.14, 0.22, 1.45), mats.horseDark, 0, 5.85, 1.85, 0.7);
+
+  for (const side of [-1, 1]) {
+    const ear = add(new THREE.ConeGeometry(0.08, 0.36, 5), mats.horseDark, side * 0.14, 6.42, 2.62, -0.35);
+    ear.rotation.z = side * 0.15;
+    add(new THREE.SphereGeometry(0.045, 6, 5), mats.horseDark, side * 0.26, 5.95, 3.42);
+    const bridle = add(new THREE.BoxGeometry(0.06, 0.06, 0.85), mats.trimDark, side * 0.2, 6.05, 3.05);
+    bridle.castShadow = false;
+  }
+  add(new THREE.BoxGeometry(0.42, 0.06, 0.08), mats.trimDark, 0, 5.35, 3.95);
+
+  const leg = (x, topZ, kneeZ, hoofZ, upperH, cannonH) => {
+    add(new THREE.BoxGeometry(0.34, upperH, 0.4), mats.horse, x, 2.85 - upperH / 2, (topZ + kneeZ) / 2);
+    add(new THREE.BoxGeometry(0.22, cannonH, 0.24), mats.horseDark, x, 0.28 + cannonH / 2, (kneeZ + hoofZ) / 2);
+    add(new THREE.BoxGeometry(0.32, 0.22, 0.4), mats.horseDark, x, 0.12, hoofZ);
+  };
+  leg(-0.42, 1.2, 1.28, 1.18, 1.35, 1.2);
+  leg(0.42, 1.2, 1.28, 1.18, 1.35, 1.2);
+  leg(-0.46, -1.25, -1.55, -1.35, 1.25, 1.25);
+  leg(0.46, -1.25, -1.55, -1.35, 1.25, 1.25);
+
+  add(new THREE.BoxGeometry(0.18, 0.55, 0.18), mats.horseDark, 0, 4.45, -2.15, 0.9);
+  add(new THREE.BoxGeometry(0.14, 1.35, 0.14), mats.horseDark, 0, 3.35, -2.45, 0.35);
+
+  const collar = add(new THREE.TorusGeometry(0.46, 0.09, 6, 12), mats.trimDark, 0, 4.85, 1.55, 1.15);
+  collar.castShadow = false;
+  add(new THREE.BoxGeometry(0.55, 0.12, 1.15), mats.trimDark, 0, 4.62, 0.15);
+  const girth = add(new THREE.TorusGeometry(0.98, 0.06, 6, 14), mats.trimDark, 0, 3.45, 0.25);
+  girth.castShadow = false;
+  for (const side of [-1, 1]) {
+    const trace = add(new THREE.BoxGeometry(0.07, 0.07, 3.3), mats.trimDark, side * 0.72, 3.85, -0.15);
+    trace.castShadow = false;
+  }
+  return g;
+}
+
+function makeWagon(mats) {
+  const g = new THREE.Group();
+  const bed = new THREE.Mesh(new THREE.BoxGeometry(4.7, 0.18, 8.4), mats.siding.tan);
+  bed.position.set(0, 2.62, -0.2);
+  bed.castShadow = true;
+  bed.receiveShadow = true;
+  g.add(bed);
+  for (const x of [-2.35, 2.35]) {
+    const side = new THREE.Mesh(new THREE.BoxGeometry(0.14, 1.45, 8.3), mats.siding.tan);
+    side.position.set(x, 3.4, -0.2);
+    side.castShadow = true;
+    g.add(side);
+    const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.18, 8.1), mats.siding.red);
+    stripe.position.set(x + Math.sign(x) * 0.08, 3.95, -0.2);
+    g.add(stripe);
+  }
+  for (const z of [-4.3, 3.9]) {
+    const end = new THREE.Mesh(new THREE.BoxGeometry(4.7, 1.35, 0.14), mats.siding.tan);
+    end.position.set(0, 3.35, z);
+    end.castShadow = true;
+    g.add(end);
+  }
+  const seat = new THREE.Mesh(new THREE.BoxGeometry(3.3, 0.16, 1.15), mats.trim);
+  seat.position.set(0, 3.55, 2.35);
+  const seatBack = new THREE.Mesh(new THREE.BoxGeometry(3.3, 1.05, 0.12), mats.trim);
+  seatBack.position.set(0, 4.1, 1.85);
+  const foot = new THREE.Mesh(new THREE.BoxGeometry(3.1, 0.1, 1.3), mats.plank);
+  foot.position.set(0, 2.95, 3.35);
+  g.add(seat, seatBack, foot);
+  addWagonWheel(g, mats, -2.62, 2.15, -2.15, 2.15);
+  addWagonWheel(g, mats, 2.62, 2.15, -2.15, 2.15);
+  addWagonWheel(g, mats, -2.62, 1.72, 2.55, 1.72);
+  addWagonWheel(g, mats, 2.62, 1.72, 2.55, 1.72);
+  for (const y of [2.15, 1.72]) {
+    const axle = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 5.3, 8), mats.metal);
+    axle.rotation.z = Math.PI / 2;
+    axle.position.set(0, y, y > 2 ? -2.15 : 2.55);
+    g.add(axle);
+  }
+  for (const x of [-0.72, 0.72]) {
+    const shaft = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.16, 6.4), mats.trimDark);
+    shaft.position.set(x, 3.15, 7.15);
+    shaft.castShadow = true;
+    g.add(shaft);
+  }
+  const singletree = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.12, 0.14), mats.trimDark);
+  singletree.position.set(0, 3.15, 10.2);
+  const hound = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.12, 0.14), mats.trimDark);
+  hound.position.set(0, 3.05, 4.05);
+  g.add(singletree, hound);
+  return g;
+}
+
+function addWagonWheel(group, mats, x, y, z, radius) {
+  const wheel = new THREE.Group();
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.09, 6, 18), mats.trim);
+  rim.rotation.y = Math.PI / 2;
+  const tire = new THREE.Mesh(new THREE.TorusGeometry(radius + 0.05, 0.055, 6, 18), mats.metal);
+  tire.rotation.y = Math.PI / 2;
+  const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.46, 8), mats.metal);
+  hub.rotation.z = Math.PI / 2;
+  wheel.add(rim, tire, hub);
+  for (let i = 0; i < 12; i++) {
+    const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.07, radius * 1.82, 0.08), mats.trim);
+    spoke.rotation.x = (i / 12) * Math.PI * 2;
+    wheel.add(spoke);
+  }
+  wheel.position.set(x, y, z);
+  wheel.traverse((obj) => {
+    obj.castShadow = true;
+  });
+  group.add(wheel);
 }
 
 function makeProp(p, mats) {
@@ -707,19 +1022,9 @@ function makeProp(p, mats) {
     board2.rotation.z = -0.6;
     g.add(board, board2);
   } else if (p.type === "wagon") {
-    add(mats.siding.tan, 0, 3.2, 0, 5, 2.4, 10);
-    add(mats.siding.red, 0, 4.6, -1, 5.2, 1.2, 4);
-    add(mats.trimDark, -2.3, 1.5, 3, 0.5, 3, 0.5);
-    add(mats.trimDark, 2.3, 1.5, 3, 0.5, 3, 0.5);
-    add(mats.trimDark, -2.3, 1.5, -3, 0.5, 3, 0.5);
-    add(mats.trimDark, 2.3, 1.5, -3, 0.5, 3, 0.5);
+    g.add(makeWagon(mats));
   } else if (p.type === "horse") {
-    add(mats.horse, 0, 4.2, 0, 2.2, 2.4, 5.2);
-    add(mats.horse, 0, 6.2, 2.4, 1.2, 2.6, 1.4);
-    add(mats.horseDark, 0, 6.6, 3.4, 1.1, 1.3, 1.6);
-    for (const x of [-0.7, 0.7]) {
-      for (const z of [-1.6, 1.5]) add(mats.horseDark, x, 1.6, z, 0.4, 3.2, 0.4);
-    }
+    g.add(makeHorse(mats));
   } else if (p.type === "barrels") {
     for (const [x, z] of [[0, 0], [1.4, 0.4], [-0.2, 1.3]]) {
       const m = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, 2.2, 8), mats.siding.tan);

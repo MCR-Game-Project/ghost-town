@@ -84,6 +84,7 @@ let bob = 0;
 let mode = "walk";
 let colliders = [];
 let picks = null;
+let overviewLabels = null;
 let town = null;
 const keys = new Set();
 const eye = 5.5;
@@ -398,6 +399,7 @@ function frame() {
     sun.target.position.copy(orbit.target);
     setShadow(900);
   }
+  if (overviewLabels) overviewLabels.visible = camera.position.y > 70;
   sky.position.copy(camera.position);
   renderer.render(scene, camera);
 }
@@ -415,6 +417,7 @@ async function main() {
   const built = buildTown(town, scene);
   colliders = built.colliders;
   picks = built.picks;
+  overviewLabels = built.overviewLabels;
 
   const select = document.getElementById("places");
   for (const place of town.places) {

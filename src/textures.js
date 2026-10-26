@@ -204,17 +204,26 @@ export function makeMaterials() {
   };
 }
 
-export function makeSignTexture(title, subtitle) {
+export function makeSignTexture(title, subtitle, style = "board") {
   const c = document.createElement("canvas");
   c.width = 512;
   c.height = subtitle ? 180 : 128;
   const g = c.getContext("2d");
-  g.fillStyle = "#3b2718";
-  g.fillRect(0, 0, c.width, c.height);
-  g.strokeStyle = "#e6d3a8";
-  g.lineWidth = 8;
-  g.strokeRect(8, 8, c.width - 16, c.height - 16);
-  g.fillStyle = "#f6ecd4";
+  if (style === "painted") {
+    g.fillStyle = "#f4ead4";
+    g.fillRect(0, 0, c.width, c.height);
+    g.strokeStyle = "#6b5340";
+    g.lineWidth = 8;
+    g.strokeRect(12, 12, c.width - 24, c.height - 24);
+    g.fillStyle = "#24180f";
+  } else {
+    g.fillStyle = "#3b2718";
+    g.fillRect(0, 0, c.width, c.height);
+    g.strokeStyle = "#e6d3a8";
+    g.lineWidth = 8;
+    g.strokeRect(8, 8, c.width - 16, c.height - 16);
+    g.fillStyle = "#f6ecd4";
+  }
   g.textAlign = "center";
   g.textBaseline = "middle";
   const line = (text, y, start) => {
