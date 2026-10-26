@@ -1,0 +1,45 @@
+name: apply street swoop
+
+"on":
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/apply-street-swoop.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Apply the street swoop patch
+        run: |
+          set -euo pipefail
+          cat .github/street-swoop/part-00.txt .github/street-swoop/part-01.txt .github/street-swoop/part-02.txt .github/street-swoop/part-03.txt .github/street-swoop/part-04.txt .github/street-swoop/part-05.txt .github/street-swoop/part-06.txt .github/street-swoop/part-07.txt .github/street-swoop/part-08.txt .github/street-swoop/part-09.txt .github/street-swoop/part-10.txt > /tmp/patch.b64
+          echo "4197b125bc54e9a4998e11c0aa569b6dc2f8e09b2954aeae09ec3bdc32cdf9cd  /tmp/patch.b64" | sha256sum -c -
+          base64 -d /tmp/patch.b64 | gzip -dc > /tmp/change.diff
+          git apply --check /tmp/change.diff
+          git apply /tmp/change.diff
+          rm -rf .github/street-swoop
+          rm -f .github/workflows/apply-street-swoop.yml
+          git add -A
+          git config user.name "MCR-Game-Project"
+          git config user.email "mcr@steinjager.com"
+          python3 - << 'PY'
+          import subprocess
+          msg = (
+              "Swoop from the town view down to the street, and match more fronts to the photographs.\n"
+              "\n"
+              "Scroll zooms toward the pointer, a click flies closer, and a double-click or a zoom to the street starts walking there. The wooden CB&Q depot, the T. P. & W. depot, and the Hendee House follow photographs of those buildings. The commercial rows and the Crafford houses take their rhythm from the street pictures. Every picture gathered for later snapshots is listed in docs/photo-catalog.md.\n"
+              "\n"
+              "Co-authored-by: mcr <mcr@steinjager.com>\n"
+          )
+          subprocess.run(["git", "commit", "-m", msg], check=True)
+          PY
+          git push origin HEAD:main
