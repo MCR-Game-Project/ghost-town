@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { buildTown } from "./town.js";
+import { ORIENT, platToEnu, worldToPlat } from "./orient.js";
 
 const params = new URLSearchParams(location.search);
 const shot = params.get("shot");
@@ -96,10 +97,15 @@ function lookVector() {
   return new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
 }
 
+function vPlat(x, y, z) {
+  const p = platToEnu(x, z);
+  return new THREE.Vector3(p.x, y, p.z);
+}
+
 function applyWalkCamera() {
-  camera.position.set(player.x, eye + bob, player.z);
+  camera.position.copy(vPlat(player.x, eye + bob, player.z));
   camera.rotation.order = "YXZ";
-  camera.rotation.y = yaw;
+  camera.rotation.y = yaw + ORIENT;
   camera.rotation.x = pitch;
 }
 
@@ -168,8 +174,10 @@ function enterOverview() {
   else lockExitReason = null;
   canvas.classList.remove("looking");
   orbit.enabled = true;
-  orbit.target.set(-160, 0, 20);
-  camera.position.set(220, 860, 620);
+  const focus = vPlat(-160, 0, 0);
+  orbit.target.copy(focus);
+  // Sit the camera due south of downtown so true north is toward the top of the picture.
+  camera.position.set(focus.x, 980, focus.z + 820);
   orbit.update();
   document.getElementById("help").hidden = true;
   document.getElementById("mode").textContent = "Walk the streets";
@@ -188,6 +196,7 @@ function enterWalk() {
 }
 
 const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+const _compassQuat = new THREE.Quaternion();
 let flight = null;
 let overviewClickTimer = 0;
 
@@ -207,9 +216,10 @@ function groundUnderPointer(event) {
   raycaster.setFromCamera(pointerNdc(event), camera);
   const hit = new THREE.Vector3();
   if (!raycaster.ray.intersectPlane(groundPlane, hit)) return null;
-  hit.x = Math.max(-2200, Math.min(1200, hit.x));
-  hit.z = Math.max(-1700, Math.min(1700, hit.z));
-  return hit;
+  const plat = worldToPlat(hit.x, hit.z);
+  plat.x = Math.max(-2200, Math.min(1200, plat.x));
+  plat.z = Math.max(-1700, Math.min(1700, plat.z));
+  return { world: vPlat(plat.x, 0, plat.z), plat };
 }
 
 function nearestClear(x, z) {
@@ -258,17 +268,23 @@ function flyToward(hit, allTheWay) {
   if (!hit || flight) return;
   const cam = camera.position.clone();
   if (allTheWay || cam.y < 26) {
-    const flat = new THREE.Vector3(cam.x - hit.x, 0, cam.z - hit.z);
-    if (flat.length() < 8) flat.set(0, 0, 18);
-    flat.setLength(16);
-    const stand = nearestClear(hit.x + flat.x, hit.z + flat.z);
-    startFlight(new THREE.Vector3(stand.x, eye, stand.z), new THREE.Vector3(hit.x, 5, hit.z), 1.15, {
+    let dx = cam.x - hit.world.x;
+    let dz = cam.z - hit.world.z;
+    let len = Math.hypot(dx, dz);
+    if (len < 8) {
+      dx = 0;
+      dz = 18;
+      len = 18;
+    }
+    const standWorld = worldToPlat(hit.world.x + (dx / len) * 16, hit.world.z + (dz / len) * 16);
+    const stand = nearestClear(standWorld.x, standWorld.z);
+    startFlight(vPlat(stand.x, eye, stand.z), vPlat(hit.plat.x, 5, hit.plat.z), 1.15, {
       stand,
-      look: hit,
+      look: hit.plat,
     });
     return;
   }
-  const next = hit.clone().add(cam.clone().sub(hit).multiplyScalar(0.46));
+  const next = hit.world.clone().add(cam.clone().sub(hit.world).multiplyScalar(0.46));
   next.y = Math.max(next.y, 20);
   const delta = next.clone().sub(cam);
   startFlight(next, orbit.target.clone().add(delta), 0.72, null);
@@ -279,13 +295,13 @@ function zoomTowardPointer(event) {
   const hit = groundUnderPointer(event);
   if (!hit) return;
   const cam = camera.position.clone();
-  const dist = cam.distanceTo(hit);
+  const dist = cam.distanceTo(hit.world);
   if (event.deltaY < 0 && (cam.y < 18 || dist < 24)) {
     flyToward(hit, true);
     return;
   }
   const factor = Math.exp(event.deltaY * 0.00115);
-  const next = hit.clone().add(cam.clone().sub(hit).multiplyScalar(factor));
+  const next = hit.world.clone().add(cam.clone().sub(hit.world).multiplyScalar(factor));
   if (next.y < 8) {
     flyToward(hit, true);
     return;
@@ -460,8 +476,8 @@ function describePlace() {
         ? "toward Gridley and Galesburg"
         : "toward Hurst and Quincy"
       : forward.z > 0
-        ? "toward West Main and the depot side"
-        : "toward East Main";
+        ? "toward East Main"
+        : "toward West Main";
   const crossName = cross ? cross.name.replace(" Street", "") : "";
   const paraName = para ? para.name.replace(" Street", "") : "";
   let where = "Out on the prairie";
@@ -536,8 +552,9 @@ function frame() {
     player.x = Math.max(-2300, Math.min(1300, player.x));
     player.z = Math.max(-1800, Math.min(1800, player.z));
     applyWalkCamera();
-    sun.position.set(player.x - 90, 120, player.z + 36);
-    sun.target.position.set(player.x, 0, player.z);
+    const feet = vPlat(player.x, 0, player.z);
+    sun.position.set(feet.x + 80, 140, feet.z + 48);
+    sun.target.position.copy(feet);
     setShadow(150);
     describePlace();
     showBuilding();
@@ -566,6 +583,15 @@ function frame() {
     setShadow(900);
   }
   if (overviewLabels) overviewLabels.visible = camera.position.y > 70;
+  const compass = document.getElementById("compass");
+  if (compass) {
+    const show = mode === "overview";
+    compass.hidden = !show;
+    if (show) {
+      const north = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.getWorldQuaternion(_compassQuat).invert());
+      compass.querySelector(".rose").style.transform = `rotate(${Math.atan2(north.x, north.y)}rad)`;
+    }
+  }
   sky.position.copy(camera.position);
   renderer.render(scene, camera);
 }
@@ -576,11 +602,58 @@ window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+function addNorthArrow(parent) {
+  const group = new THREE.Group();
+  group.name = "north-arrow";
+  // Open ground west of Washington, beside Hail, then a step true north so it sits clear of the houses.
+  const anchor = vPlat(40, 0, -1760);
+  anchor.z -= 30;
+  group.position.copy(anchor);
+
+  const iron = new THREE.MeshLambertMaterial({ color: "#3a291c" });
+  const brick = new THREE.MeshLambertMaterial({ color: "#7c342c" });
+  const shaft = new THREE.Mesh(new THREE.BoxGeometry(16, 1.4, 120), iron);
+  shaft.position.set(0, 1.2, -30);
+  const head = new THREE.Mesh(new THREE.ConeGeometry(26, 52, 4), brick);
+  head.rotation.x = -Math.PI / 2;
+  head.position.set(0, 1.6, -116);
+  group.add(shaft, head);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 128;
+  canvas.height = 128;
+  const g = canvas.getContext("2d");
+  g.fillStyle = "#f6ecd8";
+  g.beginPath();
+  g.arc(64, 64, 58, 0, Math.PI * 2);
+  g.fill();
+  g.lineWidth = 8;
+  g.strokeStyle = "#6d4b32";
+  g.stroke();
+  g.fillStyle = "#7c342c";
+  g.font = "700 78px Georgia";
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  g.fillText("N", 64, 70);
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const badge = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false }));
+  badge.position.set(0, 42, -150);
+  badge.scale.set(54, 54, 1);
+  group.add(badge);
+  parent.add(group);
+}
+
 async function main() {
   const response = await fetch(`${import.meta.env.BASE_URL}data/bushnell-1880.json`);
   if (!response.ok) throw new Error("The town file did not load.");
   town = await response.json();
-  const built = buildTown(town, scene);
+  const townGroup = new THREE.Group();
+  townGroup.name = "town";
+  townGroup.rotation.y = ORIENT;
+  scene.add(townGroup);
+  const built = buildTown(town, townGroup);
+  addNorthArrow(scene);
   colliders = built.colliders;
   picks = built.picks;
   overviewLabels = built.overviewLabels;
@@ -607,13 +680,15 @@ async function main() {
     document.getElementById("help").hidden = true;
     if (shot === "overhead") {
       enterOverview();
-      camera.position.set(80, 1020, 700);
-      orbit.target.set(-180, 0, 30);
+      const focus = vPlat(-200, 0, 0);
+      orbit.target.copy(focus);
+      camera.position.set(focus.x, 1280, focus.z + 980);
       orbit.update();
     } else if (shot === "overhead-500") {
       enterOverview();
-      camera.position.set(200, 680, 460);
-      orbit.target.set(200, 0, 10);
+      const focus = vPlat(200, 0, 0);
+      orbit.target.copy(focus);
+      camera.position.set(focus.x, 720, focus.z + 520);
       orbit.update();
     } else if (shot === "at") {
       goToPlace({

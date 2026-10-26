@@ -5,8 +5,8 @@
     "year": 1880,
     "units": "feet",
     "axes": {
-      "x": "Northeast along the Chicago, Burlington & Quincy tracks. Positive x is toward Gridley Street and Galesburg. Hail Street is x = 0.",
-      "z": "Northwest, across the tracks. Positive z is the west side of town (West Main, Dean, Jackson). Negative z is the east side (East Main, Crafford, Rile). The CB&Q centerline is z = 0.",
+      "x": "Northeast along the Chicago, Burlington & Quincy tracks, toward Gridley Street and Galesburg. Hail Street is x = 0. This direction is 29.8 degrees east of true north.",
+      "z": "Across the tracks. Positive z in this file is the side drawn with West Main, Dean, Jackson, and Washington. Negative z is the side drawn with East Main, Crafford, Rile, and Sperry. The viewer mirrors this axis, because positive z is geographic east once x points northeast, which had swapped the two Main streets. After the mirror, positive z is east.",
       "y": "Up."
     },
     "grid": {
@@ -15,10 +15,10 @@
       "mainStreet": 70,
       "railroadReserve": 242,
       "centerToCenter": 420,
-      "trackBearingDegreesFromNorth": 30.4
+      "trackBearingDegreesFromNorth": 29.8
     },
     "population1880": 2316,
-    "note": "Edit this file to correct a building. The viewer reads it on each load. Confidence is 'sourced' when a history or map supports the building, and 'inferred' when the block is right but the door, owner, or exact footprint is a stand-in."
+    "note": "Edit this file to correct a building. The viewer reads it on each load. Confidence is 'sourced' when a history or map supports the building, and 'inferred' when the block is right but the door, owner, or exact footprint is a stand-in. The viewer turns the plat so north is true north and East Main lies east of the tracks."
   },
   "streets": [
     {
@@ -175,76 +175,16 @@
       "name": "T. P. & W.",
       "points": [
         [
-          -860.5,
-          -1600
+          -1680,
+          -1800
         ],
         [
-          -957.9,
-          -1400
-        ],
-        [
-          -1055.4,
-          -1200
-        ],
-        [
-          -1152.8,
-          -1000
-        ],
-        [
-          -1250.2,
-          -800
-        ],
-        [
-          -1347.7,
-          -600
-        ],
-        [
-          -1445.1,
-          -400
-        ],
-        [
-          -1542.6,
-          -200
-        ],
-        [
-          -1640.0,
-          0
-        ],
-        [
-          -1737.4,
-          200
-        ],
-        [
-          -1834.9,
-          400
-        ],
-        [
-          -1932.3,
-          600
-        ],
-        [
-          -2029.8,
-          800
-        ],
-        [
-          -2127.2,
-          1000
-        ],
-        [
-          -2224.6,
-          1200
-        ],
-        [
-          -2322.1,
-          1400
-        ],
-        [
-          -2419.5,
-          1600
+          -1680,
+          1800
         ]
       ],
       "confidence": "sourced",
-      "notes": "Surveyed through Bushnell in 1867. By 1885 the county history calls it part of the Wabash. It runs nearly east-west and crosses the CB&Q at a slant southwest of Davis Street, which matches the modern Keokuk Junction alignment that inherited the route."
+      "notes": "Surveyed through Bushnell in 1867. By 1885 the county history calls it part of the Wabash. The Keokuk Junction Railway inherited the route and still crosses the Burlington at about a right angle, parallel to Hail Street, 1,680 feet southwest of the Hail crossing. That is just southwest of Davis Street."
     }
   ],
   "blocks": [
@@ -7155,15 +7095,15 @@
       "stories": 1,
       "width": 64,
       "depth": 24,
-      "x": -1760,
+      "x": -1720,
       "z": 280,
-      "facing": "-z",
+      "facing": "+x",
       "paint": "tan",
       "sign": "T. P. & W.",
       "confidence": "sourced",
       "year": "1869",
-      "rotation": 26,
-      "notes": "The Toledo, Peoria & Warsaw (later called the Toledo, Peoria & Western, and by 1885 part of the Wabash) was surveyed through Bushnell in 1867 and crossed the CB&Q. A 1914 postcard shows a one-story frame depot with a bay window and a platform roof on posts, south of the CB&Q station and just west of West Main. The line was open by 1880, and no replacement of this depot before 1914 was found, so the model uses that frame building. The postcard is thirty-four years later. The sign and the platform roof may have been renewed.",
+      "rotation": 0,
+      "notes": "The Toledo, Peoria & Warsaw (later called the Toledo, Peoria & Western, and by 1885 part of the Wabash) was surveyed through Bushnell in 1867 and crossed the CB&Q at about a right angle, just southwest of Davis Street. A 1914 postcard shows a one-story frame depot with a bay window and a platform roof on posts, south of the CB&Q station and just west of West Main. The model sets the long side beside that crossing, on the west side of West Main. The line was open by 1880, and no replacement of this depot before 1914 was found, so the model uses that frame building. The postcard is thirty-four years later. The sign and the platform roof may have been renewed.",
       "porch": false,
       "party": [],
       "brick": "red",
@@ -14263,13 +14203,13 @@
     {
       "id": "crossing",
       "name": "Railroad crossing",
-      "x": -1500,
-      "z": 80,
+      "x": -1680,
+      "z": 220,
       "look": [
-        -1640,
+        -1680,
         0
       ],
-      "blurb": "Where the T. P. & W. crosses the Burlington, southwest of Davis Street."
+      "blurb": "Where the T. P. & W. crosses the Burlington at about a right angle, just southwest of Davis Street."
     },
     {
       "id": "cole",

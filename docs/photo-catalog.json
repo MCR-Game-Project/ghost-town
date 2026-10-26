@@ -1,6 +1,6 @@
 {
   "title": "Bushnell photograph catalog",
-  "purpose": "A list of pictures gathered for Ghost Town so later snapshots (about 1900, 1907, 1914, 1918) can reuse them. The 1880 model uses a picture only when the building was standing in 1880 and the front is judged to be largely the same one.",
+  "purpose": "A list of pictures gathered for Ghost Town so later snapshots (about 1900, 1907, 1914, 1918) can reuse them. The 1880 model uses a picture only when the building was standing in 1880 and the front is judged to be largely the same one. In that scene north is true north, East Main is east of the Burlington, West Main is west of it, and Hail is the cross street north of Hurst.",
   "imagesNotInTheApp": "Page URLs only. Image files are not committed and are not loaded by the viewer. Local copies used while modeling stayed outside the repository.",
   "indexes": [
     {
@@ -51,7 +51,7 @@
       "date": "1914",
       "dateBasis": "The society's caption dates the postcard 1914.",
       "shows": "A one-story frame combination depot with a gable roof, a trackside bay window, and a platform canopy on posts. People stand on the platform. A train is alongside.",
-      "street": "Toledo, Peoria & Western, south of the CB&Q station and just west of West Main",
+      "street": "Toledo, Peoria & Western, crossing the Burlington at about a right angle just southwest of Davis Street, with the depot just west of West Main",
       "viewDirection": "From the platform, looking at the depot's track side",
       "buildingsIdentified": [
         "T. P. & W. passenger depot"
@@ -219,7 +219,7 @@
       "date": null,
       "dateBasis": "Undated. The crossing of the two railroads. Estimated about 1890\u20131920 from the equipment.",
       "shows": "The diamond where the CB&Q and the T. P. & W. cross, with trains or the crossing plant.",
-      "street": "The railroad crossing southwest of Davis Street",
+      "street": "The railroad crossing just southwest of Davis Street, where the T. P. & W. meets the Burlington at about a right angle",
       "viewDirection": "At the crossing",
       "buildingsIdentified": [],
       "era": "about 1890\u20131920",

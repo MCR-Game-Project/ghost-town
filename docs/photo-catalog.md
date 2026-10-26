@@ -4,6 +4,8 @@ Pictures gathered for Ghost Town. Later snapshots of the town, about 1900, 1907,
 
 The viewer does not load these images. The files are not in the repository. Each entry is a page to open. The same records are in `docs/photo-catalog.json`.
 
+Street names below are the real ones. In the 1880 scene, north is true north. East Main is the street on the east side of the Burlington, West Main is the street on the west side, and Hail runs north of Hurst. The T. P. & W. crosses the Burlington at about a right angle, just southwest of Davis Street.
+
 ## Indexes
 
 - [Bushnell Historic Photos](https://www.mcdcgs.com/bushnell-historic-photos/)
@@ -30,7 +32,7 @@ The CardCow index and the eBay shop did not return a full list of titles when th
 - Source: [https://www.mcdcgs.com/historic-photos/t-p-w-train-depot-bushnell-il-1914/](https://www.mcdcgs.com/historic-photos/t-p-w-train-depot-bushnell-il-1914/)
 - Date: 1914. The society's caption dates the postcard 1914.
 - Shows: A one-story frame combination depot with a gable roof, a trackside bay window, and a platform canopy on posts. People stand on the platform. A train is alongside.
-- Street and direction: Toledo, Peoria & Western, south of the CB&Q station and just west of West Main. From the platform, looking at the depot's track side.
+- Street and direction: Toledo, Peoria & Western, where it crosses the Burlington at about a right angle just southwest of Davis Street, and the depot sits just west of West Main. From the platform, looking at the depot's track side.
 - Buildings: T. P. & W. passenger depot.
 - Fits a later snapshot around 1914.
 - Why it is in the 1880 model: The T. P. & W. was open through Bushnell by 1880. No source found here says this frame depot was replaced before the 1914 postcard, so the 1880 model uses that one-story frame building, bay, and platform roof. The postcard is thirty-four years later. The sign and the canopy may have been renewed. A later brick depot is not used.
@@ -143,7 +145,7 @@ The CardCow index and the eBay shop did not return a full list of titles when th
 - Source: [https://www.mcdcgs.com/historic-photos/bushnell-il-train-intersection/](https://www.mcdcgs.com/historic-photos/bushnell-il-train-intersection/)
 - Date: not printed. Undated. The crossing of the two railroads. Estimated about 1890–1920 from the equipment.
 - Shows: The diamond where the CB&Q and the T. P. & W. cross, with trains or the crossing plant.
-- Street and direction: The railroad crossing southwest of Davis Street. At the crossing.
+- Street and direction: The railroad crossing just southwest of Davis Street, where the T. P. & W. meets the Burlington at about a right angle. At the crossing.
 - Era: about 1890–1920. Snapshots it can serve: 1900, 1910, 1914.
 - Left out of 1880: The crossing is already in the model from the plat and the 1867 survey of the T. P. & W. The photograph was not used to restyle a building.
 

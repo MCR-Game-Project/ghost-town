@@ -1,10 +1,12 @@
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { makeMaterials, makeSignTexture } from "./textures.js";
+import { mirrorPlat } from "./orient.js";
 
 const FACING = { "+z": 0, "-z": Math.PI, "+x": Math.PI / 2, "-x": -Math.PI / 2 };
 
 export function buildTown(data, scene) {
+  mirrorPlat(data);
   const mats = makeMaterials();
   const buckets = new Map();
   const signs = [];
@@ -420,8 +422,9 @@ export function buildTown(data, scene) {
     gable(b.width, b.depth, Math.max(6, b.depth * 0.38), wallH);
     punch(b.width, b.depth, b.stories, 9, wallH, b.party || [], false);
     box(mats.trimDark, 0, 3.8, b.depth / 2 + 0.15, 3.2, 7, 0.2);
+    // Crafford is on the east side after the compass correction, centerline z = +581.
     const onCrafford =
-      (b.facing === "+z" || b.facing === "-z") && Math.abs(b.z + 581) > 40 && Math.abs(b.z + 581) < 100;
+      (b.facing === "+z" || b.facing === "-z") && Math.abs(b.z - 581) > 40 && Math.abs(b.z - 581) < 100;
     if (b.porch || onCrafford) {
       const z = b.depth / 2 + 3.2;
       box(mats.plank, 0, 0.7, z, b.width * 0.8, 0.35, 6);
@@ -824,7 +827,7 @@ export function buildTown(data, scene) {
 
   // One wire along the telegraph line so the poles read as a line, not sticks.
   const wire = new THREE.Mesh(new THREE.BoxGeometry(3100, 0.08, 0.08), mats.trimDark);
-  wire.position.set(-480, 22.6, 22);
+  wire.position.set(-480, 22.6, -18);
   scene.add(wire);
 
   // Props.
@@ -980,9 +983,9 @@ function addStreetNames(data, mats, scene) {
     sprite.scale.set(spriteH * aerial.aspect, spriteH, 1);
     sprite.center.set(0.5, 0.5);
     sprite.renderOrder = 10;
-    // Cross streets are labeled in the block between Crafford and East Main.
+    // Cross streets are labeled in the block between East Main and Crafford, on the east side.
     // The parallel streets are labeled between Hurst and Hail, so the two sets do not pile up.
-    if (street.axis === "z") sprite.position.set(street.at, 48, -360);
+    if (street.axis === "z") sprite.position.set(street.at, 48, 370);
     else sprite.position.set(-220, 48, street.at);
     overviewLabels.add(sprite);
   });
