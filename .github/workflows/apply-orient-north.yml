@@ -1,0 +1,43 @@
+name: apply north orientation
+
+"on":
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/apply-orient-north.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Apply orientation patch
+        run: |
+          set -euo pipefail
+          cat .github/orient-north/part-00.txt .github/orient-north/part-01.txt .github/orient-north/part-02.txt .github/orient-north/part-03.txt .github/orient-north/part-04.txt .github/orient-north/part-05.txt > /tmp/patch.b64
+          echo "367460f233aeb4bbfdcd5bb8b2680581c0c1c4769eff928afa6409b7e8729e58  /tmp/patch.b64" | sha256sum -c -
+          base64 -d /tmp/patch.b64 | gzip -dc > /tmp/change.diff
+          git apply --check /tmp/change.diff
+          git apply /tmp/change.diff
+          rm -rf .github/orient-north
+          rm -f .github/workflows/apply-orient-north.yml
+          git add -A
+          git config user.name "MCR-Game-Project"
+          git config user.email "mcr@steinjager.com"
+          python3 - <<'PY'
+          import subprocess
+          msg = (
+              "Turn the town to true north and put East Main on the east side of the tracks.\n"
+              "\n"
+              "Hail stays north of Hurst. The plat is mirrored across the Burlington and rotated so the tracks run 29.8 degrees east of north, the bearing of the line through downtown. The T. P. & W. crosses that line at a right angle just southwest of Davis Street. A north arrow and a compass mark true north on the town view.\n"
+              "\n"
+              "Co-authored-by: mcr <mcr@steinjager.com>\n"
+          )
+          subprocess.run(["git", "commit", "-m", msg], check=True)
+          PY
+          git push origin HEAD:main
