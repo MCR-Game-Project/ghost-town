@@ -71,8 +71,9 @@ scene.add(sun, sun.target);
 
 const orbit = new OrbitControls(camera, canvas);
 orbit.enableDamping = true;
+orbit.enableZoom = false;
 orbit.maxPolarAngle = Math.PI / 2.08;
-orbit.minDistance = 30;
+orbit.minDistance = 8;
 orbit.maxDistance = 2400;
 orbit.enabled = false;
 orbit.target.set(-180, 0, 20);
@@ -132,8 +133,9 @@ function menuIsOpen() {
 }
 
 function syncHint() {
-  const hint = document.getElementById("walk-hint");
-  hint.hidden = document.body.classList.contains("clean") || mode !== "walk" || menuIsOpen();
+  const clean = document.body.classList.contains("clean");
+  document.getElementById("walk-hint").hidden = clean || mode !== "walk" || menuIsOpen();
+  document.getElementById("overview-hint").hidden = clean || mode !== "overview";
 }
 
 function showMenu(focusStart) {
@@ -159,6 +161,7 @@ function releaseToMenu() {
 }
 
 function enterOverview() {
+  flight = null;
   mode = "overview";
   lockExitReason = "overview";
   if (document.pointerLockElement) document.exitPointerLock();
@@ -176,11 +179,122 @@ function enterOverview() {
 }
 
 function enterWalk() {
+  flight = null;
   mode = "walk";
   orbit.enabled = false;
   document.getElementById("mode").textContent = "See the whole town";
   applyWalkCamera();
   syncHint();
+}
+
+const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+let flight = null;
+let overviewClickTimer = 0;
+
+function easeInOut(t) {
+  return t < 0.5 ? 2 * t * t : 1 - ((-2 * t + 2) ** 2) / 2;
+}
+
+function pointerNdc(event) {
+  const rect = canvas.getBoundingClientRect();
+  return new THREE.Vector2(
+    ((event.clientX - rect.left) / rect.width) * 2 - 1,
+    -((event.clientY - rect.top) / rect.height) * 2 + 1,
+  );
+}
+
+function groundUnderPointer(event) {
+  raycaster.setFromCamera(pointerNdc(event), camera);
+  const hit = new THREE.Vector3();
+  if (!raycaster.ray.intersectPlane(groundPlane, hit)) return null;
+  hit.x = Math.max(-2200, Math.min(1200, hit.x));
+  hit.z = Math.max(-1700, Math.min(1700, hit.z));
+  return hit;
+}
+
+function nearestClear(x, z) {
+  if (!blocked(x, z)) return new THREE.Vector3(x, 0, z);
+  for (let radius = 6; radius <= 96; radius += 6) {
+    for (let step = 0; step < 10; step++) {
+      const angle = (step / 10) * Math.PI * 2;
+      const nx = x + Math.cos(angle) * radius;
+      const nz = z + Math.sin(angle) * radius;
+      if (!blocked(nx, nz)) return new THREE.Vector3(nx, 0, nz);
+    }
+  }
+  return new THREE.Vector3(x, 0, z);
+}
+
+function startFlight(toPos, toTarget, seconds, land) {
+  flight = {
+    fromPos: camera.position.clone(),
+    toPos,
+    fromTarget: orbit.target.clone(),
+    toTarget,
+    started: performance.now(),
+    seconds,
+    land,
+  };
+  orbit.enabled = false;
+}
+
+function landAndWalk(stand, look) {
+  player.set(stand.x, 0, stand.z);
+  const dx = look.x - stand.x;
+  const dz = look.z - stand.z;
+  if (Math.hypot(dx, dz) > 1) yaw = Math.atan2(-dx, -dz);
+  pitch = -0.06;
+  bob = 0;
+  flight = null;
+  mode = "walk";
+  orbit.enabled = false;
+  document.getElementById("mode").textContent = "See the whole town";
+  document.getElementById("help").hidden = true;
+  applyWalkCamera();
+  syncHint();
+}
+
+function flyToward(hit, allTheWay) {
+  if (!hit || flight) return;
+  const cam = camera.position.clone();
+  if (allTheWay || cam.y < 26) {
+    const flat = new THREE.Vector3(cam.x - hit.x, 0, cam.z - hit.z);
+    if (flat.length() < 8) flat.set(0, 0, 18);
+    flat.setLength(16);
+    const stand = nearestClear(hit.x + flat.x, hit.z + flat.z);
+    startFlight(new THREE.Vector3(stand.x, eye, stand.z), new THREE.Vector3(hit.x, 5, hit.z), 1.15, {
+      stand,
+      look: hit,
+    });
+    return;
+  }
+  const next = hit.clone().add(cam.clone().sub(hit).multiplyScalar(0.46));
+  next.y = Math.max(next.y, 20);
+  const delta = next.clone().sub(cam);
+  startFlight(next, orbit.target.clone().add(delta), 0.72, null);
+}
+
+function zoomTowardPointer(event) {
+  if (flight) return;
+  const hit = groundUnderPointer(event);
+  if (!hit) return;
+  const cam = camera.position.clone();
+  const dist = cam.distanceTo(hit);
+  if (event.deltaY < 0 && (cam.y < 18 || dist < 24)) {
+    flyToward(hit, true);
+    return;
+  }
+  const factor = Math.exp(event.deltaY * 0.00115);
+  const next = hit.clone().add(cam.clone().sub(hit).multiplyScalar(factor));
+  if (next.y < 8) {
+    flyToward(hit, true);
+    return;
+  }
+  if (next.y > 1500) return;
+  const delta = next.clone().sub(cam);
+  camera.position.copy(next);
+  orbit.target.add(delta);
+  orbit.update();
 }
 
 function goToPlace(place) {
@@ -268,6 +382,40 @@ canvas.addEventListener("click", () => {
   if (lockCooldown || mode !== "walk" || menuIsOpen()) return;
   canvas.requestPointerLock?.();
 });
+
+let overviewPointer = null;
+canvas.addEventListener("pointerdown", (event) => {
+  if (mode !== "overview" || event.button !== 0) return;
+  overviewPointer = { x: event.clientX, y: event.clientY };
+});
+canvas.addEventListener("pointerup", (event) => {
+  if (!overviewPointer || mode !== "overview") {
+    overviewPointer = null;
+    return;
+  }
+  const moved = Math.hypot(event.clientX - overviewPointer.x, event.clientY - overviewPointer.y);
+  overviewPointer = null;
+  if (moved > 7) return;
+  const hit = groundUnderPointer(event);
+  if (!hit) return;
+  window.clearTimeout(overviewClickTimer);
+  overviewClickTimer = window.setTimeout(() => flyToward(hit, false), 260);
+});
+canvas.addEventListener("dblclick", (event) => {
+  if (mode !== "overview") return;
+  event.preventDefault();
+  window.clearTimeout(overviewClickTimer);
+  flyToward(groundUnderPointer(event), true);
+});
+canvas.addEventListener(
+  "wheel",
+  (event) => {
+    if (mode !== "overview") return;
+    event.preventDefault();
+    zoomTowardPointer(event);
+  },
+  { passive: false },
+);
 
 document.querySelectorAll("#touch button").forEach((btn) => {
   const code = btn.dataset.key;
@@ -394,9 +542,27 @@ function frame() {
     describePlace();
     showBuilding();
   } else if (mode === "overview") {
-    orbit.update();
-    sun.position.set(orbit.target.x - 260, 340, orbit.target.z + 90);
-    sun.target.position.copy(orbit.target);
+    if (flight) {
+      const u = easeInOut(Math.min(1, (performance.now() - flight.started) / (flight.seconds * 1000)));
+      camera.position.lerpVectors(flight.fromPos, flight.toPos, u);
+      orbit.target.lerpVectors(flight.fromTarget, flight.toTarget, u);
+      if (u >= 1) {
+        const land = flight.land;
+        camera.position.copy(flight.toPos);
+        orbit.target.copy(flight.toTarget);
+        flight = null;
+        if (land) landAndWalk(land.stand, land.look);
+        else {
+          orbit.enabled = true;
+          orbit.update();
+        }
+      }
+    } else {
+      orbit.update();
+    }
+    const focus = orbit.target;
+    sun.position.set(focus.x - 260, 340, focus.z + 90);
+    sun.target.position.copy(focus);
     setShadow(900);
   }
   if (overviewLabels) overviewLabels.visible = camera.position.y > 70;

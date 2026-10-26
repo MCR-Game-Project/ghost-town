@@ -91,6 +91,56 @@ export function buildTown(data, scene) {
     localBox(mats.siding.darkred, 0, 10.2, fz + 2.2, width, 0.12, 4.3, -0.5);
   };
 
+  // Brick row and frame false-fronts from the West Main, East Hail (1918), and East Main street photographs.
+  const drawStreetFront = (b, wallH, frame) => {
+    const fz = b.depth / 2 + 0.14;
+    const bays = Math.max(2, Math.round(b.width / (frame ? 10 : 8)));
+    const gap = b.width / bays;
+    const arch = frame ? "flat" : "segmental";
+    if (b.stories > 1) {
+      for (let col = 0; col < bays; col++) {
+        const x = -b.width / 2 + gap * (col + 0.5);
+        const winW = Math.min(2.7, gap - 1.7);
+        frontSash(x, wallH * 0.68, fz, winW, b.stories > 2 ? 5.2 : 6.3, arch);
+        if (b.stories > 2) frontSash(x, wallH * 0.4, fz, winW, 5.4, arch);
+      }
+    }
+    if (!frame) {
+      box(mats.trim, 0, wallH - 0.2, fz + 0.05, b.width + 0.55, 0.95, 0.8);
+      const brackets = Math.max(4, Math.round(b.width / 3.8));
+      for (let i = 0; i < brackets; i++) {
+        const x = -b.width / 2 + (b.width * (i + 0.5)) / brackets;
+        box(mats.trimDark, x, wallH - 1.45, fz + 0.3, 0.36, 1.25, 0.65);
+      }
+    }
+    for (let col = 0; col < bays; col++) {
+      const x = -b.width / 2 + gap * (col + 0.5);
+      if (col === bays - 1) {
+        const dw = Math.min(3.4, gap - 0.7);
+        box(mats.trimDark, x, 4.3, fz, dw, 8.1, 0.24);
+        box(mats.glass, x, 6.35, fz + 0.12, 1.15, 2.15, 0.05);
+        box(mats.trim, x, 8.5, fz + 0.08, dw + 0.3, 0.4, 0.12);
+      } else {
+        const gw = Math.min(6.2, gap - 1.15);
+        box(mats.trimDark, x, 1.25, fz, gw, 1.7, 0.2);
+        box(mats.glass, x, 5.15, fz, gw, 5.5, 0.12);
+        box(mats.trim, x, 5.15, fz + 0.08, gw + 0.28, 5.85, 0.08);
+        box(mats.trim, x, 5.15, fz + 0.16, 0.1, 5.2, 0.05);
+      }
+    }
+    localBox(mats.siding.darkred, 0, b.stories > 1 ? 10.4 : 8.6, fz + 2.05, b.width * 0.92, 0.12, 4.1, -0.42);
+    const party = b.party || [];
+    for (const side of [-1, 1]) {
+      if (party.includes(side === -1 ? "left" : "right")) continue;
+      const x = side * (b.width / 2 + 0.08);
+      const rows = Math.max(1, Math.floor(b.depth / 16));
+      for (let i = 0; i < rows; i++) {
+        const z = -b.depth / 2 + ((i + 0.5) * b.depth) / rows;
+        if (b.stories > 1) sideSash(x, wallH * 0.66, z, side, 2.4, 5.0, arch);
+      }
+    }
+  };
+
   // A front taken from a photograph: bay count, arch shape, cornice, storefront, porch.
   const drawFacade = (b, wallH) => {
     const f = b.facade;
@@ -335,16 +385,30 @@ export function buildTown(data, scene) {
     const rot = (FACING[b.facing] ?? 0) + THREE.MathUtils.degToRad(b.rotation || 0);
     const outward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
     // A peaked false front carries its name in the gable, where the 1880s photograph puts BALL BROS.
-    const y = b.facade?.peak
+    const peaked = b.facade?.peak;
+    const depot = b.kind === "depot";
+    const hendee = b.id === "hendee-house-26";
+    const y = peaked
       ? b.stories * 12 + 6.5
-      : Math.min(wallH - 1.2, b.kind === "depot" ? 12.5 : b.stories * 8 + 4);
+      : hendee
+        ? wallH - 2.6
+        : depot
+          ? 13.2
+          : Math.min(wallH - 1.2, b.stories * 8 + 4);
+    const reach = peaked ? b.depth / 2 + 0.55 : depot ? b.depth / 2 + 5.5 : b.depth / 2 + 0.55;
     signs.push({
       title: b.sign,
-      subtitle: b.facade?.peak ? "" : b.confidence === "sourced" ? b.use : "",
-      style: b.facade?.peak ? "painted" : "board",
-      position: new THREE.Vector3(b.x, y, b.z).addScaledVector(outward, b.depth / 2 + 0.55),
+      subtitle: peaked || depot || hendee ? "" : b.confidence === "sourced" ? b.use : "",
+      style: peaked ? "painted" : "board",
+      position: new THREE.Vector3(b.x, y, b.z).addScaledVector(outward, reach),
       rotation: rot,
-      width: b.facade?.peak ? Math.min(b.width * 0.36, 10.5) : Math.min(Math.max(b.width * 0.62, 10), 28),
+      width: peaked
+        ? Math.min(b.width * 0.36, 10.5)
+        : depot
+          ? 16
+          : hendee
+            ? 22
+            : Math.min(Math.max(b.width * 0.62, 10), 28),
     });
   };
 
@@ -356,13 +420,19 @@ export function buildTown(data, scene) {
     gable(b.width, b.depth, Math.max(6, b.depth * 0.38), wallH);
     punch(b.width, b.depth, b.stories, 9, wallH, b.party || [], false);
     box(mats.trimDark, 0, 3.8, b.depth / 2 + 0.15, 3.2, 7, 0.2);
-    if (b.porch) {
+    const onCrafford =
+      (b.facing === "+z" || b.facing === "-z") && Math.abs(b.z + 581) > 40 && Math.abs(b.z + 581) < 100;
+    if (b.porch || onCrafford) {
       const z = b.depth / 2 + 3.2;
       box(mats.plank, 0, 0.7, z, b.width * 0.8, 0.35, 6);
       box(mats.roofDark, 0, 8.2, z, b.width * 0.86, 0.3, 6.4);
       for (const x of [-b.width * 0.34, b.width * 0.34]) {
         box(mats.trimDark, x, 4.4, z + 2.6, 0.45, 7.2, 0.45);
       }
+    }
+    // North Crafford Street: front gables over the porches, from the residential street photograph.
+    if (onCrafford) {
+      drawFrontGable(body, b.width * 0.9, Math.max(6.5, b.width * 0.36), wallH - 0.15, b.depth / 2 + 0.16);
     }
     box(mats.brick.red, b.width * 0.28, wallH + 3, -b.depth * 0.1, 1.6, 6, 1.6);
     return wallH + 8;
@@ -391,10 +461,7 @@ export function buildTown(data, scene) {
     }
     if (b.facade?.peak) drawPeakedStorefront(b, wallH);
     else if (b.facade?.bays) drawFacade(b, wallH);
-    else {
-      punch(b.width, b.depth, b.stories, floorH, wallH, b.party || [], true);
-      if (b.facade?.awning) drawAwning(b.width * 0.88, b.depth / 2 + 0.14);
-    }
+    else drawStreetFront(b, wallH, frame);
     if (b.porch || b.kind === "hotel") {
       const z = b.depth / 2 + 4;
       box(mats.plank, 0, 1, z, b.width + 1, 0.4, 8);
@@ -438,23 +505,134 @@ export function buildTown(data, scene) {
     return 70;
   };
 
-  const addDepot = (b) => {
-    const wallH = 15;
+  // Deep eaves, the way both depot photographs read from the platform.
+  const wideGable = (width, depth, rise, yBase, overhang) => {
+    const run = depth / 2 + overhang;
+    const slopeLen = Math.hypot(run, rise);
+    const angle = Math.atan2(rise, run);
+    const roofW = width + 2.6;
+    for (const sign of [1, -1]) {
+      const geo = new THREE.BoxGeometry(roofW, 0.42, slopeLen);
+      scaleBoxUVs(geo, roofW, 0.42, slopeLen);
+      const local = new THREE.Matrix4().makeRotationX(sign * angle);
+      local.premultiply(new THREE.Matrix4().makeTranslation(0, yBase + rise / 2, sign * (run / 2)));
+      geo.applyMatrix4(local);
+      geo.applyMatrix4(buildingMatrix);
+      put(mats.roofDark, geo);
+    }
+  };
+
+  const eaveBrackets = (width, depth, y) => {
+    const count = Math.max(5, Math.round(width / 8));
+    for (const z of [-depth / 2, depth / 2]) {
+      for (let i = 0; i < count; i++) {
+        const x = -width / 2 + (width * (i + 0.5)) / count;
+        box(mats.trimDark, x, y, z, 0.35, 1.3, 1.5);
+      }
+    }
+  };
+
+  // The wooden CB&Q depot in the photograph of it being moved. That is the 1880 station.
+  const addCbqDepot = (b) => {
+    const wallH = 14;
+    const body = paintOf(b);
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(mats.stone, 0, 0.45, 0, b.width + 0.5, 0.9, b.depth + 0.5);
+    wideGable(b.width, b.depth, 7.5, wallH, 5.2);
+    eaveBrackets(b.width, b.depth, wallH - 0.3);
+    const fz = b.depth / 2;
+    // Operator's bay, centered on the track side.
+    box(body, 0, 8.2, fz + 2.4, 18, 15.2, 5.2);
+    box(mats.trim, 0, 8.2, fz + 5.15, 16.4, 8.2, 0.18);
+    for (const x of [-5.2, 0, 5.2]) frontSash(x, 8.4, fz + 5.05, 3.1, 6.4, "flat");
+    box(mats.trimDark, 0, 3.6, fz + 5.05, 3.2, 6.6, 0.16);
+    // A long row of double-hung windows and a door toward each end.
+    const gap = 9.2;
+    for (let i = -3; i <= 3; i++) {
+      if (i === 0) continue;
+      const x = i * gap;
+      if (Math.abs(x) > b.width / 2 - 6) continue;
+      if (Math.abs(i) === 3) {
+        box(mats.trimDark, x, 4.6, fz + 0.16, 3.4, 8.2, 0.22);
+        box(mats.glass, x, 6.6, fz + 0.28, 1.2, 2.2, 0.05);
+      } else {
+        frontSash(x, 7.6, fz + 0.12, 2.8, 5.8, "flat");
+      }
+    }
+    box(mats.plank, 0, 0.55, fz + 7.2, b.width + 18, 0.4, 12);
+    box(mats.brick.red, -b.width * 0.32, wallH + 4.2, -2, 2.2, 8, 2.2);
+    signFor(b, 12);
+    return 28;
+  };
+
+  // The 1914 T. P. & W. postcard: a smaller frame depot, a bay, and a platform roof on posts.
+  const addTpwDepot = (b) => {
+    const wallH = 13.5;
     const body = paintOf(b);
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.stone, 0, 0.4, 0, b.width + 0.4, 0.8, b.depth + 0.4);
-    gable(b.width, b.depth, 6, wallH, mats.roofDark);
-    // Operator's bay toward the track.
-    box(body, 0, 8, b.depth / 2 + 2, 14, 14, 4);
-    box(mats.glass, 0, 8, b.depth / 2 + 4.15, 10, 5, 0.15);
-    box(mats.trim, 0, 8, b.depth / 2 + 4.05, 11, 6, 0.12);
-    // Platform.
-    box(mats.plank, 0, 0.7, b.depth / 2 + 6, b.width + 24, 0.45, 10);
-    box(mats.brick.red, -b.width * 0.3, wallH + 2, 0, 1.8, 7, 1.8);
-    // A few trackside doors.
-    box(mats.trimDark, -b.width * 0.28, 4.5, b.depth / 2 + 0.2, 4.5, 8, 0.2);
-    signFor(b, 13);
-    return 24;
+    wideGable(b.width, b.depth, 6.5, wallH, 4.2);
+    eaveBrackets(b.width, b.depth, wallH - 0.4);
+    const fz = b.depth / 2;
+    box(body, 0, 7.6, fz + 2.2, 14, 13.5, 4.6);
+    for (const x of [-3.6, 0, 3.6]) frontSash(x, 8, fz + 4.6, 2.6, 5.6, "flat");
+    box(mats.trimDark, -b.width * 0.28, 4.4, fz + 0.16, 3.3, 7.8, 0.2);
+    frontSash(b.width * 0.22, 7.2, fz + 0.12, 2.6, 5.2, "flat");
+    frontSash(-b.width * 0.05, 7.2, fz + 0.12, 2.6, 5.2, "flat");
+    const canopyZ = fz + 6.4;
+    box(mats.plank, 0, 0.5, canopyZ, b.width + 8, 0.35, 11);
+    localBox(mats.roofDark, 0, 11.2, canopyZ, b.width + 4, 0.22, 12, -0.12);
+    const posts = Math.max(4, Math.round(b.width / 14));
+    for (let i = 0; i < posts; i++) {
+      const x = -b.width / 2 + (b.width * i) / (posts - 1);
+      box(mats.trimDark, x, 5.6, canopyZ + 4.2, 0.4, 10.4, 0.4);
+    }
+    box(mats.brick.red, b.width * 0.3, wallH + 3.5, 0, 1.8, 6.5, 1.8);
+    signFor(b, 11.5);
+    return 26;
+  };
+
+  const addDepot = (b) => (b.id === "tpw-depot" ? addTpwDepot(b) : addCbqDepot(b));
+
+  // Hotel Alexander photograph of the 1871 Hendee House: three brick stories, cornice, porch.
+  const addHendeeHouse = (b) => {
+    const wallH = 36;
+    const body = mats.brick.red;
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(mats.stone, 0, 0.8, 0, b.width + 0.8, 1.6, b.depth + 0.8);
+    const fz = b.depth / 2 + 0.16;
+    box(mats.trim, 0, wallH - 0.45, fz, b.width + 1.4, 1.5, 1.15);
+    const brackets = 11;
+    for (let i = 0; i < brackets; i++) {
+      const x = -b.width / 2 + (b.width * (i + 0.5)) / brackets;
+      box(mats.trimDark, x, wallH - 2.1, fz + 0.35, 0.45, 1.7, 0.85);
+    }
+    const bays = 5;
+    const gap = b.width / bays;
+    for (let floor = 0; floor < 3; floor++) {
+      for (let col = 0; col < bays; col++) {
+        const x = -b.width / 2 + gap * (col + 0.5);
+        if (floor === 0 && col === 2) {
+          box(mats.trimDark, x, 5.2, fz, 4.2, 9.4, 0.26);
+          box(mats.glass, x, 7.6, fz + 0.14, 1.6, 2.6, 0.06);
+          box(mats.trim, x, 10.1, fz + 0.1, 4.8, 0.45, 0.16);
+        } else {
+          const y = floor === 0 ? 6.2 : floor === 1 ? 17.2 : 28.2;
+          frontSash(x, y, fz, Math.min(3.2, gap - 2.4), floor === 0 ? 7.2 : 6.4, "segmental");
+        }
+      }
+    }
+    const porchZ = b.depth / 2 + 4.2;
+    box(mats.plank, 0, 0.7, porchZ, b.width * 0.94, 0.35, 8);
+    box(mats.roofDark, 0, 12.4, porchZ, b.width + 1, 0.28, 8.6);
+    box(mats.trim, 0, 12.6, porchZ - 1.2, b.width * 0.9, 0.7, 0.25);
+    const posts = 6;
+    for (let i = 0; i < posts; i++) {
+      const x = -b.width / 2 + 1.2 + ((b.width - 2.4) * i) / (posts - 1);
+      box(mats.trimDark, x, 6.4, porchZ + 3.4, 0.45, 11.6, 0.45);
+    }
+    signFor(b, wallH);
+    return wallH + 8;
   };
 
   const addElevator = (b) => {
@@ -467,6 +645,13 @@ export function buildTown(data, scene) {
       box(body, 0, h + 22, 0, b.width * 0.22, 8, b.depth * 0.16);
       box(mats.roofDark, 0, h + 26.4, 0, b.width * 0.3, 1.1, b.depth * 0.22);
       box(mats.trim, 0, h + 22, b.depth * 0.1, b.width * 0.08, 3.2, 0.12);
+    }
+    // A column of small windows so the shaft reads as the wooden elevator in the train views.
+    const shaftX = b.width / 2 + 0.08;
+    for (let i = 0; i < 6; i++) {
+      const y = 14 + i * 6.4;
+      box(mats.trim, shaftX, y, 0, 0.16, 3.2, 2.1);
+      box(mats.glass, shaftX + 0.08, y, 0, 0.08, 2.4, 1.4);
     }
     // Driveway shed.
     box(mats.siding.gray, 0, 8, b.depth * 0.42, b.width + 4, 16, 18);
@@ -525,6 +710,7 @@ export function buildTown(data, scene) {
     begin(b.x, b.z, b.facing, b.rotation || 0);
     let height = 20;
     if (b.kind === "house") height = addHouse(b);
+    else if (b.id === "hendee-house-26") height = addHendeeHouse(b);
     else if (b.kind === "frame-store") height = addStore(b, true);
     else if (b.kind === "brick-store" || b.kind === "hotel") height = addStore(b, b.material === "frame");
     else if (b.kind === "church") height = addChurch(b);

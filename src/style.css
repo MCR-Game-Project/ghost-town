@@ -167,6 +167,21 @@ button:hover { filter: brightness(1.08); }
 
 #walk-hint p { margin: 0; white-space: nowrap; }
 
+#overview-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  z-index: 4;
+  transform: translateX(-50%);
+  max-width: min(640px, calc(100% - 28px));
+  padding: 8px 14px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 30px rgba(30, 16, 6, 0.28);
+}
+
+#overview-hint p { margin: 0; text-align: center; font-size: 15px; }
+
 #touch {
   display: none;
   position: absolute;
@@ -182,7 +197,8 @@ body.clean #tools,
 body.clean #status,
 body.clean #card,
 body.clean #touch,
-body.clean #walk-hint { display: none !important; }
+body.clean #walk-hint,
+body.clean #overview-hint { display: none !important; }
 
 @media (max-width: 720px) {
   #topbar { flex-direction: column; align-items: start; }
@@ -198,6 +214,13 @@ body.clean #walk-hint { display: none !important; }
     flex-wrap: wrap;
   }
   #walk-hint p { white-space: normal; }
+  #overview-hint {
+    left: 14px;
+    right: 14px;
+    bottom: auto;
+    top: 108px;
+    transform: none;
+  }
 }
 
 @media (pointer: coarse) {

@@ -1,0 +1,522 @@
+{
+  "title": "Bushnell photograph catalog",
+  "purpose": "A list of pictures gathered for Ghost Town so later snapshots (about 1900, 1907, 1914, 1918) can reuse them. The 1880 model uses a picture only when the building was standing in 1880 and the front is judged to be largely the same one.",
+  "imagesNotInTheApp": "Page URLs only. Image files are not committed and are not loaded by the viewer. Local copies used while modeling stayed outside the repository.",
+  "indexes": [
+    {
+      "title": "Bushnell Historic Photos",
+      "sourceUrl": "https://www.mcdcgs.com/bushnell-historic-photos/"
+    },
+    {
+      "title": "Historic Photos: Bushnell",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/bushnell/"
+    },
+    {
+      "title": "CardCow Bushnell postcards",
+      "sourceUrl": "https://www.cardcow.com/viewall/71409/"
+    },
+    {
+      "title": "eBay shop search bushnell il",
+      "sourceUrl": "https://www.ebay.com/shop/bushnell-il"
+    }
+  ],
+  "photos": [
+    {
+      "id": "mcdcgs-view-of-trains",
+      "title": "View of trains in Bushnell, IL",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/view-of-trains-in-bushnell-il/",
+      "date": null,
+      "dateBasis": "Undated on the society's page. Steam locomotives, wooden elevators, and the commercial backs along the tracks. Estimated about 1890\u20131910 from the equipment and the buildings.",
+      "shows": "Railroad ground in downtown Bushnell, looking along the tracks. Wooden grain elevators, freight cars, and the rear of the Main Street stores.",
+      "street": "Railroad ground between East Main and West Main",
+      "viewDirection": "Along the Chicago, Burlington & Quincy tracks, through the elevator district",
+      "buildingsIdentified": [
+        "Wooden grain elevators, including the kind of elevator Hendee built in 1880",
+        "Backs of the commercial row"
+      ],
+      "era": "about 1890\u20131910",
+      "fitsSnapshots": [
+        "1890",
+        "1900",
+        "1910"
+      ],
+      "usedFor1880": true,
+      "usedFor1880Reason": "The Hendee Elevator of 1880 is the wooden elevator in this kind of view. A column of shaft windows was added so the model reads as that elevator. No second elevator and no water tower were added from this picture.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-tpw-depot-1914",
+      "title": "T. P. & W. Train Depot, Bushnell, IL 1914",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/t-p-w-train-depot-bushnell-il-1914/",
+      "date": "1914",
+      "dateBasis": "The society's caption dates the postcard 1914.",
+      "shows": "A one-story frame combination depot with a gable roof, a trackside bay window, and a platform canopy on posts. People stand on the platform. A train is alongside.",
+      "street": "Toledo, Peoria & Western, south of the CB&Q station and just west of West Main",
+      "viewDirection": "From the platform, looking at the depot's track side",
+      "buildingsIdentified": [
+        "T. P. & W. passenger depot"
+      ],
+      "era": "1914",
+      "fitsSnapshots": [
+        "1914"
+      ],
+      "usedFor1880": true,
+      "usedFor1880Reason": "The T. P. & W. was open through Bushnell by 1880. No source found here says this frame depot was replaced before the 1914 postcard, so the 1880 model uses that one-story frame building, bay, and platform roof. The postcard is thirty-four years later. The sign and the canopy may have been renewed. A later brick depot is not used.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-threshing-havens",
+      "title": "Threshing, C. Albert Havens farm, east of Bushnell",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/threshing-east-of-bushnell-illinois-c-albert-havens-farm/",
+      "date": null,
+      "dateBasis": "Undated. A steam threshing crew. Estimated about 1890\u20131915.",
+      "shows": "A threshing rig and crew on the C. Albert Havens farm east of town. Not a downtown street.",
+      "street": "Farm east of Bushnell",
+      "viewDirection": "Farm yard",
+      "buildingsIdentified": [],
+      "era": "about 1890\u20131915",
+      "fitsSnapshots": [
+        "1900",
+        "1910"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "Outside the downtown plat. Not a building in the 1880 town.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-rile-street",
+      "title": "Rile Street, Bushnell, IL",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/rile-street-bushnell-il/",
+      "date": null,
+      "dateBasis": "Undated. A residential dirt street with frame houses, fences, and mature trees. Estimated about 1890\u20131915.",
+      "shows": "A residential block of Rile Street. Frame houses, some with porches and front gables, picket fences, trees.",
+      "street": "Rile Street",
+      "viewDirection": "Looking along Rile Street",
+      "buildingsIdentified": [
+        "Unnamed frame houses"
+      ],
+      "era": "about 1890\u20131915",
+      "fitsSnapshots": [
+        "1900",
+        "1910"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "The houses are the ordinary residential type already used off the business streets. This picture was not tied to a named 1880 house, so no door was copied from it.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-steam-locomotive",
+      "title": "Steam locomotive, Bushnell, IL",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/steam-locomotive-in-bushnell-il/",
+      "date": null,
+      "dateBasis": "Undated. A steam locomotive in town. Estimated about 1890\u20131920.",
+      "shows": "A steam locomotive, likely on one of the two railroads. The society's caption gives no street.",
+      "street": "Railroad in Bushnell",
+      "viewDirection": "Beside the engine",
+      "buildingsIdentified": [],
+      "era": "about 1890\u20131920",
+      "fitsSnapshots": [
+        "1900",
+        "1910",
+        "1918"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "An engine, not a building. The model already has tracks and does not place a particular locomotive.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-moving-depot",
+      "title": "Moving of the Bushnell Railway Depot",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/moving-of-the-bushnell-railway-depot-bushnell-il/",
+      "alternateUrls": [
+        "https://www.mcdcgs.com/historic-photos/bushnell/bushnell-depot/"
+      ],
+      "date": null,
+      "dateBasis": "Undated. The caption is the move itself. The county history says the older wooden CB&Q depot was moved when a newer station was built after 1900. Estimated about 1900\u20131910.",
+      "shows": "The wooden CB&Q depot jacked up and blocked, ready to move. Long single-story clapboard, gable roof with deep eaves, a bay, and a row of windows and doors.",
+      "street": "The depot's old site was in the railroad ground between East Main and West Main, near Hail and Hurst. The photograph is of the move, not of it standing in 1880.",
+      "viewDirection": "From the side and the end, looking at the long wall",
+      "buildingsIdentified": [
+        "The pre-1900 wooden Chicago, Burlington & Quincy depot"
+      ],
+      "era": "about 1900\u20131910",
+      "fitsSnapshots": [
+        "1900",
+        "1910"
+      ],
+      "usedFor1880": true,
+      "usedFor1880Reason": "This is the building that stood in 1880, photographed when it was moved. The model uses the long clapboard body, deep-eaved gable, trackside bay, and platform, and puts the building back in the railroad ground. The newer brick depot is not built.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app. The same file is also attached to the May 2018 depot page."
+    },
+    {
+      "id": "mcdcgs-north-crafford",
+      "title": "North Crafford Street, Bushnell, IL",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/north-crafford-street-bushnell-il/",
+      "date": null,
+      "dateBasis": "Undated. A dirt residential street, board or dirt walks, frame houses. Estimated about 1890\u20131910, before the 1907 paving of Crafford north of Hail, or just around it.",
+      "shows": "Houses facing Crafford, front gables, porches, fences, and trees. Both sides of a residential stretch.",
+      "street": "Crafford Street, the stretch the caption calls North Crafford",
+      "viewDirection": "Looking along Crafford Street",
+      "buildingsIdentified": [
+        "Unnamed frame houses with front gables and porches"
+      ],
+      "era": "about 1890\u20131910",
+      "fitsSnapshots": [
+        "1900",
+        "1907"
+      ],
+      "usedFor1880": true,
+      "usedFor1880Reason": "Houses already stood on these lots by the 1886 map. The front gable and the porch are the ordinary house of that street, and the model gives that front to houses facing Crafford. No house in the picture is named, so none is marked as a photo match.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-hotel-alexander",
+      "title": "Hotel Alexander, Bushnell, IL",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/hotel-alexander-bushnell-il/",
+      "date": null,
+      "dateBasis": "Undated. The name Alexander is later than 1880. The 1954 centennial still calls the Hendee House the New Alexander. Estimated about 1890\u20131920.",
+      "shows": "A three-story brick hotel on a commercial street. Bracketed cornice, tall windows under segmental arches, a porch along the sidewalk.",
+      "street": "West Main Street",
+      "viewDirection": "From the street, looking at the front",
+      "buildingsIdentified": [
+        "Hendee House, built 1871, later the Hotel Alexander"
+      ],
+      "era": "about 1890\u20131920",
+      "fitsSnapshots": [
+        "1900",
+        "1910",
+        "1918"
+      ],
+      "usedFor1880": true,
+      "usedFor1880Reason": "The centennial says the Hendee House on West Main is the building known later as the New Alexander. The 1871 hotel is the same house. The model uses the three brick stories, the cornice, the arched windows, and the porch. The sign stays Hendee House, the 1880 name.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-bradbury-home",
+      "title": "Home of William Bradbury, Bushnell, IL",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/home-of-william-bradbury-bushnell-il/",
+      "date": null,
+      "dateBasis": "Undated. A frame residence. No street is given. Estimated about 1890\u20131920.",
+      "shows": "A frame house, the home of William Bradbury. The caption does not give the street.",
+      "street": "Not stated",
+      "viewDirection": "Front of the house",
+      "buildingsIdentified": [
+        "William Bradbury house, street unknown"
+      ],
+      "era": "about 1890\u20131920",
+      "fitsSnapshots": [
+        "1900",
+        "1910"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "The street is not given, and it is not shown that this house stood in 1880. It is not placed.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-train-intersection",
+      "title": "Bushnell train intersection",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/bushnell-il-train-intersection/",
+      "date": null,
+      "dateBasis": "Undated. The crossing of the two railroads. Estimated about 1890\u20131920 from the equipment.",
+      "shows": "The diamond where the CB&Q and the T. P. & W. cross, with trains or the crossing plant.",
+      "street": "The railroad crossing southwest of Davis Street",
+      "viewDirection": "At the crossing",
+      "buildingsIdentified": [],
+      "era": "about 1890\u20131920",
+      "fitsSnapshots": [
+        "1900",
+        "1910",
+        "1914"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "The crossing is already in the model from the plat and the 1867 survey of the T. P. & W. The photograph was not used to restyle a building.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-hendee-home",
+      "title": "Hendee Home, 304 West Hurst Street",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/hendee-home-304-west-hurst-street-bushnell-il/",
+      "date": null,
+      "dateBasis": "Undated. The address 304 is from the 1909 house-numbering. Estimated about 1890\u20131920.",
+      "shows": "A frame residence at 304 West Hurst, captioned as the Hendee home. This is a house, not the Hendee House hotel on West Main.",
+      "street": "West Hurst Street",
+      "viewDirection": "Front of the house",
+      "buildingsIdentified": [
+        "Hendee residence, 304 West Hurst"
+      ],
+      "era": "about 1909\u20131920",
+      "fitsSnapshots": [
+        "1910",
+        "1918"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "The number is a 1909 address, and this residence is not the 1871 hotel. It is not placed as an 1880 building.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-east-hail-1918",
+      "title": "East Hail Street, Bushnell, IL, 1918",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/bushnell-il-1918-east-hail-street/",
+      "alternateUrls": [
+        "https://www.mcdcgs.com/historic-photos/bushnell/bushnell-hail-street/"
+      ],
+      "date": "1918",
+      "dateBasis": "The society's caption dates the view 1918.",
+      "shows": "The business block of East Hail, called German row in the 1900 paving petition. Two-story brick stores, arched upstairs windows, cornices, canvas awnings, and some frame false fronts.",
+      "street": "East Hail Street, from East Main toward Crafford",
+      "viewDirection": "Looking along Hail Street",
+      "buildingsIdentified": [
+        "The German row storefronts as a row, not as named 1880 tenants"
+      ],
+      "era": "1918",
+      "fitsSnapshots": [
+        "1918"
+      ],
+      "usedFor1880": true,
+      "usedFor1880Reason": "The 1886 Sanborn map already shows a continuous commercial row here, six years after 1880. The 1918 picture sets the window rhythm, cornices, and awnings of that row. Thirty-eight years is long enough that a door may have been rebuilt, so no individual store is marked as a photo match.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app. The same file is also attached to the May 2018 Hail Street page."
+    },
+    {
+      "id": "mcdcgs-west-main",
+      "title": "West Main Street, Bushnell, IL",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/bushnell-il-main-street/",
+      "alternateUrls": [
+        "https://www.mcdcgs.com/historic-photos/bushnell/bushnell-main-street/"
+      ],
+      "date": null,
+      "dateBasis": "The caption says West Main and gives no year. Brick stores, awnings, and a dirt or newly improved street. Estimated about 1895\u20131910. A separate 1900 West Main photograph was already used for awnings on the 500 block.",
+      "shows": "A row of two-story brick stores with segmental upstairs windows, bracketed cornices, cast-iron ground floors, canvas awnings, and frame false fronts in the same block.",
+      "street": "West Main Street",
+      "viewDirection": "Looking along West Main at the storefronts",
+      "buildingsIdentified": [
+        "The West Main commercial row, including the block past the Hendee Store. Individual signs in the picture are not treated as 1880 tenants."
+      ],
+      "era": "about 1895\u20131910",
+      "fitsSnapshots": [
+        "1900",
+        "1910"
+      ],
+      "usedFor1880": true,
+      "usedFor1880Reason": "The 1886 map shows this row already continuous. The picture sets the proportions of the unnamed brick fronts and the false fronts beside them. Named buildings that already had their own photograph, the Hendee Store and the Hendee House, keep those fronts.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app. The same file is also attached to the May 2018 Main Street page."
+    },
+    {
+      "id": "mcdcgs-west-school",
+      "title": "Bushnell West School House",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/bushnell-west-school-house-2/",
+      "alternateUrls": [
+        "https://www.mcdcgs.com/historic-photos/bushnell/bushnell-west-school-house/"
+      ],
+      "date": null,
+      "dateBasis": "Undated. A two-story brick school with a cupola. The 1876 high school was a two-story brick building, but this picture is not captioned as that school and the lot is not pinned.",
+      "shows": "A two-story brick school, symmetrical, with a central entrance and a cupola or belfry.",
+      "street": "Not stated. The caption says the West School House.",
+      "viewDirection": "Front of the school",
+      "buildingsIdentified": [
+        "West School House"
+      ],
+      "era": "uncertain, possibly late 19th century",
+      "fitsSnapshots": [
+        "1890",
+        "1900",
+        "1910"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "The 1876 high school's lot is not known from the sources used here, and this picture is not clearly that building. It is not placed in the 1880 town.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-fire-department",
+      "title": "Bushnell Fire Department",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/bushnell-fire-department-bushnell-il-bushnell-historical-society/",
+      "alternateUrls": [
+        "https://www.mcdcgs.com/historic-photos/bushnell/bushnell-fire-2/",
+        "https://www.mcdcgs.com/first-citizens-program/bushnell-fire/"
+      ],
+      "date": null,
+      "dateBasis": "Undated. Fire apparatus of this kind is twentieth century. The society's credit line names the Bushnell Historical Society.",
+      "shows": "Firemen and a fire engine. A building may be behind them. Not an 1880 storefront.",
+      "street": "Not stated",
+      "viewDirection": "The company and the engine",
+      "buildingsIdentified": [],
+      "era": "about 1910\u20131940",
+      "fitsSnapshots": [
+        "1918",
+        "1920"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "The apparatus is later than 1880. The Christian Church corner later became the fire-house corner, and that later fire house is not built into the 1880 scene.",
+      "copyright": "Bushnell Historical Society, published by the McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-poultry-egg",
+      "title": "Bushnell Poultry & Egg Company",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/bushnell-poultry-egg-company/",
+      "date": null,
+      "dateBasis": "Undated. A produce plant of this name is a later commercial building. Estimated about 1900\u20131930.",
+      "shows": "The poultry and egg company's building. The caption does not give a street.",
+      "street": "Not stated",
+      "viewDirection": "Front of the plant",
+      "buildingsIdentified": [
+        "Bushnell Poultry & Egg Company"
+      ],
+      "era": "about 1900\u20131930",
+      "fitsSnapshots": [
+        "1910",
+        "1918"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "No 1880 record of this company was found. It is not placed.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-depot-filename-cbq",
+      "title": "Depot photograph filed as both C. B. & Q. and T. P. & W.",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/bushnell-train-depot-c-b-q-bushnell-il/",
+      "date": null,
+      "dateBasis": "Undated. The page address says C. B. & Q. The society's caption on the same file says T. P. & W. depot. It is a frame depot with a bay. It may be a second view of the 1914 T. P. & W. depot or of the wooden CB&Q depot.",
+      "shows": "A one-story frame depot with a gable roof and a bay window.",
+      "street": "Not resolved, because the caption and the file name name different railroads",
+      "viewDirection": "Three-quarter view of the depot",
+      "buildingsIdentified": [
+        "A frame depot, railroad not settled"
+      ],
+      "era": "about 1890\u20131915",
+      "fitsSnapshots": [
+        "1900",
+        "1910",
+        "1914"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "The two depots that are in the 1880 model are taken from the moving photograph and from the 1914 T. P. & W. postcard, which are the clearer pictures. This file was not used as a third station.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-255-west-hail",
+      "title": "255 West Hail Street",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/255-west-hail-street-bushnell-il/",
+      "date": null,
+      "dateBasis": "Undated. The number 255 is a 1909 address. Estimated about 1900\u20131920.",
+      "shows": "A residence at 255 West Hail.",
+      "street": "West Hail Street",
+      "viewDirection": "Front of the house",
+      "buildingsIdentified": [
+        "House at 255 West Hail"
+      ],
+      "era": "about 1909\u20131920",
+      "fitsSnapshots": [
+        "1910",
+        "1918"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "A numbered house from after 1909. Not placed as a specific 1880 home.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "mcdcgs-birds-eye",
+      "title": "Bird's eye view of Bushnell, IL",
+      "sourceUrl": "https://www.mcdcgs.com/historic-photos/birds-eye-view-of-bushnell-il/",
+      "date": null,
+      "dateBasis": "Undated. A water tower and the elevator district are in the view. A separate 1898 view from the water tower is already known, so this picture is about 1898 or later. Estimated about 1898\u20131915.",
+      "shows": "The town from above. Elevators, the railroad ground, commercial roofs, houses, and a water tower.",
+      "street": "Downtown, seen from the water tower or a comparable height",
+      "viewDirection": "Looking across the railroad ground and the business blocks",
+      "buildingsIdentified": [
+        "Grain elevators",
+        "The water tower",
+        "Downtown roofs"
+      ],
+      "era": "about 1898\u20131915",
+      "fitsSnapshots": [
+        "1900",
+        "1910"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "Used only as a check that the elevators and the commercial roofs sit where the plat puts them. The water tower is later than 1880 and is not built. The Hendee Elevator already follows its own photograph.",
+      "copyright": "McDonough County Illinois Genealogical Society. Referenced by URL. The image file is not in this repository and is not shown in the app."
+    },
+    {
+      "id": "drloih-east-main-1907",
+      "title": "East Main Street, Bushnell, Illinois, 1907",
+      "sourceUrl": "https://drloihjournal.blogspot.com/2022/04/bushnell-illinois-highly-detailed-look-from-1854.html",
+      "date": "1907",
+      "dateBasis": "The page caption reads \u201cPhotograph of East Main Street in Bushnell, Illinois. 1907.\u201d",
+      "shows": "East Main Street in 1907, printed with a history of the 1854 plat and the early merchants. The page also prints a portrait of Nehemiah H. Bushnell.",
+      "street": "East Main Street",
+      "viewDirection": "Along East Main",
+      "buildingsIdentified": [
+        "The East Main commercial row in 1907"
+      ],
+      "era": "1907",
+      "fitsSnapshots": [
+        "1907"
+      ],
+      "usedFor1880": true,
+      "usedFor1880Reason": "The row was already commercial in 1886. Together with the West Main and 1918 Hail pictures, this 1907 view is why the unnamed brick fronts have tall arched windows, cornices, and awnings. No 1907 sign was copied onto an 1880 door. The portrait of Nehemiah Bushnell is not a building and was not used.",
+      "copyright": "The Digital Research Library of Illinois History Journal. Referenced by the article URL. The photograph is not copied into this repository or the app."
+    },
+    {
+      "id": "cardcow-index",
+      "title": "CardCow Bushnell, Illinois postcard index",
+      "sourceUrl": "https://www.cardcow.com/viewall/71409/",
+      "date": null,
+      "dateBasis": "A dealer index of postcards. Divided-back cards are generally 1907 and later. The index page itself did not return a list of titles to this session (the site answered 403 and 406).",
+      "shows": "The dealer's Bushnell, Illinois postcard category. Individual cards have to be opened on CardCow.",
+      "street": "Various",
+      "viewDirection": "Various",
+      "buildingsIdentified": [],
+      "era": "mostly 1907 and later",
+      "fitsSnapshots": [
+        "1907",
+        "1910",
+        "1914",
+        "1918"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "The index could not be listed here. No CardCow image was copied, and none was used to restyle a building.",
+      "copyright": "CardCow and the postcard publishers. Referenced by URL only."
+    },
+    {
+      "id": "cardcow-me-church-1909",
+      "title": "M. E. Church, Bushnell, Ill.",
+      "sourceUrl": "https://www.cardcow.com/514754/me-church-bushnell/",
+      "date": "1909-08-27",
+      "dateBasis": "Divided-back postcard. Postmark Bushnell, 27 August 1909. Publisher Pearson-Ullberg Co., Minneapolis. Stock listed by CardCow.",
+      "shows": "The Methodist Episcopal church. The card is a postcard, not a photograph made for this project.",
+      "street": "Not stated on the card text that could be read. The model places the Methodist church on an inferred lot.",
+      "viewDirection": "The church front, as printed on the card",
+      "buildingsIdentified": [
+        "Methodist Episcopal Church"
+      ],
+      "era": "1909",
+      "fitsSnapshots": [
+        "1909",
+        "1910"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "The congregation existed in 1880, but this card is 1909 and the church in the model is on an inferred lot. The card was not used to restyle that building. A later postcard church is easy to mistake for the 1880 building.",
+      "copyright": "CardCow listing. The postcard publisher is Pearson-Ullberg. Not copied into this repository or the app."
+    },
+    {
+      "id": "ebay-shop-bushnell-il",
+      "title": "eBay shop search, bushnell il",
+      "sourceUrl": "https://www.ebay.com/shop/bushnell-il",
+      "date": null,
+      "dateBasis": "A live dealer search. Listings change and the page did not return item titles to this session.",
+      "shows": "Whatever postcards and photographs sellers currently tag Bushnell, Illinois. Many will be twentieth-century street views.",
+      "street": "Various, as each listing states",
+      "viewDirection": "Various",
+      "buildingsIdentified": [],
+      "era": "mixed, mostly after 1900",
+      "fitsSnapshots": [
+        "1900",
+        "1910",
+        "1914",
+        "1918"
+      ],
+      "usedFor1880": false,
+      "usedFor1880Reason": "No listing was opened and none was used. A later postcard should be added to a later snapshot, not to 1880, unless the building can be shown to be the same one.",
+      "copyright": "Individual eBay sellers and the postcard publishers. Not copied."
+    }
+  ]
+}

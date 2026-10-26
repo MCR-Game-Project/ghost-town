@@ -6183,7 +6183,7 @@
       "width": 64,
       "depth": 86,
       "confidence": "sourced",
-      "notes": "Built in the summer of 1871 by S. A. Hendee. In 1885 Boyington & Son kept it, and the history calls it the best hotel on the railroad between Galesburg and Quincy. It stood on West Main. The lot along this block is inferred. Later it was known as the Alexander.",
+      "notes": "Built in the summer of 1871 by S. A. Hendee. In 1885 Boyington & Son kept it, and the history calls it the best hotel on the railroad between Galesburg and Quincy. It stood on West Main. The lot along this block is inferred. Later it was known as the Alexander. The undated photograph titled Hotel Alexander is this building under that later name: three stories of brick, a bracketed cornice, tall windows under segmental arches, and a porch along the street. The 1880 sign still reads Hendee House.",
       "sign": "HENDEE HOUSE",
       "porch": true,
       "year": "1871",
@@ -6198,7 +6198,12 @@
       "paint": "cream",
       "id": "hendee-house-26",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "facade": {
+        "photoMatch": true,
+        "photo": "Hotel Alexander",
+        "photoUrl": "https://www.mcdcgs.com/historic-photos/hotel-alexander-bushnell-il/"
+      }
     },
     {
       "name": "General Store",
@@ -6984,12 +6989,17 @@
       "sign": "BUSHNELL",
       "confidence": "sourced",
       "year": "1850s",
-      "notes": "The Northern Cross, later the Chicago, Burlington & Quincy, built the first depot. A newer CB&Q depot came after 1900, and the old one was moved and reused as a freight house. The 1880 building is that earlier wooden depot, set in the grounds between East Main and West Main near Hail and Hurst. The Bushnell House was remembered as opposite the Q station.",
+      "notes": "The Northern Cross, later the Chicago, Burlington & Quincy, built the first depot. A newer CB&Q depot came after 1900, and the old one was moved and reused as a freight house. The 1880 building is that earlier wooden depot, set in the grounds between East Main and West Main near Hail and Hurst. The Bushnell House was remembered as opposite the Q station. The front follows the photograph of that wooden depot being moved: a long clapboard building, a gable roof with deep eaves, a trackside bay, and a platform. The move is later than 1880. The model puts the same building back where it stood.",
       "porch": false,
       "party": [],
       "brick": "red",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "facade": {
+        "photoMatch": true,
+        "photo": "Moving of the Bushnell Railway Depot",
+        "photoUrl": "https://www.mcdcgs.com/historic-photos/moving-of-the-bushnell-railway-depot-bushnell-il/"
+      }
     },
     {
       "id": "depot-lunch",
@@ -7153,11 +7163,16 @@
       "confidence": "sourced",
       "year": "1869",
       "rotation": 26,
-      "notes": "The Toledo, Peoria & Warsaw (later called the Toledo, Peoria & Western, and by 1885 part of the Wabash) was surveyed through Bushnell in 1867 and crossed the CB&Q. A 1914 postcard places the depot south of the CB&Q station and just west of West Main. The building is turned to sit beside the east-west track.",
+      "notes": "The Toledo, Peoria & Warsaw (later called the Toledo, Peoria & Western, and by 1885 part of the Wabash) was surveyed through Bushnell in 1867 and crossed the CB&Q. A 1914 postcard shows a one-story frame depot with a bay window and a platform roof on posts, south of the CB&Q station and just west of West Main. The line was open by 1880, and no replacement of this depot before 1914 was found, so the model uses that frame building. The postcard is thirty-four years later. The sign and the platform roof may have been renewed.",
       "porch": false,
       "party": [],
       "brick": "red",
-      "steeple": false
+      "steeple": false,
+      "facade": {
+        "photoMatch": true,
+        "photo": "T. P. & W. Train Depot, 1914",
+        "photoUrl": "https://www.mcdcgs.com/historic-photos/t-p-w-train-depot-bushnell-il-1914/"
+      }
     },
     {
       "id": "sorter-house",
