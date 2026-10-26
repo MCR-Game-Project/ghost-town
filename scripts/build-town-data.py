@@ -329,7 +329,10 @@ row_facing_z(
     ],
 )
 
-# East Main, Hail to Gridley.
+# East Main, Hail to Gridley. This is the modern 500 block (numbers date from 1909).
+# Photo facades, Ball Bros., the Reformed Church, and the Gridley house row are
+# applied by scripts/apply-facades.py onto the JSON. Rebuilding with this script
+# drops those edits. See the warning in the README.
 row_facing_z(
     30,
     390,

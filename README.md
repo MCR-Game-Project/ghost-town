@@ -41,8 +41,8 @@ The published copy is at [https://mcr-game-project.github.io/ghost-town/](https:
 - You can also drag the picture with the mouse if you would rather not capture the pointer.
 - Press **Esc** or **Q** to let go of the mouse and bring the menu back. After the mouse is free, **Stop walking** does the same.
 - Press **M**, or **See the whole town**, to rise above the streets and orbit. Drag to turn. Press **M** again, or **Walk the streets**, to come back down.
-- The **Go to** menu puts you at the depot, German row, the parks, or the railroad crossing.
-- Look at a building and a card in the corner tells you what it is. A card that says “Named in the old records” comes from a history or a map. A card that says “A stand-in for this block” is a plausible shop or house, not a specific one we can prove.
+- The **Go to** menu puts you at the depot, the Cole Building, Hendee's store, the 500 block of East Main or West Main, Gridley Street, the Ball Bros. corner, German row, the parks, or the railroad crossing. The 500 block is Hail Street to Gridley Street. The town did not number houses until 1909, and that is where those numbers land.
+- Look at a building and a card in the corner tells you what it is. “Matched to a historic photo” means the front was copied from an old picture, and the note names it. “Named in the old records” comes from a history or a map. “A stand-in for this block” is a plausible shop or house, not a specific one we can prove.
 
 On a phone or tablet, buttons for forward, back, left, and right appear at the lower left. Drag the picture to look.
 
@@ -52,7 +52,7 @@ The buildings live in `public/data/bushnell-1880.json`, not in the program. Edit
 
 Each building has a name, a use (general store, hotel, livery, and so on), a material (`brick` or `frame`), a number of stories, and a footprint in feet. `width` runs along the front. `depth` runs back from the street. `x` and `z` are the center of the building. Positive `x` is northeast along the tracks, toward Gridley Street. Positive `z` is the west side of town, toward West Main and Dean. `confidence` is `sourced` or `inferred`. The `notes` field says why.
 
-`SOURCES.md` explains what is taken from the old maps and histories, and what was filled in.
+`SOURCES.md` explains what is taken from the old maps, histories, and photographs, and what was filled in. A building can also carry a `facade` object (window bays, arch shape, cornice, awning). Set `photoMatch` to true only when a picture of that building was used.
 
 There is also a script, `scripts/build-town-data.py`, that can rebuild the JSON from scratch. Running it replaces any edits you have made to the JSON. Use it only if you want the original layout back. Then run:
 

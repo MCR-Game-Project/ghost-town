@@ -337,8 +337,11 @@ function showBuilding() {
   }
   const building = hit.object.userData.building;
   card.hidden = false;
-  document.getElementById("card-tag").textContent =
-    building.confidence === "sourced" ? "Named in the old records" : "A stand-in for this block";
+  document.getElementById("card-tag").textContent = building.facade?.photoMatch
+    ? "Matched to a historic photo"
+    : building.confidence === "sourced"
+      ? "Named in the old records"
+      : "A stand-in for this block";
   document.getElementById("card-title").textContent = building.name;
   const stories = building.stories
     ? `${building.stories} ${building.stories > 1 ? "stories" : "story"}`
@@ -431,19 +434,28 @@ async function main() {
   document.getElementById("status").hidden = true;
 
   if (shot) {
-    document.body.classList.add("clean");
+    if (params.get("card") !== "1") document.body.classList.add("clean");
     document.getElementById("help").hidden = true;
     if (shot === "overhead") {
       enterOverview();
       camera.position.set(80, 1020, 700);
       orbit.target.set(-180, 0, 30);
       orbit.update();
-    } else if (shot === "crossing") {
-      goToPlace(town.places.find((place) => place.id === "crossing"));
-    } else if (shot === "west-main") {
-      goToPlace(town.places.find((place) => place.id === "west-main"));
+    } else if (shot === "overhead-500") {
+      enterOverview();
+      camera.position.set(200, 680, 460);
+      orbit.target.set(200, 0, 10);
+      orbit.update();
+    } else if (shot === "at") {
+      goToPlace({
+        x: Number(params.get("x")),
+        z: Number(params.get("z")),
+        look: [Number(params.get("lx")), Number(params.get("lz"))],
+        blurb: params.get("blurb") || "",
+      });
     } else {
-      goToPlace(town.places.find((place) => place.id === "hail-main"));
+      const named = town.places.find((place) => place.id === shot);
+      goToPlace(named || town.places.find((place) => place.id === "hail-main"));
     }
     syncHint();
   }

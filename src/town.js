@@ -49,6 +49,116 @@ export function buildTown(data, scene) {
     put(mat, geo);
   };
 
+  const localBox = (mat, cx, cy, cz, w, h, d, rotX = 0) => {
+    const geo = new THREE.BoxGeometry(w, h, d);
+    scaleBoxUVs(geo, w, h, d);
+    if (rotX) geo.applyMatrix4(new THREE.Matrix4().makeRotationX(rotX));
+    geo.applyMatrix4(new THREE.Matrix4().makeTranslation(cx, cy, cz));
+    geo.applyMatrix4(buildingMatrix);
+    put(mat, geo);
+  };
+
+  // A shallow arch of short trim blocks. "z" bulges toward the street; "x" bulges off a side wall.
+  const archHood = (x, yBase, z, span, rise, outward) => {
+    const steps = rise > span * 0.3 ? 7 : 5;
+    for (let i = 0; i < steps; i++) {
+      const t = (i + 0.5) / steps;
+      const u = (t - 0.5) * 2;
+      const yy = yBase + rise * (1 - u * u);
+      const seg = span / steps + 0.16;
+      if (outward === "z") box(mats.trim, x + u * span * 0.46, yy, z, seg, 0.34, 0.3);
+      else box(mats.trim, x, yy, z + u * span * 0.46, 0.3, 0.34, seg);
+    }
+  };
+
+  const frontSash = (x, y, z, w, h, arch) => {
+    box(mats.trim, x, y, z, w + 0.45, h + 0.4, 0.2);
+    box(mats.glass, x, y, z + 0.08, w, h, 0.1);
+    box(mats.trim, x, y, z + 0.14, 0.12, h, 0.06);
+    box(mats.trim, x, y, z + 0.14, w, 0.1, 0.06);
+    if (arch === "segmental") archHood(x, y + h / 2, z + 0.04, w + 0.3, (w + 0.3) * 0.22, "z");
+    if (arch === "round") archHood(x, y + h / 2 - w * 0.18, z + 0.04, w + 0.2, (w + 0.2) * 0.48, "z");
+  };
+
+  const sideSash = (x, y, z, side, w, h, arch) => {
+    box(mats.trim, x, y, z, 0.2, h + 0.4, w + 0.45);
+    box(mats.glass, x + side * 0.08, y, z, 0.1, h, w);
+    if (arch === "segmental") archHood(x + side * 0.04, y + h / 2, z, w + 0.3, (w + 0.3) * 0.22, "x");
+    if (arch === "round") archHood(x + side * 0.04, y + h / 2 - w * 0.18, z, w + 0.2, (w + 0.2) * 0.48, "x");
+  };
+
+  const drawAwning = (width, fz) => {
+    localBox(mats.siding.darkred, 0, 10.2, fz + 2.2, width, 0.12, 4.3, -0.5);
+  };
+
+  // A front taken from a photograph: bay count, arch shape, cornice, storefront, porch.
+  const drawFacade = (b, wallH) => {
+    const f = b.facade;
+    const fz = b.depth / 2 + 0.14;
+    const bays = Math.max(2, f.bays || 3);
+    const gap = b.width / bays;
+    const arch = f.arches || "flat";
+    const doorAt =
+      f.door === "center" ? Math.floor((bays - 1) / 2) : f.door === "left" ? 0 : f.door === "none" ? -1 : bays - 1;
+    for (let col = 0; col < bays; col++) {
+      const x = -b.width / 2 + gap * (col + 0.5);
+      const gw = Math.max(3.1, gap - (f.storefront === "iron" ? 1.2 : 1.8));
+      if (col === doorAt) {
+        const dw = f.door === "center" ? Math.min(4.4, gap - 1) : 3.3;
+        box(mats.trimDark, x, 4.3, fz, dw, 8, 0.26);
+        box(mats.trim, x, 8.55, fz + 0.05, dw + 0.35, 0.5, 0.14);
+        if (f.door === "center") box(mats.trim, x, 4.2, fz + 0.16, 0.12, 7.2, 0.06);
+        box(mats.glass, x, 6.4, fz + 0.12, dw * 0.32, 2.1, 0.05);
+      } else {
+        box(mats.trimDark, x, 1.4, fz, gw, 2.05, 0.22);
+        box(mats.glass, x, 5.45, fz, gw, 5.15, 0.14);
+        box(mats.trim, x, 5.45, fz + 0.05, gw + 0.28, 5.45, 0.08);
+        box(mats.glass, x, 8.5, fz, gw, 1.0, 0.1);
+        if (f.storefront === "iron") {
+          box(mats.trimDark, x - gw / 2 - 0.18, 5, fz + 0.1, 0.3, 8.3, 0.22);
+          box(mats.trimDark, x + gw / 2 + 0.18, 5, fz + 0.1, 0.3, 8.3, 0.22);
+        }
+      }
+      if (b.stories > 1) frontSash(x, wallH * 0.68, fz, Math.min(3.4, gap - 2.3), 5.1, arch);
+    }
+    if (f.cornice === "bracket" || f.cornice === "plain") {
+      box(mats.trim, 0, wallH - 0.2, fz, b.width + 0.5, 0.8, 0.65);
+      if (f.cornice === "bracket") {
+        const n = Math.max(5, Math.round(b.width / 3.5));
+        for (let i = 0; i < n; i++) {
+          const x = -b.width / 2 + 0.7 + ((b.width - 1.4) * i) / (n - 1);
+          box(mats.trimDark, x, wallH - 1.25, fz + 0.2, 0.4, 1.3, 0.7);
+        }
+      }
+    }
+    if (f.pilasters) {
+      for (const x of [-b.width / 2 + 0.4, b.width / 2 - 0.4]) {
+        box(mats.trim, x, wallH * 0.48, fz + 0.02, 0.65, wallH * 0.9, 0.26);
+      }
+    }
+    if (f.awning) drawAwning(b.width * 0.9, fz);
+    if (f.shedPorch) {
+      const z = b.depth / 2 + 3.3;
+      box(mats.plank, 0, 0.55, z, b.width * 0.94, 0.28, 6.2);
+      localBox(mats.roofDark, 0, 9.3, z + 0.2, b.width + 0.4, 0.16, 6.6, -0.2);
+      for (let i = 0; i <= bays; i++) {
+        const x = -b.width / 2 + (b.width * i) / bays;
+        box(mats.trimDark, x, 4.7, z + 2.5, 0.38, 8.2, 0.38);
+      }
+    }
+    const party = b.party || [];
+    const sideCount = f.sideBays || 0;
+    for (const side of [-1, 1]) {
+      if (!sideCount) break;
+      if (party.includes(side === -1 ? "left" : "right")) continue;
+      const x = side * (b.width / 2 + 0.1);
+      for (let i = 0; i < sideCount; i++) {
+        const z = -b.depth / 2 + ((i + 0.6) * b.depth) / (sideCount + 0.5);
+        if (b.stories > 1) sideSash(x, wallH * 0.68, z, side, 2.5, 4.8, arch);
+      }
+    }
+  };
+
   const tiled = (mat, tilesU, tilesV) => {
     const copy = mat.clone();
     copy.map = mat.map.clone();
@@ -190,14 +300,26 @@ export function buildTown(data, scene) {
     box(mats.stone, 0, 0.45, 0, b.width + 0.3, 0.9, b.depth + 0.3);
     if (frame) {
       gable(b.width, b.depth, 5, wallH - 1, mats.roofDark);
-      // False front stands above the roof.
-      box(body, 0, wallH + 2.4, b.depth / 2 - 0.5, b.width + 0.4, 6.2, 1);
-      box(mats.trim, 0, wallH + 5.2, b.depth / 2 - 0.35, b.width * 0.55, 2.2, 1.1);
+      // False front stands above the roof. A peaked one matches the Ball Bros. photograph.
+      const frontH = b.facade?.peak ? 5.2 : 6.2;
+      box(body, 0, wallH + 2.2, b.depth / 2 - 0.5, b.width + 0.4, frontH, 1);
+      if (b.facade?.peak) {
+        box(body, 0, wallH + 6.2, b.depth / 2 - 0.42, b.width * 0.42, 4.2, 1.05);
+        box(mats.trim, 0, wallH + 8.2, b.depth / 2 - 0.28, b.width * 0.16, 1.4, 1.1);
+      } else {
+        box(mats.trim, 0, wallH + 5.2, b.depth / 2 - 0.35, b.width * 0.55, 2.2, 1.1);
+      }
+    } else if (b.facade?.cornice) {
+      box(brickOf(b), 0, wallH + 0.7, 0, b.width + 0.35, 1.4, b.depth + 0.25);
     } else {
       box(brickOf(b), 0, wallH + 1.4, 0, b.width + 0.6, 2.8, b.depth + 0.6);
       box(mats.trim, 0, wallH + 0.3, b.depth / 2 + 0.15, b.width + 1, 0.7, 0.8);
     }
-    punch(b.width, b.depth, b.stories, floorH, wallH, b.party || [], true);
+    if (b.facade?.bays) drawFacade(b, wallH);
+    else {
+      punch(b.width, b.depth, b.stories, floorH, wallH, b.party || [], true);
+      if (b.facade?.awning) drawAwning(b.width * 0.88, b.depth / 2 + 0.14);
+    }
     if (b.porch || b.kind === "hotel") {
       const z = b.depth / 2 + 4;
       box(mats.plank, 0, 1, z, b.width + 1, 0.4, 8);
@@ -266,6 +388,11 @@ export function buildTown(data, scene) {
     box(body, 0, h / 2, 0, b.width, h, b.depth * 0.7);
     box(body, 0, h + 8, 0, b.width * 0.62, 16, b.depth * 0.42);
     gable(b.width * 0.62, b.depth * 0.42, 6, h + 16, mats.roofDark);
+    if (b.facade?.cupola) {
+      box(body, 0, h + 22, 0, b.width * 0.22, 8, b.depth * 0.16);
+      box(mats.roofDark, 0, h + 26.4, 0, b.width * 0.3, 1.1, b.depth * 0.22);
+      box(mats.trim, 0, h + 22, b.depth * 0.1, b.width * 0.08, 3.2, 0.12);
+    }
     // Driveway shed.
     box(mats.siding.gray, 0, 8, b.depth * 0.42, b.width + 4, 16, 18);
     gable(b.width + 4, 18, 4, 16, mats.roofDark);
