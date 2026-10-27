@@ -217,7 +217,7 @@ function groundUnderPointer(event) {
   const hit = new THREE.Vector3();
   if (!raycaster.ray.intersectPlane(groundPlane, hit)) return null;
   const plat = worldToPlat(hit.x, hit.z);
-  plat.x = Math.max(-2200, Math.min(1200, plat.x));
+  plat.x = Math.max(-2200, Math.min(1700, plat.x));
   plat.z = Math.max(-1700, Math.min(1700, plat.z));
   return { world: vPlat(plat.x, 0, plat.z), plat };
 }

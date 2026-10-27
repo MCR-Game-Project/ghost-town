@@ -688,6 +688,45 @@ export function buildTown(data, scene) {
     return 30;
   };
 
+  // The 1875 graded school: red brick on a stone basement that reads as an extra story.
+  // The 1907 encyclopedia plate is the later West Side School, so it is not copied.
+  const addSchool = (b) => {
+    const baseH = 10;
+    const floorH = 12;
+    const upper = b.stories * floorH;
+    const wallH = baseH + upper;
+    const body = brickOf(b);
+    box(mats.stone, 0, baseH / 2, 0, b.width + 1.4, baseH, b.depth + 1.4);
+    box(body, 0, baseH + upper / 2, 0, b.width, upper, b.depth);
+    box(mats.stone, 0, baseH, 0, b.width + 1.6, 0.7, b.depth + 1.6);
+    gable(b.width, b.depth, 9, wallH, mats.roofDark);
+    const fz = b.depth / 2 + 0.16;
+    box(mats.stone, 0, 0.45, fz + 3.4, 10, 0.9, 6.4);
+    box(mats.trimDark, 0, baseH * 0.48, fz, 5.4, baseH * 0.82, 0.28);
+    box(mats.glass, -1.05, baseH * 0.62, fz + 0.12, 1.3, 2.2, 0.05);
+    box(mats.glass, 1.05, baseH * 0.62, fz + 0.12, 1.3, 2.2, 0.05);
+    const bays = 7;
+    const gap = b.width / bays;
+    for (let col = 0; col < bays; col++) {
+      if (col === 3) continue;
+      const x = -b.width / 2 + gap * (col + 0.5);
+      frontSash(x, baseH * 0.5, fz, 2.3, 3.8, "flat");
+      frontSash(x, baseH + floorH * 0.55, fz, 2.5, 6.4, "segmental");
+      if (b.stories > 1) frontSash(x, baseH + floorH * 1.55, fz, 2.5, 6.4, "segmental");
+    }
+    for (const side of [-1, 1]) {
+      const x = side * (b.width / 2 + 0.1);
+      const count = 4;
+      for (let i = 0; i < count; i++) {
+        const z = -b.depth / 2 + ((i + 0.5) * b.depth) / count;
+        sideSash(x, baseH + floorH * 0.55, z, side, 2.3, 6.2, "segmental");
+        if (b.stories > 1) sideSash(x, baseH + floorH * 1.55, z, side, 2.3, 6.2, "segmental");
+      }
+    }
+    signFor(b, wallH - 1);
+    return wallH + 10;
+  };
+
   const addShed = (b) => {
     const wallH = 12;
     const body = paintOf(b);
@@ -722,6 +761,7 @@ export function buildTown(data, scene) {
     else if (b.kind === "mill") height = addMill(b);
     else if (b.kind === "barn") height = addBarn(b);
     else if (b.kind === "factory") height = addFactory(b);
+    else if (b.kind === "school") height = addSchool(b);
     else height = addShed(b);
 
     const fp = footprint(b);

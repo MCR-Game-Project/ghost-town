@@ -70,12 +70,20 @@
       "to": 1700
     },
     {
+      "name": "Twyman Street",
+      "axis": "z",
+      "at": 1260,
+      "width": 60,
+      "from": -1700,
+      "to": 1700
+    },
+    {
       "name": "Sperry Street",
       "axis": "x",
       "at": -1421,
       "width": 60,
       "from": -2100,
-      "to": 1100
+      "to": 1600
     },
     {
       "name": "Rile Street",
@@ -83,7 +91,7 @@
       "at": -1001,
       "width": 60,
       "from": -2100,
-      "to": 1100
+      "to": 1600
     },
     {
       "name": "Crafford Street",
@@ -91,7 +99,7 @@
       "at": -581,
       "width": 60,
       "from": -2100,
-      "to": 1100
+      "to": 1600
     },
     {
       "name": "East Main Street",
@@ -99,7 +107,7 @@
       "at": -156,
       "width": 70,
       "from": -2100,
-      "to": 1100
+      "to": 1600
     },
     {
       "name": "West Main Street",
@@ -107,7 +115,7 @@
       "at": 156,
       "width": 70,
       "from": -2100,
-      "to": 1100
+      "to": 1600
     },
     {
       "name": "Dean Street",
@@ -115,7 +123,7 @@
       "at": 581,
       "width": 60,
       "from": -2100,
-      "to": 1100
+      "to": 1600
     },
     {
       "name": "Jackson Street",
@@ -123,7 +131,7 @@
       "at": 1001,
       "width": 60,
       "from": -2100,
-      "to": 1100
+      "to": 1600
     },
     {
       "name": "Washington Street",
@@ -131,7 +139,7 @@
       "at": 1421,
       "width": 60,
       "from": -2100,
-      "to": 1100
+      "to": 1600
     }
   ],
   "tracks": [
@@ -145,7 +153,7 @@
           0
         ],
         [
-          1100,
+          1600,
           0
         ]
       ],
@@ -5748,7 +5756,21 @@
       "width": 46,
       "depth": 70,
       "confidence": "sourced",
-      "notes": "Organized in 1871 from the private bank of Chandler & Cummings, Charles Wilson president. It closed in 1885 after the history was written. A paving petition puts the Bank of Bushnell on East Main. The Hail corner is inferred. This front is on the 500 block of East Main, the block from Hail Street to Gridley Street. Bushnell ordered the streets marked and the houses numbered in April 1909, so there is no 1880 address of 500. Today's 500 East Main falls on this block: 400 starts at Hurst, 500 at Hail, and 590 is still short of Gridley. The shop itself is a stand-in. Its door is not in a photograph.",
+      "notes": "Organized in 1871 from the private bank of Chandler & Cummings, Charles Wilson president. It closed in 1885 after the history was written. A paving petition puts the Bank of Bushnell on East Main. The Hail corner is inferred. An undated postcard titled East Main Street, Bank and Dentist, shows a two-story brick bank front on that street: segmental upstairs windows, a bracketed cornice, and a cast-iron ground floor. That front is used here. The card does not give a house number or a year, and the Farmers and Merchants bank at 484 East Main opened in 1914, so this is the 1880 bank's front type rather than that later building.",
+      "facade": {
+        "photoMatch": true,
+        "photoDate": "Undated postcard. The seller's title is East Main Street, Bank and Dentist. Farmers and Merchants at 484 East Main opened in 1914, so that later bank is not what is drawn.",
+        "photoSource": "Mary L. Martin, Bushnell Illinois East Main Street Bank and Dentist Postcard AA60496.",
+        "arches": "segmental",
+        "bays": 4,
+        "sideBays": 4,
+        "door": "right",
+        "cornice": "bracket",
+        "storefront": "iron",
+        "roof": "flat",
+        "pilasters": true,
+        "awning": true
+      },
       "sign": "FARMERS BANK",
       "porch": false,
       "year": "1871",
@@ -11928,10 +11950,10 @@
       "use": "wagon and carriage shop",
       "material": "frame",
       "stories": 2,
-      "width": 30,
-      "depth": 60,
-      "x": 375,
-      "z": -221,
+      "width": 28,
+      "depth": 48,
+      "x": 376,
+      "z": -215,
       "facing": "+z",
       "paint": "cream",
       "brick": "red",
@@ -11958,7 +11980,65 @@
         "peak": true,
         "roof": "falsefront"
       },
-      "notes": "Ball & Sons were the town's wagon and carriage makers. The centennial photograph, captioned as the Ball Bros. corner in the 1880s, shows a two-story frame building with a false front and a center gable, three upstairs windows, a double door between two shop windows, and a shed porch, at East Main and Gridley. Markham's store at this corner had been the first post office; by the 1880s the corner in the picture is Ball's. The 1900 paving petition starts East Main at Ball's carriage shop and runs to the Bank of Bushnell, which puts the shop at the Gridley end of this block. This is the 500 block of East Main."
+      "notes": "Ball & Sons were the town's wagon and carriage makers. The centennial photograph, captioned as the Ball Bros. corner in the 1880s, shows a two-story frame building with a false front and a center gable, three upstairs windows, a double door between two shop windows, and a shed porch, at East Main and Gridley. The 1885 history sizes each repository at 28 by 48 feet, two stories, with the shop in the back. This is that corner repository. The brick works erected in 1895, later a Packard dealership and now 140 East Gridley, is a different building and is not drawn. Markham's store at this corner had been the first post office. The 1900 paving petition starts East Main at Ball's carriage shop."
+    },
+    {
+      "id": "ball-bros-gridley",
+      "name": "Ball Bros. repository",
+      "kind": "frame-store",
+      "use": "wagon and carriage repository",
+      "material": "frame",
+      "stories": 2,
+      "width": 28,
+      "depth": 48,
+      "x": 366,
+      "z": -261,
+      "facing": "+x",
+      "paint": "cream",
+      "brick": "red",
+      "sign": "WAGONS",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1880s",
+      "steeple": false,
+      "rotation": 0,
+      "facade": {
+        "photoMatch": false,
+        "arches": "flat",
+        "bays": 3,
+        "sideBays": 2,
+        "door": "center",
+        "cornice": "plain",
+        "storefront": "wood",
+        "shedPorch": true,
+        "peak": true,
+        "roof": "falsefront"
+      },
+      "notes": "The second of the two 28-by-48-foot repositories in the 1885 history, set along Gridley beside the corner shop, with the wagon shop in the back half. Only the East Main corner is in the centennial photograph, so this front repeats that shape without being marked as its own photograph."
+    },
+    {
+      "id": "high-school",
+      "name": "High School",
+      "kind": "school",
+      "use": "graded school and high school",
+      "material": "brick",
+      "stories": 2,
+      "width": 78,
+      "depth": 56,
+      "x": 1348,
+      "z": 1096,
+      "facing": "-z",
+      "paint": "cream",
+      "brick": "red",
+      "sign": "SCHOOL",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1875",
+      "steeple": false,
+      "rotation": 0,
+      "notes": "Built in 1875 of red brick on a stone foundation, with a basement standing about ten feet out of the ground and two classroom floors. Arthur Loomis, writing in 1885, puts it in the northwest part of town. A later Bushnell school history puts that same building at Jackson and Twyman. It burned in the 1890s. The buff-brick West Side School on the same site, and the high-school engraving in the 1907 encyclopedia, are later buildings and are not copied. The door faces Jackson."
     },
     {
       "id": "reformed-church",
@@ -14275,7 +14355,18 @@
         374,
         -230
       ],
-      "blurb": "Ball Bros. at East Main and Gridley, matched to the 1880s photograph."
+      "blurb": "Ball Bros. at East Main and Gridley, matched to the 1880s photograph. The second repository is along Gridley."
+    },
+    {
+      "id": "high-school",
+      "name": "High School",
+      "x": 1348,
+      "z": 1001,
+      "look": [
+        1348,
+        1100
+      ],
+      "blurb": "The 1875 graded school at Jackson and Twyman, red brick on a stone basement. The later West Side School is not this building."
     }
   ]
 }
