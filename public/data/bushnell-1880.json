@@ -78,6 +78,14 @@
       "to": 1700
     },
     {
+      "name": "Cole Street",
+      "axis": "x",
+      "at": -1841,
+      "width": 60,
+      "from": -2100,
+      "to": 1600
+    },
+    {
       "name": "Sperry Street",
       "axis": "x",
       "at": -1421,
@@ -5756,7 +5764,7 @@
       "width": 32,
       "depth": 60,
       "confidence": "sourced",
-      "notes": "Organized in 1871 from the private bank of Chandler & Cummings, Charles Wilson president. It closed in 1885. A paving petition puts the Bank of Bushnell on East Main. The Hail corner is inferred. The undated East Main postcard titled Bank and Dentist shows a narrow two-story brick front: three upstairs windows under segmental arches, a bracketed cornice, a cast-iron ground floor, and the door on the viewer's right. That front is used here, about 32 feet wide, with the Hail edge kept at the curb. The card gives no house number. The Farmers and Merchants bank at 484 East Main opened in 1914 and is not drawn. The dentist shop beside the bank on the card is not given an 1880 name.",
+      "notes": "Organized in 1871 from the private bank of Chandler & Cummings, Charles Wilson president. It closed in 1885. Mark places it on the corner of East Main and Hail. The undated East Main postcard titled Bank and Dentist shows a narrow two-story brick front: three upstairs windows under segmental arches, a bracketed cornice, a cast-iron ground floor, and the door on the viewer's right. That front is used here, about 32 feet wide, with the Hail edge kept at the curb. The Farmers and Merchants bank at 484 East Main opened in 1914 and is not drawn.",
       "facade": {
         "photoMatch": true,
         "photoDate": "Undated postcard. The seller's title is East Main Street, Bank and Dentist. Farmers and Merchants at 484 East Main opened in 1914, so that later bank is not what is drawn.",
@@ -5786,16 +5794,16 @@
       "rotation": 0
     },
     {
-      "name": "Clothing",
+      "name": "General Store",
       "kind": "brick-store",
-      "use": "clothing",
+      "use": "general store",
       "material": "brick",
       "stories": 2,
       "width": 34,
       "depth": 64,
-      "confidence": "inferred",
-      "notes": "The January 1886 Sanborn map shows a continuous row of brick and frame stores along this part of Main Street. This shop stands in for one of those storefronts. Its name is a typical trade, not a documented proprietor. This front is on the 500 block of East Main, the block from Hail Street to Gridley Street. Bushnell ordered the streets marked and the houses numbered in April 1909, so there is no 1880 address of 500. Today's 500 East Main falls on this block: 400 starts at Hurst, 500 at Hail, and 590 is still short of Gridley. The shop itself is a stand-in. Its door is not in a photograph.",
-      "sign": "Clothing",
+      "confidence": "sourced",
+      "notes": "Mark places a general store immediately north of the Farmers National Bank, on East Main, with a clothing store beyond it. The brick front and the door are the ones already on this lot. He did not name the proprietor, so the sign reads GENERAL STORE.",
+      "sign": "GENERAL STORE",
       "porch": false,
       "x": 93.0,
       "z": -223.0,
@@ -5812,16 +5820,16 @@
       "rotation": 0
     },
     {
-      "name": "Grocery",
+      "name": "Clothing",
       "kind": "brick-store",
-      "use": "grocery",
+      "use": "clothing",
       "material": "brick",
       "stories": 2,
       "width": 30,
       "depth": 60,
-      "confidence": "inferred",
-      "notes": "The January 1886 Sanborn map shows a continuous row of brick and frame stores along this part of Main Street. This shop stands in for one of those storefronts. Its name is a typical trade, not a documented proprietor. This front is on the 500 block of East Main, the block from Hail Street to Gridley Street. Bushnell ordered the streets marked and the houses numbered in April 1909, so there is no 1880 address of 500. Today's 500 East Main falls on this block: 400 starts at Hurst, 500 at Hail, and 590 is still short of Gridley. The shop itself is a stand-in. Its door is not in a photograph.",
-      "sign": "Grocery",
+      "confidence": "sourced",
+      "notes": "Mark places a clothing store north of the general store, still on East Main above the Farmers National Bank. The brick front already on this lot is kept. He did not name the proprietor, so the sign reads CLOTHING.",
+      "sign": "CLOTHING",
       "porch": false,
       "brick": "soft",
       "x": 125.0,
@@ -6705,14 +6713,14 @@
       "rotation": 0
     },
     {
-      "name": "Grocery",
+      "name": "Post Office",
       "kind": "brick-store",
-      "use": "grocery",
+      "use": "post office",
       "material": "brick",
       "stories": 2,
-      "sign": "GROCERY",
-      "confidence": "inferred",
-      "notes": "The January 1886 Sanborn map shows a continuous row of brick and frame stores along this part of Main Street. This shop stands in for one of those storefronts. Its name is a typical trade, not a documented proprietor.",
+      "sign": "POST OFFICE",
+      "confidence": "sourced",
+      "notes": "Mark places the post office east along Hail from the Farmers National Bank, on the north side of Hail, with the furniture store beyond it beside the alley. This is the first store east of East Main on that side. The brick front already on the lot is kept. A 2026 school history says that around 1881 a post office building stood on the north side of the first block of East Hurst. Mark's Hail door is the one drawn.",
       "brick": "red",
       "x": 61.0,
       "z": -330,
@@ -6723,19 +6731,19 @@
       "party": [],
       "paint": "cream",
       "year": "",
-      "id": "grocery-47",
+      "id": "post-office",
       "steeple": false,
       "rotation": 0
     },
     {
-      "name": "Drugs",
+      "name": "Furniture",
       "kind": "brick-store",
-      "use": "drugs",
+      "use": "furniture",
       "material": "brick",
       "stories": 2,
-      "sign": "DRUGS",
-      "confidence": "inferred",
-      "notes": "The January 1886 Sanborn map shows a continuous row of brick and frame stores along this part of Main Street. This shop stands in for one of those storefronts. Its name is a typical trade, not a documented proprietor.",
+      "sign": "FURNITURE",
+      "confidence": "sourced",
+      "notes": "Mark places a furniture store east of the post office on Hail, next to the alley. The narrow gap between this front and the post office is that alley. The brick front already on the lot is kept. He did not name the proprietor. Miller and Krouser's furniture trade, a little east of the Bushnell House, is a different door and is left where it was.",
       "x": 57.5,
       "z": -378,
       "width": 34,
@@ -6746,7 +6754,7 @@
       "brick": "red",
       "paint": "cream",
       "year": "",
-      "id": "drugs-48",
+      "id": "hail-furniture",
       "steeple": false,
       "rotation": 0
     },
@@ -6994,14 +7002,14 @@
       "stories": 4,
       "width": 42,
       "depth": 66,
-      "x": 40,
-      "z": 78,
-      "facing": "-z",
+      "x": -110,
+      "z": 74,
+      "facing": "+z",
       "paint": "gray",
       "sign": "HENDEE",
       "confidence": "sourced",
       "year": "1880",
-      "notes": "Built in 1880 by S. A. Hendee & Co. Sourced size: 42 by 66 feet, 27,000 bushels. The wooden crib, narrower headhouse, gable, cupola, and driveway shed with a wagon opening follow the about-1902 photograph taken from the Alexander Hotel and the trackside views of the wooden elevators. The siding spot is inferred from that view. The cupola is on the later picture of the same elevator.",
+      "notes": "Built in 1880 by S. A. Hendee & Co. Sourced size: 42 by 66 feet, 27,000 bushels. Mark does not know the lot. The centennial says the elevator stood on the railroad ground in front of the Hendee House, and the about-1902 view from that hotel looks at its end. It is placed there, north of the wooden depot and clear of the lunch room. The 1886 Sanborn shows a grain elevator in the railroad ground. The crib, headhouse, cupola, and driveway follow that later photograph. A county-atlas sheet that would pin the footing could not be opened.",
       "porch": false,
       "party": [],
       "brick": "red",
@@ -7114,25 +7122,25 @@
       "use": "passenger depot",
       "material": "frame",
       "stories": 1,
-      "width": 64,
-      "depth": 24,
-      "x": -1720,
-      "z": 280,
-      "facing": "+x",
+      "width": 84,
+      "depth": 26,
+      "x": -330,
+      "z": -72,
+      "facing": "-z",
       "paint": "cream",
       "sign": "T. P. & W.",
       "confidence": "sourced",
       "year": "1869",
       "rotation": 0,
-      "notes": "The Toledo, Peoria & Warsaw crossed the Burlington at about a right angle just southwest of Davis Street. The 1914 postcard shows a smaller one-story frame depot: light clapboard, a gable roof, a trackside bay, a platform canopy on posts, and a chimney. No source found here says this depot was replaced before 1914, so the 1880 model uses that frame building. The postcard is thirty-four years later. The canopy and the lettering may have been renewed.",
+      "notes": "Mark says this depot still exists and stands on the east side of the tracks. The building still standing is at East Main and Hurst. The McDonough County Voice, 3 February 2016, quoting the Bushnell Historical Society, calls that the only depot left of the town's three, likely built in the mid or late 1800s. The model follows the surviving long gable: cream frame, a row of windows and two doors, a short platform, and a chimney. The 1914 postcard, with a bay and a platform roof on posts, is the station a later caption puts just west of West Main. That bay is not on the building still standing, so it is not drawn here.",
       "porch": false,
       "party": [],
       "brick": "red",
       "steeple": false,
       "facade": {
         "photoMatch": true,
-        "photo": "T. P. & W. Train Depot, 1914",
-        "photoUrl": "https://www.mcdcgs.com/historic-photos/t-p-w-train-depot-bushnell-il-1914/"
+        "photo": "The depot still standing at East Main and Hurst",
+        "photoUrl": "https://www.mcdonoughvoice.com/story/news/2016/02/03/depot-rehabilitation-bushnell-citizens-coalition/1598007007/"
       }
     },
     {
@@ -7151,7 +7159,7 @@
       "paint": "white",
       "sign": "SORTER HOUSE",
       "confidence": "sourced",
-      "notes": "The Sorter House stood opposite the T. P. & W. station. Placed across from the depot used here. T. J. Sorter appears among the 1882 charter members of the local Knights of Pythias.",
+      "notes": "The Sorter House stood opposite the T. P. & W. station. It stays by the crossing southwest of Davis, on the west side of the Burlington. Mark places the depot that still exists on the east side, at East Main and Hurst, so this hotel is no longer across the street from that building. T. J. Sorter appears among the 1882 charter members of the local Knights of Pythias.",
       "party": [],
       "brick": "red",
       "year": "",
@@ -7174,7 +7182,7 @@
       "sign": "PUMP WORKS",
       "confidence": "sourced",
       "year": "1872",
-      "notes": "Nelson, LaTourette & Company opened the works in 1872. By 1885 the Bushnell Pump Company occupied a large frame building opposite the old Wabash depot and made wooden pumps, windmills, and croquet sets. Placed across the T. P. & W. grounds from the depot.",
+      "notes": "Nelson, LaTourette & Company opened the works in 1872. By 1885 the Bushnell Pump Company occupied a large frame building opposite the old Wabash depot and made wooden pumps, windmills, and croquet sets. It stays beside the crossing southwest of Davis. The depot Mark identifies as the one still standing is on the east side of the tracks at East Main and Hurst.",
       "porch": false,
       "party": [],
       "brick": "red",
@@ -11979,22 +11987,23 @@
         "peak": true,
         "roof": "falsefront"
       },
-      "notes": "Sourced from the centennial photograph captioned as the Ball Bros. corner in the 1880s, and from the 1885 sizes. The photograph shows a two-story frame shop: light clapboard, one triangular false front across the whole width, BALL BROS. in the gable, three flat-headed upstairs windows, a double door between two shop windows, and a shed porch on posts. Each repository is 28 by 48 feet. This is the East Main and Gridley corner. The 1895 brick works, later the Packard building at 140 East Gridley, is not drawn."
+      "notes": "Sourced from the centennial photograph captioned as the Ball Bros. corner in the 1880s, and from the 1885 sizes. The photograph shows a two-story frame shop: light clapboard, one triangular false front across the whole width, BALL BROS. in the gable, three flat-headed upstairs windows, a double door between two shop windows, and a shed porch on posts. This is the East Main front. Mark says the north end, along Gridley, is the two-story brick block that still stands and still looks as it did in 1880. That brick block is the next building. The 1895 60-by-100-foot works is the later enlargement and is not substituted for this corner."
     },
     {
       "id": "ball-bros-gridley",
-      "name": "Ball Bros. repository",
-      "kind": "frame-store",
+      "name": "Ball Bros. Gridley block",
+      "kind": "brick-store",
       "use": "wagon and carriage repository",
-      "material": "frame",
+      "material": "brick",
       "stories": 2,
-      "width": 28,
+      "width": 44,
       "depth": 48,
       "x": 366,
-      "z": -261,
+      "z": -272,
       "facing": "+x",
       "paint": "white",
       "brick": "red",
+      "sign": "BALL BROS.",
       "porch": false,
       "party": [],
       "confidence": "sourced",
@@ -12003,17 +12012,15 @@
       "rotation": 0,
       "facade": {
         "photoMatch": false,
-        "arches": "flat",
-        "bays": 3,
-        "sideBays": 2,
+        "arches": "segmental",
+        "bays": 4,
+        "sideBays": 3,
         "door": "center",
-        "cornice": "plain",
-        "storefront": "wood",
-        "shedPorch": true,
-        "peak": true,
-        "roof": "falsefront"
+        "cornice": "bracket",
+        "storefront": "iron",
+        "roof": "flat"
       },
-      "notes": "The second 28-by-48-foot repository from the 1885 history, along Gridley beside the corner shop, with the wagon shop in the back. Inferred: only the East Main corner is in the photograph, so this front repeats that false-front shape. It is not marked as its own photograph, and it carries no separate sign."
+      "notes": "Mark says the Gridley building, the oldest one still standing, was two-story brick, and that the north end looks today as it did in 1880. This is that block, red brick, two stories, segmental upstairs windows, and an iron storefront, on the 28-by-48-foot repository size from the 1885 history. The Main Street corner keeps the 1880s false-front photograph. Packard-era pictures of the later works show plate-glass display windows; those later windows are not copied. An open photograph of the present north wall was not found, so the bay spacing is the ordinary twelve-foot brick rhythm."
     },
     {
       "id": "high-school",
@@ -12024,8 +12031,8 @@
       "stories": 2,
       "width": 78,
       "depth": 56,
-      "x": 1348,
-      "z": 1096,
+      "x": -347,
+      "z": -1783,
       "facing": "-z",
       "paint": "cream",
       "brick": "red",
@@ -12036,7 +12043,10 @@
       "year": "1875",
       "steeple": false,
       "rotation": 0,
-      "notes": "Sourced from the written description, not from a photograph. Built in 1875 of red brick on a stone foundation, basement about ten feet out of the ground, two classroom floors, eight rooms. Arthur Loomis in 1885 puts it in the northwest part of town. A later school history puts that building at Jackson and Twyman. The front is four windows each side of a center door, segmental heads, a plain gable, and two end chimneys. The chimneys and the exact bay count are inferred from an eight-room plan. The 1907 encyclopedia plates, which show towers, are the schools built after this one burned, and they are not copied."
+      "facade": {
+        "cupola": true
+      },
+      "notes": "Mark places the 1875 high school at Jackson and Cole, not Twyman, and says it had a cupola. It was the high school into the 1930s and the junior high in the 1970s. Jackson and Cole both run parallel to the tracks and do not meet. Cole Street is the next street east of Sperry. The school whose dates match his memory is the East Side School at Cole and Hurst, and an East Side High School postcard shows a two-story brick school with a central door and a cupola. The model stands on that corner, with the stone base and eight classrooms from the 1885 description, and with that cupola. Twyman Street stays. A 2026 school history puts an 1875 building at Jackson and Twyman and says it burned in 1896. That account is recorded. This corner is the one that fits what Mark described."
     },
     {
       "id": "reformed-church",
@@ -14353,18 +14363,18 @@
         374,
         -230
       ],
-      "blurb": "Ball Bros. at East Main and Gridley, matched to the 1880s photograph. The second repository is along Gridley."
+      "blurb": "Ball Bros. at East Main and Gridley. The Main corner follows the 1880s photograph. The Gridley block is the two-story brick north end."
     },
     {
       "id": "high-school",
       "name": "High School",
-      "x": 1348,
-      "z": 1001,
+      "x": -347,
+      "z": -2040,
       "look": [
-        1348,
-        1100
+        -347,
+        -1760
       ],
-      "blurb": "The 1875 graded school at Jackson and Twyman, red brick on a stone basement. The later West Side School is not this building."
+      "blurb": "The graded school at Cole and Hurst, with the cupola Mark remembers. Twyman Street is still on the map."
     }
   ]
 }

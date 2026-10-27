@@ -33,7 +33,7 @@ The CardCow index and the eBay shop did not return a full list of titles when th
 - Source: [https://www.mcdcgs.com/historic-photos/t-p-w-train-depot-bushnell-il-1914/](https://www.mcdcgs.com/historic-photos/t-p-w-train-depot-bushnell-il-1914/)
 - Date: 1914. The society's caption dates the postcard 1914.
 - Shows: A one-story frame combination depot with a gable roof, a trackside bay window, and a platform canopy on posts. People stand on the platform. A train is alongside.
-- Street and direction: Toledo, Peoria & Western, where it crosses the Burlington at about a right angle just southwest of Davis Street, and the depot sits just west of West Main. From the platform, looking at the depot's track side.
+- Street and direction: East side of the Burlington, at East Main and Hurst. From the platform, looking at the depot's street side.
 - Buildings: T. P. & W. passenger depot.
 - Fits a later snapshot around 1914.
 - Why it is in the 1880 model: The T. P. & W. was open through Bushnell by 1880. No source found here says this frame depot was replaced before the 1914 postcard, so the 1880 model uses that one-story frame building, bay, and platform roof. The postcard is thirty-four years later. The sign and the canopy may have been renewed. A later brick depot is not used.
@@ -315,7 +315,7 @@ These are the pages Mark sent after the streets were turned to true north. A pag
 - Street and direction: Not given on the plate. A later school history puts the West Side School on the site of the 1875 building at Jackson and Twyman, after that building burned.. Front elevations, as engraved for the encyclopedia.
 - Buildings: Bushnell High School as engraved about 1907; Bushnell West-side School as engraved about 1907.
 - Fits a later snapshot around 1907, 1910.
-- Left out of 1880: The 1875 school is in the model from the 1885 written description, at Jackson and Twyman. These 1907 plates are the schools that stood after the 1875 building burned, including the buff-brick West Side School. Their towers were not copied.
+- Left out of 1880: The 1875 school in the model stands at Cole and Hurst, with a cupola. These 1907 plates are later schools, including the buff-brick West Side School. Their towers were not copied.
 
 ### eBay item 276792658229
 

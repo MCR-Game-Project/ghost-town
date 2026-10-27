@@ -632,34 +632,30 @@ export function buildTown(data, scene) {
     return 28;
   };
 
-  // The 1914 T. P. & W. postcard: a smaller frame depot, a bay, and a platform roof on posts.
+  // The depot still standing at East Main and Hurst: a long frame gable, not the 1914 bay.
   const addTpwDepot = (b) => {
-    const wallH = 13.5;
+    const wallH = 14;
     const body = paintOf(b);
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.stone, 0, 0.4, 0, b.width + 0.4, 0.8, b.depth + 0.4);
-    wideGable(b.width, b.depth, 6.5, wallH, 4.2);
+    wideGable(b.width, b.depth, 6.2, wallH, 3.6);
     eaveBrackets(b.width, b.depth, wallH - 0.4);
     const fz = b.depth / 2;
-    box(body, 0, 7.4, fz + 2.1, 12, 12.8, 4.2);
-    for (const x of [-3.2, 0, 3.2]) frontSash(x, 7.6, fz + 4.3, 2.3, 5.2, "flat");
-    sideSash(6.1, 7.6, fz + 2.1, 1, 2.0, 4.8, "flat");
-    sideSash(-6.1, 7.6, fz + 2.1, -1, 2.0, 4.8, "flat");
-    box(mats.trimDark, -b.width * 0.34, 4.3, fz + 0.16, 3.2, 7.6, 0.18);
-    frontSash(-b.width * 0.16, 7.1, fz + 0.12, 2.4, 5.0, "flat");
-    frontSash(b.width * 0.2, 7.1, fz + 0.12, 2.5, 5.0, "flat");
-    frontSash(b.width * 0.36, 7.1, fz + 0.12, 2.4, 5.0, "flat");
-    const canopyZ = fz + 6.4;
-    box(mats.plank, 0, 0.5, canopyZ, b.width + 8, 0.35, 11);
-    localBox(mats.roofDark, 0, 11.2, canopyZ, b.width + 4, 0.22, 12, -0.12);
-    const posts = Math.max(4, Math.round(b.width / 14));
-    for (let i = 0; i < posts; i++) {
-      const x = -b.width / 2 + (b.width * i) / (posts - 1);
-      box(mats.trimDark, x, 5.6, canopyZ + 4.2, 0.4, 10.4, 0.4);
+    const openings = Math.max(5, Math.round(b.width / 14));
+    for (let i = 0; i < openings; i++) {
+      const x = -b.width / 2 + (b.width * (i + 0.5)) / openings;
+      const door = i === 1 || i === openings - 2;
+      if (door) {
+        box(mats.trimDark, x, 4.5, fz + 0.16, 3.8, 8.2, 0.2);
+        box(mats.glass, x, 7.0, fz + 0.24, 1.5, 1.5, 0.05);
+      } else {
+        frontSash(x, 7.2, fz + 0.12, 2.5, 4.6, "flat");
+      }
     }
-    box(mats.brick.red, b.width * 0.3, wallH + 3.5, 0, 1.8, 6.5, 1.8);
-    signFor(b, 11.5);
-    return 26;
+    box(mats.plank, 0, 0.4, fz + 4.6, b.width + 4, 0.28, 7);
+    box(mats.brick.red, b.width * 0.38, wallH + 3.4, 0, 1.8, 6.2, 1.8);
+    signFor(b, 11.2);
+    return 24;
   };
 
   const addDepot = (b) => (b.id === "tpw-depot" ? addTpwDepot(b) : addCbqDepot(b));
@@ -788,7 +784,7 @@ export function buildTown(data, scene) {
     box(mats.trimDark, 0, baseH * 0.48, fz, 5.4, baseH * 0.82, 0.28);
     box(mats.glass, -1.05, baseH * 0.62, fz + 0.12, 1.3, 2.2, 0.05);
     box(mats.glass, 1.05, baseH * 0.62, fz + 0.12, 1.3, 2.2, 0.05);
-    // Four classrooms a floor: four windows each side of the center doors. No tower.
+    // Four classrooms a floor: four windows each side of the center doors.
     const bays = 9;
     const gap = b.width / bays;
     for (let col = 0; col < bays; col++) {
@@ -800,6 +796,18 @@ export function buildTown(data, scene) {
     }
     box(mats.brick.red, -b.width * 0.38, wallH + 4, -b.depth * 0.12, 2.2, 8, 2.2);
     box(mats.brick.red, b.width * 0.38, wallH + 4, -b.depth * 0.12, 2.2, 8, 2.2);
+    // Cupola. Mark remembers one, and the East Side High School postcard shows a square belfry.
+    const cup = 11;
+    box(body, 0, wallH + cup / 2 + 0.6, 0, cup, cup, cup);
+    box(mats.trim, 0, wallH + cup + 0.4, 0, cup + 0.8, 0.7, cup + 0.8);
+    for (const side of [-1, 1]) {
+      box(mats.trim, side * (cup / 2 + 0.06), wallH + 6.2, 0, 0.14, 3.4, 2.4);
+      box(mats.glass, side * (cup / 2 + 0.12), wallH + 6.2, 0, 0.08, 2.4, 1.6);
+      box(mats.trim, 0, wallH + 6.2, side * (cup / 2 + 0.06), 2.4, 3.4, 0.14);
+      box(mats.glass, 0, wallH + 6.2, side * (cup / 2 + 0.12), 1.6, 2.4, 0.08);
+    }
+    box(mats.roofDark, 0, wallH + cup + 2.4, 0, cup + 2, 2.2, cup + 2);
+    box(mats.roofDark, 0, wallH + cup + 4.2, 0, 3.2, 2.2, 3.2);
     for (const side of [-1, 1]) {
       const x = side * (b.width / 2 + 0.1);
       const count = 4;
