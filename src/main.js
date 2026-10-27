@@ -17,18 +17,21 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.08;
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xd7c3a2);
-scene.fog = new THREE.FogExp2(0xd9c4a4, 0.00028);
+scene.background = new THREE.Color(0xe4c4a0);
+scene.fog = new THREE.FogExp2(0xe4c4a0, 0.00036);
+scene.environmentIntensity = 0.5;
 
+const sunDir = new THREE.Vector3(-0.78, 0.36, 0.5).normalize();
 const sky = new THREE.Mesh(
-  new THREE.SphereGeometry(3400, 28, 16),
+  new THREE.SphereGeometry(3400, 32, 18),
   new THREE.ShaderMaterial({
     side: THREE.BackSide,
     depthWrite: false,
     uniforms: {
-      top: { value: new THREE.Color("#6d92c2") },
-      horizon: { value: new THREE.Color("#f2d4aa") },
-      sunDir: { value: new THREE.Vector3(-0.85, 0.42, 0.2).normalize() },
+      top: { value: new THREE.Color("#6e8eb8") },
+      horizon: { value: new THREE.Color("#f0c08a") },
+      haze: { value: new THREE.Color("#e7c3a0") },
+      sunDir: { value: sunDir.clone() },
     },
     vertexShader: `
       varying vec3 vDir;
@@ -41,15 +44,17 @@ const sky = new THREE.Mesh(
       varying vec3 vDir;
       uniform vec3 top;
       uniform vec3 horizon;
+      uniform vec3 haze;
       uniform vec3 sunDir;
       void main() {
         vec3 dir = normalize(vDir);
-        float h = clamp(dir.y * 0.5 + 0.12, 0.0, 1.0);
-        vec3 col = mix(horizon, top, pow(h, 0.9));
-        float disc = pow(max(dot(dir, sunDir), 0.0), 90.0);
-        float glow = pow(max(dot(dir, sunDir), 0.0), 6.0);
-        col += vec3(1.0, 0.86, 0.55) * disc;
-        col += vec3(1.0, 0.72, 0.4) * glow * 0.28;
+        float h = clamp(dir.y * 0.85 + 0.08, 0.0, 1.0);
+        vec3 col = mix(haze, horizon, smoothstep(0.0, 0.18, h));
+        col = mix(col, top, pow(h, 0.75));
+        float disc = pow(max(dot(dir, sunDir), 0.0), 180.0);
+        float glow = pow(max(dot(dir, sunDir), 0.0), 8.0);
+        col += vec3(1.0, 0.9, 0.62) * disc * 1.15;
+        col += vec3(1.0, 0.62, 0.32) * glow * 0.38;
         gl_FragColor = vec4(col, 1.0);
       }
     `,
@@ -60,15 +65,33 @@ scene.add(sky);
 const camera = new THREE.PerspectiveCamera(66, window.innerWidth / window.innerHeight, 0.25, 9000);
 camera.rotation.order = "YXZ";
 
-scene.add(new THREE.HemisphereLight(0xffe8c8, 0x6d5438, 0.62));
-const sun = new THREE.DirectionalLight(0xffd7a8, 1.5);
+scene.add(new THREE.HemisphereLight(0xffe0b8, 0x7a5a3c, 0.72));
+const fill = new THREE.DirectionalLight(0xffd8b4, 0.32);
+fill.position.set(120, 80, -40);
+scene.add(fill);
+const sun = new THREE.DirectionalLight(0xffc48a, 2.45);
 sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
-sun.shadow.camera.near = 10;
-sun.shadow.camera.far = 1800;
-sun.shadow.bias = -0.001;
-sun.shadow.normalBias = 0.45;
+sun.shadow.mapSize.set(shot ? 4096 : 2048, shot ? 4096 : 2048);
+sun.shadow.camera.near = 8;
+sun.shadow.camera.far = 2200;
+sun.shadow.bias = -0.00035;
+sun.shadow.normalBias = 0.22;
 scene.add(sun, sun.target);
+
+function bakeEnvironment() {
+  const env = new THREE.Scene();
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(40, 24, 14), sky.material);
+  const ground = new THREE.Mesh(
+    new THREE.SphereGeometry(40, 16, 8, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2),
+    new THREE.MeshBasicMaterial({ color: "#8d623c", side: THREE.BackSide }),
+  );
+  env.add(dome, ground);
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const map = pmrem.fromScene(env, 0.04).texture;
+  pmrem.dispose();
+  scene.environment = map;
+}
+bakeEnvironment();
 
 const orbit = new OrbitControls(camera, canvas);
 orbit.enableDamping = true;
@@ -128,6 +151,33 @@ function setShadow(size) {
   cam.top = size;
   cam.bottom = -size;
   cam.updateProjectionMatrix();
+}
+
+const QUALITY = {
+  fast: { dpr: 1, shadow: 1024, aniso: 2 },
+  street: { dpr: 1.5, shadow: 2048, aniso: 8 },
+  fine: { dpr: 2, shadow: 4096, aniso: 16 },
+};
+
+function applyQuality(name) {
+  const q = QUALITY[name] || QUALITY.street;
+  const cap = renderer.capabilities.getMaxAnisotropy();
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, q.dpr));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  sun.shadow.mapSize.set(q.shadow, q.shadow);
+  sun.shadow.dispose();
+  sun.shadow.needsUpdate = true;
+  scene.traverse((obj) => {
+    const list = obj.material ? (Array.isArray(obj.material) ? obj.material : [obj.material]) : [];
+    for (const mat of list) {
+      for (const key of ["map", "normalMap", "roughnessMap"]) {
+        const tex = mat[key];
+        if (!tex) continue;
+        tex.anisotropy = Math.min(q.aniso, cap);
+        tex.needsUpdate = true;
+      }
+    }
+  });
 }
 
 let lockExitReason = null;
@@ -553,9 +603,9 @@ function frame() {
     player.z = Math.max(-1800, Math.min(1800, player.z));
     applyWalkCamera();
     const feet = vPlat(player.x, 0, player.z);
-    sun.position.set(feet.x + 80, 140, feet.z + 48);
+    sun.position.set(feet.x - 155, 72, feet.z + 100);
     sun.target.position.copy(feet);
-    setShadow(150);
+    setShadow(260);
     describePlace();
     showBuilding();
   } else if (mode === "overview") {
@@ -578,9 +628,9 @@ function frame() {
       orbit.update();
     }
     const focus = orbit.target;
-    sun.position.set(focus.x - 260, 340, focus.z + 90);
+    sun.position.set(focus.x - 420, 190, focus.z + 180);
     sun.target.position.copy(focus);
-    setShadow(900);
+    setShadow(1200);
   }
   if (overviewLabels) overviewLabels.visible = camera.position.y > 70;
   const compass = document.getElementById("compass");
@@ -593,6 +643,8 @@ function frame() {
     }
   }
   sky.position.copy(camera.position);
+  sky.material.uniforms.sunDir.value.copy(sun.position).sub(camera.position).normalize();
+  fill.position.set(sun.target.position.x + 160, sun.target.position.y + 90, sun.target.position.z - 50);
   renderer.render(scene, camera);
 }
 
@@ -673,6 +725,10 @@ async function main() {
   });
 
   goToPlace(town.places[0]);
+  const quality = document.getElementById("quality");
+  quality.value = shot ? "fine" : "street";
+  quality.addEventListener("change", () => applyQuality(quality.value));
+  applyQuality(quality.value);
   document.getElementById("status").hidden = true;
 
   if (shot) {

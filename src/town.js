@@ -21,16 +21,28 @@ export function buildTown(data, scene) {
   const picks = new THREE.Group();
   picks.name = "picks";
   let buildingMatrix = new THREE.Matrix4();
+  const white = new THREE.Color(1, 1, 1);
+  let tint = new THREE.Color(1, 1, 1);
 
   const put = (mat, geo) => {
+    const c = mat.userData?.vary ? tint : white;
+    const n = geo.getAttribute("position").count;
+    const colors = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) {
+      colors[i * 3] = c.r;
+      colors[i * 3 + 1] = c.g;
+      colors[i * 3 + 2] = c.b;
+    }
+    geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
     if (!buckets.has(mat)) buckets.set(mat, []);
     buckets.get(mat).push(geo);
   };
 
-  // Box faces are 0–1 in UV. Scale them by feet so brick and siding actually repeat.
-  const scaleBoxUVs = (geo, w, h, d) => {
+  // Box faces are 0–1 in UV. Scale them by the material's foot-size so a brick stays a brick.
+  const scaleBoxUVs = (geo, w, h, d, mat) => {
     const uv = geo.getAttribute("uv");
     if (!uv || uv.count !== 24) return;
+    const feet = mat?.userData?.uvFeet || { u: 4, v: 3.2 };
     const faces = [
       [d, h],
       [d, h],
@@ -40,8 +52,8 @@ export function buildTown(data, scene) {
       [w, h],
     ];
     for (let face = 0; face < 6; face++) {
-      const su = faces[face][0] / 5;
-      const sv = faces[face][1] / 3.2;
+      const su = faces[face][0] / feet.u;
+      const sv = faces[face][1] / feet.v;
       for (let i = 0; i < 4; i++) {
         const idx = face * 4 + i;
         uv.setXY(idx, uv.getX(idx) * su, uv.getY(idx) * sv);
@@ -52,7 +64,7 @@ export function buildTown(data, scene) {
 
   const box = (mat, cx, cy, cz, w, h, d) => {
     const geo = new THREE.BoxGeometry(w, h, d);
-    scaleBoxUVs(geo, w, h, d);
+    scaleBoxUVs(geo, w, h, d, mat);
     geo.applyMatrix4(new THREE.Matrix4().makeTranslation(cx, cy, cz));
     geo.applyMatrix4(buildingMatrix);
     put(mat, geo);
@@ -60,44 +72,112 @@ export function buildTown(data, scene) {
 
   const localBox = (mat, cx, cy, cz, w, h, d, rotX = 0) => {
     const geo = new THREE.BoxGeometry(w, h, d);
-    scaleBoxUVs(geo, w, h, d);
+    scaleBoxUVs(geo, w, h, d, mat);
     if (rotX) geo.applyMatrix4(new THREE.Matrix4().makeRotationX(rotX));
     geo.applyMatrix4(new THREE.Matrix4().makeTranslation(cx, cy, cz));
     geo.applyMatrix4(buildingMatrix);
     put(mat, geo);
   };
 
-  // A shallow arch of short trim blocks. "z" bulges toward the street; "x" bulges off a side wall.
-  const archHood = (x, yBase, z, span, rise, outward) => {
+  // A shallow arch of short blocks. "z" bulges toward the street; "x" bulges off a side wall.
+  const archHood = (mat, x, yBase, z, span, rise, outward) => {
     const steps = rise > span * 0.3 ? 7 : 5;
     for (let i = 0; i < steps; i++) {
       const t = (i + 0.5) / steps;
       const u = (t - 0.5) * 2;
       const yy = yBase + rise * (1 - u * u);
-      const seg = span / steps + 0.16;
-      if (outward === "z") box(mats.trim, x + u * span * 0.46, yy, z, seg, 0.34, 0.3);
-      else box(mats.trim, x, yy, z + u * span * 0.46, 0.3, 0.34, seg);
+      const seg = span / steps + 0.12;
+      if (outward === "z") box(mat, x + u * span * 0.46, yy, z, seg, 0.32, 0.28);
+      else box(mat, x, yy, z + u * span * 0.46, 0.28, 0.32, seg);
     }
   };
 
-  const frontSash = (x, y, z, w, h, arch) => {
-    box(mats.trim, x, y, z, w + 0.45, h + 0.4, 0.2);
-    box(mats.glass, x, y, z + 0.08, w, h, 0.1);
-    box(mats.trim, x, y, z + 0.14, 0.12, h, 0.06);
-    box(mats.trim, x, y, z + 0.14, w, 0.1, 0.06);
-    if (arch === "segmental") archHood(x, y + h / 2, z + 0.04, w + 0.3, (w + 0.3) * 0.22, "z");
-    if (arch === "round") archHood(x, y + h / 2 - w * 0.18, z + 0.04, w + 0.2, (w + 0.2) * 0.48, "z");
+  // Glass sits back in the frame. A sill and a lintel or arch project past the wall.
+  const frontSash = (x, y, z, w, h, arch, shutters = false, archMat = mats.trim) => {
+    box(mats.reveal, x, y, z - 0.05, w + 0.06, h + 0.06, 0.16);
+    box(mats.trim, x, y, z + 0.04, w + 0.4, h + 0.46, 0.14);
+    box(mats.glass, x, y, z - 0.01, w * 0.84, h * 0.84, 0.05);
+    box(mats.trim, x, y, z + 0.09, 0.08, h * 0.8, 0.04);
+    box(mats.trim, x, y + h * 0.05, z + 0.09, w * 0.78, 0.07, 0.04);
+    box(mats.stone, x, y - h / 2 - 0.1, z + 0.12, w + 0.62, 0.18, 0.36);
+    if (arch === "segmental") archHood(archMat, x, y + h / 2 - 0.02, z + 0.08, w + 0.28, (w + 0.28) * 0.26, "z");
+    else if (arch === "round") archHood(archMat, x, y + h / 2 - w * 0.16, z + 0.08, w + 0.2, (w + 0.2) * 0.5, "z");
+    else box(mats.stone, x, y + h / 2 + 0.16, z + 0.1, w + 0.58, 0.24, 0.28);
+    if (shutters) {
+      const sw = Math.min(0.48, w * 0.32);
+      box(mats.shutter, x - w / 2 - sw * 0.72, y, z + 0.06, sw, h * 0.9, 0.1);
+      box(mats.shutter, x + w / 2 + sw * 0.72, y, z + 0.06, sw, h * 0.9, 0.1);
+    }
   };
 
-  const sideSash = (x, y, z, side, w, h, arch) => {
-    box(mats.trim, x, y, z, 0.2, h + 0.4, w + 0.45);
-    box(mats.glass, x + side * 0.08, y, z, 0.1, h, w);
-    if (arch === "segmental") archHood(x + side * 0.04, y + h / 2, z, w + 0.3, (w + 0.3) * 0.22, "x");
-    if (arch === "round") archHood(x + side * 0.04, y + h / 2 - w * 0.18, z, w + 0.2, (w + 0.2) * 0.48, "x");
+  const sideSash = (x, y, z, side, w, h, arch, shutters = false, archMat = mats.trim) => {
+    box(mats.reveal, x, y, z, 0.16, h + 0.06, w + 0.06);
+    box(mats.trim, x + side * 0.02, y, z, 0.14, h + 0.42, w + 0.36);
+    box(mats.glass, x - side * 0.01, y, z, 0.05, h * 0.82, w * 0.78);
+    box(mats.trim, x + side * 0.06, y, z, 0.04, h * 0.76, 0.08);
+    box(mats.stone, x + side * 0.08, y - h / 2 - 0.1, z, 0.32, 0.16, w + 0.5);
+    if (arch === "segmental") archHood(archMat, x + side * 0.06, y + h / 2, z, w + 0.24, (w + 0.24) * 0.26, "x");
+    else if (arch === "round") archHood(archMat, x + side * 0.06, y + h / 2 - w * 0.16, z, w + 0.18, (w + 0.18) * 0.5, "x");
+    else box(mats.stone, x + side * 0.08, y + h / 2 + 0.14, z, 0.26, 0.22, w + 0.46);
+    if (shutters) {
+      const sw = Math.min(0.42, w * 0.3);
+      box(mats.shutter, x + side * 0.05, y, z - w / 2 - sw * 0.7, 0.1, h * 0.88, sw);
+      box(mats.shutter, x + side * 0.05, y, z + w / 2 + sw * 0.7, 0.1, h * 0.88, sw);
+    }
   };
 
-  const drawAwning = (width, fz) => {
-    localBox(mats.siding.darkred, 0, 10.2, fz + 2.2, width, 0.12, 4.3, -0.5);
+  const paneledDoor = (x, z, w, h, transom = true) => {
+    const cy = 0.35 + h / 2;
+    box(mats.trim, x, cy, z - 0.02, w + 0.36, h + 0.28, 0.16);
+    box(mats.trimDark, x, cy - h * 0.04, z + 0.05, w * 0.82, h * 0.82, 0.12);
+    box(mats.trim, x, cy - h * 0.22, z + 0.12, w * 0.52, h * 0.28, 0.045);
+    box(mats.trim, x, cy + h * 0.16, z + 0.12, w * 0.52, h * 0.22, 0.045);
+    box(mats.trim, x, cy - h * 0.02, z + 0.12, w * 0.08, h * 0.7, 0.04);
+    if (transom) {
+      box(mats.glass, x, 0.35 + h + 0.42, z + 0.06, w * 0.7, 0.62, 0.05);
+      box(mats.trim, x, 0.35 + h + 0.42, z + 0.1, 0.07, 0.62, 0.04);
+      box(mats.stone, x, 0.35 + h + 0.86, z + 0.08, w + 0.4, 0.26, 0.22);
+    }
+  };
+
+  const dentilCourse = (y, z, width) => {
+    const n = Math.max(6, Math.round(width / 0.9));
+    for (let i = 0; i < n; i++) {
+      const x = -width / 2 + (width * (i + 0.5)) / n;
+      box(mats.trim, x, y, z, 0.26, 0.28, 0.26);
+    }
+  };
+
+  const bracketRow = (y, z, width) => {
+    const n = Math.max(4, Math.round(width / 3.4));
+    for (let i = 0; i < n; i++) {
+      const x = -width / 2 + 0.5 + ((width - 1) * i) / Math.max(1, n - 1);
+      box(mats.trimDark, x, y - 0.15, z + 0.28, 0.34, 0.28, 0.7);
+      box(mats.trimDark, x, y - 0.7, z + 0.08, 0.28, 0.85, 0.28);
+      box(mats.trimDark, x, y - 0.45, z + 0.22, 0.26, 0.26, 0.32);
+    }
+  };
+
+  const drawAwning = (width, fz, y = 10.2) => {
+    localBox(mats.awning, 0, y, fz + 2.15, width, 0.12, 4.4, -0.42);
+    localBox(mats.awningShade, 0, y - 0.1, fz + 2.15, width * 0.98, 0.05, 4.15, -0.42);
+    box(mats.awningShade, 0, y - 0.72, fz + 4.05, width, 0.55, 0.1);
+  };
+
+  const chimneyStack = (mat, x, y, z, w, h, d) => {
+    box(mat, x, y, z, w, h, d);
+    const top = y + h / 2;
+    box(mats.stone, x, top + 0.16, z, w + 0.46, 0.28, d + 0.46);
+    box(mat, x, top + 0.48, z, w * 0.62, 0.4, d * 0.62);
+  };
+
+  const downspouts = (width, depth, wallH) => {
+    for (const side of [-1, 1]) {
+      const x = side * (width / 2 - 0.15);
+      const z = depth / 2 + 0.22;
+      box(mats.metal, x, wallH * 0.48, z, 0.16, wallH * 0.9, 0.16);
+      box(mats.metal, x, 0.4, z + 0.35, 0.16, 0.16, 0.7);
+    }
   };
 
   // Unnamed shops on Main, Hail, and Hurst. Bay width follows the street photographs:
@@ -110,47 +190,47 @@ export function buildTown(data, scene) {
       : Math.max(2, Math.min(4, Math.round(b.width / 12)));
     const gap = b.width / bays;
     const arch = frame ? "flat" : "segmental";
+    const archMat = frame ? mats.trim : mats.voussoir;
     const doorAt = idHash(b.id) % 2 === 0 ? bays - 1 : 0;
     const winW = Math.min(frame ? 3.4 : 4.6, Math.max(2.4, gap * 0.46));
     if (b.stories > 1) {
       box(mats.stone, 0, wallH * 0.5, fz + 0.01, b.width * 0.94, 0.22, 0.12);
       for (let col = 0; col < bays; col++) {
         const x = -b.width / 2 + gap * (col + 0.5);
-        frontSash(x, wallH * 0.72, fz, winW, b.stories > 2 ? 5.4 : 6.8, arch);
-        if (b.stories > 2) frontSash(x, wallH * 0.42, fz, winW, 5.6, arch);
+        frontSash(x, wallH * 0.72, fz, winW, b.stories > 2 ? 5.4 : 6.8, arch, false, archMat);
+        if (b.stories > 2) frontSash(x, wallH * 0.42, fz, winW, 5.6, arch, false, archMat);
       }
     }
     if (!frame) {
-      box(mats.trim, 0, wallH - 0.15, fz + 0.05, b.width + 0.5, 0.85, 0.7);
-      const brackets = Math.max(4, Math.round(b.width / 3.2));
-      for (let i = 0; i < brackets; i++) {
-        const x = -b.width / 2 + (b.width * (i + 0.5)) / brackets;
-        box(mats.trimDark, x, wallH - 1.35, fz + 0.28, 0.32, 1.35, 0.62);
-      }
+      box(mats.trim, 0, wallH - 0.15, fz + 0.05, b.width + 0.5, 0.55, 0.55);
+      dentilCourse(wallH - 0.7, fz + 0.22, b.width);
+      bracketRow(wallH - 0.85, fz, b.width);
     }
     for (let col = 0; col < bays; col++) {
       const x = -b.width / 2 + gap * (col + 0.5);
       if (col === doorAt) {
         const dw = Math.min(3.5, gap - 0.8);
-        box(mats.trimDark, x, 4.2, fz, dw, 7.8, 0.22);
-        box(mats.glass, x, 7.7, fz + 0.1, dw * 0.7, 0.7, 0.05);
-        box(mats.glass, x, 5.6, fz + 0.12, dw * 0.36, 2.6, 0.05);
-        box(mats.trim, x, 8.35, fz + 0.08, dw + 0.25, 0.35, 0.1);
+        paneledDoor(x, fz, dw, 7.2);
       } else {
         const gw = Math.min(frame ? 5.4 : 7.2, gap - 0.9);
-        box(mats.trimDark, x, 1.15, fz, gw, 1.55, 0.18);
-        box(mats.glass, x, 5.05, fz, gw * 0.9, 5.5, 0.12);
-        box(mats.trim, x, 5.05, fz + 0.07, gw + 0.2, 5.8, 0.07);
-        box(mats.glass, x, 8.15, fz, gw * 0.9, 0.7, 0.06);
+        box(mats.trimDark, x, 1.05, fz, gw, 1.35, 0.2);
+        box(mats.reveal, x, 5.05, fz - 0.04, gw * 0.9, 5.4, 0.12);
+        box(mats.glass, x, 5.05, fz + 0.02, gw * 0.82, 5.1, 0.06);
+        box(mats.trim, x, 5.05, fz + 0.1, gw + 0.16, 5.7, 0.08);
+        box(mats.trim, x, 5.05, fz + 0.14, 0.08, 5.0, 0.04);
+        box(mats.glass, x, 8.15, fz + 0.02, gw * 0.82, 0.62, 0.05);
+        box(mats.stone, x, 8.55, fz + 0.1, gw + 0.2, 0.22, 0.2);
         if (!frame) {
-          box(mats.trimDark, x - gw / 2 - 0.1, 4.8, fz + 0.1, 0.2, 8.2, 0.16);
-          box(mats.trimDark, x + gw / 2 + 0.1, 4.8, fz + 0.1, 0.2, 8.2, 0.16);
+          box(mats.trimDark, x - gw / 2 - 0.15, 4.8, fz + 0.12, 0.28, 8.4, 0.22);
+          box(mats.trimDark, x + gw / 2 + 0.15, 4.8, fz + 0.12, 0.28, 8.4, 0.22);
+          box(mats.stone, x - gw / 2 - 0.15, 0.55, fz + 0.16, 0.4, 0.7, 0.28);
+          box(mats.stone, x + gw / 2 + 0.15, 0.55, fz + 0.16, 0.4, 0.7, 0.28);
+          box(mats.trim, x - gw / 2 - 0.15, 8.85, fz + 0.16, 0.42, 0.32, 0.3);
+          box(mats.trim, x + gw / 2 + 0.15, 8.85, fz + 0.16, 0.42, 0.32, 0.3);
         }
       }
     }
-    if (b.stories > 1) {
-      localBox(mats.siding.darkred, 0, 10.6, fz + 2.1, b.width * 0.9, 0.12, 4.2, -0.38);
-    }
+    if (b.stories > 1) drawAwning(b.width * 0.9, fz, 10.6);
     const party = b.party || [];
     for (const side of [-1, 1]) {
       if (party.includes(side === -1 ? "left" : "right")) continue;
@@ -158,7 +238,7 @@ export function buildTown(data, scene) {
       const rows = Math.max(1, Math.floor(b.depth / 18));
       for (let i = 0; i < rows; i++) {
         const z = -b.depth / 2 + ((i + 0.5) * b.depth) / rows;
-        if (b.stories > 1) sideSash(x, wallH * 0.7, z, side, 2.3, 5.2, arch);
+        if (b.stories > 1) sideSash(x, wallH * 0.7, z, side, 2.3, 5.2, arch, false, archMat);
       }
     }
   };
@@ -170,6 +250,7 @@ export function buildTown(data, scene) {
     const bays = Math.max(2, f.bays || 3);
     const gap = b.width / bays;
     const arch = f.arches || "flat";
+    const archMat = arch === "flat" ? mats.stone : mats.voussoir;
     const doorAt =
       f.door === "center" ? Math.floor((bays - 1) / 2) : f.door === "left" ? 0 : f.door === "none" ? -1 : bays - 1;
     const winW = Math.min(6.2, Math.max(2.8, gap * 0.48));
@@ -180,36 +261,37 @@ export function buildTown(data, scene) {
       const gw = Math.max(2.8, gap - (f.storefront === "iron" ? 0.7 : 1.4));
       if (col === doorAt) {
         const dw = f.door === "center" ? Math.min(5.0, gap - 0.7) : Math.min(3.6, gap - 0.55);
-        box(mats.trimDark, x, 4.35, fz, dw, 8.1, 0.22);
-        box(mats.trim, x, 8.65, fz + 0.06, dw + 0.28, 0.48, 0.12);
-        box(mats.glass, x, 8.05, fz + 0.1, dw * 0.68, 0.62, 0.05);
-        if (f.door === "center") box(mats.trim, x, 4.15, fz + 0.15, 0.14, 7.2, 0.06);
-        box(mats.glass, x, 5.55, fz + 0.12, dw * 0.36, 3.4, 0.05);
+        paneledDoor(x, fz, dw, 7.4, true);
+        if (f.door === "center") box(mats.trim, x, 4.15, fz + 0.16, 0.1, 6.6, 0.04);
       } else {
-        box(mats.trimDark, x, 1.2, fz, gw, 1.65, 0.18);
-        box(mats.glass, x, 5.15, fz, gw * 0.92, 5.55, 0.12);
-        box(mats.trim, x, 5.15, fz + 0.05, gw + 0.18, 5.85, 0.07);
-        box(mats.glass, x, 8.3, fz, gw * 0.92, 0.78, 0.07);
+        box(mats.trimDark, x, 1.1, fz, gw, 1.45, 0.2);
+        box(mats.reveal, x, 5.15, fz - 0.04, gw * 0.9, 5.4, 0.12);
+        box(mats.glass, x, 5.15, fz + 0.02, gw * 0.84, 5.15, 0.06);
+        box(mats.trim, x, 5.15, fz + 0.1, gw + 0.16, 5.7, 0.08);
+        box(mats.trim, x, 5.15, fz + 0.14, 0.08, 5.0, 0.04);
+        box(mats.glass, x, 8.25, fz + 0.02, gw * 0.84, 0.66, 0.05);
+        box(mats.stone, x, 8.7, fz + 0.1, gw + 0.22, 0.24, 0.22);
         if (f.storefront === "iron") {
-          box(mats.trimDark, x - gw / 2 - 0.1, 4.9, fz + 0.1, 0.22, 8.5, 0.16);
-          box(mats.trimDark, x + gw / 2 + 0.1, 4.9, fz + 0.1, 0.22, 8.5, 0.16);
+          box(mats.trimDark, x - gw / 2 - 0.14, 4.9, fz + 0.12, 0.26, 8.6, 0.22);
+          box(mats.trimDark, x + gw / 2 + 0.14, 4.9, fz + 0.12, 0.26, 8.6, 0.22);
+          box(mats.stone, x - gw / 2 - 0.14, 0.55, fz + 0.16, 0.38, 0.7, 0.28);
+          box(mats.stone, x + gw / 2 + 0.14, 0.55, fz + 0.16, 0.38, 0.7, 0.28);
+          box(mats.trim, x - gw / 2 - 0.14, 9.05, fz + 0.16, 0.4, 0.3, 0.28);
+          box(mats.trim, x + gw / 2 + 0.14, 9.05, fz + 0.16, 0.4, 0.3, 0.28);
         }
       }
-      if (b.stories > 1) frontSash(x, wallH * 0.72, fz, winW, winH, arch);
+      if (b.stories > 1) frontSash(x, wallH * 0.72, fz, winW, winH, arch, false, archMat);
     }
     if (f.cornice === "bracket" || f.cornice === "plain") {
-      box(mats.trim, 0, wallH - 0.2, fz, b.width + 0.5, 0.8, 0.65);
-      if (f.cornice === "bracket") {
-        const n = Math.max(5, Math.round(b.width / 3.5));
-        for (let i = 0; i < n; i++) {
-          const x = -b.width / 2 + 0.7 + ((b.width - 1.4) * i) / (n - 1);
-          box(mats.trimDark, x, wallH - 1.25, fz + 0.2, 0.4, 1.3, 0.7);
-        }
-      }
+      box(mats.trim, 0, wallH - 0.2, fz, b.width + 0.5, 0.5, 0.5);
+      dentilCourse(wallH - 0.62, fz + 0.18, b.width);
+      if (f.cornice === "bracket") bracketRow(wallH - 0.7, fz, b.width);
     }
     if (f.pilasters) {
       for (const x of [-b.width / 2 + 0.4, b.width / 2 - 0.4]) {
-        box(mats.trim, x, wallH * 0.48, fz + 0.02, 0.65, wallH * 0.9, 0.26);
+        box(mats.trim, x, wallH * 0.48, fz + 0.02, 0.55, wallH * 0.82, 0.24);
+        box(mats.stone, x, 0.7, fz + 0.06, 0.78, 1.15, 0.34);
+        box(mats.trim, x, wallH * 0.9, fz + 0.08, 0.85, 0.45, 0.36);
       }
     }
     if (f.awning) drawAwning(b.width * 0.9, fz);
@@ -230,7 +312,7 @@ export function buildTown(data, scene) {
       const x = side * (b.width / 2 + 0.1);
       for (let i = 0; i < sideCount; i++) {
         const z = -b.depth / 2 + ((i + 0.6) * b.depth) / (sideCount + 0.5);
-        if (b.stories > 1) sideSash(x, wallH * 0.68, z, side, 2.5, 4.8, arch);
+        if (b.stories > 1) sideSash(x, wallH * 0.68, z, side, 2.5, 4.8, arch, false, archMat);
       }
     }
   };
@@ -247,6 +329,12 @@ export function buildTown(data, scene) {
     for (const key of Object.keys(geo.attributes)) {
       if (key !== "position" && key !== "normal" && key !== "uv") geo.deleteAttribute(key);
     }
+    const feet = mat.userData?.uvFeet || { u: 8, v: 3.2 };
+    const uv = geo.getAttribute("uv");
+    const pos = geo.getAttribute("position");
+    for (let i = 0; i < uv.count; i++) {
+      uv.setXY(i, (pos.getX(i) + width / 2) / feet.u, (pos.getY(i) - yBase) / feet.v);
+    }
     // ExtrudeGeometry has no index. The wall boxes do, and the merger requires one or the other.
     const count = geo.attributes.position.count;
     const index = new Array(count);
@@ -259,7 +347,7 @@ export function buildTown(data, scene) {
     const tilt = Math.atan2(rise, width / 2);
     for (const side of [-1, 1]) {
       const rake = new THREE.BoxGeometry(slope + 0.5, 0.62, 0.85);
-      scaleBoxUVs(rake, slope, 0.42, 0.72);
+      scaleBoxUVs(rake, slope, 0.42, 0.72, mats.trimDark);
       rake.applyMatrix4(new THREE.Matrix4().makeRotationZ(side * tilt));
       rake.applyMatrix4(new THREE.Matrix4().makeTranslation(side * width / 4, yBase + rise / 2, z + 0.16));
       rake.applyMatrix4(buildingMatrix);
@@ -309,10 +397,15 @@ export function buildTown(data, scene) {
 
   const tiled = (mat, tilesU, tilesV) => {
     const copy = mat.clone();
-    copy.map = mat.map.clone();
-    copy.map.wrapS = copy.map.wrapT = THREE.RepeatWrapping;
-    copy.map.repeat.set(Math.max(1, tilesU), Math.max(1, tilesV));
-    copy.map.colorSpace = THREE.SRGBColorSpace;
+    for (const key of ["map", "normalMap", "roughnessMap"]) {
+      if (!mat[key]) continue;
+      copy[key] = mat[key].clone();
+      copy[key].wrapS = copy[key].wrapT = THREE.RepeatWrapping;
+      copy[key].repeat.set(Math.max(0.2, tilesU), Math.max(0.2, tilesV));
+    }
+    if (copy.map) copy.map.colorSpace = THREE.SRGBColorSpace;
+    if (copy.normalMap) copy.normalMap.colorSpace = THREE.LinearSRGBColorSpace;
+    if (copy.roughnessMap) copy.roughnessMap.colorSpace = THREE.LinearSRGBColorSpace;
     return copy;
   };
 
@@ -336,7 +429,7 @@ export function buildTown(data, scene) {
     const roofW = width + 2.2;
     for (const sign of [1, -1]) {
       const geo = new THREE.BoxGeometry(roofW, 0.5, slopeLen);
-      scaleBoxUVs(geo, roofW, 0.5, slopeLen);
+      scaleBoxUVs(geo, roofW, 0.5, slopeLen, mat);
       const local = new THREE.Matrix4().makeRotationX(sign * angle);
       local.premultiply(new THREE.Matrix4().makeTranslation(0, yBase + rise / 2, sign * (run / 2)));
       geo.applyMatrix4(local);
@@ -367,28 +460,31 @@ export function buildTown(data, scene) {
     };
   };
 
-  const punch = (width, depth, stories, floorH, wallH, party, commercial) => {
+  const punch = (width, depth, stories, floorH, wallH, party, commercial, shutters = false) => {
     const fz = depth / 2 + 0.12;
     const cols = Math.max(2, Math.round(width / (commercial ? 9 : 11)));
     const gap = width / cols;
+    const doorCol = Math.floor(cols / 2);
+    const winW = Math.min(2.7, Math.max(1.8, gap * 0.42));
     for (let col = 0; col < cols; col++) {
       const x = -width / 2 + gap * (col + 0.5);
       if (commercial && col === cols - 1) {
-        box(mats.trimDark, x, 4.2, fz, 3.4, 7.6, 0.25);
-        box(mats.trim, x, 8.6, fz, 3.6, 1.1, 0.2);
+        paneledDoor(x, fz, Math.min(3.2, gap - 0.8), 7.2);
       } else if (commercial) {
-        box(mats.glass, x, 5.4, fz, Math.min(6.2, gap - 1.6), 6.4, 0.2);
-        box(mats.trim, x, 5.4, fz + 0.02, Math.min(6.5, gap - 1.2), 6.7, 0.08);
-        box(mats.glass, x, 5.4, fz + 0.16, Math.min(5.6, gap - 2.2), 5.6, 0.12);
+        const gw = Math.min(6.2, gap - 1.2);
+        box(mats.reveal, x, 5.4, fz - 0.04, gw, 6.2, 0.12);
+        box(mats.glass, x, 5.4, fz + 0.02, gw * 0.86, 5.6, 0.06);
+        box(mats.trim, x, 5.4, fz + 0.1, gw + 0.16, 6.4, 0.08);
+        box(mats.trim, x, 5.4, fz + 0.14, 0.08, 5.4, 0.04);
+      } else if (col !== doorCol) {
+        frontSash(x, 5.1, fz, winW, 4.6, "flat", shutters);
       }
       for (let s = 1; s < stories; s++) {
         const y = s * floorH + floorH * 0.55;
         if (y > wallH - 1.5) continue;
-        box(mats.trim, x, y, fz, 3.3, 5.2, 0.16);
-        box(mats.glass, x, y, fz + 0.12, 2.5, 4.4, 0.1);
+        frontSash(x, y, fz, winW, Math.min(4.8, floorH * 0.55), "flat", shutters);
       }
     }
-    // Side windows on exposed walls.
     for (const side of [-1, 1]) {
       const key = side === -1 ? "left" : "right";
       if (party.includes(key)) continue;
@@ -399,8 +495,7 @@ export function buildTown(data, scene) {
         for (let s = commercial ? 1 : 0; s < stories; s++) {
           const y = s * floorH + floorH * 0.55;
           if (y < 3 || y > wallH - 1) continue;
-          box(mats.trim, x, y, z, 0.16, 4.4, 2.6);
-          box(mats.glass, x + side * 0.08, y, z, 0.1, 3.6, 2);
+          sideSash(x, y, z, side, 2.2, 4.2, "flat", shutters);
         }
       }
     }
@@ -444,8 +539,8 @@ export function buildTown(data, scene) {
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.stone, 0, 0.4, 0, b.width + 0.4, 0.8, b.depth + 0.4);
     gable(b.width, b.depth, Math.max(6, b.depth * 0.38), wallH);
-    punch(b.width, b.depth, b.stories, 9, wallH, b.party || [], false);
-    box(mats.trimDark, 0, 3.8, b.depth / 2 + 0.15, 3.2, 7, 0.2);
+    punch(b.width, b.depth, b.stories, 9, wallH, b.party || [], false, true);
+    paneledDoor(0, b.depth / 2 + 0.15, 3.0, 6.6, true);
     // Crafford is on the east side after the compass correction, centerline z = +581.
     const onCrafford =
       (b.facing === "+z" || b.facing === "-z") && Math.abs(b.z - 581) > 40 && Math.abs(b.z - 581) < 100;
@@ -461,7 +556,8 @@ export function buildTown(data, scene) {
     if (onCrafford) {
       drawFrontGable(body, b.width * 0.9, Math.max(6.5, b.width * 0.36), wallH - 0.15, b.depth / 2 + 0.16);
     }
-    box(mats.brick.red, b.width * 0.28, wallH + 3, -b.depth * 0.1, 1.6, 6, 1.6);
+    chimneyStack(mats.brick.red, b.width * 0.28, wallH + 3, -b.depth * 0.1, 1.6, 6, 1.6);
+    downspouts(b.width, b.depth, wallH);
     return wallH + 8;
   };
 
@@ -505,6 +601,7 @@ export function buildTown(data, scene) {
         box(mats.trimDark, x, 6, z + 3.6, 0.5, 10, 0.5);
       }
     }
+    downspouts(b.width, b.depth, wallH);
     signFor(b, frame ? wallH + 4 : wallH);
     return wallH + (frame ? 8 : 4);
   };
@@ -578,12 +675,12 @@ export function buildTown(data, scene) {
     const roofW = width + 2.6;
     for (const sign of [1, -1]) {
       const geo = new THREE.BoxGeometry(roofW, 0.42, slopeLen);
-      scaleBoxUVs(geo, roofW, 0.42, slopeLen);
+      scaleBoxUVs(geo, roofW, 0.42, slopeLen, mats.tin);
       const local = new THREE.Matrix4().makeRotationX(sign * angle);
       local.premultiply(new THREE.Matrix4().makeTranslation(0, yBase + rise / 2, sign * (run / 2)));
       geo.applyMatrix4(local);
       geo.applyMatrix4(buildingMatrix);
-      put(mats.roofDark, geo);
+      put(mats.tin, geo);
     }
   };
 
@@ -626,8 +723,8 @@ export function buildTown(data, scene) {
       }
     }
     box(mats.plank, 0, 0.55, fz + 7.2, b.width + 16, 0.4, 12);
-    box(mats.brick.red, b.width * 0.38, wallH + 5.2, 0, 2.4, 9, 2.4);
-    box(mats.brick.dark, b.width * 0.38, wallH + 10, 0, 2.8, 1.2, 2.8);
+    chimneyStack(mats.brick.red, b.width * 0.38, wallH + 5.2, 0, 2.4, 9, 2.4);
+    downspouts(b.width, b.depth, wallH);
     signFor(b, 12);
     return 28;
   };
@@ -653,7 +750,8 @@ export function buildTown(data, scene) {
       }
     }
     box(mats.plank, 0, 0.4, fz + 4.6, b.width + 4, 0.28, 7);
-    box(mats.brick.red, b.width * 0.38, wallH + 3.4, 0, 1.8, 6.2, 1.8);
+    chimneyStack(mats.brick.red, b.width * 0.38, wallH + 3.4, 0, 1.8, 6.2, 1.8);
+    downspouts(b.width, b.depth, wallH);
     signFor(b, 11.2);
     return 24;
   };
@@ -680,11 +778,17 @@ export function buildTown(data, scene) {
       for (let col = 0; col < bays; col++) {
         const x = -b.width / 2 + gap * (col + 0.5);
         if (floor === 0 && col === 3) {
-          box(mats.trimDark, x, 5.1, fz, 4.0, 9.2, 0.24);
-          box(mats.glass, x, 9.4, fz + 0.12, 2.6, 0.7, 0.05);
-          box(mats.glass, x - 0.7, 5.6, fz + 0.14, 0.85, 4.2, 0.05);
-          box(mats.glass, x + 0.7, 5.6, fz + 0.14, 0.85, 4.2, 0.05);
-          box(mats.trim, x, 10.0, fz + 0.1, 4.4, 0.4, 0.14);
+          box(mats.trim, x, 5.1, fz, 4.3, 9.4, 0.18);
+          box(mats.trimDark, x, 5.0, fz + 0.06, 3.5, 8.2, 0.12);
+          box(mats.glass, x, 9.2, fz + 0.12, 2.4, 0.62, 0.05);
+          box(mats.glass, x - 0.7, 5.5, fz + 0.14, 0.7, 3.6, 0.05);
+          box(mats.glass, x + 0.7, 5.5, fz + 0.14, 0.7, 3.6, 0.05);
+          box(mats.trim, x, 5.0, fz + 0.16, 0.1, 7.4, 0.04);
+          box(mats.trim, x - 0.7, 4.0, fz + 0.16, 0.62, 0.1, 0.04);
+          box(mats.trim, x + 0.7, 4.0, fz + 0.16, 0.62, 0.1, 0.04);
+          box(mats.trim, x - 0.7, 6.6, fz + 0.16, 0.62, 0.1, 0.04);
+          box(mats.trim, x + 0.7, 6.6, fz + 0.16, 0.62, 0.1, 0.04);
+          box(mats.stone, x, 10.05, fz + 0.1, 4.6, 0.28, 0.24);
         } else if (floor === 0) {
           frontSash(x, 6.3, fz, Math.min(2.5, gap - 1.5), 7.2, "segmental");
         } else {
@@ -704,6 +808,7 @@ export function buildTown(data, scene) {
       const x = -b.width / 2 + 1.2 + ((b.width - 2.4) * i) / (posts - 1);
       box(mats.trimDark, x, 6.4, porchZ + 3.4, 0.45, 11.6, 0.45);
     }
+    downspouts(b.width, b.depth, wallH);
     signFor(b, wallH);
     return wallH + 8;
   };
@@ -715,7 +820,7 @@ export function buildTown(data, scene) {
     box(body, 0, h / 2, 0, b.width, h, cribD);
     // Headhouse, narrower, with the gable end toward the street the hotel faces.
     box(body, 0, h + 7, 0, b.width * 0.55, 14, cribD * 0.72);
-    gable(b.width * 0.55, cribD * 0.72, 7, h + 14, mats.roofDark);
+    gable(b.width * 0.55, cribD * 0.72, 7, h + 14, mats.tin);
     if (b.facade?.cupola) {
       box(body, 0, h + 20, 0, b.width * 0.2, 7, cribD * 0.28);
       for (const x of [-b.width * 0.1 - 0.05, b.width * 0.1 + 0.05]) {
@@ -736,7 +841,7 @@ export function buildTown(data, scene) {
     // Driveway shed on the track side, with an open wagon mouth.
     const shedZ = b.depth * 0.38;
     box(mats.siding.gray, 0, 7.5, shedZ, b.width + 2, 15, 16);
-    gable(b.width + 2, 16, 4.5, 15, mats.roofDark);
+    gable(b.width + 2, 16, 4.5, 15, mats.tin);
     box(mats.trimDark, 0, 5.2, shedZ + 8.1, 11, 9.2, 0.18);
     box(mats.coal, 0, 4.6, shedZ + 7.6, 9.2, 7.6, 0.3);
     signFor(b, h - 4);
@@ -747,7 +852,7 @@ export function buildTown(data, scene) {
     const wallH = b.stories * 13;
     const body = b.material === "brick" ? brickOf(b) : paintOf(b);
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
-    gable(b.width, b.depth, 8, wallH, mats.roofDark);
+    gable(b.width, b.depth, 8, wallH, mats.tin);
     box(mats.brick.dark, b.width / 2 + 3, 22, -b.depth * 0.2, 4, 44, 4);
     box(mats.brick.red, b.width / 2 + 3, 46, -b.depth * 0.2, 5, 3, 5);
     punch(b.width, b.depth, b.stories, 13, wallH, [], false);
@@ -794,8 +899,9 @@ export function buildTown(data, scene) {
       frontSash(x, baseH + floorH * 0.55, fz, 2.35, 6.2, "segmental");
       if (b.stories > 1) frontSash(x, baseH + floorH * 1.55, fz, 2.35, 6.2, "segmental");
     }
-    box(mats.brick.red, -b.width * 0.38, wallH + 4, -b.depth * 0.12, 2.2, 8, 2.2);
-    box(mats.brick.red, b.width * 0.38, wallH + 4, -b.depth * 0.12, 2.2, 8, 2.2);
+    chimneyStack(mats.brick.red, -b.width * 0.38, wallH + 4, -b.depth * 0.12, 2.2, 8, 2.2);
+    chimneyStack(mats.brick.red, b.width * 0.38, wallH + 4, -b.depth * 0.12, 2.2, 8, 2.2);
+    downspouts(b.width, b.depth, wallH);
     // Cupola. Mark remembers one, and the East Side High School postcard shows a square belfry.
     const cup = 11;
     box(body, 0, wallH + cup / 2 + 0.6, 0, cup, cup, cup);
@@ -835,7 +941,7 @@ export function buildTown(data, scene) {
     const wallH = 22;
     const body = paintOf(b);
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
-    gable(b.width, b.depth, 6, wallH, mats.roofDark);
+    gable(b.width, b.depth, 6, wallH, mats.tin);
     punch(b.width, b.depth, 2, 11, wallH, [], false);
     box(mats.brick.dark, -b.width * 0.35, 20, b.depth * 0.2, 4, 40, 4);
     signFor(b, 18);
@@ -843,6 +949,12 @@ export function buildTown(data, scene) {
   };
 
   for (const b of data.buildings) {
+    const hue = idHash(b.id);
+    tint.setRGB(
+      0.92 + (hue % 20) / 20 * 0.12,
+      0.93 + ((hue >> 5) % 16) / 16 * 0.08,
+      0.9 + ((hue >> 10) % 14) / 14 * 0.08,
+    );
     begin(b.x, b.z, b.facing, b.rotation || 0);
     let height = 20;
     if (b.kind === "house") height = addHouse(b);
@@ -903,8 +1015,8 @@ export function buildTown(data, scene) {
     const mesh = new THREE.Mesh(
       geo,
       street.axis === "x"
-        ? tiled(mats.street, len / 14, street.width / 8)
-        : tiled(mats.street, street.width / 8, len / 14),
+        ? tiled(mats.street, len / 48, 1)
+        : tiled(mats.streetCross, 1, len / 48),
     );
     mesh.rotation.x = -Math.PI / 2;
     if (street.axis === "x") mesh.position.set((street.from + street.to) / 2, 0.05, street.at);
@@ -1016,7 +1128,7 @@ export function buildTown(data, scene) {
 
   for (const s of signs) {
     const tex = makeSignTexture(s.title, s.subtitle, s.style);
-    const mat = new THREE.MeshLambertMaterial({ map: tex });
+    const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.84, metalness: 0 });
     const h = s.subtitle ? s.width * 0.36 : s.width * 0.28;
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(s.width, h), mat);
     mesh.position.copy(s.position);
@@ -1161,7 +1273,7 @@ function nameBoard(text, axis, y) {
   const height = 1.7;
   const length = height * aspect;
   const geo = new THREE.PlaneGeometry(length, height);
-  const mat = new THREE.MeshLambertMaterial({ map: tex });
+  const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.8, metalness: 0 });
   const group = new THREE.Group();
   const front = new THREE.Mesh(geo, mat);
   const back = new THREE.Mesh(geo, mat);
@@ -1174,6 +1286,17 @@ function nameBoard(text, axis, y) {
   back.position.y = y;
   group.add(front, back);
   return group;
+}
+
+function ensureColor(root) {
+  root.traverse((mesh) => {
+    if (!mesh.isMesh || !mesh.material?.vertexColors) return;
+    const geo = mesh.geometry;
+    if (!geo?.getAttribute("position") || geo.getAttribute("color")) return;
+    const colors = new Float32Array(geo.getAttribute("position").count * 3);
+    colors.fill(1);
+    geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+  });
 }
 
 function makeHorse(mats) {
@@ -1232,6 +1355,7 @@ function makeHorse(mats) {
     const trace = add(new THREE.BoxGeometry(0.07, 0.07, 3.3), mats.trimDark, side * 0.72, 3.85, -0.15);
     trace.castShadow = false;
   }
+  ensureColor(g);
   return g;
 }
 
@@ -1285,6 +1409,7 @@ function makeWagon(mats) {
   const hound = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.12, 0.14), mats.trimDark);
   hound.position.set(0, 3.05, 4.05);
   g.add(singletree, hound);
+  ensureColor(g);
   return g;
 }
 
@@ -1377,5 +1502,6 @@ function makeProp(p, mats) {
     }
     add(mats.trim, 0, 2.8, 10.2, 6, 0.3, 2);
   }
+  ensureColor(g);
   return g;
 }
