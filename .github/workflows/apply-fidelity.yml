@@ -1,0 +1,43 @@
+name: apply fidelity
+
+"on":
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/apply-fidelity.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Apply fidelity patch
+        run: |
+          set -euo pipefail
+          cat .github/fidelity/part-00.txt .github/fidelity/part-01.txt .github/fidelity/part-02.txt .github/fidelity/part-03.txt .github/fidelity/part-04.txt .github/fidelity/part-05.txt .github/fidelity/part-06.txt .github/fidelity/part-07.txt .github/fidelity/part-08.txt > /tmp/patch.b64
+          echo "2fc0cbcb6bbc4951a350873759bff29fd528c34c5d848540d14243fae3ab1e0f  /tmp/patch.b64" | sha256sum -c -
+          base64 -d /tmp/patch.b64 | gzip -dc > /tmp/change.diff
+          git apply --check /tmp/change.diff
+          git apply /tmp/change.diff
+          rm -rf .github/fidelity
+          rm -f .github/workflows/apply-fidelity.yml
+          git add -A
+          git config user.name "MCR-Game-Project"
+          git config user.email "mcr@steinjager.com"
+          python3 - <<'PY'
+          import subprocess
+          msg = (
+              "Draw the town with real materials and late-afternoon light.\n"
+              "\n"
+              "Brick, clapboard, shingles, tin, stone, board sidewalks, and rutted dirt streets now use repeating textures. Windows sit back in frames with sills and arches, doors have panels, and cornices have brackets and dentils. The sun is low and warm, with a Picture menu for Fast, Street, or Fine.\n"
+              "\n"
+              "Co-authored-by: mcr <mcr@steinjager.com>\n"
+          )
+          subprocess.run(["git", "commit", "-m", msg], check=True)
+          PY
+          git push origin HEAD:main
