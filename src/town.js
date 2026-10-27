@@ -323,16 +323,76 @@ export function buildTown(data, scene) {
     }
   };
 
-  // A closed pediment: clapboard courses, a horizontal cornice with returns,
-  // dentils, and raking trim. Used for Ball Bros. and for house front gables.
+  // One smooth clapboard triangle, a horizontal cornice with returns, and
+  // raking boards that lie on the two slopes. The old courses were a ziggurat,
+  // and a rake rotated by side * tilt ran up the wrong diagonal.
   const drawPediment = (mat, width, rise, yBase, z) => {
-    const courses = Math.max(7, Math.round(rise / 0.8));
-    for (let i = 0; i < courses; i++) {
-      const t = i / courses;
-      const y = yBase + (i + 0.5) * (rise / courses);
-      const w = Math.max(0.55, width * (1 - t));
-      box(mat, 0, y, z, w, rise / courses + 0.16, 0.82);
+    const thick = 0.7;
+    const feet = mat?.userData?.uvFeet || { u: 8, v: 3.2 };
+    const zf = z + thick / 2;
+    const zb = z - thick / 2;
+    const y0 = yBase;
+    const y1 = yBase + rise;
+    const x0 = -width / 2;
+    const x1 = width / 2;
+    const positions = [];
+    const normals = [];
+    const uvs = [];
+    const indices = [];
+    const push = (x, y, zz, nx, ny, nz) => {
+      positions.push(x, y, zz);
+      normals.push(nx, ny, nz);
+      uvs.push((x - x0) / feet.u, (y - y0) / feet.v);
+      return positions.length / 3 - 1;
+    };
+    const tri = (a, b, c) => indices.push(a, b, c);
+    const fl = push(x0, y0, zf, 0, 0, 1);
+    const fr = push(x1, y0, zf, 0, 0, 1);
+    const fp = push(0, y1, zf, 0, 0, 1);
+    tri(fl, fr, fp);
+    const bl = push(x0, y0, zb, 0, 0, -1);
+    const bp = push(0, y1, zb, 0, 0, -1);
+    const br = push(x1, y0, zb, 0, 0, -1);
+    tri(bl, bp, br);
+    const slope = Math.hypot(width / 2, rise);
+    const s = rise / slope;
+    const c = width / 2 / slope;
+    {
+      const nx = -s;
+      const ny = c;
+      const a = push(x0, y0, zf, nx, ny, 0);
+      const b = push(0, y1, zf, nx, ny, 0);
+      const d = push(0, y1, zb, nx, ny, 0);
+      const e = push(x0, y0, zb, nx, ny, 0);
+      tri(a, b, d);
+      tri(a, d, e);
     }
+    {
+      const nx = s;
+      const ny = c;
+      const a = push(x1, y0, zf, nx, ny, 0);
+      const b = push(x1, y0, zb, nx, ny, 0);
+      const d = push(0, y1, zb, nx, ny, 0);
+      const e = push(0, y1, zf, nx, ny, 0);
+      tri(a, b, e);
+      tri(b, d, e);
+    }
+    {
+      const a = push(x0, y0, zf, 0, -1, 0);
+      const b = push(x0, y0, zb, 0, -1, 0);
+      const d = push(x1, y0, zb, 0, -1, 0);
+      const e = push(x1, y0, zf, 0, -1, 0);
+      tri(a, b, d);
+      tri(a, d, e);
+    }
+    const face = new THREE.BufferGeometry();
+    face.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    face.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
+    face.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+    face.setIndex(indices);
+    face.applyMatrix4(buildingMatrix);
+    put(mat, face);
+
     box(mats.trim, 0, yBase - 0.42, z + 0.02, width + 0.35, 0.72, 0.48);
     box(mats.trim, 0, yBase + 0.12, z + 0.28, width + 1.15, 0.5, 1.2);
     dentilCourse(yBase - 0.08, z + 0.48, width * 0.94);
@@ -340,21 +400,25 @@ export function buildTown(data, scene) {
       box(mats.trim, side * (width / 2 + 0.05), yBase + 0.12, z - 0.85, 0.72, 0.5, 1.7);
       box(mats.trimDark, side * (width / 2 - 0.35), yBase - 0.95, z + 0.32, 0.32, 1.15, 0.55);
     }
-    const slope = Math.hypot(width / 2, rise);
     const tilt = Math.atan2(rise, width / 2);
-    for (const side of [-1, 1]) {
-      const rake = new THREE.BoxGeometry(slope + 0.7, 0.42, 0.62);
-      scaleBoxUVs(rake, slope, 0.42, 0.62, mats.trim);
-      rake.applyMatrix4(new THREE.Matrix4().makeRotationZ(side * tilt));
-      rake.applyMatrix4(new THREE.Matrix4().makeTranslation(side * width / 4, yBase + rise / 2 + 0.12, z + 0.34));
+    const length = slope + 0.12;
+    const rakeZ = zf + 0.04;
+    const rakes = [
+      [tilt, -width / 4],
+      [Math.PI - tilt, width / 4],
+    ];
+    for (const [angle, x] of rakes) {
+      const rake = new THREE.BoxGeometry(length, 0.46, 0.32);
+      scaleBoxUVs(rake, length, 0.46, 0.32, mats.trim);
+      rake.applyMatrix4(new THREE.Matrix4().makeRotationZ(angle));
+      rake.applyMatrix4(new THREE.Matrix4().makeTranslation(x, yBase + rise / 2, rakeZ));
       rake.applyMatrix4(buildingMatrix);
       put(mats.trim, rake);
     }
-    box(mats.trim, 0, yBase + rise + 0.2, z + 0.28, 0.85, 0.48, 0.7);
   };
 
-  // Square false front with a projecting cornice. A few get a small center
-  // pediment, a stepped parapet, or a shallow segmental crest.
+  // Square false front with a projecting cornice. A few carry a small smooth
+  // center pediment. No stacked steps and no block arches.
   const drawFalseFront = (b, wallH, body) => {
     const fz = b.depth / 2 + 0.18;
     const style = idHash(b.id) % 7;
@@ -370,20 +434,6 @@ export function buildTown(data, scene) {
     }
     if (style === 4) {
       drawPediment(body, b.width * 0.4, 3.1, wallH + parapetH - 0.05, fz + 0.12);
-    } else if (style === 5) {
-      box(body, 0, wallH + parapetH + 0.85, fz - 0.02, b.width * 0.58, 1.9, 1.12);
-      box(mats.trim, 0, wallH + parapetH + 1.75, fz + 0.1, b.width * 0.64, 0.32, 1.4);
-    } else if (style === 6) {
-      const steps = 9;
-      const span = b.width * 0.92;
-      const rise = 2.15;
-      for (let i = 0; i < steps; i++) {
-        const t = (i + 0.5) / steps;
-        const u = (t - 0.5) * 2;
-        const yy = wallH + parapetH + rise * (1 - u * u) * 0.55;
-        box(body, u * span * 0.46, yy, fz + 0.02, span / steps + 0.2, 0.7, 1.05);
-      }
-      box(mats.trim, 0, wallH + parapetH + 0.15, fz + 0.12, b.width + 0.4, 0.22, 1.35);
     }
   };
 
