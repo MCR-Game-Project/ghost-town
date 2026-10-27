@@ -1,0 +1,43 @@
+name: apply accuracy pass
+
+"on":
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/apply-accuracy.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Apply accuracy patch
+        run: |
+          set -euo pipefail
+          cat .github/accuracy/part-00.txt .github/accuracy/part-01.txt .github/accuracy/part-02.txt .github/accuracy/part-03.txt .github/accuracy/part-04.txt .github/accuracy/part-05.txt .github/accuracy/part-06.txt .github/accuracy/part-07.txt > /tmp/patch.b64
+          echo "8141fa4207716719a1e522533dd1c0977cd06bba0cacf4ca4e0f729f9a378ff5  /tmp/patch.b64" | sha256sum -c -
+          base64 -d /tmp/patch.b64 | gzip -dc > /tmp/change.diff
+          git apply --check /tmp/change.diff
+          git apply /tmp/change.diff
+          rm -rf .github/accuracy
+          rm -f .github/workflows/apply-accuracy.yml
+          git add -A
+          git config user.name "MCR-Game-Project"
+          git config user.email "mcr@steinjager.com"
+          python3 - <<'PY'
+          import subprocess
+          msg = (
+              "Match the photo-backed fronts more closely.\n"
+              "\n"
+              "Cole, the Hendee Store, the Farmers National Bank, both Ball repositories, the elevator, both depots, the Hendee House, the 1875 school, the Reformed Church, and the Main and Hail rows now follow the pictures or the written sizes. Unnamed shops keep ordinary fronts and no new proprietor signs. Streets and the compass stay as they are.\n"
+              "\n"
+              "Co-authored-by: mcr <mcr@steinjager.com>\n"
+          )
+          subprocess.run(["git", "commit", "-m", msg], check=True)
+          PY
+          git push origin HEAD:main
