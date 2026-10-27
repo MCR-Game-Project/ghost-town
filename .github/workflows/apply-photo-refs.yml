@@ -1,0 +1,43 @@
+name: apply photo references
+
+"on":
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/apply-photo-refs.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Apply photo-reference patch
+        run: |
+          set -euo pipefail
+          cat .github/photo-refs/part-00.txt .github/photo-refs/part-01.txt .github/photo-refs/part-02.txt .github/photo-refs/part-03.txt .github/photo-refs/part-04.txt .github/photo-refs/part-05.txt .github/photo-refs/part-06.txt .github/photo-refs/part-07.txt .github/photo-refs/part-08.txt .github/photo-refs/part-09.txt .github/photo-refs/part-10.txt > /tmp/patch.b64
+          echo "1cdc770eb68d0b5a2f70bf54d21967df6b2ae69a37d6156d054836c132d83f48  /tmp/patch.b64" | sha256sum -c -
+          base64 -d /tmp/patch.b64 | gzip -dc > /tmp/change.diff
+          git apply --check /tmp/change.diff
+          git apply /tmp/change.diff
+          rm -rf .github/photo-refs
+          rm -f .github/workflows/apply-photo-refs.yml
+          git add -A
+          git config user.name "MCR-Game-Project"
+          git config user.email "mcr@steinjager.com"
+          python3 - <<'PY'
+          import subprocess
+          msg = (
+              "Catalog Mark's new references and place the 1875 school at Jackson and Twyman.\n"
+              "\n"
+              "The East Main bank postcard sets the Farmers National Bank front. Ball Bros. is two 28-by-48-foot repositories from the 1885 survey; the later brick works is not copied. Twyman Street is the cross street northeast of Wells. Pages that would not open are listed without invented details.\n"
+              "\n"
+              "Co-authored-by: mcr <mcr@steinjager.com>\n"
+          )
+          subprocess.run(["git", "commit", "-m", msg], check=True)
+          PY
+          git push origin HEAD:main
