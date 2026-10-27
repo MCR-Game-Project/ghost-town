@@ -5,6 +5,13 @@ import { mirrorPlat } from "./orient.js";
 
 const FACING = { "+z": 0, "-z": Math.PI, "+x": Math.PI / 2, "-x": -Math.PI / 2 };
 
+const idHash = (id) => {
+  let h = 0;
+  const s = id || "";
+  for (let i = 0; i < s.length; i++) h = (h * 33 + s.charCodeAt(i)) >>> 0;
+  return h;
+};
+
 export function buildTown(data, scene) {
   mirrorPlat(data);
   const mats = makeMaterials();
@@ -93,52 +100,65 @@ export function buildTown(data, scene) {
     localBox(mats.siding.darkred, 0, 10.2, fz + 2.2, width, 0.12, 4.3, -0.5);
   };
 
-  // Brick row and frame false-fronts from the West Main, East Hail (1918), and East Main street photographs.
+  // Unnamed shops on Main, Hail, and Hurst. Bay width follows the street photographs:
+  // a brick front is about twelve feet to a window, a false front about fourteen.
+  // Door side alternates so the row is not a repeated stamp. No proprietor is painted on.
   const drawStreetFront = (b, wallH, frame) => {
     const fz = b.depth / 2 + 0.14;
-    const bays = Math.max(2, Math.round(b.width / (frame ? 10 : 8)));
+    const bays = frame
+      ? Math.max(2, Math.min(3, Math.round(b.width / 14)))
+      : Math.max(2, Math.min(4, Math.round(b.width / 12)));
     const gap = b.width / bays;
     const arch = frame ? "flat" : "segmental";
+    const doorAt = idHash(b.id) % 2 === 0 ? bays - 1 : 0;
+    const winW = Math.min(frame ? 3.4 : 4.6, Math.max(2.4, gap * 0.46));
     if (b.stories > 1) {
+      box(mats.stone, 0, wallH * 0.5, fz + 0.01, b.width * 0.94, 0.22, 0.12);
       for (let col = 0; col < bays; col++) {
         const x = -b.width / 2 + gap * (col + 0.5);
-        const winW = Math.min(2.7, gap - 1.7);
-        frontSash(x, wallH * 0.68, fz, winW, b.stories > 2 ? 5.2 : 6.3, arch);
-        if (b.stories > 2) frontSash(x, wallH * 0.4, fz, winW, 5.4, arch);
+        frontSash(x, wallH * 0.72, fz, winW, b.stories > 2 ? 5.4 : 6.8, arch);
+        if (b.stories > 2) frontSash(x, wallH * 0.42, fz, winW, 5.6, arch);
       }
     }
     if (!frame) {
-      box(mats.trim, 0, wallH - 0.2, fz + 0.05, b.width + 0.55, 0.95, 0.8);
-      const brackets = Math.max(4, Math.round(b.width / 3.8));
+      box(mats.trim, 0, wallH - 0.15, fz + 0.05, b.width + 0.5, 0.85, 0.7);
+      const brackets = Math.max(4, Math.round(b.width / 3.2));
       for (let i = 0; i < brackets; i++) {
         const x = -b.width / 2 + (b.width * (i + 0.5)) / brackets;
-        box(mats.trimDark, x, wallH - 1.45, fz + 0.3, 0.36, 1.25, 0.65);
+        box(mats.trimDark, x, wallH - 1.35, fz + 0.28, 0.32, 1.35, 0.62);
       }
     }
     for (let col = 0; col < bays; col++) {
       const x = -b.width / 2 + gap * (col + 0.5);
-      if (col === bays - 1) {
-        const dw = Math.min(3.4, gap - 0.7);
-        box(mats.trimDark, x, 4.3, fz, dw, 8.1, 0.24);
-        box(mats.glass, x, 6.35, fz + 0.12, 1.15, 2.15, 0.05);
-        box(mats.trim, x, 8.5, fz + 0.08, dw + 0.3, 0.4, 0.12);
+      if (col === doorAt) {
+        const dw = Math.min(3.5, gap - 0.8);
+        box(mats.trimDark, x, 4.2, fz, dw, 7.8, 0.22);
+        box(mats.glass, x, 7.7, fz + 0.1, dw * 0.7, 0.7, 0.05);
+        box(mats.glass, x, 5.6, fz + 0.12, dw * 0.36, 2.6, 0.05);
+        box(mats.trim, x, 8.35, fz + 0.08, dw + 0.25, 0.35, 0.1);
       } else {
-        const gw = Math.min(6.2, gap - 1.15);
-        box(mats.trimDark, x, 1.25, fz, gw, 1.7, 0.2);
-        box(mats.glass, x, 5.15, fz, gw, 5.5, 0.12);
-        box(mats.trim, x, 5.15, fz + 0.08, gw + 0.28, 5.85, 0.08);
-        box(mats.trim, x, 5.15, fz + 0.16, 0.1, 5.2, 0.05);
+        const gw = Math.min(frame ? 5.4 : 7.2, gap - 0.9);
+        box(mats.trimDark, x, 1.15, fz, gw, 1.55, 0.18);
+        box(mats.glass, x, 5.05, fz, gw * 0.9, 5.5, 0.12);
+        box(mats.trim, x, 5.05, fz + 0.07, gw + 0.2, 5.8, 0.07);
+        box(mats.glass, x, 8.15, fz, gw * 0.9, 0.7, 0.06);
+        if (!frame) {
+          box(mats.trimDark, x - gw / 2 - 0.1, 4.8, fz + 0.1, 0.2, 8.2, 0.16);
+          box(mats.trimDark, x + gw / 2 + 0.1, 4.8, fz + 0.1, 0.2, 8.2, 0.16);
+        }
       }
     }
-    localBox(mats.siding.darkred, 0, b.stories > 1 ? 10.4 : 8.6, fz + 2.05, b.width * 0.92, 0.12, 4.1, -0.42);
+    if (b.stories > 1) {
+      localBox(mats.siding.darkred, 0, 10.6, fz + 2.1, b.width * 0.9, 0.12, 4.2, -0.38);
+    }
     const party = b.party || [];
     for (const side of [-1, 1]) {
       if (party.includes(side === -1 ? "left" : "right")) continue;
       const x = side * (b.width / 2 + 0.08);
-      const rows = Math.max(1, Math.floor(b.depth / 16));
+      const rows = Math.max(1, Math.floor(b.depth / 18));
       for (let i = 0; i < rows; i++) {
         const z = -b.depth / 2 + ((i + 0.5) * b.depth) / rows;
-        if (b.stories > 1) sideSash(x, wallH * 0.66, z, side, 2.4, 5.0, arch);
+        if (b.stories > 1) sideSash(x, wallH * 0.7, z, side, 2.3, 5.2, arch);
       }
     }
   };
@@ -152,26 +172,30 @@ export function buildTown(data, scene) {
     const arch = f.arches || "flat";
     const doorAt =
       f.door === "center" ? Math.floor((bays - 1) / 2) : f.door === "left" ? 0 : f.door === "none" ? -1 : bays - 1;
+    const winW = Math.min(6.2, Math.max(2.8, gap * 0.48));
+    const winH = b.stories > 2 ? 6.1 : 7.3;
+    if (b.stories > 1) box(mats.stone, 0, wallH * 0.5, fz + 0.01, b.width * 0.96, 0.26, 0.14);
     for (let col = 0; col < bays; col++) {
       const x = -b.width / 2 + gap * (col + 0.5);
-      const gw = Math.max(3.1, gap - (f.storefront === "iron" ? 1.2 : 1.8));
+      const gw = Math.max(2.8, gap - (f.storefront === "iron" ? 0.7 : 1.4));
       if (col === doorAt) {
-        const dw = f.door === "center" ? Math.min(4.4, gap - 1) : 3.3;
-        box(mats.trimDark, x, 4.3, fz, dw, 8, 0.26);
-        box(mats.trim, x, 8.55, fz + 0.05, dw + 0.35, 0.5, 0.14);
-        if (f.door === "center") box(mats.trim, x, 4.2, fz + 0.16, 0.12, 7.2, 0.06);
-        box(mats.glass, x, 6.4, fz + 0.12, dw * 0.32, 2.1, 0.05);
+        const dw = f.door === "center" ? Math.min(5.0, gap - 0.7) : Math.min(3.6, gap - 0.55);
+        box(mats.trimDark, x, 4.35, fz, dw, 8.1, 0.22);
+        box(mats.trim, x, 8.65, fz + 0.06, dw + 0.28, 0.48, 0.12);
+        box(mats.glass, x, 8.05, fz + 0.1, dw * 0.68, 0.62, 0.05);
+        if (f.door === "center") box(mats.trim, x, 4.15, fz + 0.15, 0.14, 7.2, 0.06);
+        box(mats.glass, x, 5.55, fz + 0.12, dw * 0.36, 3.4, 0.05);
       } else {
-        box(mats.trimDark, x, 1.4, fz, gw, 2.05, 0.22);
-        box(mats.glass, x, 5.45, fz, gw, 5.15, 0.14);
-        box(mats.trim, x, 5.45, fz + 0.05, gw + 0.28, 5.45, 0.08);
-        box(mats.glass, x, 8.5, fz, gw, 1.0, 0.1);
+        box(mats.trimDark, x, 1.2, fz, gw, 1.65, 0.18);
+        box(mats.glass, x, 5.15, fz, gw * 0.92, 5.55, 0.12);
+        box(mats.trim, x, 5.15, fz + 0.05, gw + 0.18, 5.85, 0.07);
+        box(mats.glass, x, 8.3, fz, gw * 0.92, 0.78, 0.07);
         if (f.storefront === "iron") {
-          box(mats.trimDark, x - gw / 2 - 0.18, 5, fz + 0.1, 0.3, 8.3, 0.22);
-          box(mats.trimDark, x + gw / 2 + 0.18, 5, fz + 0.1, 0.3, 8.3, 0.22);
+          box(mats.trimDark, x - gw / 2 - 0.1, 4.9, fz + 0.1, 0.22, 8.5, 0.16);
+          box(mats.trimDark, x + gw / 2 + 0.1, 4.9, fz + 0.1, 0.22, 8.5, 0.16);
         }
       }
-      if (b.stories > 1) frontSash(x, wallH * 0.68, fz, Math.min(3.4, gap - 2.3), 5.1, arch);
+      if (b.stories > 1) frontSash(x, wallH * 0.72, fz, winW, winH, arch);
     }
     if (f.cornice === "bracket" || f.cornice === "plain") {
       box(mats.trim, 0, wallH - 0.2, fz, b.width + 0.5, 0.8, 0.65);
@@ -447,14 +471,20 @@ export function buildTown(data, scene) {
     const body = frame ? paintOf(b) : brickOf(b);
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.stone, 0, 0.45, 0, b.width + 0.3, 0.9, b.depth + 0.3);
+    const variedFront = frame && !b.facade;
+    const peaked = Boolean(b.facade?.peak) || (variedFront && idHash(b.id) % 3 === 0);
     if (frame) {
       gable(b.width, b.depth, 5, wallH - 1, mats.roofDark);
-      if (b.facade?.peak) {
-        // The centennial photograph is a full-width triangular false front, not a flat parapet.
-        drawFrontGable(body, b.width + 0.6, 15, wallH - 1.2, b.depth / 2 + 0.22);
+      if (peaked) {
+        // Ball Bros. is one triangle across the whole front. Other frame shops
+        // on the street photographs use the same peaked false front or a step.
+        const rise = b.facade?.peak ? Math.min(11, b.width * 0.4) : Math.max(6.5, b.width * 0.32);
+        drawFrontGable(body, b.width + 0.45, rise, wallH - 0.5, b.depth / 2 + 0.2);
       } else {
-        box(body, 0, wallH + 2.2, b.depth / 2 - 0.5, b.width + 0.4, 6.2, 1);
-        box(mats.trim, 0, wallH + 5.2, b.depth / 2 - 0.35, b.width * 0.55, 2.2, 1.1);
+        box(body, 0, wallH + 1.45, b.depth / 2 - 0.42, b.width + 0.3, 3.1, 1.05);
+        box(body, 0, wallH + 3.4, b.depth / 2 - 0.4, b.width * 0.66, 2.1, 1.08);
+        box(body, 0, wallH + 4.85, b.depth / 2 - 0.38, b.width * 0.34, 1.5, 1.12);
+        box(mats.trim, 0, wallH + 0.45, b.depth / 2 + 0.12, b.width + 0.15, 0.28, 0.16);
       }
     } else if (b.facade?.cornice) {
       box(brickOf(b), 0, wallH + 0.7, 0, b.width + 0.35, 1.4, b.depth + 0.25);
@@ -479,7 +509,39 @@ export function buildTown(data, scene) {
     return wallH + (frame ? 8 : 4);
   };
 
+  // 1861 Reformed Church. No photograph was found, so this is the ordinary frame church of that date.
+  const addReformedChurch = (b) => {
+    const wallH = 18;
+    const body = paintOf(b);
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(mats.stone, 0, 0.7, 0, b.width + 0.5, 1.4, b.depth + 0.5);
+    gable(b.width, b.depth, b.width * 0.42, wallH, mats.roofDark);
+    const fz = b.depth / 2 + 0.14;
+    box(mats.trimDark, 0, 4.6, fz, 5.2, 8.4, 0.22);
+    box(mats.glass, -0.7, 5.2, fz + 0.1, 0.9, 3.2, 0.05);
+    box(mats.glass, 0.7, 5.2, fz + 0.1, 0.9, 3.2, 0.05);
+    box(mats.trim, 0, 9.2, fz + 0.08, 5.6, 0.4, 0.12);
+    frontSash(0, 13.2, fz, 3.2, 3.4, "round");
+    for (let i = 0; i < 3; i++) {
+      const z = -b.depth * 0.22 + i * (b.depth * 0.22);
+      for (const side of [-1, 1]) {
+        sideSash(side * (b.width / 2 + 0.08), 9.5, z, side, 2.2, 8.2, "round");
+      }
+    }
+    const tz = b.depth / 2 - 5;
+    box(body, 0, 26, tz, 10, 28, 10);
+    box(mats.trim, 0, 16, tz + 5.2, 3.2, 6.4, 0.16);
+    const cone = new THREE.ConeGeometry(7.2, 16, 4);
+    cone.rotateY(Math.PI / 4);
+    cone.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 48, tz));
+    cone.applyMatrix4(buildingMatrix);
+    put(mats.roofDark, cone);
+    signFor(b, 14);
+    return 64;
+  };
+
   const addChurch = (b) => {
+    if (b.id === "reformed-church") return addReformedChurch(b);
     const wallH = 20;
     const body = b.material === "brick" ? brickOf(b) : paintOf(b);
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
@@ -545,25 +607,27 @@ export function buildTown(data, scene) {
     eaveBrackets(b.width, b.depth, wallH - 0.3);
     const fz = b.depth / 2;
     // Operator's bay, centered on the track side.
-    box(body, 0, 8.2, fz + 2.4, 18, 15.2, 5.2);
-    box(mats.trim, 0, 8.2, fz + 5.15, 16.4, 8.2, 0.18);
-    for (const x of [-5.2, 0, 5.2]) frontSash(x, 8.4, fz + 5.05, 3.1, 6.4, "flat");
-    box(mats.trimDark, 0, 3.6, fz + 5.05, 3.2, 6.6, 0.16);
-    // A long row of double-hung windows and a door toward each end.
-    const gap = 9.2;
-    for (let i = -3; i <= 3; i++) {
-      if (i === 0) continue;
-      const x = i * gap;
-      if (Math.abs(x) > b.width / 2 - 6) continue;
-      if (Math.abs(i) === 3) {
-        box(mats.trimDark, x, 4.6, fz + 0.16, 3.4, 8.2, 0.22);
-        box(mats.glass, x, 6.6, fz + 0.28, 1.2, 2.2, 0.05);
+    // Trackside bay, three faces of glass, set on the long wall.
+    box(body, 0, 8.2, fz + 2.4, 16, 14.6, 4.8);
+    for (const x of [-4.4, 0, 4.4]) frontSash(x, 8.2, fz + 4.9, 2.7, 6.2, "flat");
+    sideSash(8.1, 8.2, fz + 2.4, 1, 2.2, 5.4, "flat");
+    sideSash(-8.1, 8.2, fz + 2.4, -1, 2.2, 5.4, "flat");
+    box(mats.trimDark, 0, 3.5, fz + 4.9, 3.1, 6.2, 0.14);
+    const openings = Math.max(5, Math.round(b.width / 11));
+    for (let i = 0; i < openings; i++) {
+      const x = -b.width / 2 + 5 + ((b.width - 10) * i) / (openings - 1);
+      if (Math.abs(x) < 10) continue;
+      const end = i === 0 || i === openings - 1;
+      if (end) {
+        box(mats.trimDark, x, 4.5, fz + 0.16, 3.2, 8.0, 0.2);
+        box(mats.glass, x, 6.4, fz + 0.26, 1.15, 2.1, 0.05);
       } else {
-        frontSash(x, 7.6, fz + 0.12, 2.8, 5.8, "flat");
+        frontSash(x, 7.5, fz + 0.12, 2.6, 5.6, "flat");
       }
     }
-    box(mats.plank, 0, 0.55, fz + 7.2, b.width + 18, 0.4, 12);
-    box(mats.brick.red, -b.width * 0.32, wallH + 4.2, -2, 2.2, 8, 2.2);
+    box(mats.plank, 0, 0.55, fz + 7.2, b.width + 16, 0.4, 12);
+    box(mats.brick.red, b.width * 0.38, wallH + 5.2, 0, 2.4, 9, 2.4);
+    box(mats.brick.dark, b.width * 0.38, wallH + 10, 0, 2.8, 1.2, 2.8);
     signFor(b, 12);
     return 28;
   };
@@ -577,11 +641,14 @@ export function buildTown(data, scene) {
     wideGable(b.width, b.depth, 6.5, wallH, 4.2);
     eaveBrackets(b.width, b.depth, wallH - 0.4);
     const fz = b.depth / 2;
-    box(body, 0, 7.6, fz + 2.2, 14, 13.5, 4.6);
-    for (const x of [-3.6, 0, 3.6]) frontSash(x, 8, fz + 4.6, 2.6, 5.6, "flat");
-    box(mats.trimDark, -b.width * 0.28, 4.4, fz + 0.16, 3.3, 7.8, 0.2);
-    frontSash(b.width * 0.22, 7.2, fz + 0.12, 2.6, 5.2, "flat");
-    frontSash(-b.width * 0.05, 7.2, fz + 0.12, 2.6, 5.2, "flat");
+    box(body, 0, 7.4, fz + 2.1, 12, 12.8, 4.2);
+    for (const x of [-3.2, 0, 3.2]) frontSash(x, 7.6, fz + 4.3, 2.3, 5.2, "flat");
+    sideSash(6.1, 7.6, fz + 2.1, 1, 2.0, 4.8, "flat");
+    sideSash(-6.1, 7.6, fz + 2.1, -1, 2.0, 4.8, "flat");
+    box(mats.trimDark, -b.width * 0.34, 4.3, fz + 0.16, 3.2, 7.6, 0.18);
+    frontSash(-b.width * 0.16, 7.1, fz + 0.12, 2.4, 5.0, "flat");
+    frontSash(b.width * 0.2, 7.1, fz + 0.12, 2.5, 5.0, "flat");
+    frontSash(b.width * 0.36, 7.1, fz + 0.12, 2.4, 5.0, "flat");
     const canopyZ = fz + 6.4;
     box(mats.plank, 0, 0.5, canopyZ, b.width + 8, 0.35, 11);
     localBox(mats.roofDark, 0, 11.2, canopyZ, b.width + 4, 0.22, 12, -0.12);
@@ -605,23 +672,30 @@ export function buildTown(data, scene) {
     box(mats.stone, 0, 0.8, 0, b.width + 0.8, 1.6, b.depth + 0.8);
     const fz = b.depth / 2 + 0.16;
     box(mats.trim, 0, wallH - 0.45, fz, b.width + 1.4, 1.5, 1.15);
-    const brackets = 11;
+    const brackets = 15;
     for (let i = 0; i < brackets; i++) {
       const x = -b.width / 2 + (b.width * (i + 0.5)) / brackets;
       box(mats.trimDark, x, wallH - 2.1, fz + 0.35, 0.45, 1.7, 0.85);
     }
-    const bays = 5;
+    // Seven bays of paired sash, the rhythm of the Hotel Alexander photograph.
+    const bays = 7;
     const gap = b.width / bays;
     for (let floor = 0; floor < 3; floor++) {
       for (let col = 0; col < bays; col++) {
         const x = -b.width / 2 + gap * (col + 0.5);
-        if (floor === 0 && col === 2) {
-          box(mats.trimDark, x, 5.2, fz, 4.2, 9.4, 0.26);
-          box(mats.glass, x, 7.6, fz + 0.14, 1.6, 2.6, 0.06);
-          box(mats.trim, x, 10.1, fz + 0.1, 4.8, 0.45, 0.16);
+        if (floor === 0 && col === 3) {
+          box(mats.trimDark, x, 5.1, fz, 4.0, 9.2, 0.24);
+          box(mats.glass, x, 9.4, fz + 0.12, 2.6, 0.7, 0.05);
+          box(mats.glass, x - 0.7, 5.6, fz + 0.14, 0.85, 4.2, 0.05);
+          box(mats.glass, x + 0.7, 5.6, fz + 0.14, 0.85, 4.2, 0.05);
+          box(mats.trim, x, 10.0, fz + 0.1, 4.4, 0.4, 0.14);
+        } else if (floor === 0) {
+          frontSash(x, 6.3, fz, Math.min(2.5, gap - 1.5), 7.2, "segmental");
         } else {
-          const y = floor === 0 ? 6.2 : floor === 1 ? 17.2 : 28.2;
-          frontSash(x, y, fz, Math.min(3.2, gap - 2.4), floor === 0 ? 7.2 : 6.4, "segmental");
+          const y = floor === 1 ? 17.6 : 28.6;
+          const half = Math.min(1.15, gap * 0.2);
+          frontSash(x - half, y, fz, half * 0.9, 5.8, "segmental");
+          frontSash(x + half, y, fz, half * 0.9, 5.8, "segmental");
         }
       }
     }
@@ -640,28 +714,37 @@ export function buildTown(data, scene) {
 
   const addElevator = (b) => {
     const body = paintOf(b);
-    const h = 54;
-    box(body, 0, h / 2, 0, b.width, h, b.depth * 0.7);
-    box(body, 0, h + 8, 0, b.width * 0.62, 16, b.depth * 0.42);
-    gable(b.width * 0.62, b.depth * 0.42, 6, h + 16, mats.roofDark);
+    const h = 48;
+    const cribD = b.depth * 0.62;
+    box(body, 0, h / 2, 0, b.width, h, cribD);
+    // Headhouse, narrower, with the gable end toward the street the hotel faces.
+    box(body, 0, h + 7, 0, b.width * 0.55, 14, cribD * 0.72);
+    gable(b.width * 0.55, cribD * 0.72, 7, h + 14, mats.roofDark);
     if (b.facade?.cupola) {
-      box(body, 0, h + 22, 0, b.width * 0.22, 8, b.depth * 0.16);
-      box(mats.roofDark, 0, h + 26.4, 0, b.width * 0.3, 1.1, b.depth * 0.22);
-      box(mats.trim, 0, h + 22, b.depth * 0.1, b.width * 0.08, 3.2, 0.12);
+      box(body, 0, h + 20, 0, b.width * 0.2, 7, cribD * 0.28);
+      for (const x of [-b.width * 0.1 - 0.05, b.width * 0.1 + 0.05]) {
+        box(mats.trim, x, h + 20, 0, 0.12, 2.4, 1.6);
+        box(mats.glass, x, h + 20, 0, 0.08, 1.8, 1.1);
+      }
+      box(mats.roofDark, 0, h + 24, 0, b.width * 0.28, 1.0, cribD * 0.38);
     }
-    // A column of small windows so the shaft reads as the wooden elevator in the train views.
-    const shaftX = b.width / 2 + 0.08;
-    for (let i = 0; i < 6; i++) {
-      const y = 14 + i * 6.4;
-      box(mats.trim, shaftX, y, 0, 0.16, 3.2, 2.1);
-      box(mats.glass, shaftX + 0.08, y, 0, 0.08, 2.4, 1.4);
+    // Shaft windows on both long faces, the way the trackside views read.
+    for (const side of [-1, 1]) {
+      const x = side * (b.width / 2 + 0.06);
+      for (let i = 0; i < 6; i++) {
+        const y = 8 + i * 6.6;
+        box(mats.trim, x, y, 0, 0.14, 2.6, 1.8);
+        box(mats.glass, x + side * 0.06, y, 0, 0.06, 2.0, 1.2);
+      }
     }
-    // Driveway shed.
-    box(mats.siding.gray, 0, 8, b.depth * 0.42, b.width + 4, 16, 18);
-    gable(b.width + 4, 18, 4, 16, mats.roofDark);
-    box(mats.trimDark, 0, 6, b.depth * 0.42 + 9.2, 12, 10, 0.2);
-    signFor(b, 40);
-    return h + 24;
+    // Driveway shed on the track side, with an open wagon mouth.
+    const shedZ = b.depth * 0.38;
+    box(mats.siding.gray, 0, 7.5, shedZ, b.width + 2, 15, 16);
+    gable(b.width + 2, 16, 4.5, 15, mats.roofDark);
+    box(mats.trimDark, 0, 5.2, shedZ + 8.1, 11, 9.2, 0.18);
+    box(mats.coal, 0, 4.6, shedZ + 7.6, 9.2, 7.6, 0.3);
+    signFor(b, h - 4);
+    return h + 26;
   };
 
   const addMill = (b) => {
@@ -705,15 +788,18 @@ export function buildTown(data, scene) {
     box(mats.trimDark, 0, baseH * 0.48, fz, 5.4, baseH * 0.82, 0.28);
     box(mats.glass, -1.05, baseH * 0.62, fz + 0.12, 1.3, 2.2, 0.05);
     box(mats.glass, 1.05, baseH * 0.62, fz + 0.12, 1.3, 2.2, 0.05);
-    const bays = 7;
+    // Four classrooms a floor: four windows each side of the center doors. No tower.
+    const bays = 9;
     const gap = b.width / bays;
     for (let col = 0; col < bays; col++) {
-      if (col === 3) continue;
+      if (col === 4) continue;
       const x = -b.width / 2 + gap * (col + 0.5);
-      frontSash(x, baseH * 0.5, fz, 2.3, 3.8, "flat");
-      frontSash(x, baseH + floorH * 0.55, fz, 2.5, 6.4, "segmental");
-      if (b.stories > 1) frontSash(x, baseH + floorH * 1.55, fz, 2.5, 6.4, "segmental");
+      frontSash(x, baseH * 0.48, fz, 2.15, 3.6, "flat");
+      frontSash(x, baseH + floorH * 0.55, fz, 2.35, 6.2, "segmental");
+      if (b.stories > 1) frontSash(x, baseH + floorH * 1.55, fz, 2.35, 6.2, "segmental");
     }
+    box(mats.brick.red, -b.width * 0.38, wallH + 4, -b.depth * 0.12, 2.2, 8, 2.2);
+    box(mats.brick.red, b.width * 0.38, wallH + 4, -b.depth * 0.12, 2.2, 8, 2.2);
     for (const side of [-1, 1]) {
       const x = side * (b.width / 2 + 0.1);
       const count = 4;
