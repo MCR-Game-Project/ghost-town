@@ -7,7 +7,11 @@ const params = new URLSearchParams(location.search);
 const shot = params.get("shot");
 
 const canvas = document.getElementById("view");
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: true,
+  powerPreference: "high-performance",
+});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, shot ? 2 : 1.6));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
@@ -48,13 +52,19 @@ const sky = new THREE.Mesh(
       uniform vec3 sunDir;
       void main() {
         vec3 dir = normalize(vDir);
-        float h = clamp(dir.y * 0.85 + 0.08, 0.0, 1.0);
-        vec3 col = mix(haze, horizon, smoothstep(0.0, 0.18, h));
-        col = mix(col, top, pow(h, 0.75));
-        float disc = pow(max(dot(dir, sunDir), 0.0), 180.0);
-        float glow = pow(max(dot(dir, sunDir), 0.0), 8.0);
-        col += vec3(1.0, 0.9, 0.62) * disc * 1.15;
-        col += vec3(1.0, 0.62, 0.32) * glow * 0.38;
+        float h = clamp(dir.y * 0.9 + 0.02, 0.0, 1.0);
+        vec3 col = mix(haze, horizon, smoothstep(0.0, 0.16, h));
+        col = mix(col, top, pow(h, 0.72));
+        float land = smoothstep(0.04, -0.12, dir.y);
+        col = mix(col, vec3(0.55, 0.58, 0.36), land * 0.9);
+        float cloud = sin(dir.x * 7.0 + dir.z * 3.5) * sin(dir.z * 5.5 - dir.x * 2.2);
+        cloud = smoothstep(0.42, 0.9, cloud * 0.5 + 0.5);
+        cloud *= smoothstep(0.12, 0.4, h);
+        col = mix(col, vec3(0.97, 0.94, 0.88), cloud * 0.42);
+        float disc = pow(max(dot(dir, sunDir), 0.0), 220.0);
+        float glow = pow(max(dot(dir, sunDir), 0.0), 7.0);
+        col += vec3(1.0, 0.9, 0.62) * disc * 1.2;
+        col += vec3(1.0, 0.62, 0.32) * glow * 0.45;
         gl_FragColor = vec4(col, 1.0);
       }
     `,

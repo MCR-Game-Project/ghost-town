@@ -18,7 +18,7 @@ function canvasTex(w, h, draw, colorSpace) {
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = colorSpace;
   tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.anisotropy = 8;
+  tex.anisotropy = 16;
   return tex;
 }
 
@@ -30,7 +30,7 @@ function texFromImageData(imageData, colorSpace) {
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = colorSpace;
   tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.anisotropy = 8;
+  tex.anisotropy = 16;
   return tex;
 }
 
@@ -78,7 +78,7 @@ function packMaps(w, h, paint) {
   const map = new THREE.CanvasTexture(colorCtx.canvas);
   map.colorSpace = THREE.SRGBColorSpace;
   map.wrapS = map.wrapT = THREE.RepeatWrapping;
-  map.anisotropy = 8;
+  map.anisotropy = 16;
   return {
     map,
     normalMap: normalsFromHeight(height, w, h, 2.4),
@@ -87,11 +87,11 @@ function packMaps(w, h, paint) {
 }
 
 function brickMaps() {
-  const w = 256;
-  const h = 256;
-  const periodX = 64;
-  const periodY = 32;
-  const mortar = 4;
+  const w = 512;
+  const h = 512;
+  const periodX = 128;
+  const periodY = 64;
+  const mortar = 8;
   return packMaps(w, h, (px, height, rough) => {
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
@@ -141,9 +141,9 @@ function brickMaps() {
 }
 
 function sidingMaps(stain) {
-  const w = 256;
-  const h = 128;
-  const lap = 16;
+  const w = 512;
+  const h = 256;
+  const lap = 32;
   return packMaps(w, h, (px, height, rough) => {
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
@@ -183,10 +183,10 @@ function sidingMaps(stain) {
 }
 
 function shingleMaps() {
-  const w = 256;
-  const h = 256;
-  const cw = 32;
-  const ch = 32;
+  const w = 512;
+  const h = 512;
+  const cw = 64;
+  const ch = 64;
   return packMaps(w, h, (px, height, rough) => {
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
@@ -199,7 +199,7 @@ function shingleMaps() {
         let r = 92 + tone * 48;
         let g = 68 + tone * 32;
         let b = 48 + tone * 20;
-        const gap = lx < 2 || ly > ch - 3;
+        const gap = lx < 4 || ly > ch - 6;
         if (gap) {
           r *= 0.45;
           g *= 0.42;
@@ -220,12 +220,12 @@ function shingleMaps() {
 }
 
 function tinMaps() {
-  const w = 256;
-  const h = 256;
+  const w = 512;
+  const h = 512;
   return packMaps(w, h, (px, height, rough) => {
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
-        const seam = x % 64 < 3 || x % 64 > 61;
+        const seam = x % 128 < 6 || x % 128 > 122;
         const streak = hash(x, Math.floor(y / 6));
         let v = seam ? 70 : 168 + streak * 28;
         const n = (hash(x * 2, y) - 0.5) * 10;
@@ -245,17 +245,17 @@ function tinMaps() {
 }
 
 function stoneMaps() {
-  const w = 256;
-  const h = 128;
+  const w = 512;
+  const h = 256;
   return packMaps(w, h, (px, height, rough) => {
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
-        const row = Math.floor(y / 32);
-        const off = row % 2 ? 28 : 0;
-        const lx = (x + off) % 56;
-        const ly = y % 32;
-        const joint = lx < 3 || ly < 3 || lx > 52;
-        const id = row * 9 + Math.floor((x + off) / 56);
+        const row = Math.floor(y / 64);
+        const off = row % 2 ? 56 : 0;
+        const lx = (x + off) % 112;
+        const ly = y % 64;
+        const joint = lx < 6 || ly < 6 || lx > 104;
+        const id = row * 9 + Math.floor((x + off) / 112);
         const tone = hash(id, 2);
         let v = joint ? 92 : 168 + tone * 40;
         const n = (hash(x, y) - 0.5) * 16;
@@ -274,25 +274,25 @@ function stoneMaps() {
 }
 
 function plankMaps() {
-  const w = 256;
-  const h = 128;
+  const w = 512;
+  const h = 256;
   return packMaps(w, h, (px, height, rough) => {
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
-        const board = Math.floor(y / 18);
-        const ly = y % 18;
+        const board = Math.floor(y / 36);
+        const ly = y % 36;
         const tone = hash(board, 11);
-        const grain = Math.sin(x * 0.35 + board) * 6 + (hash(x, board) - 0.5) * 18;
+        const grain = Math.sin(x * 0.18 + board) * 6 + (hash(x, board) - 0.5) * 18;
         let r = 168 + tone * 30 + grain;
         let g = 128 + tone * 18 + grain * 0.7;
         let b = 86 + tone * 10 + grain * 0.4;
-        const gap = ly === 0 || ly === 17;
+        const gap = ly < 2 || ly > 33;
         if (gap) {
           r *= 0.45;
           g *= 0.4;
           b *= 0.35;
         }
-        if (hash(Math.floor(x / 40), board) > 0.85 && ly > 6 && ly < 11 && x % 40 > 16 && x % 40 < 22) {
+        if (hash(Math.floor(x / 80), board) > 0.85 && ly > 12 && ly < 22 && x % 80 > 32 && x % 80 < 44) {
           r *= 0.55;
           g *= 0.5;
           b *= 0.45;
@@ -303,7 +303,7 @@ function plankMaps() {
         px[o + 1] = Math.max(0, Math.min(255, g));
         px[o + 2] = Math.max(0, Math.min(255, b));
         px[o + 3] = 255;
-        height[i] = gap ? 0.05 : 0.5 + Math.sin((ly / 18) * Math.PI) * 0.25;
+        height[i] = gap ? 0.05 : 0.5 + Math.sin((ly / 36) * Math.PI) * 0.25;
         rough[i] = 0.86;
       }
     }
@@ -365,8 +365,8 @@ function groundMaps(ruts) {
 }
 
 function grassMaps(deep) {
-  const w = 128;
-  const h = 128;
+  const w = 256;
+  const h = 256;
   return packMaps(w, h, (px, height, rough) => {
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
@@ -567,6 +567,16 @@ export function makeMaterials() {
       uvFeet: { u: 18, v: 18 },
       normalScale: 0.5,
     }),
+    mud: std({
+      map: dirtTex.map,
+      normalMap: dirtTex.normalMap,
+      roughnessMap: dirtTex.roughnessMap,
+      color: "#5c4030",
+      roughness: 0.28,
+      metalness: 0.06,
+      uvFeet: { u: 10, v: 10 },
+      normalScale: 0.35,
+    }),
     street: std({
       map: streetTex.map,
       normalMap: streetTex.normalMap,
@@ -674,22 +684,22 @@ export function makeMaterials() {
 
 export function makeSignTexture(title, subtitle, style = "board") {
   const c = document.createElement("canvas");
-  c.width = 512;
-  c.height = subtitle ? 180 : 128;
+  c.width = 1024;
+  c.height = subtitle ? 360 : 256;
   const g = c.getContext("2d");
   if (style === "painted") {
     g.fillStyle = "#f4ead4";
     g.fillRect(0, 0, c.width, c.height);
     g.strokeStyle = "#6b5340";
-    g.lineWidth = 8;
-    g.strokeRect(12, 12, c.width - 24, c.height - 24);
+    g.lineWidth = 16;
+    g.strokeRect(24, 24, c.width - 48, c.height - 48);
     g.fillStyle = "#24180f";
   } else {
     g.fillStyle = "#3b2718";
     g.fillRect(0, 0, c.width, c.height);
     g.strokeStyle = "#e6d3a8";
-    g.lineWidth = 8;
-    g.strokeRect(8, 8, c.width - 16, c.height - 16);
+    g.lineWidth = 16;
+    g.strokeRect(16, 16, c.width - 32, c.height - 32);
     g.fillStyle = "#f6ecd4";
   }
   g.textAlign = "center";
@@ -698,20 +708,20 @@ export function makeSignTexture(title, subtitle, style = "board") {
     let size = start;
     do {
       g.font = `600 ${size}px Georgia, "Palatino Linotype", Palatino, serif`;
-      if (g.measureText(text).width <= 460) break;
-      size -= 2;
-    } while (size > 22);
+      if (g.measureText(text).width <= 920) break;
+      size -= 4;
+    } while (size > 44);
     g.fillText(text, c.width / 2, y);
   };
   if (subtitle) {
-    line(title.toUpperCase(), 68, 54);
+    line(title.toUpperCase(), 136, 108);
     g.fillStyle = "#e4c98a";
-    line(subtitle, 128, 28);
+    line(subtitle, 256, 56);
   } else {
-    line(title.toUpperCase(), c.height / 2, 58);
+    line(title.toUpperCase(), c.height / 2, 116);
   }
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
-  tex.anisotropy = 8;
+  tex.anisotropy = 16;
   return tex;
 }
