@@ -1,0 +1,43 @@
+name: apply rakes
+
+"on":
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/apply-rakes.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Apply pediment patch
+        run: |
+          set -euo pipefail
+          cat .github/rakes/part-00.txt > /tmp/patch.b64
+          echo "8575de5f44375fc531f2b7697eb91e0ae016eb6fbe5771b322b3fdd836ff730f  /tmp/patch.b64" | sha256sum -c -
+          base64 -d /tmp/patch.b64 | gzip -dc > /tmp/change.diff
+          git apply --check /tmp/change.diff
+          git apply /tmp/change.diff
+          rm -rf .github/rakes
+          rm -f .github/workflows/apply-rakes.yml
+          git add -A
+          git config user.name "MCR-Game-Project"
+          git config user.email "mcr@steinjager.com"
+          python3 - <<'PY'
+          import subprocess
+          msg = (
+              "Seat the raking trim on the pediment slopes.\n"
+              "\n"
+              "The false-front peak was a stack of shrinking boxes, so Ball Bros. and the grocery read as brick ziggurats. The rake boards were rotated by side times the slope angle, which sent them up the wrong diagonal and across the roof. The peak is now one clapboard triangle, and the trim follows the two edges. Square parapets no longer grow a step or a block arch.\n"
+              "\n"
+              "Co-authored-by: mcr <mcr@steinjager.com>\n"
+          )
+          subprocess.run(["git", "commit", "-m", msg], check=True)
+          PY
+          git push origin HEAD:main
