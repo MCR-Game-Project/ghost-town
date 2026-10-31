@@ -116,7 +116,7 @@ The Reformed Church is the one documented building on Gridley besides Ball Bros.
 
 ## What was filled in
 
-The January 1886 Sanborn map, six years after the scene, shows continuous brick and frame storefronts along both Main streets, with offices and halls upstairs, an alley behind, dwellings on the next streets, and a grain elevator in the railroad ground. Sanborn colors are red for brick and yellow for frame. The sheets are three, and the lettering is very small. This pass uses the map for that pattern, not for a door-by-door copy of every label.
+The January 1886 Sanborn map, six years after the scene, shows continuous brick and frame storefronts along both Main streets, with offices and halls upstairs, an alley behind, dwellings on the next streets, and a grain elevator in the railroad ground. Sanborn colors are red for brick and yellow for frame. The sheets are three, and the lettering is very small. This pass uses the map for that pattern, not for a door-by-door copy of every label, except the East Main face of block 72, which is copied from the sheet.
 
 The store names along the rows, other than the ones listed above, are typical trades: grocery, dry goods, hardware, millinery, boots, bakery, harness, a wagon shop, a saloon, a barber. They are stand-ins. German row, Hail Street from East Main to Crafford, is filled the same way. The 1900 paving petition is what calls that block German row.
 
@@ -125,6 +125,16 @@ Houses are one frame house on most platted lots off the business streets, with a
 There is no Sanborn map from 1880 itself. The Library of Congress has Bushnell sheets for January 1886 (3 sheets), August 1893 (4), May 1898 (4), March 1906 (5), and 1912. The 1886 set is the one used. The 1871 Andreas, Lyter & Co. atlas of McDonough County has a hand-colored plat of Bushnell that shows the Toledo, Peoria & Western. A copy of that sheet could not be opened online for this pass, so the plat geometry comes from the 1885 written survey plus the streets that are still on the ground.
 
 The town's population in the 1880 census was 2,316, up from 2,003 in 1870.
+
+## East Main at Hurst, block 72
+
+Block 72 on the January 1886 map is the block between Hurst and Barnes on the south side of East Main. Sheet 2 of that set draws a row of shops along the East Main face. The Hurst corner is a one-story frame candy shop. West of it the sheet shows frame stores: two barber shops, a saloon with two stories on the street and one story behind, a restaurant, a shop marked only S., a bakery, a boarding house, a vacant two-story frame shop, a bowling alley, and a two-story meat market. One building in the row is brick. It is two stories, and the sheet divides it into a vacant store and a harness shop, with no openings in the wall between them. That harness shop is the only brick on the face. Footprints were measured on the sheet against the 360-foot block and rounded to the foot. Gaps the map leaves empty, including the open front toward Barnes, stay empty. A barber shop set back on Hurst, behind the candy shop, is not part of this East Main row and is not added.
+
+The two-story brick Italianate that stands on the Hurst corner today is not this row. The August 1893 Sanborn already shows that later block, two stories of brick with an iron front. It was looked at only so it would not be drawn in the 1886 place.
+
+The centennial book is the other source for this corner. John C. Goeppinger came to Bushnell in 1865 and kept a harness and hide business until 1910, and a later walk down this side of East Main puts his harness shop on the block. The sign still says Harness, which is all the 1886 map writes. The same walk mentions Charles Cole's candy store, but that memory is of the town after the brick corner was up, so his name is not put on the frame shop.
+
+The rest of the block stays the East Park. Which of the two blocks the 1854 proprietors gave for parks is inferred. The 1886 map is what fills the East Main face.
 
 ## What Mark placed
 
@@ -152,7 +162,7 @@ The horses and wagons are low-poly models made for this scene. No downloaded mod
 - The 1885 history of McDonough County, Bushnell chapter, as transcribed by Illinois GenWeb: [https://mcdonough.illinoisgenweb.org/1885citybushnell.html](https://mcdonough.illinoisgenweb.org/1885citybushnell.html). This is the main written source for the plat, the hotels, the elevator, the mills, the bank, the pump works, the livery, the schools, and the lodge.
 - *Bushnell, Illinois, centennial, 1854–1954*. Internet Archive text: [https://archive.org/stream/bushnellillinois00bush/bushnellillinois00bush_djvu.txt](https://archive.org/stream/bushnellillinois00bush/bushnellillinois00bush_djvu.txt). Corners, German row, the parks, the boardwalks, and the depot memories.
 - Sanborn Map Company, *Bushnell, McDonough County, Illinois*, January 1886, 3 sheets. Library of Congress Geography and Map Division, [https://www.loc.gov/item/sanborn01757_001/](https://www.loc.gov/item/sanborn01757_001/). Public domain.
-- Later Sanborn editions, not used as the 1880 picture: August 1893 ([sanborn01757_002](https://www.loc.gov/item/sanborn01757_002/)), May 1898 ([sanborn01757_003](https://www.loc.gov/item/sanborn01757_003/)), March 1906 ([sanborn01757_004](https://www.loc.gov/item/sanborn01757_004/)).
+- Later Sanborn editions, not used as the 1880 picture: August 1893 ([sanborn01757_002](https://www.loc.gov/item/sanborn01757_002/)), May 1898 ([sanborn01757_003](https://www.loc.gov/item/sanborn01757_003/)), March 1906 ([sanborn01757_004](https://www.loc.gov/item/sanborn01757_004/)). The August 1893 sheet was checked for the Hurst and East Main corner only, to keep the later iron-front brick off the 1886 frame row.
 - Andreas, Lyter & Co., *Atlas of McDonough County, Illinois* (Davenport, 1871). The Bushnell plat is described by dealers as a street map showing the Toledo, Peoria & Western. The sheet itself was not viewed.
 - Dennis DeBruler, “Bushnell, IL: BNSF/CB&Q and KJRY/TP&W/Northern Cross Depots,” Towns and Nature, November 2018, [http://towns-and-nature.blogspot.com/2018/11/bushnell-il-bnsfcb-and-kjrytp-cross.html](http://towns-and-nature.blogspot.com/2018/11/bushnell-il-bnsfcb-and-kjrytp-cross.html). The 1914 T. P. & W. depot postcard and the route of each line. Those depot pictures are after 1880 and were not used to restyle the wooden station.
 - U.S. Census Bureau geocoder, Public AR Current benchmark, used in 2026 to see where 100 through 590 East Main and West Main fall, checked against OpenStreetMap centerlines of Hail, Hurst, Gridley, and the other cross streets. This is how the modern 500 block was set on the 1854 grid. The numbering ordinance is the April 1909 order in the centennial book.
