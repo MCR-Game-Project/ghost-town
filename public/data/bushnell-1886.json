@@ -1,0 +1,158 @@
+{
+  "place": "Bushnell, McDonough County, Illinois",
+  "year": 1886,
+  "heading": "Bushnell, 1886",
+  "intro": "No census and no school census was taken in 1886. Each figure below is the nearest documented number, with the year of that source. Nothing here is filled in.",
+  "population": {
+    "title": "Population",
+    "lines": [
+      {
+        "text": "2,316 (1880 census).",
+        "detail": "Inhabitants of the city of Bushnell, McDonough County, Illinois, at the 1880 census."
+      },
+      {
+        "text": "2,314 (1890 census). No count was taken in 1886.",
+        "detail": "The next census is 1890. A Rand McNally atlas of 1895 prints the same 2,314, taken from that census, not from 1886."
+      }
+    ]
+  },
+  "schools": {
+    "title": "Children in the schools",
+    "lines": [
+      {
+        "text": "No count of children enrolled in 1886 was found.",
+        "detail": "The Illinois superintendent’s biennial reports for 1884–1886 were not found in a form that could be read. The 1885 county history describes the public-school building and does not give a pupil count."
+      },
+      {
+        "text": "Public school, 1885: eight classrooms, a superintendent’s room, and a two-room primary building. Not a headcount.",
+        "detail": "Arthur Loomis, in the 1885 history, describes the brick school finished in 1876: rooms 3 through 6 on the first floor and rooms 7 through 10 upstairs, a superintendent’s room, and a smaller primary building of two rooms on the north side. John P. Yoder had been superintendent since 1880. Teachers, fuel, and the like cost about $600 a month."
+      },
+      {
+        "text": "Same building, remembered later: eight classrooms and four basement rooms. First high-school class, 1878: 6 graduates.",
+        "detail": "The 1954 centennial history describes the 1875–76 building that way and names the first graduating class as six students, one boy and five girls, under superintendent Abram Neff. That class is not an 1886 enrollment."
+      },
+      {
+        "text": "Western Normal College, 1881: about 15 pupils at opening, about 20 before the term ended, and about 300 different students before that first year closed.",
+        "detail": "The centennial history gives those figures for the private college that opened July 20, 1881. It does not give an 1886 enrollment. The January 1886 Sanborn map still labels the building Western Normal School. The same book says J. A. Lyons was principal for a while, the school closed, and it was revived in 1888."
+      }
+    ]
+  },
+  "businesses": {
+    "title": "Businesses",
+    "intro": "No 1886 city directory was found. The Illinois State Gazetteer volumes that could be opened are for 1858–59 and 1864–65, too early to use. The list is every business the 1885 History of McDonough County describes as then open in Bushnell, plus the trade labels printed on the East Main face of block 72 on the January 1886 Sanborn map. It is not a claim that no other shop existed. The Farmers’ National Bank had closed in 1885 and is not listed as open.",
+    "groups": [
+      {
+        "title": "Named in the 1885 county history",
+        "year": "1885",
+        "items": [
+          {"name": "S. A. & J. W. Hendee", "type": "general merchandise", "note": "The firm took that name in January 1885. Stock about $10,000."},
+          {"name": "S. A. Hendee and D. F. Chidester", "type": "grain, with elevators", "note": "The January 1886 map labels S. A. Hendee’s grain elevator."},
+          {"name": "James Cole (J. Cole & Co.)", "type": "grain and banking", "note": "He had closed the general store to bank. The January 1886 map labels J. Cole’s elevator."},
+          {"name": "T. F. Seibert", "type": "store", "note": "The history says his store stood on the site of James Cole’s first building. The line of goods is not stated."},
+          {"name": "Joseph M. Parks", "type": "general merchandise"},
+          {"name": "John W. Haynes", "type": "general merchandise"},
+          {"name": "Samuel C. Haines", "type": "dry goods", "note": "In the Opera House block."},
+          {"name": "Kaiser Brothers", "type": "dry goods, carpets, cloaks, and shoes", "note": "Louis Kaiser and Gustavus A. Kaiser. The firm took the dry-goods department on February 16, 1885."},
+          {"name": "Joseph Katsenstein", "type": "clothing", "note": "Took the clothing department when Kaiser Brothers split, February 16, 1885."},
+          {"name": "Lemuel Aller", "type": "dry goods"},
+          {"name": "Melville M. Aller", "type": "dry goods and notions"},
+          {"name": "Lewis West", "type": "groceries, crockery, and queensware", "note": "Continued the store after West Brothers dissolved on March 1, 1885."},
+          {"name": "G. W. Alexander", "type": "groceries"},
+          {"name": "Hoover Brothers", "type": "hardware, stoves, and tinware", "note": "Martin L. Hoover and P. C. Hoover."},
+          {"name": "Squire Logsdon & Son", "type": "groceries, crockery, and queensware", "note": "His son Elmer joined the firm in 1882."},
+          {"name": "Dean, Fisk & Co.", "type": "furniture and undertaking", "note": "Bought the business of Haines & Tainter in April 1885."},
+          {"name": "Zook & Johnson", "type": "drugs, paints, oils, and wallpaper"},
+          {"name": "Albert S. Clarke & Co.", "type": "drugs"},
+          {"name": "W. J. Frisbie", "type": "drugs", "note": "M. L. Walker, jeweler, occupied part of the same room."},
+          {"name": "M. L. Walker", "type": "jewelry"},
+          {"name": "Rogers Brothers", "type": "musical instruments, sewing machines, and sheet music", "note": "John S. Rogers and A. B. Rogers, from January 1, 1885. One door east of the post office."},
+          {"name": "Nessel & Klein", "type": "meat market"},
+          {"name": "J. C. Miner", "type": "agricultural implements and machinery"},
+          {"name": "E. D. C. Haines", "type": "lumber, lath, and building material"},
+          {"name": "Brown & Son", "type": "lumber", "note": "William Brown and his son Oscar."},
+          {"name": "Stockton West", "type": "grain, wood, and coal"},
+          {"name": "George P. Seibert", "type": "buying grain and stock"},
+          {"name": "John Roach", "type": "livery", "note": "The barn described in the history, 45 by 80 feet with a shed, was built in 1885."},
+          {"name": "J. M. Varner & Son", "type": "depot lunch room", "note": "John J. Varner was the junior partner. A fire in March 1885 was largely covered by insurance."},
+          {"name": "Henry D. Spaulding", "type": "Opera House restaurant", "note": "Opened December 10, 1883."},
+          {"name": "Ball and Sons", "type": "carriages and wagons", "note": "Ira D. Ball had taken his four sons into the firm. A centennial photograph of the corner in the 1880s is captioned Ball Bros."},
+          {"name": "John Leib", "type": "harness, saddles, whips, carriages, and buggies"},
+          {"name": "E. H. Fehr", "type": "sign painting, kalsomining, and graining"},
+          {"name": "Hendee House", "type": "hotel", "note": "Kept by Boyington & Son. Built by S. A. Hendee in the summer of 1871."},
+          {"name": "Bushnell House", "type": "hotel", "note": "Owned and kept by S. S. Bradfield."},
+          {"name": "Roseville Manufacturing Company", "type": "plows", "note": "Eli Dixson, president; Eli B. Dixson, secretary and manager. The works were moved to Bushnell in 1882."},
+          {"name": "Bushnell Fire Clay, Tile and Brick Works", "type": "drain tile", "note": "T. B. Morton, president; C. C. Cummings, secretary; J. B. Cummings, treasurer."},
+          {"name": "Bushnell Pump Company", "type": "wooden pumps, windmills, and croquet sets", "note": "James LaTourette, president; R. W. Wheeler, secretary, treasurer, and superintendent. The January 1886 map labels the pump works."},
+          {"name": "Bushnell Creamery Association", "type": "butter", "note": "Incorporated in the spring of 1884. J. E. Chandler, president and treasurer; Henry T. Clark, secretary. The history gives those as the officers."},
+          {"name": "Randall’s Opera House", "type": "hall, with two store rooms below", "note": "Built by R. S. Randall, S. Houghton, and H. L. Randall. Opened January 1, 1884."},
+          {"name": "James E. Cummings", "type": "job printing"},
+          {"name": "Alexander H. McGahan", "type": "Chicago, Burlington & Quincy station agent"},
+          {"name": "Excelsior steam flouring mill", "type": "flour mill, nearly idle", "note": "In a receiver’s hands since the fall of 1884, after the Farmers’ National Bank failed, and doing little if anything. The January 1886 map still labels Excelsior Mills."},
+          {"name": "S. J. Alexander", "type": "lending money", "note": "He had sold his lumber interest to E. D. C. Haines on January 1, 1880, and the history says he was lending money and speculating."},
+          {"name": "Agricultural and Mechanical Association", "type": "annual fair", "note": "The history says the fairs were held at Bushnell each year."}
+        ]
+      },
+      {
+        "title": "Labeled on the January 1886 Sanborn map",
+        "year": "1886",
+        "intro": "East Main face of block 72, between Hurst and Barnes. The map prints the trade, not the proprietor. These doors are not tied to the named firms above.",
+        "items": [
+          {"name": "Candy shop", "type": "candy", "note": "One-story frame, at the Hurst corner."},
+          {"name": "Barber shop", "type": "barber", "note": "One of two barber shops in this row."},
+          {"name": "Barber shop", "type": "barber", "note": "The second barber shop in this row."},
+          {"name": "Saloon", "type": "saloon", "note": "Two stories on the street and one story behind."},
+          {"name": "Restaurant", "type": "restaurant"},
+          {"name": "Shop marked S.", "type": "not stated", "note": "The map prints only the letter S."},
+          {"name": "Bakery", "type": "bakery"},
+          {"name": "Boarding house", "type": "boarding house"},
+          {"name": "Bowling alley", "type": "bowling alley"},
+          {"name": "Meat market", "type": "meat", "note": "Two stories."},
+          {"name": "Harness shop", "type": "harness", "note": "The only brick building on this face, two stories. The map does not print a name. John Leib, named in the 1885 history, is not tied to this door."}
+        ]
+      },
+      {
+        "title": "Newspapers publishing in Bushnell",
+        "year": "1886",
+        "intro": "Both titles were in print in 1886. A proprietor for that year was not copied from a directory.",
+        "items": [
+          {"name": "Bushnell Record", "type": "newspaper", "note": "The title ran at Bushnell from 1882 to 1940."},
+          {"name": "McDonough Democrat", "type": "newspaper", "note": "Published at Bushnell. The paper began in 1884."}
+        ]
+      }
+    ]
+  },
+  "citations": [
+    {
+      "id": "census",
+      "text": "U.S. decennial census, city of Bushnell, McDonough County, Illinois: 2,316 in 1880 and 2,314 in 1890. The same 1880 figure is the one already used for this town. The 1890 figure is the next census, and it is the number a Rand McNally atlas printed for Bushnell in 1895."
+    },
+    {
+      "id": "history-1885",
+      "text": "History of McDonough County, Illinois (Springfield: Continental Historical Co., 1885), Bushnell chapter, pages 824–856 in the Illinois GenWeb transcription by Karl A. Petersen, https://mcdonough.illinoisgenweb.org/1885citybushnell.html. The same chapter is carried on Neil Gale’s page, https://drloihjournal.blogspot.com/2022/04/bushnell-illinois-highly-detailed-look-from-1854.html."
+    },
+    {
+      "id": "loomis",
+      "text": "Arthur Loomis, “Educational,” in the 1885 history’s Bushnell chapter. Rooms, the primary building, John P. Yoder, and the monthly cost. No pupil count."
+    },
+    {
+      "id": "centennial",
+      "text": "Bushnell, Illinois, centennial, 1854–1954. Internet Archive, https://archive.org/stream/bushnellillinois00bush/bushnellillinois00bush_djvu.txt. The 1875–76 school, the class of 1878, and the Western Normal College."
+    },
+    {
+      "id": "sanborn",
+      "text": "Sanborn Map Company, Bushnell, McDonough County, Illinois, January 1886, 3 sheets. Library of Congress, https://www.loc.gov/item/sanborn01757_001/. Dwellings, story counts, frame and brick, and the labels used above."
+    },
+    {
+      "id": "newspapers",
+      "text": "Bushnell Record, 1882–1940, Illinois Newspaper Project, University of Illinois. McDonough Democrat (Bushnell, Ill.), begun 1884, Library of Congress Chronicling America, https://www.loc.gov/item/sn93055682/."
+    },
+    {
+      "id": "gazetteer",
+      "text": "Illinois State Gazetteer and Business Directory for 1858–59 (George W. Hawes) and for 1864–65 (J. C. W. Bailey). Both are on the Internet Archive. No 1884–1886 edition could be opened, so those early lists were not used."
+    },
+    {
+      "id": "rand",
+      "text": "Rand McNally atlas of 1895, as compiled for Bushnell at https://roadsidethoughts.com/il/bushnell-xx-mcdonough-1890s.htm. Population 2,314, matching the 1890 census."
+    }
+  ]
+}

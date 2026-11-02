@@ -234,6 +234,94 @@ button:hover { filter: brightness(1.08); }
 
 #touch .pad button { min-width: 74px; margin: 3px; }
 
+#stats {
+  position: absolute;
+  top: 292px;
+  right: 14px;
+  z-index: 4;
+  width: min(360px, calc(100% - 28px));
+  max-height: calc(100% - 310px);
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 30px rgba(30, 16, 6, 0.28);
+}
+
+#stats-toggle {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  padding: 10px 12px;
+}
+
+#stats.open #stats-toggle { border-bottom-color: var(--line); }
+#stats:not(.open) #stats-body { display: none; }
+
+#stats-body {
+  overflow: auto;
+  padding: 10px 12px 14px;
+}
+
+#stats h2 { font-size: 20px; margin-bottom: 6px; }
+
+#stats p,
+#stats li { font-size: 14.5px; line-height: 1.4; }
+
+#stats .lead { margin: 0 0 10px; }
+
+#stats section { margin: 0 0 12px; }
+
+#stats h3 {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brick);
+}
+
+#stats .figure { margin: 0 0 6px; }
+
+#stats .group-title {
+  margin: 10px 0 2px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+#stats .biz {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#stats .biz li {
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(109, 75, 50, 0.18);
+}
+
+#stats .biz b { font-weight: 600; }
+
+#stats .year {
+  color: var(--brick);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+#stats .note { display: block; margin-top: 2px; font-size: 13px; }
+
+#stats details { margin-top: 8px; }
+
+#stats summary { cursor: pointer; color: var(--brick); font-size: 13px; }
+
+#stats .sources { margin: 8px 0 0; padding-left: 18px; }
+
+#stats .sources li { margin: 6px 0; font-size: 13px; }
+
 body.clean #topbar,
 body.clean #help,
 body.clean #tools,
@@ -241,7 +329,8 @@ body.clean #status,
 body.clean #card,
 body.clean #touch,
 body.clean #walk-hint,
-body.clean #overview-hint { display: none !important; }
+body.clean #overview-hint,
+body.clean #stats { display: none !important; }
 
 @media (max-width: 720px) {
   #topbar { flex-direction: column; align-items: start; }
@@ -265,6 +354,11 @@ body.clean #overview-hint { display: none !important; }
     transform: none;
   }
   #compass { top: 168px; }
+  #stats {
+    top: 168px;
+    max-height: 46vh;
+    width: min(320px, calc(100% - 28px));
+  }
 }
 
 @media (pointer: coarse) {

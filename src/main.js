@@ -706,7 +706,108 @@ function addNorthArrow(parent) {
   parent.add(group);
 }
 
+function addLine(parent, className, text) {
+  const p = document.createElement("p");
+  p.className = className;
+  p.textContent = text;
+  parent.appendChild(p);
+  return p;
+}
+
+function renderStats(data) {
+  const root = document.getElementById("stats-content");
+  root.replaceChildren();
+  addLine(root, "lead", data.intro);
+
+  const population = document.createElement("section");
+  const popTitle = document.createElement("h3");
+  popTitle.textContent = data.population.title;
+  population.appendChild(popTitle);
+  for (const line of data.population.lines) addLine(population, "figure", line.text);
+  root.appendChild(population);
+
+  const schools = document.createElement("section");
+  const schoolTitle = document.createElement("h3");
+  schoolTitle.textContent = data.schools.title;
+  schools.appendChild(schoolTitle);
+  for (const line of data.schools.lines) addLine(schools, "figure", line.text);
+  root.appendChild(schools);
+
+  const businesses = document.createElement("section");
+  const bizTitle = document.createElement("h3");
+  bizTitle.textContent = data.businesses.title;
+  businesses.appendChild(bizTitle);
+  addLine(businesses, "lead", data.businesses.intro);
+  for (const group of data.businesses.groups) {
+    const heading = document.createElement("p");
+    heading.className = "group-title";
+    heading.textContent = group.title;
+    businesses.appendChild(heading);
+    if (group.intro) addLine(businesses, "note", group.intro);
+    const list = document.createElement("ul");
+    list.className = "biz";
+    for (const item of group.items) {
+      const li = document.createElement("li");
+      const name = document.createElement("b");
+      name.textContent = item.name;
+      li.appendChild(name);
+      li.appendChild(document.createTextNode(` — ${item.type} `));
+      const year = document.createElement("span");
+      year.className = "year";
+      year.textContent = `(${group.year})`;
+      li.appendChild(year);
+      if (item.note) {
+        const note = document.createElement("span");
+        note.className = "note";
+        note.textContent = item.note;
+        li.appendChild(note);
+      }
+      list.appendChild(li);
+    }
+    businesses.appendChild(list);
+  }
+  root.appendChild(businesses);
+
+  const sources = document.createElement("details");
+  const summary = document.createElement("summary");
+  summary.textContent = "Sources";
+  sources.appendChild(summary);
+  const list = document.createElement("ul");
+  list.className = "sources";
+  for (const cite of data.citations) {
+    const li = document.createElement("li");
+    li.textContent = cite.text;
+    list.appendChild(li);
+  }
+  sources.appendChild(list);
+  root.appendChild(sources);
+}
+
+function bindStats() {
+  const panel = document.getElementById("stats");
+  const toggle = document.getElementById("stats-toggle");
+  const setOpen = (open) => {
+    panel.classList.toggle("open", open);
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    toggle.textContent = open ? "Hide 1886 figures" : "1886 figures";
+  };
+  setOpen(panel.classList.contains("open"));
+  toggle.addEventListener("click", () => setOpen(!panel.classList.contains("open")));
+}
+
+async function loadStats() {
+  const response = await fetch(`${import.meta.env.BASE_URL}data/bushnell-1886.json`);
+  if (!response.ok) throw new Error("The 1886 figures did not load.");
+  renderStats(await response.json());
+}
+
 async function main() {
+  bindStats();
+  loadStats().catch((error) => {
+    const root = document.getElementById("stats-content");
+    root.replaceChildren();
+    addLine(root, "lead", error.message);
+  });
   const response = await fetch(`${import.meta.env.BASE_URL}data/bushnell-1880.json`);
   if (!response.ok) throw new Error("The town file did not load.");
   town = await response.json();

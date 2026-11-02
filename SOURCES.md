@@ -120,7 +120,7 @@ The January 1886 Sanborn map, six years after the scene, shows continuous brick 
 
 The store names along the rows, other than the ones listed above, are typical trades: grocery, dry goods, hardware, millinery, boots, bakery, harness, a wagon shop, a saloon, a barber. They are stand-ins. German row, Hail Street from East Main to Crafford, is filled the same way. The 1900 paving petition is what calls that block German row.
 
-Houses are one frame house on most platted lots off the business streets, with about one lot in four left empty. The 1886 map shows dwellings there. No particular house is a documented home. About three quarters are one story. Most have a porch. Paint colors are the ordinary white, cream, yellow, gray, barn red, and green.
+Houses are one house on most platted lots off the business streets, with about one lot in four left empty. The January 1886 Sanborn map shows dwellings there. No particular house is a documented home. How those houses are drawn is set out under “Houses, about 1886” below.
 
 There is no Sanborn map from 1880 itself. The Library of Congress has Bushnell sheets for January 1886 (3 sheets), August 1893 (4), May 1898 (4), March 1906 (5), and 1912. The 1886 set is the one used. The 1871 Andreas, Lyter & Co. atlas of McDonough County has a hand-colored plat of Bushnell that shows the Toledo, Peoria & Western. A copy of that sheet could not be opened online for this pass, so the plat geometry comes from the 1885 written survey plus the streets that are still on the ground.
 
@@ -156,6 +156,28 @@ Every street in the town file keeps the name it already has. A painted board on 
 
 The horses and wagons are low-poly models made for this scene. No downloaded model is used. The horse is a light harness horse of about fifteen hands: barrel, neck, head, ears, mane, tail, four legs with hooves, and a collar and traces. The wagon is a late-nineteenth-century delivery wagon: a box bed, a seat, shafts, and spoked wheels, the rear pair larger than the front. Both are sized in the same feet as the buildings, so a horse’s back sits near the height of a person’s head and well below a storefront.
 
+## Houses, about 1886
+
+The houses stay where they were. The lot, the center, and the facing are unchanged. What changed is the shape.
+
+The January 1886 Sanborn map, three sheets, colors frame buildings yellow and brick buildings red or pink. On the blocks it draws, the dwellings are almost all frame. The number written on a house is the stories: 1, 1½, or 2. Many plans are an L or a T, a taller upright beside a lower wing. A small outbuilding, often crossed on the sheet, sits in the back yard. Brick dwellings are the exception. The sheets that were read closely for this pass are the house rows on blocks 72 (Crawford side), 80 (around the Baptist church and the Bushnell House label), 47 (Dean side), and the edges of 48. The map does not name the families.
+
+The model follows that mix, not a traced outline of each lot. A front-gabled house, a gable-ell (upright and wing), a two-story I-house with a rear ell, a low-roofed Italianate with brackets, and a one-story side-gabled cottage are the forms. Six of the Italianates are brick, which is the small number the sheets allow. The rest are frame, with clapboard, a wood-shingle roof, a brick chimney, and tall sash, either 6-over-6 or 2-over-2, with shutters. Porches have turned posts. A picket fence, and a privy, shed, or well behind, are added where the yard allows, which is what the map’s back yards show. Gridley Street stays front-gabled, because the later paving photograph shows that street that way. Houses facing Crafford stay front-gabled for the same reason: the residential view of that street.
+
+Paint is still the ordinary white, cream, yellow, gray, barn red, and green. The Picture menu is unchanged. It still only sets how sharp the picture is and how large the shadows are. The extra boards of a house are merged into the same few surfaces as the rest of the town.
+
+The 1886 figures in the panel on the right are a separate file, `public/data/bushnell-1886.json`. They are not stored as if a census had been taken in 1886.
+
+## Figures for 1886
+
+No census was taken in 1886. The city of Bushnell counted 2,316 people in the 1880 census and 2,314 in the 1890 census. The 1890 number is also what a Rand McNally atlas printed in 1895. The panel says both, and it says there is no 1886 count.
+
+No count of children enrolled in 1886 was found. The Illinois superintendent’s reports for those years could not be opened. Arthur Loomis, in the 1885 county history, describes the public school: eight classrooms (rooms 3 through 10), a superintendent’s room, and a smaller primary building of two rooms. John P. Yoder had been superintendent since 1880. Teachers, fuel, and the like cost about $600 a month. He does not say how many children sat in the rooms. The centennial book describes the same 1875–76 building as eight classrooms and four basement rooms, and says the first high-school class, in 1878, was six graduates. That is not an 1886 enrollment.
+
+The Western Normal College opened July 20, 1881, with about fifteen pupils, about twenty before the term ended, and about 300 different students before that first year closed. The centennial book says J. A. Lyons was principal for a while, the school closed, and it was revived in 1888. The January 1886 Sanborn map still labels the building. No 1886 enrollment for it was found. Those 1881 numbers are labeled 1881.
+
+The businesses are the ones the 1885 history describes as then open, plus the trades the January 1886 map prints on the East Main face of block 72, where it does not print a proprietor. The Illinois State Gazetteer editions that could be opened are 1858–59 and 1864–65. No 1884–1886 gazetteer could be read, so those early lists were not used. The Farmers’ National Bank had closed in 1885 and is not shown as open. Newspapers: the Bushnell Record (1882–1940) and the McDonough Democrat (Bushnell, from 1884) were both in print. A proprietor for 1886 was not copied from a directory.
+
 ## Works used
 
 - S. J. Clarke, *History of McDonough County, Illinois* (Springfield: D. W. Lusk, 1878). Library of Congress, [https://www.loc.gov/item/rc01002068/](https://www.loc.gov/item/rc01002068/).
@@ -166,7 +188,10 @@ The horses and wagons are low-poly models made for this scene. No downloaded mod
 - Andreas, Lyter & Co., *Atlas of McDonough County, Illinois* (Davenport, 1871). The Bushnell plat is described by dealers as a street map showing the Toledo, Peoria & Western. The sheet itself was not viewed.
 - Dennis DeBruler, “Bushnell, IL: BNSF/CB&Q and KJRY/TP&W/Northern Cross Depots,” Towns and Nature, November 2018, [http://towns-and-nature.blogspot.com/2018/11/bushnell-il-bnsfcb-and-kjrytp-cross.html](http://towns-and-nature.blogspot.com/2018/11/bushnell-il-bnsfcb-and-kjrytp-cross.html). The 1914 T. P. & W. depot postcard and the route of each line. Those depot pictures are after 1880 and were not used to restyle the wooden station.
 - U.S. Census Bureau geocoder, Public AR Current benchmark, used in 2026 to see where 100 through 590 East Main and West Main fall, checked against OpenStreetMap centerlines of Hail, Hurst, Gridley, and the other cross streets. This is how the modern 500 block was set on the 1854 grid. The numbering ordinance is the April 1909 order in the centennial book.
-- U.S. Census population for Bushnell: 2,003 in 1870 and 2,316 in 1880, as compiled in the historical population table for the city.
+- U.S. decennial census for the city of Bushnell, McDonough County, Illinois: 2,003 in 1870, 2,316 in 1880, and 2,314 in 1890, as compiled in the historical population table for the city. No census was taken in 1886. The 1890 figure is the one a Rand McNally atlas printed for Bushnell in 1895, noted at [https://roadsidethoughts.com/il/bushnell-xx-mcdonough-1890s.htm](https://roadsidethoughts.com/il/bushnell-xx-mcdonough-1890s.htm).
+- Illinois State Gazetteer and Business Directory, 1858–59 (George W. Hawes) and 1864–65 (J. C. W. Bailey), both on the Internet Archive. No edition for 1884–1886 could be opened, so those early lists were not used for the 1886 panel.
+- *Bushnell Record*, published at Bushnell 1882–1940, Illinois Newspaper Project, University of Illinois. *McDonough Democrat* (Bushnell, Ill.), begun 1884, Library of Congress Chronicling America, [https://www.loc.gov/item/sn93055682/](https://www.loc.gov/item/sn93055682/).
+- The 1886 figures shown in the panel are stored, with these citations, in `public/data/bushnell-1886.json`.
 - OpenStreetMap street centerlines for Bushnell, measured in 2026, used only to confirm that the surviving grid still matches the 1854 spacing and the order of the streets.
 - McDonough County Illinois Genealogical Society, Bushnell historic photographs, [https://www.mcdcgs.com/bushnell-historic-photos/](https://www.mcdcgs.com/bushnell-historic-photos/) and [https://www.mcdcgs.com/historic-photos/bushnell/](https://www.mcdcgs.com/historic-photos/bushnell/). The pictures are theirs. This project does not copy the image files into the app. Each one is listed in `docs/photo-catalog.md`.
 - Neil Gale, “Bushnell, Illinois, a highly detailed look at a small settlement founded in 1854,” Digital Research Library of Illinois History Journal, 12 April 2022, [https://drloihjournal.blogspot.com/2022/04/bushnell-illinois-highly-detailed-look-from-1854.html](https://drloihjournal.blogspot.com/2022/04/bushnell-illinois-highly-detailed-look-from-1854.html). The page includes a photograph captioned East Main Street, 1907.

@@ -241,8 +241,9 @@ NOTE_ROW = (
     "Its name is a typical trade, not a documented proprietor."
 )
 NOTE_HOUSE = (
-    "The 1886 Sanborn map shows dwellings on the blocks off the business streets. "
-    "This house is a stand-in of the right size and material, not a documented home."
+    "The January 1886 Sanborn map shows frame dwellings of one, one-and-a-half, and two stories "
+    "on the blocks off the business streets, often an L, with a small outbuilding behind. "
+    "Brick dwellings are scarce. This house is a stand-in of that kind, not a documented home."
 )
 
 

@@ -657,54 +657,536 @@ export function buildTown(data, scene) {
     });
   };
 
-  const addHouse = (b) => {
-    const wallH = b.stories * 9 + 1;
-    const body = paintOf(b);
-    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
-    box(mats.stone, 0, 0.4, 0, b.width + 0.4, 0.8, b.depth + 0.4);
-    gable(b.width, b.depth, Math.max(6, b.depth * 0.38), wallH);
-    punch(b.width, b.depth, b.stories, 9, wallH, b.party || [], false, true);
-    paneledDoor(0, b.depth / 2 + 0.15, 3.0, 6.6, true);
-    // Crafford is on the east side after the compass correction, centerline z = +581.
-    const onCrafford =
-      (b.facing === "+z" || b.facing === "-z") && Math.abs(b.z - 581) > 40 && Math.abs(b.z - 581) < 100;
-    if (b.porch || onCrafford) {
-      const z = b.depth / 2 + 3.2;
-      box(mats.plank, 0, 0.7, z, b.width * 0.8, 0.35, 6);
-      box(mats.roofDark, 0, 8.2, z, b.width * 0.86, 0.3, 6.4);
-      for (const x of [-b.width * 0.34, b.width * 0.34]) {
-        box(mats.trimDark, x, 4.4, z + 2.6, 0.45, 7.2, 0.45);
+  // Wood-shingle roofs. "side" ridges run across the front. "front" ridges run back from the street.
+  const gableAt = (width, depth, rise, yBase, mat, ox, oz) => {
+    const run = depth / 2 + 1.15;
+    const slopeLen = Math.hypot(run, rise);
+    const angle = Math.atan2(rise, run);
+    const roofW = width + 1.8;
+    for (const sign of [1, -1]) {
+      const geo = new THREE.BoxGeometry(roofW, 0.4, slopeLen);
+      scaleBoxUVs(geo, roofW, 0.4, slopeLen, mat);
+      const local = new THREE.Matrix4().makeRotationX(sign * angle);
+      local.premultiply(new THREE.Matrix4().makeTranslation(ox, yBase + rise / 2, oz + sign * (run / 2)));
+      geo.applyMatrix4(local);
+      geo.applyMatrix4(buildingMatrix);
+      put(mat, geo);
+    }
+  };
+
+  const gableFrontAt = (width, depth, rise, yBase, mat, ox, oz) => {
+    const run = width / 2 + 1.15;
+    const slopeLen = Math.hypot(run, rise);
+    const angle = Math.atan2(rise, run);
+    const roofD = depth + 1.8;
+    for (const sign of [1, -1]) {
+      const geo = new THREE.BoxGeometry(slopeLen, 0.4, roofD);
+      scaleBoxUVs(geo, slopeLen, 0.4, roofD, mat);
+      const local = new THREE.Matrix4().makeRotationZ(-sign * angle);
+      local.premultiply(new THREE.Matrix4().makeTranslation(ox + sign * (run / 2), yBase + rise / 2, oz));
+      geo.applyMatrix4(local);
+      geo.applyMatrix4(buildingMatrix);
+      put(mat, geo);
+    }
+  };
+
+  const hipRoof = (width, depth, rise, yBase, mat, ox, oz) => {
+    const overhang = 1.05;
+    const alongX = width >= depth;
+    const long = alongX ? width : depth;
+    const short = alongX ? depth : width;
+    const sideRun = short / 2 + overhang;
+    const slopeLen = Math.hypot(sideRun, rise);
+    const angle = Math.atan2(rise, sideRun);
+    const ridge = Math.max(1.4, long - short);
+    if (alongX) {
+      for (const sign of [1, -1]) {
+        const geo = new THREE.BoxGeometry(ridge + 0.4, 0.38, slopeLen);
+        scaleBoxUVs(geo, ridge, 0.38, slopeLen, mat);
+        const local = new THREE.Matrix4().makeRotationX(sign * angle);
+        local.premultiply(new THREE.Matrix4().makeTranslation(ox, yBase + rise / 2, oz + sign * (sideRun / 2)));
+        geo.applyMatrix4(local);
+        geo.applyMatrix4(buildingMatrix);
+        put(mat, geo);
+      }
+      for (const sign of [1, -1]) {
+        const geo = new THREE.BoxGeometry(slopeLen, 0.38, short + overhang * 2);
+        scaleBoxUVs(geo, slopeLen, 0.38, short, mat);
+        const local = new THREE.Matrix4().makeRotationZ(-sign * angle);
+        local.premultiply(
+          new THREE.Matrix4().makeTranslation(ox + sign * (ridge / 2 + sideRun / 2), yBase + rise / 2, oz),
+        );
+        geo.applyMatrix4(local);
+        geo.applyMatrix4(buildingMatrix);
+        put(mat, geo);
+      }
+    } else {
+      for (const sign of [1, -1]) {
+        const geo = new THREE.BoxGeometry(slopeLen, 0.38, ridge + 0.4);
+        scaleBoxUVs(geo, slopeLen, 0.38, ridge, mat);
+        const local = new THREE.Matrix4().makeRotationZ(-sign * angle);
+        local.premultiply(new THREE.Matrix4().makeTranslation(ox + sign * (sideRun / 2), yBase + rise / 2, oz));
+        geo.applyMatrix4(local);
+        geo.applyMatrix4(buildingMatrix);
+        put(mat, geo);
+      }
+      for (const sign of [1, -1]) {
+        const geo = new THREE.BoxGeometry(short + overhang * 2, 0.38, slopeLen);
+        scaleBoxUVs(geo, short, 0.38, slopeLen, mat);
+        const local = new THREE.Matrix4().makeRotationX(sign * angle);
+        local.premultiply(
+          new THREE.Matrix4().makeTranslation(ox, yBase + rise / 2, oz + sign * (ridge / 2 + sideRun / 2)),
+        );
+        geo.applyMatrix4(local);
+        geo.applyMatrix4(buildingMatrix);
+        put(mat, geo);
       }
     }
-    // North Crafford Street: front gables over the porches, from the residential street photograph.
-    if (onCrafford) {
-      drawPediment(body, b.width * 0.9, Math.max(6.5, b.width * 0.32), wallH - 0.15, b.depth / 2 + 0.2);
+  };
+
+  // Clapboard filling the triangle under a gable. along "z" faces the street; along "x" is a side wall.
+  const clapboardTriangle = (mat, span, rise, yBase, along, at, cx, cz) => {
+    const thick = 0.5;
+    const feet = mat?.userData?.uvFeet || { u: 8, v: 3.2 };
+    const positions = [];
+    const normals = [];
+    const uvs = [];
+    const indices = [];
+    const push = (x, y, z, nx, ny, nz) => {
+      positions.push(x, y, z);
+      normals.push(nx, ny, nz);
+      const u = (along === "z" ? x - cx + span / 2 : z - cz + span / 2) / feet.u;
+      uvs.push(u, (y - yBase) / feet.v);
+      return positions.length / 3 - 1;
+    };
+    const tri = (a, b, c) => indices.push(a, b, c);
+    if (along === "z") {
+      const zf = at + thick / 2;
+      const zb = at - thick / 2;
+      const x0 = cx - span / 2;
+      const x1 = cx + span / 2;
+      const fl = push(x0, yBase, zf, 0, 0, 1);
+      const fr = push(x1, yBase, zf, 0, 0, 1);
+      const fp = push(cx, yBase + rise, zf, 0, 0, 1);
+      tri(fl, fr, fp);
+      const bl = push(x0, yBase, zb, 0, 0, -1);
+      const bp = push(cx, yBase + rise, zb, 0, 0, -1);
+      const br = push(x1, yBase, zb, 0, 0, -1);
+      tri(bl, bp, br);
+    } else {
+      const xf = at + thick / 2;
+      const xb = at - thick / 2;
+      const z0 = cz - span / 2;
+      const z1 = cz + span / 2;
+      const fl = push(xf, yBase, z0, 1, 0, 0);
+      const fr = push(xf, yBase, z1, 1, 0, 0);
+      const fp = push(xf, yBase + rise, cz, 1, 0, 0);
+      tri(fl, fr, fp);
+      const bl = push(xb, yBase, z0, -1, 0, 0);
+      const bp = push(xb, yBase + rise, cz, -1, 0, 0);
+      const br = push(xb, yBase, z1, -1, 0, 0);
+      tri(bl, bp, br);
     }
-    cornerBoards(b, wallH);
-    if (!b.porch && !onCrafford && idHash(b.id) % 2 === 0) {
-      const z = b.depth / 2 + 2.5;
-      box(mats.plank, 0, 0.42, z, 8.4, 0.26, 4.5);
-      localBox(mats.roofDark, 0, 7.7, z + 0.15, 9, 0.14, 5.1, -0.16);
-      box(mats.trimDark, -3.3, 4.05, z + 1.7, 0.3, 7.2, 0.3);
-      box(mats.trimDark, 3.3, 4.05, z + 1.7, 0.3, 7.2, 0.3);
+    const face = new THREE.BufferGeometry();
+    face.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    face.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
+    face.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+    face.setIndex(indices);
+    face.applyMatrix4(buildingMatrix);
+    put(mat, face);
+  };
+
+  const sashFront = (x, y, z, w, h, lights, shutters, hood) => {
+    box(mats.reveal, x, y, z - 0.03, w + 0.06, h + 0.06, 0.08);
+    box(mats.trim, x, y, z + 0.04, w + 0.32, h + 0.32, 0.08);
+    box(mats.glass, x, y, z + 0.01, w * 0.78, h * 0.78, 0.035);
+    box(mats.trim, x, y, z + 0.08, w * 0.72, 0.055, 0.025);
+    if (lights === "six") {
+      box(mats.trim, x - w * 0.15, y, z + 0.08, 0.04, h * 0.72, 0.025);
+      box(mats.trim, x + w * 0.15, y, z + 0.08, 0.04, h * 0.72, 0.025);
+      box(mats.trim, x, y + h * 0.19, z + 0.08, w * 0.68, 0.04, 0.025);
+      box(mats.trim, x, y - h * 0.19, z + 0.08, w * 0.68, 0.04, 0.025);
+    } else {
+      box(mats.trim, x, y, z + 0.08, 0.045, h * 0.72, 0.025);
     }
-    chimneyStack(mats.brick.red, b.width * 0.28, wallH + 3, -b.depth * 0.1, 1.6, 6, 1.6);
-    downspouts(b.width, b.depth, wallH);
-    if (idHash(b.id) % 3 !== 2) {
-      const spot = new THREE.Vector3(
-        (idHash(b.id) % 2 ? 1 : -1) * b.width * 0.42,
-        0,
-        -(b.depth / 2 + 9 + (idHash(b.id) % 4)),
-      );
+    box(mats.stone, x, y - h / 2 - 0.08, z + 0.08, w + 0.4, 0.12, 0.18);
+    if (hood) localBox(mats.trim, x, y + h / 2 + 0.2, z + 0.28, w + 0.5, 0.07, 0.55, -0.42);
+    else box(mats.trim, x, y + h / 2 + 0.12, z + 0.07, w + 0.36, 0.14, 0.14);
+    if (shutters) {
+      const sw = Math.min(0.5, w * 0.36);
+      box(mats.shutter, x - w / 2 - sw * 0.56, y, z + 0.06, sw, h * 0.88, 0.06);
+      box(mats.shutter, x + w / 2 + sw * 0.56, y, z + 0.06, sw, h * 0.88, 0.06);
+    }
+  };
+
+  const sashSide = (x, y, z, out, w, h, lights, shutters) => {
+    box(mats.reveal, x, y, z, 0.08, h + 0.06, w + 0.06);
+    box(mats.trim, x + out * 0.035, y, z, 0.08, h + 0.28, w + 0.28);
+    box(mats.glass, x + out * 0.02, y, z, 0.03, h * 0.76, w * 0.74);
+    box(mats.trim, x + out * 0.06, y, z, 0.025, 0.05, w * 0.68);
+    if (lights === "six") {
+      box(mats.trim, x + out * 0.06, y, z - w * 0.15, 0.025, h * 0.68, 0.04);
+      box(mats.trim, x + out * 0.06, y, z + w * 0.15, 0.025, h * 0.68, 0.04);
+    } else {
+      box(mats.trim, x + out * 0.06, y, z, 0.025, h * 0.68, 0.045);
+    }
+    box(mats.stone, x + out * 0.07, y - h / 2 - 0.08, z, 0.16, 0.12, w + 0.36);
+    box(mats.trim, x + out * 0.06, y + h / 2 + 0.1, z, 0.12, 0.12, w + 0.32);
+    if (shutters) {
+      const sw = Math.min(0.42, w * 0.34);
+      box(mats.shutter, x + out * 0.05, y, z - w / 2 - sw * 0.55, 0.055, h * 0.86, sw);
+      box(mats.shutter, x + out * 0.05, y, z + w / 2 + sw * 0.55, 0.055, h * 0.86, sw);
+    }
+  };
+
+  const turnedPost = (x, z, top) => {
+    const bot = 0.72;
+    const cap = top - 0.62;
+    const mid = (bot + cap) / 2;
+    box(mats.trimDark, x, 0.34, z, 0.5, 0.48, 0.5);
+    box(mats.trimDark, x, (bot + mid) / 2 - 0.1, z, 0.2, Math.max(0.8, mid - bot - 0.2), 0.2);
+    box(mats.trimDark, x, mid, z, 0.38, 0.32, 0.38);
+    box(mats.trimDark, x, (mid + cap) / 2 + 0.1, z, 0.2, Math.max(0.8, cap - mid - 0.2), 0.2);
+    box(mats.trimDark, x, top - 0.46, z, 0.36, 0.18, 0.36);
+    box(mats.trimDark, x, top - 0.22, z, 0.48, 0.32, 0.48);
+  };
+
+  const frontPorch = (x, z, span, depth, doorX) => {
+    const top = 8.15;
+    box(mats.plank, x, 0.38, z, span, 0.2, depth);
+    localBox(mats.roof, x, top, z, span + 0.7, 0.14, depth + 0.45, 0.2);
+    box(mats.trim, x, top - 0.15, z - depth / 2 + 0.15, span + 0.3, 0.28, 0.22);
+    const n = Math.max(2, Math.round(span / 7.5));
+    const posts = [];
+    for (let i = 0; i < n; i++) posts.push(x - span / 2 + (span * i) / (n - 1));
+    for (const px of posts) turnedPost(px, z + depth / 2 - 0.35, top - 0.15);
+    for (let i = 0; i < posts.length - 1; i++) {
+      const a = posts[i];
+      const c = posts[i + 1];
+      const mid = (a + c) / 2;
+      if (doorX != null && Math.abs(mid - doorX) < 2.4) continue;
+      const gap = c - a - 0.5;
+      if (gap < 1) continue;
+      box(mats.trim, mid, 2.15, z + depth / 2 - 0.32, gap, 0.12, 0.1);
+      box(mats.trim, mid, 1.15, z + depth / 2 - 0.32, gap, 0.12, 0.1);
+    }
+  };
+
+  const houseBrackets = (x, z, span, y) => {
+    const n = Math.max(4, Math.round(span / 4.4));
+    for (let i = 0; i < n; i++) {
+      const px = x - span / 2 + (span * (i + 0.5)) / n;
+      box(mats.trimDark, px, y - 0.4, z + 0.2, 0.24, 0.75, 0.42);
+      box(mats.trimDark, px, y - 0.78, z + 0.05, 0.18, 0.42, 0.18);
+    }
+  };
+
+  const houseChimney = (x, z, plate, rise) => {
+    chimneyStack(mats.brick.red, x, plate + rise * 0.55 + 1.1, z, 1.45, 5.2, 1.45);
+  };
+
+
+  const addHouse = (b) => {
+    const h = idHash(b.id);
+    const gridley = (b.name || "").startsWith("Gridley") || (b.id || "").startsWith("gridley-");
+    const onCrafford =
+      (b.facing === "+z" || b.facing === "-z") && Math.abs(b.z - 581) > 40 && Math.abs(b.z - 581) < 100;
+    let plan = b.plan;
+    if (!plan) {
+      if (gridley || onCrafford) plan = "gable-front";
+      else {
+        const roll = h % 12;
+        if (roll === 0) plan = "italianate";
+        else if (roll <= 4) plan = "gable-ell";
+        else if (roll <= 7) plan = "gable-front";
+        else if (roll <= 9) plan = "i-house";
+        else plan = "cottage";
+      }
+    }
+    const stories = Number(b.stories) || (plan === "cottage" ? 1 : 2);
+    const floors = Math.max(1, Math.floor(stories + 0.001));
+    const half = stories - floors > 0.4 || (plan === "gable-front" && !b.plan && h % 3 === 1);
+    const brick = b.material === "brick";
+    const body = brick ? brickOf(b) : paintOf(b);
+    const lights =
+      b.sash || (plan === "italianate" ? "two" : plan === "cottage" ? "six" : h % 2 === 0 ? "six" : "two");
+    const shutters = true;
+    const hood = plan === "italianate";
+    const plateOf = (count) => count * 9.25 + 0.65;
+    const winH1 = 4.85;
+    const winY1 = 4.7;
+    const winH2 = 4.7;
+    const winY2 = plateOf(1) + 4.55;
+
+    const drawMass = (spec) => {
+      const { x, z, width, depth, floors: fl, half: hf, roof, low } = spec;
+      const plate = plateOf(fl);
+      const span = roof === "front" ? width : Math.min(width, depth);
+      const rise = spec.rise ?? (low ? 4.15 : hf ? Math.max(7.1, span * 0.45) : Math.max(5.1, span * 0.33));
+      box(body, x, plate / 2, z, width, plate, depth);
+      box(mats.stone, x, 0.32, z, width + 0.28, 0.64, depth + 0.28);
+      if (!brick) {
+        box(mats.trim, x - width / 2, plate / 2, z + depth / 2, 0.26, plate, 0.26);
+        box(mats.trim, x + width / 2, plate / 2, z + depth / 2, 0.26, plate, 0.26);
+        box(mats.trimDark, x, 0.95, z + depth / 2 + 0.04, width + 0.08, 0.55, 0.1);
+      } else {
+        box(mats.stone, x, plate * 0.52, z + depth / 2 + 0.05, width + 0.12, 0.22, 0.12);
+      }
+      box(mats.trim, x, plate - 0.16, z + depth / 2 + 0.08, width + 0.35, 0.28, 0.22);
+      if (roof === "front") {
+        gableFrontAt(width, depth, rise, plate, mats.roof, x, z);
+        clapboardTriangle(body, width, rise * 0.92, plate, "z", z + depth / 2 + 0.02, x, z);
+        clapboardTriangle(body, width, rise * 0.92, plate, "z", z - depth / 2 - 0.02, x, z);
+      } else if (roof === "hip") {
+        hipRoof(width, depth, rise, plate, mats.roof, x, z);
+      } else {
+        gableAt(width, depth, rise, plate, mats.roof, x, z);
+        clapboardTriangle(body, depth, rise * 0.92, plate, "x", x + width / 2 + 0.02, x, z);
+        clapboardTriangle(body, depth, rise * 0.92, plate, "x", x - width / 2 - 0.02, x, z);
+      }
+      return { plate, rise };
+    };
+
+    const frontWindows = (x, z, width, depth, fl, doorX) => {
+      const fz = z + depth / 2 + 0.08;
+      const ww = Math.min(2.35, Math.max(1.65, width * 0.15));
+      const spots = [];
+      if (width >= 22) spots.push(x - width * 0.27, x + width * 0.27);
+      else if (doorX == null) spots.push(x);
+      else spots.push(x + Math.sign((x - doorX) || 1) * Math.min(width * 0.24, width / 2 - 1.8));
+      if (width >= 30 && doorX != null) spots.push(x - width * 0.38, x + width * 0.38);
+      const seen = new Set();
+      for (const px of spots) {
+        const key = Math.round(px * 4);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        if (Math.abs(px - x) > width / 2 - 1.25) continue;
+        if (doorX != null && Math.abs(px - doorX) < 2.15) continue;
+        sashFront(px, winY1, fz, ww, winH1, lights, shutters, hood);
+        if (fl > 1) sashFront(px, winY2, fz, ww * 0.94, winH2, lights, shutters, hood);
+      }
+      return fz;
+    };
+
+    const sideWindows = (x, z, width, depth, fl, out) => {
+      const rows = depth > 28 ? 2 : 1;
+      for (let i = 0; i < rows; i++) {
+        const pz = z - depth * 0.18 + i * depth * 0.36;
+        sashSide(x + out * (width / 2 + 0.06), winY1, pz, out, 2.05, 4.4, lights, h % 2 === 0);
+        if (fl > 1) sashSide(x + out * (width / 2 + 0.06), winY2, pz, out, 1.9, 4.2, lights, false);
+      }
+    };
+
+    let top = 18;
+    const yardFront = b.depth / 2;
+
+    if (plan === "gable-ell") {
+      const side = h % 2 === 0 ? -1 : 1;
+      const U = Math.max(13.5, Math.min(b.width - 11, b.width * 0.52));
+      let u0;
+      let u1;
+      let w0;
+      let w1;
+      if (side < 0) {
+        u0 = -b.width / 2;
+        u1 = u0 + U;
+        w1 = b.width / 2;
+        w0 = u1 - 0.5;
+      } else {
+        u1 = b.width / 2;
+        u0 = u1 - U;
+        w0 = -b.width / 2;
+        w1 = u0 + 0.5;
+      }
+      const uprightW = u1 - u0;
+      const uprightX = (u0 + u1) / 2;
+      const wingW = w1 - w0;
+      const wingX = (w0 + w1) / 2;
+      const uprightD = b.depth * 0.98;
+      const wingD = Math.max(14, b.depth * 0.6);
+      const uprightZ = 0;
+      const wingZ = uprightD / 2 - wingD / 2;
+      const wingFloors = Math.max(1, Math.floor(Number(b.wingStories) || 1));
+      const up = drawMass({
+        x: uprightX,
+        z: uprightZ,
+        width: uprightW,
+        depth: uprightD,
+        floors,
+        half: half || floors === 1,
+        roof: "front",
+      });
+      const wing = drawMass({
+        x: wingX,
+        z: wingZ,
+        width: wingW,
+        depth: wingD,
+        floors: wingFloors,
+        half: false,
+        roof: "side",
+      });
+      const inner = Math.sign(uprightX - wingX) || 1;
+      const doorX = wingX + inner * (wingW / 2 - 2.15);
+      frontWindows(uprightX, uprightZ, uprightW, uprightD, floors, null);
+      frontWindows(wingX, wingZ, wingW, wingD, wingFloors, doorX);
+      paneledDoor(doorX, wingZ + wingD / 2 + 0.06, 2.55, 6.7, false);
+      sideWindows(uprightX, uprightZ, uprightW, uprightD, floors, side);
+      sideWindows(wingX, wingZ, wingW, wingD, wingFloors, -side);
+      if (half || up.rise > 6.2) {
+        const gz = uprightZ + uprightD / 2 + 0.16;
+        sashFront(uprightX, up.plate + up.rise * 0.4, gz, Math.min(2.15, uprightW * 0.22), 3.1, lights, false, false);
+      }
+      frontPorch(0, yardFront + 3.15, b.width * 0.96, 6.1, doorX);
+      houseChimney(uprightX, uprightZ - uprightD * 0.12, up.plate, up.rise);
+      top = Math.max(up.plate + up.rise, wing.plate + wing.rise);
+    } else if (plan === "i-house") {
+      const mainD = Math.min(20, Math.max(16, b.depth * 0.48));
+      const mainZ = b.depth / 2 - mainD / 2;
+      const ellW = Math.max(12, Math.min(b.width * 0.48, b.width - 4));
+      const ellD = Math.max(8, b.depth - mainD - 0.8);
+      const ellZ = b.depth / 2 - mainD - ellD / 2;
+      const ellSide = h % 2 === 0 ? -1 : 1;
+      const ellX = ellSide * (b.width / 2 - ellW / 2 - 0.4);
+      const main = drawMass({
+        x: 0,
+        z: mainZ,
+        width: b.width,
+        depth: mainD,
+        floors: 2,
+        half: false,
+        roof: "side",
+      });
+      drawMass({
+        x: ellX,
+        z: ellZ,
+        width: ellW,
+        depth: ellD,
+        floors: 1,
+        half: false,
+        roof: "side",
+      });
+      const doorX = 0;
+      frontWindows(0, mainZ, b.width, mainD, 2, doorX);
+      paneledDoor(doorX, mainZ + mainD / 2 + 0.06, 2.7, 7.05, true);
+      sideWindows(0, mainZ, b.width, mainD, 2, -1);
+      sideWindows(0, mainZ, b.width, mainD, 2, 1);
+      frontPorch(0, b.depth / 2 + 3.15, b.width * 0.94, 6.2, 0);
+      houseChimney(-b.width / 2 + 1.7, mainZ, main.plate, main.rise);
+      houseChimney(b.width / 2 - 1.7, mainZ, main.plate, main.rise);
+      top = main.plate + main.rise;
+    } else if (plan === "italianate") {
+      const main = drawMass({
+        x: 0,
+        z: 0,
+        width: b.width,
+        depth: b.depth,
+        floors: 2,
+        half: false,
+        roof: "side",
+        rise: Math.max(5.8, Math.min(b.width, b.depth) * 0.24),
+      });
+      const fullPorch = h % 2 === 0;
+      const doorX = 0;
+      frontWindows(0, 0, b.width, b.depth, 2, doorX);
+      paneledDoor(doorX, b.depth / 2 + 0.06, 2.8, 7.15, true);
+      sideWindows(0, 0, b.width, b.depth, 2, -1);
+      sideWindows(0, 0, b.width, b.depth, 2, 1);
+      houseBrackets(0, b.depth / 2, b.width, main.plate);
+      if (fullPorch) frontPorch(0, b.depth / 2 + 3.2, b.width * 0.9, 6.3, 0);
+      else frontPorch(0, b.depth / 2 + 3.05, Math.min(12, b.width * 0.5), 6, 0);
+      houseChimney(b.width * 0.22, -b.depth * 0.08, main.plate, main.rise + 1.5);
+      top = main.plate + main.rise + 2;
+    } else {
+      const frontGable = plan !== "cottage";
+      const fl = Math.max(1, floors);
+      const mass = drawMass({
+        x: 0,
+        z: 0,
+        width: b.width,
+        depth: b.depth,
+        floors: fl,
+        half,
+        roof: frontGable ? "front" : "side",
+      });
+      const doorX = h % 3 === 0 ? b.width * 0.16 : 0;
+      frontWindows(0, 0, b.width, b.depth, fl, doorX);
+      paneledDoor(doorX, b.depth / 2 + 0.06, 2.6, fl > 1 ? 7 : 6.7, fl > 1);
+      sideWindows(0, 0, b.width, b.depth, fl, -1);
+      sideWindows(0, 0, b.width, b.depth, fl, 1);
+      if (frontGable && half) {
+        sashFront(
+          0,
+          mass.plate + mass.rise * 0.4,
+          b.depth / 2 + 0.16,
+          Math.min(2.2, b.width * 0.16),
+          3.15,
+          lights,
+          false,
+          false,
+        );
+      }
+      frontPorch(0, b.depth / 2 + 3.15, b.width * 0.92, 6.1, doorX);
+      houseChimney(frontGable ? 0 : b.width * 0.26, frontGable ? -b.depth * 0.12 : 0, mass.plate, mass.rise);
+      top = mass.plate + mass.rise;
+    }
+
+    if (h % 6 !== 0) {
+      const fenceZ = yardFront + 9.4;
+      const fenceW = Math.min(b.width + 10, 48);
+      const gate = 3.6;
+      const seg = (fenceW - gate) / 2;
+      for (const x of [-(gate / 2 + seg / 2), gate / 2 + seg / 2]) {
+        box(mats.picket, x, 1.65, fenceZ, seg, 3.25, 0.08);
+        box(mats.trim, x, 1.15, fenceZ + 0.06, seg, 0.12, 0.1);
+        box(mats.trim, x, 2.25, fenceZ + 0.06, seg, 0.12, 0.1);
+      }
+      for (const x of [-fenceW / 2, -gate / 2, gate / 2, fenceW / 2]) {
+        box(mats.trimDark, x, 1.75, fenceZ, 0.26, 3.5, 0.26);
+      }
+      box(mats.plank, 0, 0.08, yardFront + 6.2, 3.1, 0.1, 6.4);
+    }
+
+    const rear = -(b.depth / 2);
+    const wantPrivy = h % 5 !== 0;
+    const wantShed = h % 3 !== 1;
+    const wantWell = h % 4 === 0;
+    if (wantPrivy || (!wantPrivy && !wantShed)) {
+      const px = -b.width * 0.28;
+      const pz = rear - 6.5;
+      box(body, px, 3.45, pz, 4.1, 6.9, 4.5);
+      localBox(mats.roof, px, 7.05, pz, 4.7, 0.14, 5.1, 0.16);
+      box(mats.trimDark, px, 3.05, pz + 2.3, 1.9, 5.2, 0.08);
+    }
+    if (wantShed) {
+      const sx = b.width * 0.18;
+      const sz = rear - 12;
+      box(mats.siding.gray, sx, 4, sz, 9.5, 7.6, 11);
+      gableAt(9.5, 11, 3.3, 7.8, mats.roof, sx, sz);
+      box(mats.trimDark, sx, 3.2, sz + 5.55, 3.8, 5.8, 0.1);
+    }
+    if (wantWell) {
+      const wx = h % 2 === 0 ? b.width * 0.05 : -b.width * 0.05;
+      const wz = rear - (wantShed ? 18 : 12);
+      box(mats.stone, wx, 1.1, wz + 1.1, 2.5, 1.55, 0.4);
+      box(mats.stone, wx, 1.1, wz - 1.1, 2.5, 1.55, 0.4);
+      box(mats.stone, wx + 1.1, 1.1, wz, 0.4, 1.55, 1.8);
+      box(mats.stone, wx - 1.1, 1.1, wz, 0.4, 1.55, 1.8);
+      box(mats.reveal, wx, 0.85, wz, 1.35, 0.18, 1.35);
+      box(mats.trimDark, wx, 4.2, wz - 1.25, 0.2, 6.1, 0.2);
+      box(mats.trimDark, wx + 0.1, 6.9, wz - 0.25, 0.14, 0.14, 2);
+    }
+
+    if (h % 3 !== 2) {
+      const spot = new THREE.Vector3((h % 2 ? 1 : -1) * b.width * 0.42, 0, rear - 8 - (h % 4));
       spot.applyMatrix4(buildingMatrix);
       extraTrees.push({
         x: spot.x,
         z: spot.z,
-        kind: idHash(b.id) % 2 ? "maple" : "elm",
-        scale: 0.82 + (idHash(b.id) % 5) * 0.07,
+        kind: h % 2 ? "maple" : "elm",
+        scale: 0.82 + (h % 5) * 0.07,
       });
     }
-    return wallH + 8;
+    return top + 4;
   };
 
   const addStore = (b, frame) => {

@@ -422,6 +422,26 @@ function ballastMaps() {
   });
 }
 
+function picketMaps() {
+  const w = 64;
+  const h = 256;
+  return canvasTex(w, h, (g, W, H) => {
+    g.clearRect(0, 0, W, H);
+    const gap = 12;
+    g.fillStyle = "#f3ecdf";
+    g.beginPath();
+    g.moveTo(gap / 2, H);
+    g.lineTo(gap / 2, 42);
+    g.lineTo(W / 2, 6);
+    g.lineTo(W - gap / 2, 42);
+    g.lineTo(W - gap / 2, H);
+    g.closePath();
+    g.fill();
+    g.fillStyle = "rgba(70, 52, 34, 0.28)";
+    g.fillRect(W - gap / 2 - 4, 42, 4, H - 42);
+  }, THREE.SRGBColorSpace);
+}
+
 function awningMaps() {
   const w = 256;
   const h = 128;
@@ -479,6 +499,7 @@ export function makeMaterials() {
   const parkTex = grassMaps(true);
   const ballastTex = ballastMaps();
   const awningTex = awningMaps();
+  const picketTex = picketMaps();
 
   const brickFeet = { u: 2.67, v: 1.78 };
   const brick = (color) =>
@@ -635,6 +656,14 @@ export function makeMaterials() {
       uvFeet: { u: 4, v: 4 },
     }),
     shutter: siding("#3f5344"),
+    picket: std({
+      map: picketTex,
+      color: "#f7f1e6",
+      alphaTest: 0.4,
+      roughness: 0.84,
+      side: THREE.DoubleSide,
+      uvFeet: { u: 0.62, v: 3.35 },
+    }),
     trim: std({ color: "#f3ead7", roughness: 0.72, uvFeet: { u: 6, v: 6 } }),
     trimDark: std({ color: "#4a3424", roughness: 0.7, uvFeet: { u: 4, v: 4 } }),
     voussoir: std({ color: "#8a4036", roughness: 0.86, uvFeet: { u: 2, v: 2 } }),
