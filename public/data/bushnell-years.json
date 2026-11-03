@@ -1,0 +1,776 @@
+{
+  "place": "Bushnell, McDonough County, Illinois",
+  "defaultYear": 1880,
+  "note": "The slider uses census years. Bushnell was chartered in 1869, and no 1860 city total was found, so 1860 is not a stop. There was no census in 1886. Firms from the 1885 history are listed under 1880, and January 1886 Sanborn labels are listed under 1890. Each line keeps its own source year. The 3D town does not change with the slider.",
+  "years": [
+    {
+      "year": 1870,
+      "census": [
+        {
+          "text": "Population 2,003 (1870 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [
+        {
+          "text": "A graded school was established in 1868. Mr. Hyde was the first principal. No enrollment count for 1870 was found.",
+          "source": "Arthur Loomis, 1885 History of McDonough County, Bushnell chapter. The date he gives is 1868."
+        }
+      ],
+      "businesses": []
+    },
+    {
+      "year": 1880,
+      "census": [
+        {
+          "text": "Population 2,316 (1880 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [
+        {
+          "text": "No count of children enrolled in 1880, or in 1886, was found.",
+          "source": "The 1885 county history describes the building and does not give a pupil count. Illinois superintendent reports for 1884\u20131886 were not found in a form that could be read."
+        },
+        {
+          "text": "Public school described in 1885: eight classrooms (rooms 3 through 10), a superintendent\u2019s room, and a two-room primary building on the north side. John P. Yoder had been superintendent since 1880. Teachers, fuel, and the like cost about $600 a month.",
+          "source": "Arthur Loomis, 1885 History of McDonough County. This is not a headcount."
+        },
+        {
+          "text": "The 1875\u201376 building is also described as eight classrooms and four basement rooms. The first high-school class, in 1878, was 6 graduates (one boy and five girls).",
+          "source": "Bushnell centennial book, 1854\u20131954. The class year is 1878."
+        },
+        {
+          "text": "Western Normal College opened July 20, 1881, with about 15 pupils, about 20 before the term ended, and about 300 different students before that first year closed.",
+          "source": "Bushnell centennial book. These are 1881 figures, not an 1880 or 1886 public-school enrollment. The January 1886 Sanborn map still labels the building Western Normal School. The same book says the school later closed and was revived in 1888."
+        }
+      ],
+      "businesses": [
+        {
+          "name": "S. A. & J. W. Hendee",
+          "type": "general merchandise",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "The firm took that name in January 1885. Stock about $10,000."
+        },
+        {
+          "name": "S. A. Hendee and D. F. Chidester",
+          "type": "grain, with elevators",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "The January 1886 map labels S. A. Hendee\u2019s grain elevator."
+        },
+        {
+          "name": "James Cole (J. Cole & Co.)",
+          "type": "grain and banking",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "He had closed the general store to bank. The January 1886 map labels J. Cole\u2019s elevator."
+        },
+        {
+          "name": "T. F. Seibert",
+          "type": "store",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "The history says his store stood on the site of James Cole\u2019s first building. The line of goods is not stated."
+        },
+        {
+          "name": "Joseph M. Parks",
+          "type": "general merchandise",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "John W. Haynes",
+          "type": "general merchandise",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "Samuel C. Haines",
+          "type": "dry goods",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "In the Opera House block."
+        },
+        {
+          "name": "Kaiser Brothers",
+          "type": "dry goods, carpets, cloaks, and shoes",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Louis Kaiser and Gustavus A. Kaiser. The firm took the dry-goods department on February 16, 1885."
+        },
+        {
+          "name": "Joseph Katsenstein",
+          "type": "clothing",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Took the clothing department when Kaiser Brothers split, February 16, 1885."
+        },
+        {
+          "name": "Lemuel Aller",
+          "type": "dry goods",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "Melville M. Aller",
+          "type": "dry goods and notions",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "Lewis West",
+          "type": "groceries, crockery, and queensware",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Continued the store after West Brothers dissolved on March 1, 1885."
+        },
+        {
+          "name": "G. W. Alexander",
+          "type": "groceries",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "Hoover Brothers",
+          "type": "hardware, stoves, and tinware",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Martin L. Hoover and P. C. Hoover."
+        },
+        {
+          "name": "Squire Logsdon & Son",
+          "type": "groceries, crockery, and queensware",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "His son Elmer joined the firm in 1882."
+        },
+        {
+          "name": "Dean, Fisk & Co.",
+          "type": "furniture and undertaking",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Bought the business of Haines & Tainter in April 1885."
+        },
+        {
+          "name": "Zook & Johnson",
+          "type": "drugs, paints, oils, and wallpaper",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "Albert S. Clarke & Co.",
+          "type": "drugs",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "W. J. Frisbie",
+          "type": "drugs",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "M. L. Walker, jeweler, occupied part of the same room."
+        },
+        {
+          "name": "M. L. Walker",
+          "type": "jewelry",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "Rogers Brothers",
+          "type": "musical instruments, sewing machines, and sheet music",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "John S. Rogers and A. B. Rogers, from January 1, 1885. One door east of the post office."
+        },
+        {
+          "name": "Nessel & Klein",
+          "type": "meat market",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "J. C. Miner",
+          "type": "agricultural implements and machinery",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "E. D. C. Haines",
+          "type": "lumber, lath, and building material",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "Brown & Son",
+          "type": "lumber",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "William Brown and his son Oscar."
+        },
+        {
+          "name": "Stockton West",
+          "type": "grain, wood, and coal",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "George P. Seibert",
+          "type": "buying grain and stock",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "John Roach",
+          "type": "livery",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "The barn described in the history, 45 by 80 feet with a shed, was built in 1885."
+        },
+        {
+          "name": "J. M. Varner & Son",
+          "type": "depot lunch room",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "John J. Varner was the junior partner. A fire in March 1885 was largely covered by insurance."
+        },
+        {
+          "name": "Henry D. Spaulding",
+          "type": "Opera House restaurant",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Opened December 10, 1883."
+        },
+        {
+          "name": "Ball and Sons",
+          "type": "carriages and wagons",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Ira D. Ball had taken his four sons into the firm. A centennial photograph of the corner in the 1880s is captioned Ball Bros."
+        },
+        {
+          "name": "John Leib",
+          "type": "harness, saddles, whips, carriages, and buggies",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "E. H. Fehr",
+          "type": "sign painting, kalsomining, and graining",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "Hendee House",
+          "type": "hotel",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Kept by Boyington & Son. Built by S. A. Hendee in the summer of 1871."
+        },
+        {
+          "name": "Bushnell House",
+          "type": "hotel",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Owned and kept by S. S. Bradfield."
+        },
+        {
+          "name": "Roseville Manufacturing Company",
+          "type": "plows",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Eli Dixson, president; Eli B. Dixson, secretary and manager. The works were moved to Bushnell in 1882."
+        },
+        {
+          "name": "Bushnell Fire Clay, Tile and Brick Works",
+          "type": "drain tile",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "T. B. Morton, president; C. C. Cummings, secretary; J. B. Cummings, treasurer."
+        },
+        {
+          "name": "Bushnell Pump Company",
+          "type": "wooden pumps, windmills, and croquet sets",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "James LaTourette, president; R. W. Wheeler, secretary, treasurer, and superintendent. The January 1886 map labels the pump works."
+        },
+        {
+          "name": "Bushnell Creamery Association",
+          "type": "butter",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Incorporated in the spring of 1884. J. E. Chandler, president and treasurer; Henry T. Clark, secretary. The history gives those as the officers."
+        },
+        {
+          "name": "Randall\u2019s Opera House",
+          "type": "hall, with two store rooms below",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Built by R. S. Randall, S. Houghton, and H. L. Randall. Opened January 1, 1884."
+        },
+        {
+          "name": "James E. Cummings",
+          "type": "job printing",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "Alexander H. McGahan",
+          "type": "Chicago, Burlington & Quincy station agent",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        },
+        {
+          "name": "Excelsior steam flouring mill",
+          "type": "flour mill, nearly idle",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "In a receiver\u2019s hands since the fall of 1884, after the Farmers\u2019 National Bank failed, and doing little if anything. The January 1886 map still labels Excelsior Mills."
+        },
+        {
+          "name": "S. J. Alexander",
+          "type": "lending money",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "He had sold his lumber interest to E. D. C. Haines on January 1, 1880, and the history says he was lending money and speculating."
+        },
+        {
+          "name": "Agricultural and Mechanical Association",
+          "type": "annual fair",
+          "year": "1885",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "The history says the fairs were held at Bushnell each year."
+        }
+      ]
+    },
+    {
+      "year": 1890,
+      "census": [
+        {
+          "text": "Population 2,314 (1890 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [
+        {
+          "text": "The high-school course had been extended to three years sometime before 1889. No enrollment count was found.",
+          "source": "Bushnell centennial book, 1854\u20131954."
+        }
+      ],
+      "businesses": [
+        {
+          "name": "Candy shop",
+          "type": "candy",
+          "year": "1886",
+          "source": "Sanborn map, Bushnell, January 1886, East Main face of block 72",
+          "note": "One-story frame, at the Hurst corner."
+        },
+        {
+          "name": "Barber shop",
+          "type": "barber",
+          "year": "1886",
+          "source": "Sanborn map, Bushnell, January 1886, East Main face of block 72",
+          "note": "One of two barber shops in this row."
+        },
+        {
+          "name": "Barber shop",
+          "type": "barber",
+          "year": "1886",
+          "source": "Sanborn map, Bushnell, January 1886, East Main face of block 72",
+          "note": "The second barber shop in this row."
+        },
+        {
+          "name": "Saloon",
+          "type": "saloon",
+          "year": "1886",
+          "source": "Sanborn map, Bushnell, January 1886, East Main face of block 72",
+          "note": "Two stories on the street and one story behind."
+        },
+        {
+          "name": "Restaurant",
+          "type": "restaurant",
+          "year": "1886",
+          "source": "Sanborn map, Bushnell, January 1886, East Main face of block 72"
+        },
+        {
+          "name": "Shop marked S.",
+          "type": "not stated",
+          "year": "1886",
+          "source": "Sanborn map, Bushnell, January 1886, East Main face of block 72",
+          "note": "The map prints only the letter S."
+        },
+        {
+          "name": "Bakery",
+          "type": "bakery",
+          "year": "1886",
+          "source": "Sanborn map, Bushnell, January 1886, East Main face of block 72"
+        },
+        {
+          "name": "Boarding house",
+          "type": "boarding house",
+          "year": "1886",
+          "source": "Sanborn map, Bushnell, January 1886, East Main face of block 72"
+        },
+        {
+          "name": "Bowling alley",
+          "type": "bowling alley",
+          "year": "1886",
+          "source": "Sanborn map, Bushnell, January 1886, East Main face of block 72"
+        },
+        {
+          "name": "Meat market",
+          "type": "meat",
+          "year": "1886",
+          "source": "Sanborn map, Bushnell, January 1886, East Main face of block 72",
+          "note": "Two stories."
+        },
+        {
+          "name": "Harness shop",
+          "type": "harness",
+          "year": "1886",
+          "source": "Sanborn map, Bushnell, January 1886, East Main face of block 72",
+          "note": "The only brick building on this face, two stories. The map does not print a name. John Leib, named in the 1885 history, is not tied to this door."
+        },
+        {
+          "name": "Bushnell Record",
+          "type": "newspaper",
+          "year": "1882\u20131940",
+          "source": "Illinois Newspaper Project, University of Illinois. The title was published at Bushnell from 1882 to 1940. Proprietor for this census year was not copied."
+        },
+        {
+          "name": "McDonough Democrat",
+          "type": "newspaper",
+          "year": "1884 onward",
+          "source": "Library of Congress Chronicling America. The paper began at Bushnell in 1884. The record used here does not give a closing date or the proprietor for this census year."
+        }
+      ]
+    },
+    {
+      "year": 1900,
+      "census": [
+        {
+          "text": "Population 2,490 (1900 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [
+        {
+          "text": "In October 1900, Superintendent of Schools W. H. Miller was told that students from the local high school would be admitted to the University of Illinois without examination. No enrollment count was found.",
+          "source": "Bushnell centennial book, 1854\u20131954."
+        },
+        {
+          "text": "The 1875\u201376 brick school burned in 1896. A replacement was built in about nine months. No enrollment count was found.",
+          "source": "Bushnell centennial book, 1854\u20131954. The fire year is 1896."
+        },
+        {
+          "text": "In February 1903 voters approved a new school on the east side. The East Side school opened in the winter of 1904, before Christmas, as a grade and high school. No enrollment count was found.",
+          "source": "Bushnell centennial book, 1854\u20131954."
+        }
+      ],
+      "businesses": [
+        {
+          "name": "Bushnell Record",
+          "type": "newspaper",
+          "year": "1882\u20131940",
+          "source": "Illinois Newspaper Project, University of Illinois. The title was published at Bushnell from 1882 to 1940. Proprietor for this census year was not copied."
+        },
+        {
+          "name": "McDonough Democrat",
+          "type": "newspaper",
+          "year": "1884 onward",
+          "source": "Library of Congress Chronicling America. The paper began at Bushnell in 1884. The record used here does not give a closing date or the proprietor for this census year."
+        }
+      ]
+    },
+    {
+      "year": 1910,
+      "census": [
+        {
+          "text": "Population 2,619 (1910 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [
+        {
+          "text": "The 1907 Historical Encyclopedia of Illinois says Bushnell had graded public and high schools. No enrollment count was found.",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907)."
+        }
+      ],
+      "businesses": [
+        {
+          "name": "Wooden pumps",
+          "type": "manufactory or town service, proprietor not named",
+          "year": "1907",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907). The Bushnell paragraph lists the trade and does not name the owner.",
+          "note": "Described with the 1900 population in a 1907 book."
+        },
+        {
+          "name": "Flour",
+          "type": "manufactory or town service, proprietor not named",
+          "year": "1907",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907). The Bushnell paragraph lists the trade and does not name the owner.",
+          "note": "Described with the 1900 population in a 1907 book."
+        },
+        {
+          "name": "Agricultural implements",
+          "type": "manufactory or town service, proprietor not named",
+          "year": "1907",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907). The Bushnell paragraph lists the trade and does not name the owner.",
+          "note": "Described with the 1900 population in a 1907 book."
+        },
+        {
+          "name": "Wagons and carriages",
+          "type": "manufactory or town service, proprietor not named",
+          "year": "1907",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907). The Bushnell paragraph lists the trade and does not name the owner.",
+          "note": "Described with the 1900 population in a 1907 book."
+        },
+        {
+          "name": "Tank and fence work",
+          "type": "manufactory or town service, proprietor not named",
+          "year": "1907",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907). The Bushnell paragraph lists the trade and does not name the owner.",
+          "note": "Described with the 1900 population in a 1907 book."
+        },
+        {
+          "name": "Rural mailboxes",
+          "type": "manufactory or town service, proprietor not named",
+          "year": "1907",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907). The Bushnell paragraph lists the trade and does not name the owner.",
+          "note": "Described with the 1900 population in a 1907 book."
+        },
+        {
+          "name": "Mattresses",
+          "type": "manufactory or town service, proprietor not named",
+          "year": "1907",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907). The Bushnell paragraph lists the trade and does not name the owner.",
+          "note": "Described with the 1900 population in a 1907 book."
+        },
+        {
+          "name": "Brick",
+          "type": "manufactory or town service, proprietor not named",
+          "year": "1907",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907). The Bushnell paragraph lists the trade and does not name the owner.",
+          "note": "Described with the 1900 population in a 1907 book."
+        },
+        {
+          "name": "Egg and poultry packing",
+          "type": "manufactory or town service, proprietor not named",
+          "year": "1907",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907). The Bushnell paragraph lists the trade and does not name the owner.",
+          "note": "Described with the 1900 population in a 1907 book."
+        },
+        {
+          "name": "Grain elevators",
+          "type": "manufactory or town service, proprietor not named",
+          "year": "1907",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907). The Bushnell paragraph lists the trade and does not name the owner.",
+          "note": "Described with the 1900 population in a 1907 book."
+        },
+        {
+          "name": "Banks (three)",
+          "type": "manufactory or town service, proprietor not named",
+          "year": "1907",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907). The Bushnell paragraph lists the trade and does not name the owner.",
+          "note": "Described with the 1900 population in a 1907 book."
+        },
+        {
+          "name": "Water works",
+          "type": "manufactory or town service, proprietor not named",
+          "year": "1907",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907). The Bushnell paragraph lists the trade and does not name the owner.",
+          "note": "Described with the 1900 population in a 1907 book."
+        },
+        {
+          "name": "Electric lights",
+          "type": "manufactory or town service, proprietor not named",
+          "year": "1907",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907). The Bushnell paragraph lists the trade and does not name the owner.",
+          "note": "Described with the 1900 population in a 1907 book."
+        },
+        {
+          "name": "Public library",
+          "type": "manufactory or town service, proprietor not named",
+          "year": "1907",
+          "source": "Newton Bateman and Paul Selby, Historical Encyclopedia of Illinois (Chicago: Munsell, 1907). The Bushnell paragraph lists the trade and does not name the owner.",
+          "note": "Described with the 1900 population in a 1907 book."
+        },
+        {
+          "name": "Bushnell Record",
+          "type": "newspaper",
+          "year": "1882\u20131940",
+          "source": "Illinois Newspaper Project, University of Illinois. The title was published at Bushnell from 1882 to 1940. Proprietor for this census year was not copied."
+        },
+        {
+          "name": "McDonough Democrat",
+          "type": "newspaper",
+          "year": "1884 onward",
+          "source": "Library of Congress Chronicling America. The paper began at Bushnell in 1884. The record used here does not give a closing date or the proprietor for this census year."
+        }
+      ]
+    },
+    {
+      "year": 1920,
+      "census": [
+        {
+          "text": "Population 2,716 (1920 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [],
+      "businesses": [
+        {
+          "name": "Bushnell Record",
+          "type": "newspaper",
+          "year": "1882\u20131940",
+          "source": "Illinois Newspaper Project, University of Illinois. The title was published at Bushnell from 1882 to 1940. Proprietor for this census year was not copied."
+        },
+        {
+          "name": "McDonough Democrat",
+          "type": "newspaper",
+          "year": "1884 onward",
+          "source": "Library of Congress Chronicling America. The paper began at Bushnell in 1884. The record used here does not give a closing date or the proprietor for this census year."
+        }
+      ]
+    },
+    {
+      "year": 1930,
+      "census": [
+        {
+          "text": "Population 2,850 (1930 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [],
+      "businesses": [
+        {
+          "name": "Bushnell Record",
+          "type": "newspaper",
+          "year": "1882\u20131940",
+          "source": "Illinois Newspaper Project, University of Illinois. The title was published at Bushnell from 1882 to 1940. Proprietor for this census year was not copied."
+        },
+        {
+          "name": "McDonough Democrat",
+          "type": "newspaper",
+          "year": "1884 onward",
+          "source": "Library of Congress Chronicling America. The paper began at Bushnell in 1884. The record used here does not give a closing date or the proprietor for this census year."
+        }
+      ]
+    },
+    {
+      "year": 1940,
+      "census": [
+        {
+          "text": "Population 2,906 (1940 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [],
+      "businesses": [
+        {
+          "name": "Bushnell Record",
+          "type": "newspaper",
+          "year": "1882\u20131940",
+          "source": "Illinois Newspaper Project, University of Illinois. The title was published at Bushnell from 1882 to 1940. Proprietor for this census year was not copied."
+        },
+        {
+          "name": "McDonough Democrat",
+          "type": "newspaper",
+          "year": "1884 onward",
+          "source": "Library of Congress Chronicling America. The paper began at Bushnell in 1884. The record used here does not give a closing date or the proprietor for this census year."
+        }
+      ]
+    },
+    {
+      "year": 1950,
+      "census": [
+        {
+          "text": "Population 3,317 (1950 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [],
+      "businesses": []
+    },
+    {
+      "year": 1960,
+      "census": [
+        {
+          "text": "Population 3,710 (1960 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [],
+      "businesses": []
+    },
+    {
+      "year": 1970,
+      "census": [
+        {
+          "text": "Population 3,703 (1970 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [],
+      "businesses": []
+    },
+    {
+      "year": 1980,
+      "census": [
+        {
+          "text": "Population 3,811 (1980 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [],
+      "businesses": []
+    },
+    {
+      "year": 1990,
+      "census": [
+        {
+          "text": "Population 3,288 (1990 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [],
+      "businesses": []
+    },
+    {
+      "year": 2000,
+      "census": [
+        {
+          "text": "Population 3,221 (2000 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [],
+      "businesses": []
+    },
+    {
+      "year": 2010,
+      "census": [
+        {
+          "text": "Population 3,117 (2010 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [],
+      "businesses": []
+    },
+    {
+      "year": 2020,
+      "census": [
+        {
+          "text": "Population 2,718 (2020 census).",
+          "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
+        }
+      ],
+      "school": [],
+      "businesses": []
+    }
+  ]
+}
