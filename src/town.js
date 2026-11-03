@@ -1221,6 +1221,14 @@ export function buildTown(data, scene) {
     if (b.facade?.peak) drawPeakedStorefront(b, wallH);
     else if (b.facade?.bays) drawFacade(b, wallH);
     else drawStreetFront(b, wallH, frame);
+    if (!frame && b.facade?.cornerPediment) {
+      const rise = 6.4;
+      const yBase = wallH + 2.7;
+      drawPediment(brickOf(b), Math.min(18, b.width + 1.2), rise, yBase, b.depth / 2 + 0.55);
+      const peak = yBase + rise;
+      box(mats.trim, 0, peak + 1.3, b.depth / 2 + 0.7, 0.38, 2.6, 0.38);
+      box(mats.trimDark, 0, peak + 2.75, b.depth / 2 + 0.7, 0.85, 0.4, 0.85);
+    }
     if (b.porch || b.kind === "hotel") {
       const z = b.depth / 2 + 4;
       box(mats.plank, 0, 1, z, b.width + 1, 0.4, 8);

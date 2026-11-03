@@ -13250,7 +13250,8 @@
       "year": "",
       "id": "block72-candy",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "sourceMap": "January 1886 Sanborn"
     },
     {
       "name": "Barber",
@@ -13275,7 +13276,8 @@
       "year": "",
       "id": "block72-barber-east",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "sourceMap": "January 1886 Sanborn"
     },
     {
       "name": "Barber",
@@ -13301,7 +13303,8 @@
       "year": "",
       "id": "block72-barber-west",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "sourceMap": "January 1886 Sanborn"
     },
     {
       "name": "Saloon",
@@ -13327,7 +13330,8 @@
       "year": "",
       "id": "block72-saloon",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "sourceMap": "January 1886 Sanborn"
     },
     {
       "name": "Restaurant",
@@ -13353,7 +13357,8 @@
       "year": "",
       "id": "block72-restaurant",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "sourceMap": "January 1886 Sanborn"
     },
     {
       "name": "Store",
@@ -13379,7 +13384,8 @@
       "year": "",
       "id": "block72-store",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "sourceMap": "January 1886 Sanborn"
     },
     {
       "name": "Harness",
@@ -13405,7 +13411,8 @@
       "year": "",
       "id": "block72-harness",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "sourceMap": "January 1886 Sanborn"
     },
     {
       "name": "Vacant",
@@ -13431,7 +13438,8 @@
       "year": "",
       "id": "block72-vacant-brick",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "sourceMap": "January 1886 Sanborn"
     },
     {
       "name": "Bakery",
@@ -13456,7 +13464,8 @@
       "year": "",
       "id": "block72-bakery",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "sourceMap": "January 1886 Sanborn"
     },
     {
       "name": "Boarding",
@@ -13481,7 +13490,8 @@
       "year": "",
       "id": "block72-boarding",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "sourceMap": "January 1886 Sanborn"
     },
     {
       "name": "Vacant",
@@ -13506,7 +13516,8 @@
       "year": "",
       "id": "block72-vacant-frame",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "sourceMap": "January 1886 Sanborn"
     },
     {
       "name": "Bowling Alley",
@@ -13529,7 +13540,8 @@
       "year": "",
       "id": "block72-bowling",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "sourceMap": "January 1886 Sanborn"
     },
     {
       "name": "Meat",
@@ -13552,7 +13564,8 @@
       "year": "",
       "id": "block72-meat",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "sourceMap": "January 1886 Sanborn"
     }
   ],
   "boardwalks": [

@@ -121,6 +121,13 @@ let colliders = [];
 let picks = null;
 let overviewLabels = null;
 let town = null;
+let townSource = null;
+let town1890 = null;
+let shownBuiltYear = null;
+const townGroup = new THREE.Group();
+townGroup.name = "town";
+townGroup.rotation.y = ORIENT;
+scene.add(townGroup);
 const keys = new Set();
 const eye = 5.5;
 const raycaster = new THREE.Raycaster();
@@ -571,7 +578,7 @@ function showBuilding() {
   const stories = building.stories
     ? `${building.stories} ${building.stories > 1 ? "stories" : "story"}`
     : "";
-  document.getElementById("card-use").textContent = [building.use, building.material, stories]
+  document.getElementById("card-use").textContent = [building.use, building.material, stories, building.sourceMap]
     .filter(Boolean)
     .join(" · ");
   document.getElementById("card-notes").textContent = building.notes || "";
@@ -766,7 +773,9 @@ function renderStats(data) {
   const root = document.getElementById("stats-content");
   root.replaceChildren();
   const years = data.years.map((entry) => entry.year);
-  const start = years.indexOf(data.defaultYear);
+  const requested = Number(params.get("year"));
+  const startYear = years.includes(requested) ? requested : data.defaultYear;
+  const start = years.indexOf(startYear);
   const initial = start >= 0 ? start : 0;
 
   const head = document.createElement("div");
@@ -820,9 +829,25 @@ function renderStats(data) {
     fillFacts(drops.census, entry.census);
     fillFacts(drops.school, entry.school);
     fillBusinesses(drops.businesses, entry.businesses);
+    onCensusYear(entry.year);
   };
+  const note = document.createElement("p");
+  note.id = "town-note";
+  note.className = "town-note";
+  note.hidden = true;
+  head.appendChild(note);
   slider.addEventListener("input", () => show(Number(slider.value)));
   show(initial);
+}
+
+let onCensusYear = () => {};
+
+function setTownNote(sliderYear, shownYear) {
+  const note = document.getElementById("town-note");
+  if (!note) return;
+  const same = Number(sliderYear) === Number(shownYear);
+  note.hidden = same;
+  note.textContent = same ? "" : `Town shown as of ${shownYear}`;
 }
 
 function bindStats() {
@@ -837,6 +862,62 @@ function bindStats() {
   toggle.addEventListener("click", () => setOpen(!panel.classList.contains("open")));
 }
 
+function builtTownYear(sliderYear) {
+  const year = Number(sliderYear);
+  if (!Number.isFinite(year)) return 1880;
+  return year >= 1890 ? 1890 : 1880;
+}
+
+function applyTownPatch(data, patch) {
+  const remove = new Set(patch.remove || []);
+  data.buildings = data.buildings.filter((building) => !remove.has(building.id));
+  const byId = new Map(data.buildings.map((building) => [building.id, building]));
+  for (const update of patch.update || []) {
+    const found = byId.get(update.id);
+    if (found) Object.assign(found, update);
+  }
+  for (const building of patch.add || []) data.buildings.push(structuredClone(building));
+}
+
+function disposeTown() {
+  const doomed = [...townGroup.children];
+  for (const obj of doomed) townGroup.remove(obj);
+  for (const obj of doomed) {
+    obj.traverse((node) => {
+      if (node.geometry) node.geometry.dispose();
+      const list = node.material ? (Array.isArray(node.material) ? node.material : [node.material]) : [];
+      for (const mat of list) {
+        for (const key of ["map", "normalMap", "roughnessMap", "emissiveMap"]) {
+          if (mat[key]) mat[key].dispose();
+        }
+        mat.dispose();
+      }
+    });
+  }
+}
+
+function mountTown(builtYear) {
+  disposeTown();
+  const data = structuredClone(townSource);
+  if (builtYear === 1890) applyTownPatch(data, town1890);
+  town = data;
+  const built = buildTown(town, townGroup);
+  colliders = built.colliders;
+  picks = built.picks;
+  overviewLabels = built.overviewLabels;
+  shownBuiltYear = builtYear;
+  const quality = document.getElementById("quality");
+  if (quality) applyQuality(quality.value);
+}
+
+onCensusYear = (year) => {
+  if (!townSource) return;
+  const built = builtTownYear(year);
+  setTownNote(year, built);
+  if (built === shownBuiltYear) return;
+  mountTown(built);
+};
+
 async function loadStats() {
   const response = await fetch(`${import.meta.env.BASE_URL}data/bushnell-years.json`);
   if (!response.ok) throw new Error("The town figures did not load.");
@@ -845,23 +926,19 @@ async function loadStats() {
 
 async function main() {
   bindStats();
-  loadStats().catch((error) => {
-    const root = document.getElementById("stats-content");
-    root.replaceChildren();
-    addLine(root, "lead", error.message);
-  });
-  const response = await fetch(`${import.meta.env.BASE_URL}data/bushnell-1880.json`);
-  if (!response.ok) throw new Error("The town file did not load.");
-  town = await response.json();
-  const townGroup = new THREE.Group();
-  townGroup.name = "town";
-  townGroup.rotation.y = ORIENT;
-  scene.add(townGroup);
-  const built = buildTown(town, townGroup);
+  const [baseResponse, patchResponse] = await Promise.all([
+    fetch(`${import.meta.env.BASE_URL}data/bushnell-1880.json`),
+    fetch(`${import.meta.env.BASE_URL}data/bushnell-1890.json`),
+  ]);
+  if (!baseResponse.ok) throw new Error("The town file did not load.");
+  if (!patchResponse.ok) throw new Error("The 1890 town file did not load.");
+  townSource = await baseResponse.json();
+  town1890 = await patchResponse.json();
   addNorthArrow(scene);
-  colliders = built.colliders;
-  picks = built.picks;
-  overviewLabels = built.overviewLabels;
+  const quality = document.getElementById("quality");
+  quality.value = shot ? "fine" : "street";
+  quality.addEventListener("change", () => applyQuality(quality.value));
+  mountTown(builtTownYear(params.get("year") || 1880));
 
   const select = document.getElementById("places");
   for (const place of town.places) {
@@ -878,11 +955,12 @@ async function main() {
   });
 
   goToPlace(town.places[0]);
-  const quality = document.getElementById("quality");
-  quality.value = shot ? "fine" : "street";
-  quality.addEventListener("change", () => applyQuality(quality.value));
-  applyQuality(quality.value);
   document.getElementById("status").hidden = true;
+  loadStats().catch((error) => {
+    const root = document.getElementById("stats-content");
+    root.replaceChildren();
+    addLine(root, "lead", error.message);
+  });
 
   if (shot) {
     if (params.get("card") !== "1") document.body.classList.add("clean");
