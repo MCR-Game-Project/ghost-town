@@ -4,7 +4,7 @@ Checklist for the Sanborn comparison. The model has 30 platted rectangles in `pu
 
 Sheets used: January 1886 (3 sheets), August 1893 (4), May 1898 (4), March 1906 (5), February 1912 (8). All 24 overviews were opened. Crops were read for the blocks marked compared.
 
-## Finished lot comparison (17 of 30 plat blocks)
+## Finished lot comparison (19 of 30 plat blocks)
 
 ### 72 — Barnes to Hurst, East Main to Crawford
 
@@ -123,7 +123,7 @@ Jackson side, lots 7 to 12, Hail toward Gridley:
 
 Plat id `hail-gridley__sperry-rile`. February 1912 Sanborn, sheet 6.
 
-The Rile side, lots 7 to 12, has a frame dwelling on every lot. The model already had five of them. The missing one is added as `block50-rile-1912`. The Sperry side of the same sheet edge was not in the crop. No data found for that side.
+The Rile side, lots 7 to 12, has a frame dwelling on every lot. The model already had five of them. The missing one is added as `block50-rile-1912`. The sheet ends at the back of these lots and prints “dwellings beyond.” No Sperry-side footprints are drawn. The houses already there are left.
 
 ### 57 — Hurst to Hail, Rile to Sperry
 
@@ -139,7 +139,7 @@ Rile side, lots 7 to 12:
 
 Plat id `hurst-hail__jackson-washington`. February 1912 Sanborn, sheet 5.
 
-- St. Bernard’s R.C. Church is on the Hail end of the Washington side. Frame, veneered, 16 feet to the eaves, with a tower (`st-bernards-church-1912`). The stand-in house on that corner, `house-190`, is taken off.
+- St. Bernard’s R.C. Church is on the Washington side. The August 1893 sheet already labels it R.C. Church, so it is in the 1890 town (`st-bernards-church-1912`). The February 1912 sheet still labels it, frame, veneered, with a tower. The stand-in house on that corner, `house-190`, comes off in 1890. The January 1886 sheets do not reach this block.
 - The German M.E. Church is still drawn on the Hail end of the Jackson side and is marked vacant. The building stays.
 - The other Jackson-side dwellings were already in the file. No lot on that side was read as newly empty.
 
@@ -158,13 +158,26 @@ Rile side, lots 7 to 12:
 
 - Lots 8, 9, and 12 have dwellings. Lot 8 already had a house. Lots 9 and 12 are added (`block78-rile-1912-9` and `12`).
 - Lots 7 and 11 have no dwelling. `house-73` and `house-76` are taken off in the 1910 snapshot.
-- The Sperry side was not in the crop. No data found for that side.
+- The sheet ends at the back of these lots and prints “detached dwellings.” No footprints are drawn on the Sperry side. The houses already there are left.
 
 ### 74 — Barnes to Hurst, Rile to Sperry
 
 Plat id `barnes-hurst__sperry-rile`. February 1912 Sanborn, sheet 4.
 
-The Rile side has a frame dwelling on each of six lots. Three were already in the file. The other three are `block74-rile-1912-1` through `3`. The Sperry side was not in the crop. No data found for that side.
+The Rile side has a frame dwelling on each of six lots. Three were already in the file. The other three are `block74-rile-1912-1` through `3`. The sheet ends at the alley and prints “D.s. beyond.” No Sperry-side footprints are drawn. The houses already there are left.
+
+### 82 — Davis to Barnes, Dean to Jackson
+
+Plat id `davis-barnes__dean-jackson`. February 1912 Sanborn, sheet 3. The 1886, 1893, 1898, and 1906 detail sheets stop at Dean and do not draw these lots.
+
+- Dean side, lots 1 to 6: a frame dwelling on every lot. Three were already in the file. The other three are `block82-dean-1912-5`, `4`, and `1`.
+- Jackson side, lots 7 to 12: dwellings on lots 7, 9, and 11. Lots 8, 10, and 12 are empty. `house-109`, `house-111`, and `house-113` come off in 1910.
+
+### 83 — Davis to Barnes, Jackson to Washington
+
+Plat id `davis-barnes__jackson-washington`. February 1912 Sanborn, sheet 3. Earlier detail sheets do not reach it.
+
+The block is six lots, 1 to 6. Dwellings are on lots 6, 2, and 1. Lots 3, 4, and 5 are empty, and there is no second row on the Jackson side. `house-114` through `house-117` and `house-119` through `house-121` come off in 1910. Lot 2 is added (`block83-1912-2`).
 
 ### 73 — Barnes to Hurst, Rile to Crawford
 
@@ -193,12 +206,10 @@ Read from the February 1912 sheets and the March 1906 sheet 5. A block is not fi
 - 62 — Hurst–Hail, Jackson–Washington. Finished. St. Bernard’s is on the Washington side at Hail.
 - Twyman blocks 15, 16, 27, and 28 on 1906 sheet 5 lie east of Wells. They are outside the 30 platted rectangles. Coleman's Flats is labeled on block 16. It was not added.
 
-## Plat blocks left unchanged (13 of 30)
+## Plat blocks left unchanged (11 of 30)
 
 No Sanborn lot list has been copied onto these. They keep the houses already in the file.
 
-- `davis-barnes__dean-jackson`
-- `davis-barnes__jackson-washington`
 - `barnes-hurst__dean-jackson`
 - `barnes-hurst__jackson-washington`
 - `hurst-hail__dean-jackson`

@@ -16,7 +16,8 @@
     "block72-vacant-frame",
     "block72-bowling",
     "block72-meat",
-    "block71-dean-1886-1"
+    "block71-dean-1886-1",
+    "house-190"
   ],
   "update": [
     {
@@ -608,6 +609,30 @@
       "x": -500,
       "z": 510,
       "notes": "One-and-a-half-story frame dwelling on the Dean front of block 71, lot 213, just north of the Presbyterian church. August 1893 Sanborn, sheet 2. The January 1886 sheet shows the church here and no house on this front. No family name is printed."
+    },
+    {
+      "id": "st-bernards-church-1912",
+      "name": "St. Bernard's R.C. Church",
+      "kind": "church",
+      "use": "church",
+      "material": "frame",
+      "stories": 1,
+      "width": 46,
+      "depth": 58,
+      "x": -90,
+      "z": 1320,
+      "facing": "+z",
+      "paint": "cream",
+      "brick": "red",
+      "sign": "ST. BERNARD'S",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "steeple": true,
+      "rotation": 0,
+      "year": "1893",
+      "sourceMap": "August 1893 Sanborn",
+      "notes": "August 1893 Sanborn, sheet 1, block 62, the Washington side. The sheet labels R.C. Church. The February 1912 sheet still labels it St. Bernard's R.C. Church, frame, veneered, with a tower. The stand-in house on this corner is taken off. The January 1886 sheets do not reach this block."
     }
   ],
   "streets": [
