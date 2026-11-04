@@ -4,7 +4,7 @@ Checklist for the Sanborn comparison. The model has 30 platted rectangles in `pu
 
 Sheets used: January 1886 (3 sheets), August 1893 (4), May 1898 (4), March 1906 (5), February 1912 (8). All 24 overviews were opened. Crops were read for the blocks marked compared.
 
-## Finished lot comparison (9 of 30 plat blocks)
+## Finished lot comparison (13 of 30 plat blocks)
 
 ### 72 — Barnes to Hurst, East Main to Crawford
 
@@ -108,6 +108,41 @@ Sheets: the label is on 1898 sheet 3 and 1906 sheet 4, under block 59. February 
 - The nine stand-in houses on this rectangle (`house-164` through `house-172`) are removed in the 1910 snapshot.
 - No dwelling is drawn inside the park on the 1912 sheet. No data found for a house that stood here before the park was labeled.
 
+### 46 — Hail to Gridley, Dean to Jackson
+
+Plat id `hail-gridley__dean-jackson`. February 1912 Sanborn, sheet 5.
+
+Jackson side, lots 7 to 12, Hail toward Gridley:
+
+- Lot 7 has a two-story dwelling. The Vail house already stands on that corner and is left.
+- Lots 8 and 9 have no dwelling. `house-220` and `house-221` are taken off in the 1910 snapshot.
+- Lots 10, 11, and 12 each have a dwelling. The houses already on those lots are left.
+- No earlier sheet of this block was found. No data found for a change before 1912.
+
+### 50 — Hail to Gridley, Rile to Sperry
+
+Plat id `hail-gridley__sperry-rile`. February 1912 Sanborn, sheet 6.
+
+The Rile side, lots 7 to 12, has a frame dwelling on every lot. The model already had five of them. The missing one is added as `block50-rile-1912`. The Sperry side of the same sheet edge was not in the crop. No data found for that side.
+
+### 57 — Hurst to Hail, Rile to Sperry
+
+Plat id `hurst-hail__sperry-rile`. February 1912 Sanborn, sheet 6. East Park is the empty ground north of this block.
+
+Rile side, lots 7 to 12:
+
+- Dwellings on lots 7, 8, 9, 11, and 12. Lots 7 and 8 already had houses. Lots 9, 11, and 12 are added (`block57-rile-1912-9`, `11`, and `12`).
+- Lot 10 has no dwelling. `house-163` is taken off in the 1910 snapshot.
+- The Sperry side already had three houses. That side was not in the crop. No data found for a change there.
+
+### 62 — Hurst to Hail, Jackson to Washington
+
+Plat id `hurst-hail__jackson-washington`. February 1912 Sanborn, sheet 5.
+
+- St. Bernard’s R.C. Church is on the Hail end of the Washington side. Frame, veneered, 16 feet to the eaves, with a tower (`st-bernards-church-1912`). The stand-in house on that corner, `house-190`, is taken off.
+- The German M.E. Church is still drawn on the Hail end of the Jackson side and is marked vacant. The building stays.
+- The other Jackson-side dwellings were already in the file. No lot on that side was read as newly empty.
+
 ## Sanborn block numbers matched to the plat
 
 Read from the February 1912 sheets and the March 1906 sheet 5. A block is not finished until its lots are compared.
@@ -116,17 +151,17 @@ Read from the February 1912 sheets and the March 1906 sheet 5. A block is not fi
 - 48 — Hail–Gridley, East Main–Crawford. Finished.
 - 60 — Hurst–Hail, West Main–Dean. Finished.
 - 47 — Hail–Gridley, West Main–Dean. Finished.
-- 46 — Hail–Gridley, Dean–Jackson. 1912 sheet 5 shows dwellings on lots 10, 11, and 12. The model already has houses on this rectangle. No lot was read as newly empty. Not a finished count.
-- 45 — Hurst–Hail, Dean–Jackson, labeled West Park on 1912 sheet 5. Not cropped lot by lot.
-- 49 — Hail–Gridley, Crawford–Rile. 1912 sheet 6 shows dwellings. Not a finished count.
-- 50 — Hail–Gridley, Rile–Sperry. On 1912 sheet 6. Lots not copied.
-- 57 — Hurst–Hail, Rile–Sperry, south of East Park. On 1912 sheet 6. Lots not copied.
+- 46 — Hail–Gridley, Dean–Jackson. Finished.
+- 45 — Hurst–Hail, Dean–Jackson. The 1912 sheet prints “West Park opposite” on Hail. The footprints inside that rectangle were not drawn in the crop. Not a finished count.
+- 49 — Hail–Gridley, Crawford–Rile. 1912 sheet 6 shows about seven dwellings. Not a finished count.
+- 50 — Hail–Gridley, Rile–Sperry. Finished for the Rile side.
+- 57 — Hurst–Hail, Rile–Sperry. Finished for the Rile side.
 - 73 — Barnes–Hurst, south of Crawford. 1906 sheet 5. The M. E. Church is labeled on the Hurst side. The church is moved to that side in the 1910 snapshot. The other lots were not copied.
 - 36 and 37 — Gridley–Wells, on either side of East Main. 1906 sheet 5 and 1912 sheet 6. Lots not copied.
-- 62 — Hurst–Hail, at Washington. 1912 sheet 5 labels St. Bernard’s P. C. Church. The footprint was not copied. No data found for a lot list.
+- 62 — Hurst–Hail, Jackson–Washington. Finished. St. Bernard’s is on the Washington side at Hail.
 - Twyman blocks 15, 16, 27, and 28 on 1906 sheet 5 lie east of Wells. They are outside the 30 platted rectangles. Coleman's Flats is labeled on block 16. It was not added.
 
-## Plat blocks left unchanged (21 of 30)
+## Plat blocks left unchanged (17 of 30)
 
 No Sanborn lot list has been copied onto these. They keep the houses already in the file.
 
@@ -138,12 +173,8 @@ No Sanborn lot list has been copied onto these. They keep the houses already in 
 - `barnes-hurst__rile-crafford`
 - `barnes-hurst__dean-jackson`
 - `barnes-hurst__jackson-washington`
-- `hurst-hail__sperry-rile`
 - `hurst-hail__dean-jackson`
-- `hurst-hail__jackson-washington`
-- `hail-gridley__sperry-rile`
 - `hail-gridley__rile-crafford`
-- `hail-gridley__dean-jackson`
 - `hail-gridley__jackson-washington`
 - `gridley-wells__sperry-rile`
 - `gridley-wells__rile-crafford`
