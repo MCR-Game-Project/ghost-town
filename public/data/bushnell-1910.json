@@ -3,7 +3,16 @@
   "mapLabel": "March 1906 Sanborn, checked against February 1912",
   "note": "The March 1906 map is the nearer one before the 1910 census. The February 1912 map is used where it shows a later name or a plant the 1906 sheet does not, and those lines say 1912.",
   "remove": [
-    "block72-lot2-1898"
+    "block72-lot2-1898",
+    "house-164",
+    "house-165",
+    "house-166",
+    "house-167",
+    "house-168",
+    "house-169",
+    "house-170",
+    "house-171",
+    "house-172"
   ],
   "streets": [
     {
@@ -97,6 +106,15 @@
       "sign": "ROACH LIVERY",
       "sourceMap": "March 1906 Sanborn",
       "notes": "March 1906 Sanborn, sheet 3, block 81, labels J. W. Roach Livery. The 1885 history names John Roach's livery. The barn stays on the west side near Barnes."
+    },
+    {
+      "id": "methodist-church",
+      "x": -500,
+      "z": -700,
+      "facing": "-z",
+      "sourceMap": "March 1906 Sanborn",
+      "confidence": "sourced",
+      "notes": "March 1906 Sanborn, sheet 5, block 73, the Hurst side of the block between Barnes and Hurst, south of Crawford. The sheet labels M. E. Church, brick, with a spire. The February 1912 sheet of the Hail block south of Crawford shows dwellings there, not this church."
     }
   ],
   "add": [
@@ -224,9 +242,9 @@
       "notes": "March 1906 Sanborn, sheet 4, block 59, lot 306, on the Crawford side toward Hail. The sheet labels Jas. Cole Flats, two stories, brick. The May 1898 sheet shows a frame dwelling on this lot and does not print this name."
     },
     {
-"id": "fm-black-livery-1906",
-    "name": "F. M. Black Livery",
-    "kind": "barn",
+      "id": "fm-black-livery-1906",
+      "name": "F. M. Black Livery",
+      "kind": "barn",
       "use": "livery",
       "material": "frame",
       "stories": 1.5,

@@ -1045,6 +1045,14 @@ async function main() {
       orbit.target.copy(focus);
       camera.position.set(focus.x, 720, focus.z + 520);
       orbit.update();
+    } else if (shot === "bird") {
+      enterOverview();
+      const focus = vPlat(Number(params.get("x")) || 0, 0, Number(params.get("z")) || 0);
+      orbit.target.copy(focus);
+      const height = Number(params.get("h")) || 320;
+      const back = Number(params.get("back")) || 260;
+      camera.position.set(focus.x, height, focus.z + back);
+      orbit.update();
     } else if (shot === "at") {
       goToPlace({
         x: Number(params.get("x")),

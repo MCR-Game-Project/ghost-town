@@ -4,7 +4,7 @@ Checklist for the Sanborn comparison. The model has 30 platted rectangles in `pu
 
 Sheets used: January 1886 (3 sheets), August 1893 (4), May 1898 (4), March 1906 (5), February 1912 (8). All 24 overviews were opened. Crops were read for the blocks marked compared.
 
-## Finished lot comparison (8 of 30 plat blocks)
+## Finished lot comparison (9 of 30 plat blocks)
 
 ### 72 — Barnes to Hurst, East Main to Crawford
 
@@ -99,15 +99,34 @@ Dean side, lots 208 to 213:
 - 1898 and 1906: the church and the Dean dwellings remain. The 1906 sheet labels the church Presby. Church.
 - West Main holds Hotel Alexander, already in the file. The 1886 sheet labels that building Hendee House.
 
-## Sheets opened, lots not copied
+### East Park — Hurst to Hail, Rile to Crawford
 
-1906 sheet 5 and the 1912 sheets are the next pass. Block numbers on those sheets are not copied yet.
+Plat id `hurst-hail__rile-crafford`. Sanborn block number is not printed. The sheet labels the ground East Park.
 
-## Seen on a sheet, not tied to a finished plat rectangle
+Sheets: the label is on 1898 sheet 3 and 1906 sheet 4, under block 59. February 1912 sheet 6 draws the whole rectangle empty and letters it East Park.
 
-1906 sheet 5 draws houses along Wells, Twyman, Crawford, Rile, and Sperry. 1912 sheets 4 and 5 draw more houses north of Dean, toward Jackson and Washington, and the block with the M.E. church near Hurst. 1886 sheet 1 draws the pump works, the plow works, and the public school off the downtown rectangles. Block numbers on those sheets were not copied. No data found for a lot list. Nothing was added or removed from them in this pass.
+- The nine stand-in houses on this rectangle (`house-164` through `house-172`) are removed in the 1910 snapshot.
+- No dwelling is drawn inside the park on the 1912 sheet. No data found for a house that stood here before the park was labeled.
 
-## Plat blocks left unchanged (22 of 30)
+## Sanborn block numbers matched to the plat
+
+Read from the February 1912 sheets and the March 1906 sheet 5. A block is not finished until its lots are compared.
+
+- 59 — Hurst–Hail, East Main–Crawford. Finished.
+- 48 — Hail–Gridley, East Main–Crawford. Finished.
+- 60 — Hurst–Hail, West Main–Dean. Finished.
+- 47 — Hail–Gridley, West Main–Dean. Finished.
+- 46 — Hail–Gridley, Dean–Jackson. 1912 sheet 5 shows dwellings on lots 10, 11, and 12. The model already has houses on this rectangle. No lot was read as newly empty. Not a finished count.
+- 45 — Hurst–Hail, Dean–Jackson, labeled West Park on 1912 sheet 5. Not cropped lot by lot.
+- 49 — Hail–Gridley, Crawford–Rile. 1912 sheet 6 shows dwellings. Not a finished count.
+- 50 — Hail–Gridley, Rile–Sperry. On 1912 sheet 6. Lots not copied.
+- 57 — Hurst–Hail, Rile–Sperry, south of East Park. On 1912 sheet 6. Lots not copied.
+- 73 — Barnes–Hurst, south of Crawford. 1906 sheet 5. The M. E. Church is labeled on the Hurst side. The church is moved to that side in the 1910 snapshot. The other lots were not copied.
+- 36 and 37 — Gridley–Wells, on either side of East Main. 1906 sheet 5 and 1912 sheet 6. Lots not copied.
+- 62 — Hurst–Hail, at Washington. 1912 sheet 5 labels St. Bernard’s P. C. Church. The footprint was not copied. No data found for a lot list.
+- Twyman blocks 15, 16, 27, and 28 on 1906 sheet 5 lie east of Wells. They are outside the 30 platted rectangles. Coleman's Flats is labeled on block 16. It was not added.
+
+## Plat blocks left unchanged (21 of 30)
 
 No Sanborn lot list has been copied onto these. They keep the houses already in the file.
 
@@ -120,7 +139,6 @@ No Sanborn lot list has been copied onto these. They keep the houses already in 
 - `barnes-hurst__dean-jackson`
 - `barnes-hurst__jackson-washington`
 - `hurst-hail__sperry-rile`
-- `hurst-hail__rile-crafford`
 - `hurst-hail__dean-jackson`
 - `hurst-hail__jackson-washington`
 - `hail-gridley__sperry-rile`
@@ -133,5 +151,3 @@ No Sanborn lot list has been copied onto these. They keep the houses already in 
 - `gridley-wells__west-main-dean`
 - `gridley-wells__dean-jackson`
 - `gridley-wells__jackson-washington`
-
-Some of these may be the Wells and Twyman blocks on 1906 sheet 5. They are not marked finished until the lots are read.
