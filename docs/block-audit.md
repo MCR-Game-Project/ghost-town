@@ -4,7 +4,7 @@ Checklist for the Sanborn comparison. The model has 30 platted rectangles in `pu
 
 Sheets used: January 1886 (3 sheets), August 1893 (4), May 1898 (4), March 1906 (5), February 1912 (8). All 24 overviews were opened. Crops were read for the blocks marked compared.
 
-## Finished lot comparison (16 of 30 plat blocks)
+## Finished lot comparison (17 of 30 plat blocks)
 
 ### 72 — Barnes to Hurst, East Main to Crawford
 
@@ -150,6 +150,16 @@ Plat id `davis-barnes__rile-crafford`. February 1912 Sanborn, sheet 4. The March
 - Crawford side: a frame dwelling on each of the six lots. The file already had those six.
 - Rile side: a frame dwelling on each of the six lots. Two were missing and are added (`block79-rile-1912-1` and `2`).
 
+### 78 — Davis to Barnes, Rile to Sperry
+
+Plat id `davis-barnes__sperry-rile`. February 1912 Sanborn, sheet 4.
+
+Rile side, lots 7 to 12:
+
+- Lots 8, 9, and 12 have dwellings. Lot 8 already had a house. Lots 9 and 12 are added (`block78-rile-1912-9` and `12`).
+- Lots 7 and 11 have no dwelling. `house-73` and `house-76` are taken off in the 1910 snapshot.
+- The Sperry side was not in the crop. No data found for that side.
+
 ### 74 — Barnes to Hurst, Rile to Sperry
 
 Plat id `barnes-hurst__sperry-rile`. February 1912 Sanborn, sheet 4.
@@ -183,11 +193,10 @@ Read from the February 1912 sheets and the March 1906 sheet 5. A block is not fi
 - 62 — Hurst–Hail, Jackson–Washington. Finished. St. Bernard’s is on the Washington side at Hail.
 - Twyman blocks 15, 16, 27, and 28 on 1906 sheet 5 lie east of Wells. They are outside the 30 platted rectangles. Coleman's Flats is labeled on block 16. It was not added.
 
-## Plat blocks left unchanged (14 of 30)
+## Plat blocks left unchanged (13 of 30)
 
 No Sanborn lot list has been copied onto these. They keep the houses already in the file.
 
-- `davis-barnes__sperry-rile`
 - `davis-barnes__dean-jackson`
 - `davis-barnes__jackson-washington`
 - `barnes-hurst__dean-jackson`

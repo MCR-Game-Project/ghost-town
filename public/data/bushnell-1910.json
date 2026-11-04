@@ -17,7 +17,9 @@
     "house-221",
     "house-163",
     "house-190",
-    "house-133"
+    "house-133",
+    "house-73",
+    "house-76"
   ],
   "streets": [
     {
@@ -548,6 +550,56 @@
       "year": "1912",
       "sourceMap": "February 1912 Sanborn",
       "notes": "February 1912 Sanborn, sheet 4, block 73, the Barnes end south of Crawford. The sheet labels Cottage Home and boarding. The stand-in house on that corner is taken off. No family name beyond the boarding name is printed."
+    },
+    {
+      "kind": "house",
+      "use": "dwelling",
+      "material": "frame",
+      "stories": 2,
+      "width": 24,
+      "depth": 34,
+      "paint": "cream",
+      "brick": "red",
+      "sign": "",
+      "porch": true,
+      "party": [],
+      "confidence": "sourced",
+      "plan": "gable-front",
+      "steeple": false,
+      "rotation": 0,
+      "facing": "-z",
+      "year": "1912",
+      "sourceMap": "February 1912 Sanborn",
+      "id": "block78-rile-1912-9",
+      "name": "Dwelling",
+      "x": -1080,
+      "z": -1100,
+      "notes": "Two-story frame dwelling on the Rile side of block 78, about lot 9. February 1912 Sanborn, sheet 4. Lots 7 and 11 on this side have no dwelling. No family name is printed."
+    },
+    {
+      "kind": "house",
+      "use": "dwelling",
+      "material": "frame",
+      "stories": 2,
+      "width": 24,
+      "depth": 34,
+      "paint": "yellow",
+      "brick": "red",
+      "sign": "",
+      "porch": true,
+      "party": [],
+      "confidence": "sourced",
+      "plan": "gable-front",
+      "steeple": false,
+      "rotation": 0,
+      "facing": "-z",
+      "year": "1912",
+      "sourceMap": "February 1912 Sanborn",
+      "id": "block78-rile-1912-12",
+      "name": "Dwelling",
+      "x": -900,
+      "z": -1100,
+      "notes": "Frame dwelling on the Rile side of block 78, the Barnes end, about lot 12. February 1912 Sanborn, sheet 4. No family name is printed."
     }
   ]
 }
