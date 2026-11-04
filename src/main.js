@@ -889,6 +889,8 @@ function bindStats() {
 function builtTownYear(sliderYear) {
   const year = Number(sliderYear);
   if (!Number.isFinite(year)) return 1880;
+  if (year >= 1970) return 1970;
+  if (year >= 1960) return 1960;
   if (year >= 1910) return 1910;
   if (year >= 1900) return 1900;
   if (year >= 1890) return 1890;
@@ -953,6 +955,8 @@ function mountTown(builtYear) {
   if (builtYear >= 1890) applyTownPatch(data, townPatches[1890]);
   if (builtYear >= 1900) applyTownPatch(data, townPatches[1900]);
   if (builtYear >= 1910) applyTownPatch(data, townPatches[1910]);
+  if (builtYear >= 1960) applyTownPatch(data, townPatches[1960]);
+  if (builtYear >= 1970) applyTownPatch(data, townPatches[1970]);
   town = data;
   const built = buildTown(town, townGroup);
   colliders = built.colliders;
@@ -987,6 +991,8 @@ async function main() {
     [1890, "bushnell-1890.json"],
     [1900, "bushnell-1900.json"],
     [1910, "bushnell-1910.json"],
+    [1960, "bushnell-1960.json"],
+    [1970, "bushnell-1970.json"],
   ];
   const responses = await Promise.all(
     files.map(([, name]) => fetch(`${import.meta.env.BASE_URL}data/${name}`)),
@@ -1001,6 +1007,8 @@ async function main() {
     1890: payloads[4],
     1900: payloads[5],
     1910: payloads[6],
+    1960: payloads[7],
+    1970: payloads[8],
   };
   addNorthArrow(scene);
   const quality = document.getElementById("quality");

@@ -13,6 +13,10 @@ export const ORIENT = Math.PI / 2 - bearing;
 const flipFacing = { "+z": "-z", "-z": "+z", "+x": "+x", "-x": "-x" };
 
 function flipSpan(item) {
+  if (item.points) {
+    for (const point of item.points) point[1] = -point[1];
+    return;
+  }
   if (item.axis === "x") {
     item.at = -item.at;
     return;

@@ -170,7 +170,7 @@ The figures panel on the right is `public/data/bushnell-years.json`. The slider 
 
 ## The 1890 town
 
-The year slider changes the picture as well as the figures. 1880 is the town in `public/data/bushnell-1880.json`. 1890, 1900, and 1910 are the Sanborn patches described below. 1854, 1860, and 1870 start from the 1880 town and take off every building a source does not yet place. The panel says “Town shown as of 1910” when a later census year is selected. 1854, 1860, 1870, 1880, 1890, 1900, and 1910 are the years the picture uses.
+The year slider changes the picture as well as the figures. 1880 is the town in `public/data/bushnell-1880.json`. 1890, 1900, and 1910 are the Sanborn patches described below. 1854, 1860, and 1870 start from the 1880 town and take off every building a source does not yet place. The panel says “Town shown as of 1910” when 1920 through 1950 is selected. 1960 is its own picture and adds nothing, because no map of Hillcrest was found for that year. 1970 and every later stop add Lakelawn Estate from the 1974 quadrangle. 1854, 1860, 1870, 1880, 1890, 1900, 1910, 1960, and 1970 are the years the picture uses.
 
 ## The 1854 town
 
@@ -260,6 +260,14 @@ The Western Normal College opened July 20, 1881, with about fifteen pupils, abou
 
 The businesses are the ones the 1885 history describes as then open, plus the trades the January 1886 map prints on the East Main face of block 72, where it does not print a proprietor. The Illinois State Gazetteer editions that could be opened are 1858–59 and 1864–65. No 1884–1886 gazetteer could be read, so those early lists were not used. The Farmers’ National Bank had closed in 1885 and is not shown as open. Newspapers: the Bushnell Record (1882–1940) and the McDonough Democrat (Bushnell, from 1884) were both in print. A proprietor for 1886 was not copied from a directory.
 
+## Lakelawn Estate, the Hillcrest streets
+
+Hillcrest is the Lakelawn Estate subdivision in the southeast of Bushnell, on the north side of Murphy Road, south of Veterans Memorial Park. Legal descriptions call it Lakelawn Estate, recorded in McDonough County Plat Book 4, page 154, as document 407882. Lot 11 is 14 Hillcrest Drive, lot 24 is 15 Hillcrest Drive, and lot 33 is 4 Hillcrest Drive. The plat date was not found. County records before 2000 are not online.
+
+The streets drawn are Hillcrest Drive, Lakeview Drive, Sunrise Lane, Sunset Lane, and the Murphy Road frontage. The centerlines are the OpenStreetMap ways, checked against the roads on the 1974 map. The right-of-way width is not printed, so the ribbon is only wide enough to read as a lane.
+
+The earliest map that draws the curved streets and the lake is the USGS Bushnell East 7.5-minute quadrangle, date on map 1974, imprint 1978, aerial photographs 1973, field check 1974. Thirty-six building symbols inside that subdivision were read off the sheet and placed at the 1970 stop. The sheet does not say which symbols are houses and which are outbuildings, and it does not give a footprint, so each one is drawn as a one-story frame house. The 1944 Avon 15-minute quadrangle shows this ground as open land along the east-west road, with the town grid stopping to the north. The 1954 centennial book does not mention Hillcrest or Lakelawn. No 1960 sheet of this corner was found, so the 1960 stop does not add the streets or the houses. One public record dates 4 Hillcrest Drive to 1972 and another dates 14 Hillcrest Drive to 1973. A listing for 15 Hillcrest Drive gives both 1968 and 1974, so that year was not used.
+
 ## Works used
 
 - S. J. Clarke, *History of McDonough County, Illinois* (Springfield: D. W. Lusk, 1878). Library of Congress, [https://www.loc.gov/item/rc01002068/](https://www.loc.gov/item/rc01002068/).
@@ -277,7 +285,10 @@ The businesses are the ones the 1885 history describes as then open, plus the tr
 - *Bushnell Record*, published at Bushnell 1882–1940, Illinois Newspaper Project, University of Illinois. *McDonough Democrat* (Bushnell, Ill.), begun 1884, Library of Congress Chronicling America, [https://www.loc.gov/item/sn93055682/](https://www.loc.gov/item/sn93055682/).
 - The year slider in the figures panel reads `public/data/bushnell-years.json`. The 1885 and 1886 lists are also kept in `public/data/bushnell-1886.json`.
 - Newton Bateman and Paul Selby, eds., *Historical Encyclopedia of Illinois* (Chicago: Munsell Publishing Co., 1907). The Bushnell paragraph gives the 1900 population as 2,490 and lists trades without naming the owners. The copy read was the transcription attached to the St. Clair County volume on a genealogy site; the paragraph is the Illinois encyclopedia entry.
-- OpenStreetMap street centerlines for Bushnell, measured in 2026, used only to confirm that the surviving grid still matches the 1854 spacing and the order of the streets.
+- OpenStreetMap street centerlines for Bushnell, measured in 2026, used to confirm that the surviving grid still matches the 1854 spacing, and used for the Hillcrest, Lakeview, Sunrise, Sunset, and Murphy centerlines after those lines were matched to the 1974 quadrangle.
+- U.S. Geological Survey, Bushnell East, Illinois, 7.5-minute quadrangle, 1:24,000, date on map 1974, aerial photographs 1973, field check 1974. National Map Historical Topographic Map Collection.
+- U.S. Geological Survey, Avon, Illinois, 15-minute quadrangle, 1:62,500, 1944. The same ground before the subdivision.
+- *Bushnell, Illinois, centennial, 1854–1954*, searched for Hillcrest and Lakelawn. Neither name is in the book.
 - McDonough County Illinois Genealogical Society, Bushnell historic photographs, [https://www.mcdcgs.com/bushnell-historic-photos/](https://www.mcdcgs.com/bushnell-historic-photos/) and [https://www.mcdcgs.com/historic-photos/bushnell/](https://www.mcdcgs.com/historic-photos/bushnell/). The pictures are theirs. This project does not copy the image files into the app. Each one is listed in `docs/photo-catalog.md`.
 - Neil Gale, “Bushnell, Illinois, a highly detailed look at a small settlement founded in 1854,” Digital Research Library of Illinois History Journal, 12 April 2022, [https://drloihjournal.blogspot.com/2022/04/bushnell-illinois-highly-detailed-look-from-1854.html](https://drloihjournal.blogspot.com/2022/04/bushnell-illinois-highly-detailed-look-from-1854.html). The page includes a photograph captioned East Main Street, 1907.
 - CardCow Bushnell postcard index, [https://www.cardcow.com/viewall/71409/](https://www.cardcow.com/viewall/71409/). One card could be opened from here: the M. E. Church, postmarked 27 August 1909, [https://www.cardcow.com/514754/me-church-bushnell/](https://www.cardcow.com/514754/me-church-bushnell/).

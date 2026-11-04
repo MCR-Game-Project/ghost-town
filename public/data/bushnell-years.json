@@ -826,6 +826,10 @@
       "year": 1960,
       "census": [
         {
+          "text": "No map found for the Hillcrest streets. Lakelawn Estate is not drawn on the 1944 Avon quadrangle, and the 1954 centennial book does not mention it. The streets and houses are added at 1970.",
+          "source": "U.S. Geological Survey, Avon, Illinois, 15-minute quadrangle, 1944. Bushnell, Illinois, centennial, 1854–1954, searched for Hillcrest and Lakelawn."
+        },
+        {
           "text": "Population 3,710 (1960 census).",
           "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
         }
@@ -836,6 +840,10 @@
     {
       "year": 1970,
       "census": [
+        {
+          "text": "Lakelawn Estate is drawn south of town, on the north side of Murphy Road. The 1974 Bushnell East quadrangle shows Hillcrest Drive, Lakeview Drive, Sunrise Lane, Sunset Lane, a lake, and 36 building symbols. The plat date was not found.",
+          "source": "U.S. Geological Survey, Bushnell East, Illinois, 7.5-minute quadrangle, 1974, aerial photographs 1973, field check 1974. Street names from OpenStreetMap centerlines matched to that sheet. The plat is McDonough County Plat Book 4, page 154, document 407882."
+        },
         {
           "text": "Population 3,703 (1970 census).",
           "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."

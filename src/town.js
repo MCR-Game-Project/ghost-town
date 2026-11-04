@@ -1645,6 +1645,10 @@ export function buildTown(data, scene) {
   }
 
   for (const street of data.streets) {
+    if (street.points) {
+      addPolylineStreet(street, mats, scene);
+      continue;
+    }
     const len = street.to - street.from;
     const geo =
       street.axis === "x"
@@ -1685,6 +1689,7 @@ export function buildTown(data, scene) {
 
   const vergeParts = [];
   for (const street of data.streets) {
+    if (street.points) continue;
     const len = Math.abs(street.to - street.from);
     const verge = 8;
     for (const side of [-1, 1]) {
@@ -1903,6 +1908,57 @@ export function buildTown(data, scene) {
 }
 
 const streetLabelCache = new Map();
+
+function addPolylineStreet(street, mats, scene) {
+  const pts = street.points;
+  const half = street.width / 2;
+  const positions = [];
+  const uvs = [];
+  const indices = [];
+  let dist = 0;
+  for (let i = 0; i < pts.length; i++) {
+    const prev = pts[Math.max(0, i - 1)];
+    const next = pts[Math.min(pts.length - 1, i + 1)];
+    let dx = next[0] - prev[0];
+    let dz = next[1] - prev[1];
+    const span = Math.hypot(dx, dz) || 1;
+    dx /= span;
+    dz /= span;
+    if (i > 0) dist += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    positions.push(pts[i][0] - dz * half, 0.12, pts[i][1] + dx * half);
+    positions.push(pts[i][0] + dz * half, 0.12, pts[i][1] - dx * half);
+    uvs.push(dist / 48, 0, dist / 48, 1);
+  }
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = i * 2;
+    indices.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geo.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+  geo.setIndex(indices);
+  geo.computeVertexNormals();
+  const roadMat = mats.street.clone();
+  roadMat.side = THREE.DoubleSide;
+  const mesh = new THREE.Mesh(geo, roadMat);
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+
+  const mid = pts[Math.floor((pts.length - 1) / 2)];
+  const painted = streetLabelTexture(street.name, "road");
+  const letterH = 16;
+  const label = new THREE.Mesh(new THREE.PlaneGeometry(letterH * painted.aspect, letterH), new THREE.MeshBasicMaterial({
+    map: painted.tex,
+    transparent: true,
+    depthWrite: false,
+    polygonOffset: true,
+    polygonOffsetFactor: -4,
+  }));
+  label.rotation.x = -Math.PI / 2;
+  label.position.set(mid[0], 0.22, mid[1]);
+  label.renderOrder = 2;
+  scene.add(label);
+}
 
 function streetLabelTexture(name, ink) {
   const key = `${ink}:${name}`;
