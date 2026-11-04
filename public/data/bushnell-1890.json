@@ -15,7 +15,8 @@
     "block72-boarding",
     "block72-vacant-frame",
     "block72-bowling",
-    "block72-meat"
+    "block72-meat",
+    "block71-dean-1886-1"
   ],
   "update": [
     {
@@ -557,6 +558,56 @@
       "x": 355,
       "z": -516,
       "notes": "Two-story frame dwelling on lot 312, the Gridley end of the Crawford side of block 48. August 1893 Sanborn, sheet 3. The January 1886 sheet shows sheds on this lot and no dwelling. The May 1898 and March 1906 sheets still show a two-story dwelling here. No family name is printed."
+    },
+    {
+      "kind": "house",
+      "use": "dwelling",
+      "material": "frame",
+      "stories": 1,
+      "width": 24,
+      "depth": 34,
+      "paint": "white",
+      "brick": "red",
+      "sign": "",
+      "porch": true,
+      "party": [],
+      "confidence": "sourced",
+      "plan": "side-gable",
+      "steeple": false,
+      "rotation": 0,
+      "facing": "+z",
+      "year": "1893",
+      "sourceMap": "August 1893 Sanborn",
+      "id": "block71-dean-1893-1",
+      "name": "Dwelling",
+      "x": -660,
+      "z": 490,
+      "notes": "Frame dwelling on the Dean side of block 71, lot 210. August 1893 Sanborn, sheet 2. Lot 209, which had a dwelling in January 1886, is empty on this sheet. Still a dwelling on the 1898 and 1906 sheets. No family name is printed."
+    },
+    {
+      "kind": "house",
+      "use": "dwelling",
+      "material": "frame",
+      "stories": 1.5,
+      "width": 24,
+      "depth": 34,
+      "paint": "cream",
+      "brick": "red",
+      "sign": "",
+      "porch": true,
+      "party": [],
+      "confidence": "sourced",
+      "plan": "gable-ell",
+      "steeple": false,
+      "rotation": 0,
+      "facing": "+z",
+      "year": "1893",
+      "sourceMap": "August 1893 Sanborn",
+      "id": "block71-dean-1893-2",
+      "name": "Dwelling",
+      "x": -500,
+      "z": 510,
+      "notes": "One-and-a-half-story frame dwelling on the Dean front of block 71, lot 213, just north of the Presbyterian church. August 1893 Sanborn, sheet 2. The January 1886 sheet shows the church here and no house on this front. No family name is printed."
     }
   ],
   "streets": [

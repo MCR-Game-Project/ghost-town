@@ -222,6 +222,30 @@
       "rotation": 0,
       "sourceMap": "March 1906 Sanborn",
       "notes": "March 1906 Sanborn, sheet 4, block 59, lot 306, on the Crawford side toward Hail. The sheet labels Jas. Cole Flats, two stories, brick. The May 1898 sheet shows a frame dwelling on this lot and does not print this name."
+    },
+    {
+"id": "fm-black-livery-1906",
+    "name": "F. M. Black Livery",
+    "kind": "barn",
+      "use": "livery",
+      "material": "frame",
+      "stories": 1.5,
+      "width": 40,
+      "depth": 50,
+      "x": -330,
+      "z": 420,
+      "facing": "+z",
+      "paint": "cream",
+      "brick": "red",
+      "sign": "BLACK LIVERY",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1906",
+      "steeple": false,
+      "rotation": 0,
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "March 1906 Sanborn, sheet 4, block 60, behind the Campbellite Meeting House on the Dean side. Labeled F. M. Black Livery. The January 1886 sheet shows a cabinet shop on this part of the block and does not label a livery."
     }
   ]
 }
