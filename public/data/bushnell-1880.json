@@ -13997,6 +13997,31 @@
       "year": "1886",
       "sourceMap": "January 1886 Sanborn",
       "notes": "One-and-a-half-story frame dwelling on the Dean side of block 60, about lot 305. January 1886 Sanborn, sheet 3. The March 1906 sheet still shows a dwelling on lot 305. No family name is printed."
+    },
+    {
+      "id": "block40-boarding-1886",
+      "name": "Boarding House",
+      "kind": "house",
+      "use": "boarding",
+      "material": "brick",
+      "stories": 1.5,
+      "width": 36,
+      "depth": 44,
+      "x": 540,
+      "z": 470,
+      "facing": "+x",
+      "paint": "cream",
+      "brick": "red",
+      "sign": "BOARDING",
+      "porch": true,
+      "party": [],
+      "confidence": "sourced",
+      "plan": "gable-ell",
+      "steeple": false,
+      "rotation": 0,
+      "year": "1886",
+      "sourceMap": "January 1886 Sanborn",
+      "notes": "January 1886 Sanborn, sheet 3, block 40, the Gridley end between West Main and Dean. The sheet labels Boarding. The front is brick and the wings are frame, one and a half stories. The August 1893 sheet still shows it. The rest of the drawn lots are sheds. The sheet notes frame dwellings beyond the edge, so those footprints were not copied."
     }
   ],
   "boardwalks": [

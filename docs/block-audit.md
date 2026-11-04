@@ -4,7 +4,7 @@ Checklist for the Sanborn comparison. The model has 30 platted rectangles in `pu
 
 Sheets used: January 1886 (3 sheets), August 1893 (4), May 1898 (4), March 1906 (5), February 1912 (8). All 24 overviews were opened. Crops were read for the blocks marked compared.
 
-## Finished lot comparison (19 of 30 plat blocks)
+## Finished lot comparison (27 of 30 plat blocks)
 
 ### 72 — Barnes to Hurst, East Main to Crawford
 
@@ -133,7 +133,7 @@ Rile side, lots 7 to 12:
 
 - Dwellings on lots 7, 8, 9, 11, and 12. Lots 7 and 8 already had houses. Lots 9, 11, and 12 are added (`block57-rile-1912-9`, `11`, and `12`).
 - Lot 10 has no dwelling. `house-163` is taken off in the 1910 snapshot.
-- The Sperry side already had three houses. That side was not in the crop. No data found for a change there.
+- The sheet ends at the back of these lots and prints “detached.” No Sperry-side footprints are drawn. The houses already there are left.
 
 ### 62 — Hurst to Hail, Jackson to Washington
 
@@ -188,6 +188,55 @@ Plat id `barnes-hurst__rile-crafford`. February 1912 Sanborn, sheet 4, and March
 - A machine shop is labeled beside it. No data found for a separate footprint, so it is not drawn.
 - Other dwellings already in the file are left.
 
+### 69 — Barnes to Hurst, Jackson to Washington
+
+Plat id `barnes-hurst__jackson-washington`. February 1912 Sanborn, sheet 3. The sheet letters this ground King’s Addition. The 1886, 1893, 1898, and 1906 detail sheets do not reach it.
+
+Dwellings stand at the Barnes end and two at the Hurst end. The middle lots are empty. `house-148` through `house-152`, `house-155`, and `house-156` come off in 1910.
+
+### 70 — Barnes to Hurst, Dean to Jackson
+
+Plat id `barnes-hurst__dean-jackson`. February 1912 Sanborn, sheet 3. Earlier detail sheets stop at Dean.
+
+The sheet draws dwellings on lots 2, 3, 5, 6, 7, 9, 10, 11, and 12. Lot 5 is a three-story brick dwelling (`block70-lot5-1912`). Lots 1, 4, and 8 have no dwelling. `house-140` and `house-144` come off in 1910.
+
+### 45 — Hail to Gridley, Jackson to Washington
+
+Plat id `hail-gridley__jackson-washington`. February 1912 Sanborn, sheet 5. Earlier detail sheets do not draw this row.
+
+Six frame dwellings stand along Jackson. Three were already in the file. The other three are `block45-jackson-1912-1`, `2`, and `4`. The Washington side of the same sheet is only the margin note “25 ft+ frame dwellings.” Those footprints are not drawn, so the houses already on that side are left.
+
+### West Park — Hurst to Hail, Dean to Jackson
+
+Plat id `hurst-hail__dean-jackson`. The February 1912 sheet prints “West Park” on Hail and “25 ft+ frame dwellings.” It does not draw the houses. No lot was read as empty, so the six houses stay. No data found for a lot list. The 1886 through 1906 detail sheets do not reach it.
+
+### 49 — Hail to Gridley, Crawford to Rile
+
+Plat id `hail-gridley__rile-crafford`. February 1912 Sanborn, sheet 6. The 1886, 1893, and 1898 detail sheets do not draw it.
+
+- Lot 7, the Hail end, is a two-story brick dwelling (`block49-lot7-1912`). The Methodist church has left this ground by the 1906 sheet.
+- Lots 9, 10, 4, and 6 also have dwellings. Houses already stood on that side of the block.
+- Lots 8, 5, and 3 have no dwelling. No stand-in house sat on a spot that could be tied to one of those three lots, so none was removed for them.
+
+### 36 — Gridley to Wells, Crawford to Rile
+
+Plat id `gridley-wells__rile-crafford`. March 1906 Sanborn, sheet 5, and February 1912 Sanborn, sheet 6.
+
+- Gridley side, 1912: dwellings on lots 7 and 8. Lots 5 and 6 have no dwelling. `gridley-east-wells-13` and `14` come off in 1910.
+- Wells side, 1906: dwellings on lots 9, 10, and 12. The houses already on that side are left. The ground east of Wells is outside the plat.
+
+### 37 — Gridley to Wells, East Main to Crawford
+
+Plat id `gridley-wells__crafford-east-main`. January 1886 sheet 3 draws the Gridley edge, including the church already in the file. March 1906 sheet 5 and February 1912 sheet 7 draw the Wells side.
+
+Dwellings are on the north lots 9 to 12, and on the south lots 1, 3, and 4. Lots 2 and the small sheds are not dwellings. The houses and the Reformed church already in the file cover that count. No house was removed, because none sat alone on lot 2.
+
+### 40 — Gridley to Wells, West Main to Dean
+
+Plat id `gridley-wells__west-main-dean`. January 1886 Sanborn, sheet 3, and the same corner on the August 1893 and May 1898 sheets.
+
+A one-and-a-half-story boarding house stands at the Gridley end (`block40-boarding-1886`). The front is brick. The May 1898 sheet still draws it. The other drawn lots are sheds. The sheet notes frame dwellings 18 feet beyond the edge, so those footprints were not copied and the houses toward Wells stay.
+
 ## Sanborn block numbers matched to the plat
 
 Read from the February 1912 sheets and the March 1906 sheet 5. A block is not finished until its lots are compared.
@@ -206,18 +255,10 @@ Read from the February 1912 sheets and the March 1906 sheet 5. A block is not fi
 - 62 — Hurst–Hail, Jackson–Washington. Finished. St. Bernard’s is on the Washington side at Hail.
 - Twyman blocks 15, 16, 27, and 28 on 1906 sheet 5 lie east of Wells. They are outside the 30 platted rectangles. Coleman's Flats is labeled on block 16. It was not added.
 
-## Plat blocks left unchanged (11 of 30)
+## Checked, with no lot drawing (3 of 30)
 
-No Sanborn lot list has been copied onto these. They keep the houses already in the file.
+These three were looked for on the January 1886, August 1893, May 1898, March 1906, and February 1912 sheets. The detail sheets do not draw their lots. The August 1893 index prints “frame dwellings” across the outer blocks and does not give a footprint. The houses already in the file stay. No data found for a lot to add or clear.
 
-- `barnes-hurst__dean-jackson`
-- `barnes-hurst__jackson-washington`
-- `hurst-hail__dean-jackson`
-- `hail-gridley__rile-crafford`
-- `hail-gridley__jackson-washington`
 - `gridley-wells__sperry-rile`
-- `gridley-wells__rile-crafford`
-- `gridley-wells__crafford-east-main`
-- `gridley-wells__west-main-dean`
 - `gridley-wells__dean-jackson`
 - `gridley-wells__jackson-washington`
