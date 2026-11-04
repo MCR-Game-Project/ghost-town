@@ -4,7 +4,7 @@ Checklist for the Sanborn comparison. The model has 30 platted rectangles in `pu
 
 Sheets used: January 1886 (3 sheets), August 1893 (4), May 1898 (4), March 1906 (5), February 1912 (8). All 24 overviews were opened. Crops were read for the blocks marked compared.
 
-## Finished lot comparison (2 of 30 plat blocks)
+## Finished lot comparison (4 of 30 plat blocks)
 
 ### 72 — Barnes to Hurst, East Main to Crawford
 
@@ -33,23 +33,35 @@ Sheets: 1886 sheet 2, 1893 sheet 2, 1898 sheet 2, 1906 sheet 3, 1912 sheet 4.
 
 Unreadable: which of the small Crawford footprints changed story between 1886 and 1893. No data found. They were not swapped.
 
-## Sheets opened, lots not copied (6 plat blocks)
-
-These blocks are on the sheets. The print is too small to copy every footprint, so no house was added or removed. No data found for those lots.
-
 ### 59 — Hurst to Hail, East Main to Crawford
 
-Plat id `hurst-hail__crafford-east-main`.
+Plat id `hurst-hail__crafford-east-main`. High-resolution crops of sheet 3 (1886, 1893, 1898) and 1906 sheet 4.
 
-Sheets: 1886 sheet 3, 1893 sheet 3, 1898 sheet 3, 1906 sheet 4.
+Crawford side, Hurst toward Hail:
 
-East Main is a brick and frame store row on every sheet. The National Hotel is on the Crawford side at Hurst in 1886, 1893, 1898, and 1906. Frame dwellings line Crawford on all four sheets. The February 1912 sheet for this block was not cropped. No data found for a count of those dwellings, or for which one was replaced.
+- 1886: National Hotel, brick, at the Hurst end. Three frame dwellings further along Crawford. A two-story wagon shop and the marble works are not dwellings. The hotel is moved to this corner. The three dwellings are `block59-crawford-1886-1` through `3`.
+- 1893: the hotel is marked three stories. The same three dwellings remain. The wagon shop remains.
+- 1898: the hotel and the three dwellings remain. W. J. Vertree’s fence factory is labeled on the Hurst side. No data found for its footprint, so it is not drawn.
+- 1906: the hotel and the dwellings remain. Jas. Cole Flats, two stories, brick, is labeled on lot 306 toward Hail (`jas-cole-flats-1906`).
+- 1912: this block was not on the crop. No data found for a 1912 change.
+
+Unreadable: the depth of each dwelling behind the street. No data found. The East Main store names were not copied door by door in this pass.
 
 ### 48 — Hail to Gridley, East Main to Crawford
 
-Plat id `hail-gridley__crafford-east-main`.
+Plat id `hail-gridley__crafford-east-main`. Same high-resolution crops.
 
-Same sheets as block 59. East Main holds the bank row and, by 1898, Ball Bros. carriage works at Gridley. Crawford has frame dwellings on every sheet from 1886 through 1906. The Dutch Reformed church is at Gridley. No data found for a lot-by-lot count.
+Crawford side, lots 307 to 312 (Hail toward Gridley):
+
+- 1886: frame dwellings on 307, 308, 309, 310, and 311. Lot 312, the Gridley end, shows sheds and no dwelling. The stand-in house on that lot was removed.
+- 1893: a two-story frame dwelling is on lot 312 (`block48-lot312-1893`). The other five dwellings are still there.
+- 1898: the six dwellings are still there. The Dutch Reformed church is labeled at Gridley, already in the model.
+- 1906: six dwellings still on Crawford. Several are marked two stories. No data found for which of the five older houses changed story, so those stand-ins were not swapped.
+- 1912: not cropped. No data found.
+
+## Sheets opened, lots not copied (4 plat blocks)
+
+These blocks are on the sheets. The footprints were not copied in this pass. No data found for those lots.
 
 ### 60 — Hurst to Hail, West Main to Dean
 

@@ -198,6 +198,30 @@
       "z": -575,
       "sourceMap": "March 1906 Sanborn",
       "notes": "March 1906 Sanborn, sheet 3, block 72, lot 2, on the Crawford side. The sheet labels a two-story lodgings and leaves the middle of the lot open. The May 1898 dwelling on this lot is taken off. The February 1912 sheet still shows dwellings on this side of the block. No family name is printed."
+    },
+    {
+      "id": "jas-cole-flats-1906",
+      "name": "Jas. Cole Flats",
+      "kind": "brick-store",
+      "use": "flats",
+      "material": "brick",
+      "stories": 2,
+      "width": 28,
+      "depth": 44,
+      "x": -55,
+      "z": -490,
+      "facing": "-z",
+      "paint": "cream",
+      "brick": "red",
+      "sign": "COLE FLATS",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1906",
+      "steeple": false,
+      "rotation": 0,
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "March 1906 Sanborn, sheet 4, block 59, lot 306, on the Crawford side toward Hail. The sheet labels Jas. Cole Flats, two stories, brick. The May 1898 sheet shows a frame dwelling on this lot and does not print this name."
     }
   ]
 }

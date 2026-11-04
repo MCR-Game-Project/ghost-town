@@ -41,6 +41,12 @@
       "sign": "ANGEL BROS.",
       "sourceMap": "August 1893 Sanborn",
       "notes": "The August 1893 Sanborn index and the railroad inset label Angel Bros., Bushnell Roller Mills, beside the tracks. The building stays on the railroad ground. The 1885 name of the other mill was Excelsior."
+    },
+    {
+      "id": "national-hotel",
+      "stories": 3,
+      "sourceMap": "August 1893 Sanborn",
+      "notes": "August 1893 Sanborn, sheet 3, block 59, still the National Hotel on the Hurst end of Crawford. The sheet marks the building three stories. The January 1886 sheet shows the same hotel."
     }
   ],
   "add": [
@@ -526,6 +532,31 @@
       "z": 120,
       "plan": "cottage",
       "notes": "A frame dwelling beside Ludwig Street. The August 1893 sheet 4 and the March 1906 sheet 2 show houses on this side of Ludwig. No family name is printed. The lot is the ordinary house size on that front."
+    },
+    {
+      "kind": "house",
+      "use": "dwelling",
+      "material": "frame",
+      "stories": 2,
+      "width": 24,
+      "depth": 34,
+      "paint": "cream",
+      "brick": "red",
+      "sign": "",
+      "porch": true,
+      "party": [],
+      "confidence": "sourced",
+      "plan": "i-house",
+      "steeple": false,
+      "rotation": 0,
+      "facing": "-z",
+      "year": "1893",
+      "sourceMap": "August 1893 Sanborn",
+      "id": "block48-lot312-1893",
+      "name": "Dwelling",
+      "x": 355,
+      "z": -516,
+      "notes": "Two-story frame dwelling on lot 312, the Gridley end of the Crawford side of block 48. August 1893 Sanborn, sheet 3. The January 1886 sheet shows sheds on this lot and no dwelling. The May 1898 and March 1906 sheets still show a two-story dwelling here. No family name is printed."
     }
   ],
   "streets": [
