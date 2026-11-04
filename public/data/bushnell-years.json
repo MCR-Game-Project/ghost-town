@@ -1,8 +1,88 @@
 {
   "place": "Bushnell, McDonough County, Illinois",
   "defaultYear": 1880,
-  "note": "The slider uses census years. Bushnell was chartered in 1869, and no 1860 city total was found, so 1860 is not a stop. There was no census in 1886. Firms from the 1885 history are listed under 1880, and January 1886 Sanborn labels are listed under 1890. Each line keeps its own source year. The 3D town does not change with the slider.",
+  "note": "The slider starts at 1854, the year the town was laid out, then uses the census years from 1860 through 2020. 1854 was not a census year. No 1860 population for the town was found. Firms from the 1885 history are listed under 1880, and January 1886 Sanborn labels are listed under 1890. Each line keeps its own source year.",
   "years": [
+    {
+      "year": 1854,
+      "census": [
+        {
+          "text": "No population count was found. There was no census in 1854. The town was laid out this year, before the railroad was finished. The first public sale of lots was in May 1854: about 70 lots, about $6,000, priced from $30 to $120.",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        }
+      ],
+      "school": [
+        {
+          "text": "No data found. No school is named in the year the town was laid out. The first schoolhouse came in 1856.",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        }
+      ],
+      "businesses": [
+        {
+          "name": "Hiram and Daniel Markham",
+          "type": "general merchandise",
+          "year": "1854",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "They opened in the summer of 1854 in a small slab store. The centennial book places it on the northeast corner of East Main and Wells. The 1885 history says it stood on the later normal-college site. That second site was not located, so the store is drawn on the centennial corner."
+        }
+      ]
+    },
+    {
+      "year": 1860,
+      "census": [
+        {
+          "text": "No data found for a population. Bushnell was not yet a city (the charter came in 1869), and Bushnell Township was not set off until 1866, from the south half of Prairie City Township. No 1860 count for the town was found.",
+          "source": "1885 History of McDonough County, Bushnell Township chapter, for the 1866 division. The city charter date is the one already used for this town."
+        },
+        {
+          "text": "By the close of 1856 the history counts 125 buildings on the town site, including houses, stables, and barns. Their lots were not given, so those lots stay empty.",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        }
+      ],
+      "school": [
+        {
+          "text": "No enrollment count was found. The first schoolhouse was built in 1856 on Sperry Street, block 57, and Dan Markham was the first teacher. In 1860 the school was moved to Temperance hall, later the Normal eating house. That hall was not located on a lot, so it is not drawn.",
+          "source": "1885 History of McDonough County, Bushnell chapter"
+        }
+      ],
+      "businesses": [
+        {
+          "name": "James Cole",
+          "type": "general merchandise",
+          "year": "1855",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "He opened in December 1855 in a one-story frame store, 16 by 48 feet, brought from Quincy, on the later site of T. F. Seibert's store. The building was afterward moved to New Philadelphia. The year it left, and Seibert's corner, were not found, so that first store is not drawn."
+        },
+        {
+          "name": "Wilson & Co.",
+          "type": "general merchandise",
+          "year": "1860",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "S. A. Hendee joined this firm in April 1860, on the east side of the railroad. The door was not named. The brick corner at Hurst and West Main is a later building, so it is not drawn in 1860."
+        },
+        {
+          "name": "Miller & Krouser",
+          "type": "furniture",
+          "year": "1859",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "The first furniture store, about 1859, a little east of the Bushnell House. That hotel's lot is itself inferred, so this store is not given a door."
+        },
+        {
+          "name": "E. P. Kinney & Co.",
+          "type": "hardware",
+          "year": "1857",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "The first store kept for hardware alone, opened in 1857. The centennial list spells the name Kline. The lot was not found. No data found for whether the firm was still open in 1860."
+        },
+        {
+          "name": "Markham's store building",
+          "type": "store building",
+          "year": "1856",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Hiram Markham built it after the slab store, where Ball and Son later had the carriage shop, East Main at Gridley. Negley and Angle opened there in April 1856. Who kept the store in 1860 was not found."
+        }
+      ]
+    },
     {
       "year": 1870,
       "census": [
@@ -15,9 +95,56 @@
         {
           "text": "A graded school was established in 1868. Mr. Hyde was the first principal. No enrollment count for 1870 was found.",
           "source": "Arthur Loomis, 1885 History of McDonough County, Bushnell chapter. The date he gives is 1868."
+        },
+        {
+          "text": "From 1868 until the 1875 building, the history says there were four schools, one in each ward. The 1875 schoolhouse is not drawn in 1870. No enrollment count for 1870 was found.",
+          "source": "1885 History of McDonough County, Bushnell chapter"
         }
       ],
-      "businesses": []
+      "businesses": [
+        {
+          "name": "S. A. Hendee",
+          "type": "general merchandise",
+          "year": "1860",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "In trade on the east side of the railroad from April 1860. By 1870 he was operating the store alone, after Hendee and Clarke dissolved in the fall of 1867. The West Main brick corner is not dated, so it is not drawn in 1870."
+        },
+        {
+          "name": "James Cole",
+          "type": "general merchandise",
+          "year": "1860s",
+          "source": "Bushnell centennial book, 1854\u20131954",
+          "note": "His brick corner at East Main and Hail uses bricks he made in the 1860s. The exact year was not found. He was still a merchant. Banking came in 1878."
+        },
+        {
+          "name": "Nevius Brothers",
+          "type": "flour mill",
+          "year": "1866",
+          "source": "Bushnell centennial book, 1854\u20131954",
+          "note": "Listed as the first flouring mill. The 1885 history calls the Nevious Bros. mill the Excelsior. The Depot Mill's date was not found."
+        },
+        {
+            "name": "West & Kaiser",
+            "type": "general store",
+            "year": "1869",
+            "source": "1885 History of McDonough County, Bushnell chapter",
+            "note": "The stand opened in March 1866 as a general store on the east side of the street. Stockton West came in, and by the fall of 1869 the firm was West and Kaiser, in a new room. Neither door was named."
+        },
+        {
+          "name": "Lemuel Aller",
+          "type": "dry goods",
+          "year": "1867",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Began in 1867 as J. H. Aller and Co., and bought his partner's interest in the fall of 1869. The door was not named."
+        },
+        {
+          "name": "Aller, Seibert & Co.",
+          "type": "general merchandise",
+          "year": "1870",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "Theodore F. Seibert's store was established in March 1870 by this firm. The corner was not named, so it is not drawn."
+        }
+      ]
     },
     {
       "year": 1880,

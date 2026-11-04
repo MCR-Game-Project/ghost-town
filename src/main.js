@@ -782,7 +782,7 @@ function renderStats(data) {
   head.className = "year-head";
   const label = document.createElement("p");
   label.className = "eyebrow";
-  label.textContent = "Census year";
+  label.textContent = "Year";
   const readout = document.createElement("p");
   readout.className = "year-readout";
   readout.id = "year-readout";
@@ -793,7 +793,7 @@ function renderStats(data) {
   slider.max = String(years.length - 1);
   slider.step = "1";
   slider.value = String(initial);
-  slider.setAttribute("aria-label", "Census year");
+  slider.setAttribute("aria-label", "Year");
   const scale = document.createElement("div");
   scale.className = "year-scale";
   const first = document.createElement("span");
@@ -868,10 +868,17 @@ function builtTownYear(sliderYear) {
   if (year >= 1910) return 1910;
   if (year >= 1900) return 1900;
   if (year >= 1890) return 1890;
-  return 1880;
+  if (year >= 1880) return 1880;
+  if (year >= 1870) return 1870;
+  if (year >= 1860) return 1860;
+  return 1854;
 }
 
 function applyTownPatch(data, patch) {
+  if (Array.isArray(patch.keep)) {
+    const keep = new Set(patch.keep);
+    data.buildings = data.buildings.filter((building) => keep.has(building.id));
+  }
   const remove = new Set(patch.remove || []);
   data.buildings = data.buildings.filter((building) => !remove.has(building.id));
   const byId = new Map(data.buildings.map((building) => [building.id, building]));
@@ -883,6 +890,19 @@ function applyTownPatch(data, patch) {
   for (const street of patch.streets || []) {
     if (!data.streets.some((item) => item.name === street.name)) data.streets.push(structuredClone(street));
   }
+  if (patch.removeTracks) {
+    const drop = new Set(patch.removeTracks);
+    data.tracks = data.tracks.filter((track) => !drop.has(track.id));
+  }
+  if (patch.removePropTypes) {
+    const drop = new Set(patch.removePropTypes);
+    data.props = (data.props || []).filter((prop) => !drop.has(prop.type));
+  }
+  if (patch.removeRailroads) {
+    const drop = new Set(patch.removeRailroads);
+    data.props = (data.props || []).filter((prop) => !drop.has(prop.railroad));
+  }
+  if (patch.removeBoardwalks) data.boardwalks = [];
 }
 
 function disposeTown() {
@@ -905,6 +925,7 @@ function disposeTown() {
 function mountTown(builtYear) {
   disposeTown();
   const data = structuredClone(townSource);
+  if (builtYear < 1880) applyTownPatch(data, townPatches[builtYear]);
   if (builtYear >= 1890) applyTownPatch(data, townPatches[1890]);
   if (builtYear >= 1900) applyTownPatch(data, townPatches[1900]);
   if (builtYear >= 1910) applyTownPatch(data, townPatches[1910]);
@@ -936,6 +957,9 @@ async function main() {
   bindStats();
   const files = [
     ["base", "bushnell-1880.json"],
+    [1854, "bushnell-1854.json"],
+    [1860, "bushnell-1860.json"],
+    [1870, "bushnell-1870.json"],
     [1890, "bushnell-1890.json"],
     [1900, "bushnell-1900.json"],
     [1910, "bushnell-1910.json"],
@@ -946,7 +970,14 @@ async function main() {
   if (responses.some((response) => !response.ok)) throw new Error("A town file did not load.");
   const payloads = await Promise.all(responses.map((response) => response.json()));
   townSource = payloads[0];
-  townPatches = { 1890: payloads[1], 1900: payloads[2], 1910: payloads[3] };
+  townPatches = {
+    1854: payloads[1],
+    1860: payloads[2],
+    1870: payloads[3],
+    1890: payloads[4],
+    1900: payloads[5],
+    1910: payloads[6],
+  };
   addNorthArrow(scene);
   const quality = document.getElementById("quality");
   quality.value = shot ? "fine" : "street";

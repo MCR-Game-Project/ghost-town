@@ -1,0 +1,87 @@
+{
+  "shownAs": 1870,
+  "mapLabel": "Buildings dated by 1870 in the 1885 history and the centennial book",
+  "note": "The 1880 town with every building removed except the ones a source puts here by 1870. The 1875 school, the 1871 hotel and bank, and the 1880 elevator are not here yet.",
+  "keep": [
+    "american-house-52",
+    "german-methodist-1857",
+    "reformed-church",
+    "cole-building-10",
+    "excelsior-mill"
+  ],
+  "removeTracks": [
+    "tpw",
+    "cbq-siding"
+  ],
+  "update": [
+    {
+      "id": "american-house-52",
+      "year": "1855",
+      "sourceMap": "Centennial book, 1854\u20131954",
+      "notes": "The centennial book says the first hotel was owned by John D. Hail in 1855 and was called the American House, and that the old frame building stood on East Hurst. The lot along East Hurst is the one already used for this hotel."
+    },
+    {
+      "id": "cole-building-10",
+      "year": "1860s",
+      "sourceMap": "Centennial book, 1854\u20131954",
+      "notes": "James Cole's brick corner at East Main and Hail. The centennial book says he made the bricks in the 1860s. The exact year inside that decade was not found, so the building is shown in 1870 and not in 1860. He had been a merchant here since December 1855, in an earlier frame store that was later moved to New Philadelphia. That first store's lot was not named."
+    },
+    {
+      "id": "excelsior-mill",
+      "name": "Nevius Bros. Mill",
+      "sign": "NEVIUS MILL",
+      "year": "1866",
+      "sourceMap": "Centennial book, 1854\u20131954",
+      "notes": "The centennial book lists Nevius Brothers as the first flouring mill, in 1866. The 1885 history says the Excelsior steam mill was built by Nevious Bros. and failed in the fall of 1884. Those are taken as the same mill. The lot is the one already used, which the centennial places just west of the Depot Mill. The Depot Mill's own date was not found, so that second mill is not drawn in 1870."
+    },
+    {
+      "id": "reformed-church",
+      "sourceMap": "Centennial book, 1854\u20131954",
+      "notes": "Organized October 19, 1856. The church was built in 1860 or 1861 at the northwest corner of East Gridley and Crafford and dedicated May 1, 1861, so it is not in the 1860 picture. No photograph was found. The white frame walls and the steeple are the ordinary form, not a measured elevation."
+    }
+  ],
+  "add": [
+    {
+      "kind": "frame-store",
+      "material": "frame",
+      "stories": 1,
+      "paint": "white",
+      "brick": "red",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "steeple": false,
+      "rotation": 0,
+      "sign": "STORE",
+      "facing": "+z",
+      "sourceMap": "1885 History of McDonough County",
+      "id": "markham-gridley-store",
+      "name": "Markham's store building",
+      "use": "general store",
+      "width": 22,
+      "depth": 40,
+      "x": 360,
+      "z": -200,
+      "year": "1856",
+      "notes": "The store Hiram Markham erected on the later Ball and Son corner, East Main at Gridley. Negley and Angle opened there in April 1856. The 1860 and 1870 tenants were not named. Ball Bros. are the 1880s occupants, so their sign is not used here."
+    }
+  ],
+  "removePropTypes": [
+    "hitching",
+    "telegraph",
+    "lamp",
+    "wagon",
+    "horse",
+    "trough",
+    "barrels",
+    "pump",
+    "crates",
+    "lumber",
+    "coal",
+    "bandstand"
+  ],
+  "removeRailroads": [
+    "T. P. & W."
+  ],
+  "removeBoardwalks": true
+}

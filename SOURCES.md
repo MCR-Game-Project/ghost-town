@@ -74,7 +74,7 @@ These are `sourced` in the data file. The notes on each one say what is firm and
 - **Furniture**, a little east of the Bushnell House. Miller & Krouser opened that trade in 1859. The neighboring door is inferred.
 - **Stockton West** dealt in grain, wood, and coal. A yard and a small office are shown by the siding. The business is documented. The shed is inferred.
 
-The Presbyterian and Methodist churches are in the model as congregations that existed, on inferred lots. The Presbyterian church stood near the Christian Church. A later Presbyterian building is on West Hurst. The graded school of 1875 is the red-brick building at Cole and Hurst, described under Mark's placements below. Arthur Loomis, in the 1885 history, calls it a two-story brick school on a stone foundation whose basement stands about ten feet out of the ground, in the northwest part of town, with eight classrooms. The model keeps that stone base, the two classroom floors, and a cupola. The first school, in 1856, was on Sperry Street, block 57, and was already gone by 1860.
+The Presbyterian and Methodist churches are in the model as congregations that existed, on inferred lots. The Presbyterian church stood near the Christian Church. A later Presbyterian building is on West Hurst. The German Methodist church is separate. The centennial book says that congregation finished its building in 1857 at the southwest corner of West Hail and Jackson, and that it still stands, so that church is drawn on the corner. The graded school of 1875 is the red-brick building at Cole and Hurst, described under Mark's placements below. Arthur Loomis, in the 1885 history, calls it a two-story brick school on a stone foundation whose basement stands about ten feet out of the ground, in the northwest part of town, with eight classrooms. The model keeps that stone base, the two classroom floors, and a cupola. The first school, in 1856, was on Sperry Street, block 57. In 1860 the school was transferred to Temperance hall.
 
 ## Fronts matched to a photograph
 
@@ -166,11 +166,37 @@ The model follows that mix, not a traced outline of each lot. A front-gabled hou
 
 Paint is still the ordinary white, cream, yellow, gray, barn red, and green. The Picture menu is unchanged. It still only sets how sharp the picture is and how large the shadows are. The extra boards of a house are merged into the same few surfaces as the rest of the town.
 
-The figures panel on the right is `public/data/bushnell-years.json`. The slider stops on census years, from 1870 through 2020. Bushnell received its city charter in 1869, and no 1860 city total was found, so 1860 is not a stop. There is no 1886 stop. The 1885 business list sits under 1880, and the January 1886 Sanborn labels sit under 1890. Each line keeps the year of its own source. The 3D town does not change when the year changes. The older file `public/data/bushnell-1886.json` is the same 1885 and 1886 material, kept so that list still has one place to read.
+The figures panel on the right is `public/data/bushnell-years.json`. The slider starts at 1854, the year the town was laid out, and then stops on the census years from 1860 through 2020. No 1860 population for the town was found. Bushnell received its city charter in 1869, and Bushnell Township was set off in 1866. There is no 1886 stop. The 1885 business list sits under 1880, and the January 1886 Sanborn labels sit under 1890. Each line keeps the year of its own source. The older file `public/data/bushnell-1886.json` is the same 1885 and 1886 material, kept so that list still has one place to read.
 
 ## The 1890 town
 
-The year slider changes the picture as well as the figures. Two towns are built. 1880 is the town already in `public/data/bushnell-1880.json`, including the January 1886 shops on block 72. 1890 starts from that town and applies `public/data/bushnell-1890.json`. The map for 1890 is the August 1893 Sanborn, four sheets, the nearest fire-insurance map to the 1890 census. The panel says “Town shown as of 1890” when a later census year is selected, and “Town shown as of 1880” for 1870, because no earlier town is built. 1880 and 1890 themselves are the years on the slider.
+The year slider changes the picture as well as the figures. 1880 is the town in `public/data/bushnell-1880.json`. 1890, 1900, and 1910 are the Sanborn patches described below. 1854, 1860, and 1870 start from the 1880 town and take off every building a source does not yet place. The panel says “Town shown as of 1910” when a later census year is selected. 1854, 1860, 1870, 1880, 1890, 1900, and 1910 are the years the picture uses.
+
+## The 1854 town
+
+`public/data/bushnell-1854.json` keeps the streets. The 1885 history says William H. Rile laid the quarter into 48 blocks of 12 lots in 1854, with the two Main streets 70 feet wide and the other streets 60, parallel to the railroad, which was already graded and not yet finished. The two park blocks the proprietors gave stay. The Toledo, Peoria and Warsaw was not surveyed until 1867, so those tracks are not drawn. The house track beside the depot is not in the 1854 account, so it is not drawn either.
+
+One building is added. Hiram and Daniel Markham opened a slab store in the summer of 1854. The centennial book puts the first house, and that store, on the northeast corner of East Main and Wells. The 1885 history says the slab store stood on the site of the later normal college, and that the town then held only a couple of shanties. The normal-college lot was not found on this plat, so the store follows the centennial corner. The oil lamps, hitching posts, boardwalks, wagons, and the bandstand are not dated to 1854, so they are not drawn in 1854, 1860, or 1870. Nothing else is drawn. John Crawford’s hotel was finished by John D. Hail in the summer of 1855, so it is not in this year. The four houses of Hiram Conover, John Beach, William Ervin, and William Vickers are dated early in 1855 by the centennial book, and no lots were given.
+
+## The 1860 town
+
+`public/data/bushnell-1860.json` again clears the 1880 buildings, then puts back only what is dated by 1860.
+
+- The American House, the frame hotel on East Hurst. The centennial book says the first hotel was John D. Hail’s in 1855 and was called the American House. The lot along that street is the one already used. The exact lot was not named.
+- The German Methodist church, finished in 1857 at the southwest corner of West Hail and Jackson.
+- The store Hiram Markham built on the later Ball and Son corner, East Main at Gridley. Negley and Angle opened in it in April 1856. The 1860 tenant was not named, so the sign does not invent one.
+
+The first schoolhouse, 1856, stood on Sperry Street, block 57. In 1860 the school moved to Temperance hall. That hall was not located, so it is not drawn. The Reformed church was dedicated May 1, 1861, so it is not in this year. S. A. Hendee’s 1860 store was on the east side of the railroad, at a door the history does not name. James Cole’s 1855 frame store, 16 by 48 feet, stood on the later Seibert site and was afterward moved to New Philadelphia. The year it left was not found, so it is not drawn. The history’s count of 125 buildings by the end of 1856 has no lots, so those lots stay empty. No data found for a 1860 population.
+
+## The 1870 town
+
+`public/data/bushnell-1870.json` keeps the 1860 buildings and adds the ones dated before 1870.
+
+- The Reformed church, dedicated in 1861, at the northwest corner of East Gridley and Crafford.
+- James Cole’s brick corner at East Main and Hail. The bricks were made in the 1860s. The exact year was not found, which is why it is not in the 1860 picture.
+- The Nevius Brothers flour mill of 1866, taken to be the Excelsior mill the 1885 history credits to Nevious Bros. It uses the lot already given to that mill. The Depot Mill has no date, so it is not drawn.
+
+Not drawn, because they come later: the Hendee House and the Farmers National Bank, both 1871; the pump works, 1872; the graded-school building of 1875; Zook and Johnson, 1876; the Hendee elevator, 1880. The Toledo, Peoria and Warsaw was surveyed in 1867. No opening date was found, so its tracks and depot are not drawn in 1870. No data found for the doors of West and Kaiser, Lemuel Aller, or Aller, Seibert and Co.
 
 The change that was copied door by door is the East Main face of block 72, between Hurst and Barnes. On the August 1893 sheet the Hurst corner is a two-story brick block with an iron front. A pediment and a finial sit on the corner room. The rooms read on that block, from Hurst west, are a market, dry goods, boots and shoes, clothing, and a restaurant. West of the brick are frame shops: a one-story store marked S., a two-story harness shop, a two-story bakery, and a shop for china, lamps, and wallpaper. Farther west is a two-story brick agricultural-implement store, then an open stretch, then a two-story frame building at Barnes divided into groceries, a vacant room, and beverages. The January 1886 candy shop, barber shops, saloon, bowling alley, and meat market are not on this front. The lettering is small. The corner room’s word is the least sure of the row; the others are the usual Sanborn abbreviations.
 

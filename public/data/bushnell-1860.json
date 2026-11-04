@@ -1,0 +1,65 @@
+{
+  "shownAs": 1860,
+  "mapLabel": "Buildings dated by 1860 in the 1885 history and the centennial book",
+  "note": "The 1880 town with every building removed except the ones a source puts here by 1860. The railroad grade stays. The Toledo, Peoria and Warsaw is not drawn. Empty lots mean the door was not located.",
+  "keep": [
+    "american-house-52",
+    "german-methodist-1857"
+  ],
+  "removeTracks": [
+    "tpw",
+    "cbq-siding"
+  ],
+  "update": [
+    {
+      "id": "american-house-52",
+      "year": "1855",
+      "sourceMap": "Centennial book, 1854\u20131954",
+      "notes": "The centennial book says the first hotel was owned by John D. Hail in 1855 and was called the American House, and that the old frame building stood on East Hurst. The 1885 history says John Crawford began it and Hail finished it in the summer of 1855. The lot along East Hurst is the one already used for this hotel. The exact lot was not named."
+    }
+  ],
+  "add": [
+    {
+      "kind": "frame-store",
+      "material": "frame",
+      "stories": 1,
+      "paint": "white",
+      "brick": "red",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "steeple": false,
+      "rotation": 0,
+      "sign": "STORE",
+      "facing": "+z",
+      "sourceMap": "1885 History of McDonough County",
+      "id": "markham-gridley-store",
+      "name": "Markham's store building",
+      "use": "general store",
+      "width": 22,
+      "depth": 40,
+      "x": 360,
+      "z": -200,
+      "year": "1856",
+      "notes": "Hiram Markham erected this store after the slab store, on the ground where Ball and Son's carriage shop stood by 1885, which is East Main at Gridley. Negley and Angle of Canton opened a store in it in April 1856. Who kept it in 1860 is not stated. The size is not in the history."
+    }
+  ],
+  "removePropTypes": [
+    "hitching",
+    "telegraph",
+    "lamp",
+    "wagon",
+    "horse",
+    "trough",
+    "barrels",
+    "pump",
+    "crates",
+    "lumber",
+    "coal",
+    "bandstand"
+  ],
+  "removeRailroads": [
+    "T. P. & W."
+  ],
+  "removeBoardwalks": true
+}
