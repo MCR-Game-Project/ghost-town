@@ -2,7 +2,9 @@
   "shownAs": 1910,
   "mapLabel": "March 1906 Sanborn, checked against February 1912",
   "note": "The March 1906 map is the nearer one before the 1910 census. The February 1912 map is used where it shows a later name or a plant the 1906 sheet does not, and those lines say 1912.",
-  "remove": [],
+  "remove": [
+    "block72-lot2-1898"
+  ],
   "streets": [
     {
       "name": "Charles Street",
@@ -171,6 +173,31 @@
       "rotation": 0,
       "sourceMap": "March 1906 Sanborn",
       "notes": "A frame house on Charles Street. March 1906 Sanborn, sheet 2. No family name is printed."
+    },
+    {
+      "kind": "house",
+      "use": "lodgings",
+      "material": "frame",
+      "stories": 2,
+      "width": 22,
+      "depth": 36,
+      "paint": "cream",
+      "brick": "red",
+      "sign": "LODGINGS",
+      "porch": true,
+      "party": [],
+      "confidence": "sourced",
+      "plan": "i-house",
+      "steeple": false,
+      "rotation": 0,
+      "facing": "-z",
+      "year": "1906",
+      "id": "block72-lodgings-1906",
+      "name": "Lodgings",
+      "x": -545,
+      "z": -575,
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "March 1906 Sanborn, sheet 3, block 72, lot 2, on the Crawford side. The sheet labels a two-story lodgings and leaves the middle of the lot open. The May 1898 dwelling on this lot is taken off. The February 1912 sheet still shows dwellings on this side of the block. No family name is printed."
     }
   ]
 }

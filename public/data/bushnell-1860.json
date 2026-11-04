@@ -3,6 +3,7 @@
   "mapLabel": "Buildings dated by 1860 in the 1885 history and the centennial book",
   "note": "The 1880 town with every building removed except the ones a source puts here by 1860. The railroad grade stays. The Toledo, Peoria and Warsaw is not drawn. Empty lots mean the door was not located.",
   "keep": [
+    "markham-house-1854",
     "american-house-52",
     "german-methodist-1857"
   ],

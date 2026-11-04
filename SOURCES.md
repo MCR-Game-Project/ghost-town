@@ -200,7 +200,7 @@ Not drawn, because they come later: the Hendee House and the Farmers National Ba
 
 The change that was copied door by door is the East Main face of block 72, between Hurst and Barnes. On the August 1893 sheet the Hurst corner is a two-story brick block with an iron front. A pediment and a finial sit on the corner room. The rooms read on that block, from Hurst west, are a market, dry goods, boots and shoes, clothing, and a restaurant. West of the brick are frame shops: a one-story store marked S., a two-story harness shop, a two-story bakery, and a shop for china, lamps, and wallpaper. Farther west is a two-story brick agricultural-implement store, then an open stretch, then a two-story frame building at Barnes divided into groceries, a vacant room, and beverages. The January 1886 candy shop, barber shops, saloon, bowling alley, and meat market are not on this front. The lettering is small. The corner room’s word is the least sure of the row; the others are the usual Sanborn abbreviations.
 
-The Crawford side of the same block shows frame dwellings on the 1893 sheet. Four houses are drawn there, not as named homes. The August 1893 map labels the West Main hotel Alexander, so the 1890 sign says Alexander. The 1880 sign still says Hendee House.
+The Crawford side of block 72 already has frame dwellings on the January 1886 sheet, so those houses are in the 1880 town, not added in 1890. The August 1893 sheet still shows them. The August 1893 map labels the West Main hotel Alexander, so the 1890 sign says Alexander. The 1880 sign still says Hendee House.
 
 The same 1893 sheets, read past block 72, add these and no others. Sheet 2 puts Excelsior Mills on the Dean side of the block between Davis and Barnes, so that mill moves there. The railroad inset labels Angel Bros., Bushnell Roller Mills, and that name goes on the mill already standing by the tracks. Sheet 3 labels Mack & M. Pinckley's lumber yard on the railroad ground. Sheet 4 labels Vanderveer & Logsdon's electric light works and the city water works in the north works district with the pump company, and a brick plant, N.E.F. Manufacturing Co., west of Davis. Ludwig Street is the next cross street southwest of Davis on sheet 4. It is drawn one 420-foot module beyond Davis, the plat spacing, from the railroad ground down toward Crafford, with three frame houses and no family names. A cigar factory is labeled on the Hurst side of block 72. Blocks whose doors could not be read are left as they were.
 
@@ -215,6 +215,22 @@ The March 1906 Sanborn, five sheets, is the nearer map before 1910. The February
 On block 72 the Hurst rooms of the brick block read, from the corner west: jewelry and photographs, dry goods, bowling, restaurant, and saloon. The harness shop is brick. The electric plant is labeled Bushnell Electric Light & Power Co. The brick works west of the tracks are labeled Bushnell Tank & Fence Works (the 1912 sheet says Bushnell Tank Works). The trackside lumber yard is J. C. Simpson & Co. Block 81 labels J. W. Roach's livery. Charles Street is the street along the west side of the pump company on the 1906 sheet, drawn there and not across the whole plat. Two frame houses stand on its east side, with no family names. The 1912 sheet adds Martin Schulze's poultry and ice house near East Main and East Davis.
 
 The 1912 index names many more streets, including lettered avenues and Franklin, Grant, Lincoln, Walnut, and Water. Their corners were not measured on this plat, so they are not drawn. No data found for those lines.
+
+## Houses from one year to the next
+
+The minus and plus buttons beside the year slider step to the previous and next year on the slider. The first year has no earlier step. The last year has no later step. The slider itself is unchanged.
+
+Houses are compared only where a source names a lot.
+
+Before the January 1886 map, the only houses with a place in the records are these. 1854 and 1860 both show the Markham house at the northeast corner of East Main and Wells. No source says another house was built on a named lot by 1860, and no source says that house was down, so nothing is added or removed between those two years. The four houses of 1855, Conover, Beach, Ervin, and Vickers, have no lots. No data found for them. In 1870 the centennial book places three more: J. C. Vail at Hail and Jackson, Mart F. West at Hail and Dean, and D. M. Wyckoff at the north end of Rile. S. R. Hendee’s 1870 house is only “on Hurst Street,” and Dr. Beadles’s is only “on Jackson Street.” Those two lots were not found, so the houses are not drawn.
+
+The January 1886 Sanborn is what fills the 1880 town with dwellings. On the sheets that were read lot by lot, block 72’s Crawford side has five frame dwellings, and block 80 has the Baptist church, dwellings along Crawford, and a one-story dwelling at the Davis end of East Main. The rest of the houses in that town are the earlier stand-ins for blocks the sheets show as built up, and they are still marked inferred. They are not a traced copy of every lot.
+
+From 1886 to the August 1893 sheet, those block 72 and block 80 dwellings are still there. Three new frame houses are drawn on Ludwig Street, which that sheet names and the 1886 sheets do not. No dwelling on the blocks read here was missing in 1893, so none of those is removed.
+
+From the August 1893 sheet to the May 1898 sheet, the one-story house at the Davis end of block 80 is replaced by a two-story house. A dwelling is added on lot 2 of block 72, Crawford side, where the 1893 sheet shows the cigar factory and no house. 
+
+From the May 1898 sheet to the March 1906 sheet, that lot 2 house is replaced by the two-story lodgings the 1906 sheet labels. The February 1912 sheet still shows dwellings on this side of the block. Two houses on Charles Street, already taken from the 1906 sheet, come in with 1910. Blocks that were not read lot by lot are left as they were. No data found for a door-by-door list of those blocks.
 
 A building taken from a Sanborn sheet carries `sourceMap` with that sheet’s date. The card in the corner prints it.
 

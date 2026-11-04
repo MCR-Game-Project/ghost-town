@@ -794,6 +794,21 @@ function renderStats(data) {
   slider.step = "1";
   slider.value = String(initial);
   slider.setAttribute("aria-label", "Year");
+  const yearRow = document.createElement("div");
+  yearRow.className = "year-row";
+  const earlier = document.createElement("button");
+  earlier.type = "button";
+  earlier.className = "year-step";
+  earlier.id = "year-earlier";
+  earlier.textContent = "−";
+  earlier.setAttribute("aria-label", "Earlier year");
+  const later = document.createElement("button");
+  later.type = "button";
+  later.className = "year-step";
+  later.id = "year-later";
+  later.textContent = "+";
+  later.setAttribute("aria-label", "Later year");
+  yearRow.append(earlier, slider, later);
   const scale = document.createElement("div");
   scale.className = "year-scale";
   const first = document.createElement("span");
@@ -801,7 +816,7 @@ function renderStats(data) {
   const last = document.createElement("span");
   last.textContent = String(years[years.length - 1]);
   scale.append(first, last);
-  head.append(label, readout, slider, scale);
+  head.append(label, readout, yearRow, scale);
   root.appendChild(head);
 
   const drops = {};
@@ -826,6 +841,8 @@ function renderStats(data) {
     const entry = data.years[index];
     readout.textContent = String(entry.year);
     slider.setAttribute("aria-valuetext", String(entry.year));
+    earlier.disabled = index <= 0;
+    later.disabled = index >= years.length - 1;
     fillFacts(drops.census, entry.census);
     fillFacts(drops.school, entry.school);
     fillBusinesses(drops.businesses, entry.businesses);
@@ -837,6 +854,13 @@ function renderStats(data) {
   note.hidden = true;
   head.appendChild(note);
   slider.addEventListener("input", () => show(Number(slider.value)));
+  const stepYear = (direction) => {
+    const index = Math.min(years.length - 1, Math.max(0, Number(slider.value) + direction));
+    slider.value = String(index);
+    show(index);
+  };
+  earlier.addEventListener("click", () => stepYear(-1));
+  later.addEventListener("click", () => stepYear(1));
   show(initial);
 }
 

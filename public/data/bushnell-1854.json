@@ -1,38 +1,15 @@
 {
   "shownAs": 1854,
   "mapLabel": "1854 plat, from the 1885 county history and the centennial book",
-  "note": "The streets are the 1854 plat. Every building in the 1880 town is taken off except the slab store the histories place this year. Lots with no named building stay empty.",
-  "keep": [],
+  "note": "The streets are the 1854 plat. The only house is the Markham house at East Main and Wells. Every other building in the later town is taken off.",
+  "keep": [
+    "markham-house-1854"
+  ],
   "removeTracks": [
     "tpw",
     "cbq-siding"
   ],
-  "add": [
-    {
-      "kind": "frame-store",
-      "material": "frame",
-      "stories": 1,
-      "paint": "white",
-      "brick": "red",
-      "porch": false,
-      "party": [],
-      "confidence": "sourced",
-      "steeple": false,
-      "rotation": 0,
-      "sign": "MARKHAM",
-      "facing": "+z",
-      "sourceMap": "Centennial book, 1854\u20131954",
-      "id": "markham-slab-1854",
-      "name": "Markham store",
-      "use": "general store",
-      "width": 16,
-      "depth": 24,
-      "x": 892,
-      "z": -210,
-      "year": "1854",
-      "notes": "Hiram and Daniel Markham opened a small stock in the summer of 1854, in a slab store the proprietors had just built. The centennial book puts that store, and the first house, on the northeast corner of East Main and Wells. The 1885 history says the slab store stood on the site of the later normal college, and that the town then had only a couple of shanties. The normal-college lot was not found on this plat, so the building is drawn on the corner the centennial names. The size is the 'small' store of the history, not a measured footprint."
-    }
-  ],
+  "add": [],
   "removePropTypes": [
     "hitching",
     "telegraph",

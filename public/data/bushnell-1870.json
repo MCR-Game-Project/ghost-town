@@ -3,11 +3,15 @@
   "mapLabel": "Buildings dated by 1870 in the 1885 history and the centennial book",
   "note": "The 1880 town with every building removed except the ones a source puts here by 1870. The 1875 school, the 1871 hotel and bank, and the 1880 elevator are not here yet.",
   "keep": [
+    "markham-house-1854",
     "american-house-52",
     "german-methodist-1857",
     "reformed-church",
     "cole-building-10",
-    "excelsior-mill"
+    "excelsior-mill",
+    "vail-house-1870",
+    "west-house-1870",
+    "wyckoff-house-1870"
   ],
   "removeTracks": [
     "tpw",
