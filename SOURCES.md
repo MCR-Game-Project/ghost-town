@@ -230,7 +230,7 @@ From 1886 to the August 1893 sheet, those block 72 and block 80 dwellings are st
 
 From the August 1893 sheet to the May 1898 sheet, the one-story house at the Davis end of block 80 is replaced by a two-story house. A dwelling is added on lot 2 of block 72, Crawford side, where the 1893 sheet shows the cigar factory and no house. 
 
-From the May 1898 sheet to the March 1906 sheet, that lot 2 house is replaced by the two-story lodgings the 1906 sheet labels. The February 1912 sheet still shows dwellings on this side of the block. Two houses on Charles Street, already taken from the 1906 sheet, come in with 1910. Blocks that were not read lot by lot are left as they were. No data found for a door-by-door list of those blocks.
+From the May 1898 sheet to the March 1906 sheet, that lot 2 house is replaced by the two-story lodgings the 1906 sheet labels. The February 1912 sheet still shows dwellings on this side of the block. Two houses on Charles Street, already taken from the 1906 sheet, come in with 1910. The block-by-block checklist is `docs/block-audit.md`. Blocks not finished there are left as they were. No data found for a door-by-door list of those blocks.
 
 A building taken from a Sanborn sheet carries `sourceMap` with that sheet’s date. The card in the corner prints it.
 
