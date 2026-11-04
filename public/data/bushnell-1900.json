@@ -1,0 +1,57 @@
+{
+  "shownAs": 1900,
+  "mapLabel": "May 1898 Sanborn",
+  "note": "Nearest fire-insurance map to the 1900 census. May 1898, four sheets. Shop names on the Hurst brick block are the labels read on sheet 2. Where a 1898 label could not be read, the 1893 name is kept.",
+  "remove": [],
+  "streets": [],
+  "add": [],
+  "update": [
+    {
+      "id": "excelsior-mill",
+      "name": "H. H. Obenhauer & Co.",
+      "sign": "OBENHAUER",
+      "sourceMap": "May 1898 Sanborn",
+      "notes": "May 1898 Sanborn, sheet 2, block 81. The mill the 1893 sheet called Excelsior is labeled H. H. Obenhauer & Co., machinery and a barn. The March 1906 sheet still prints that name."
+    },
+    {
+      "id": "block72-1893-meat",
+      "name": "Photo",
+      "sign": "PHOTO",
+      "use": "photograph gallery",
+      "sourceMap": "May 1898 Sanborn",
+      "notes": "Hurst corner room of the brick block, May 1898 Sanborn, sheet 2, block 72. The sheet labels this room Photo. The corner pediment and finial stay. The 1893 reading of this room was a market."
+    },
+    {
+      "id": "block72-1893-dry-goods",
+      "name": "Groceries",
+      "sign": "GROCERIES",
+      "use": "groceries",
+      "sourceMap": "May 1898 Sanborn",
+      "notes": "Second room west of Hurst, May 1898 Sanborn, sheet 2, block 72, labeled Gro."
+    },
+    {
+      "id": "block72-1893-boots---shoes",
+      "name": "Vacant",
+      "sign": "VACANT",
+      "use": "vacant store",
+      "sourceMap": "May 1898 Sanborn",
+      "notes": "May 1898 Sanborn, sheet 2, block 72. This room of the brick block is labeled vacant."
+    },
+    {
+      "id": "block72-1893-clothing",
+      "name": "Lunch",
+      "sign": "LUNCH",
+      "use": "lunch room",
+      "sourceMap": "May 1898 Sanborn",
+      "notes": "May 1898 Sanborn, sheet 2, block 72, a room of the brick block labeled Lunch."
+    },
+    {
+      "id": "block72-1893-restaurant",
+      "name": "Saloon",
+      "sign": "SALOON",
+      "use": "saloon",
+      "sourceMap": "May 1898 Sanborn",
+      "notes": "May 1898 Sanborn, sheet 2, block 72, a room of the brick block labeled Sal."
+    }
+  ]
+}

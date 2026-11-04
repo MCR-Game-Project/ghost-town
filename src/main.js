@@ -122,7 +122,7 @@ let picks = null;
 let overviewLabels = null;
 let town = null;
 let townSource = null;
-let town1890 = null;
+let townPatches = {};
 let shownBuiltYear = null;
 const townGroup = new THREE.Group();
 townGroup.name = "town";
@@ -865,7 +865,10 @@ function bindStats() {
 function builtTownYear(sliderYear) {
   const year = Number(sliderYear);
   if (!Number.isFinite(year)) return 1880;
-  return year >= 1890 ? 1890 : 1880;
+  if (year >= 1910) return 1910;
+  if (year >= 1900) return 1900;
+  if (year >= 1890) return 1890;
+  return 1880;
 }
 
 function applyTownPatch(data, patch) {
@@ -877,6 +880,9 @@ function applyTownPatch(data, patch) {
     if (found) Object.assign(found, update);
   }
   for (const building of patch.add || []) data.buildings.push(structuredClone(building));
+  for (const street of patch.streets || []) {
+    if (!data.streets.some((item) => item.name === street.name)) data.streets.push(structuredClone(street));
+  }
 }
 
 function disposeTown() {
@@ -899,7 +905,9 @@ function disposeTown() {
 function mountTown(builtYear) {
   disposeTown();
   const data = structuredClone(townSource);
-  if (builtYear === 1890) applyTownPatch(data, town1890);
+  if (builtYear >= 1890) applyTownPatch(data, townPatches[1890]);
+  if (builtYear >= 1900) applyTownPatch(data, townPatches[1900]);
+  if (builtYear >= 1910) applyTownPatch(data, townPatches[1910]);
   town = data;
   const built = buildTown(town, townGroup);
   colliders = built.colliders;
@@ -926,14 +934,19 @@ async function loadStats() {
 
 async function main() {
   bindStats();
-  const [baseResponse, patchResponse] = await Promise.all([
-    fetch(`${import.meta.env.BASE_URL}data/bushnell-1880.json`),
-    fetch(`${import.meta.env.BASE_URL}data/bushnell-1890.json`),
-  ]);
-  if (!baseResponse.ok) throw new Error("The town file did not load.");
-  if (!patchResponse.ok) throw new Error("The 1890 town file did not load.");
-  townSource = await baseResponse.json();
-  town1890 = await patchResponse.json();
+  const files = [
+    ["base", "bushnell-1880.json"],
+    [1890, "bushnell-1890.json"],
+    [1900, "bushnell-1900.json"],
+    [1910, "bushnell-1910.json"],
+  ];
+  const responses = await Promise.all(
+    files.map(([, name]) => fetch(`${import.meta.env.BASE_URL}data/${name}`)),
+  );
+  if (responses.some((response) => !response.ok)) throw new Error("A town file did not load.");
+  const payloads = await Promise.all(responses.map((response) => response.json()));
+  townSource = payloads[0];
+  townPatches = { 1890: payloads[1], 1900: payloads[2], 1910: payloads[3] };
   addNorthArrow(scene);
   const quality = document.getElementById("quality");
   quality.value = shot ? "fine" : "street";

@@ -1,0 +1,176 @@
+{
+  "shownAs": 1910,
+  "mapLabel": "March 1906 Sanborn, checked against February 1912",
+  "note": "The March 1906 map is the nearer one before the 1910 census. The February 1912 map is used where it shows a later name or a plant the 1906 sheet does not, and those lines say 1912.",
+  "remove": [],
+  "streets": [
+    {
+      "name": "Charles Street",
+      "axis": "z",
+      "at": -2100,
+      "width": 60,
+      "from": -200,
+      "to": 800,
+      "sourceMap": "March 1906 Sanborn"
+    }
+  ],
+  "update": [
+    {
+      "id": "block72-1893-meat",
+      "name": "Jewelry & Photo",
+      "sign": "JEWELRY",
+      "use": "jewelry and photographs",
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "Hurst corner room, March 1906 Sanborn, sheet 3, block 72. The sheet labels jewelry and photographs. The pediment and finial remain on this corner."
+    },
+    {
+      "id": "block72-1893-dry-goods",
+      "name": "Dry Goods",
+      "sign": "DRY GOODS",
+      "use": "dry goods",
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "March 1906 Sanborn, sheet 3, block 72, the next room west of the jewelry and photo room, labeled dry goods."
+    },
+    {
+      "id": "block72-1893-boots---shoes",
+      "name": "Bowling",
+      "sign": "BOWLING",
+      "use": "bowling alley",
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "March 1906 Sanborn, sheet 3, block 72. This room of the brick block is labeled bowling."
+    },
+    {
+      "id": "block72-1893-clothing",
+      "name": "Restaurant",
+      "sign": "RESTAURANT",
+      "use": "restaurant",
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "March 1906 Sanborn, sheet 3, block 72, labeled Rest."
+    },
+    {
+      "id": "block72-1893-restaurant",
+      "name": "Saloon",
+      "sign": "SALOON",
+      "use": "saloon",
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "March 1906 Sanborn, sheet 3, block 72, labeled Sal. A gambling room is marked on the second floor of this part of the block."
+    },
+    {
+      "id": "block72-1893-harness",
+      "name": "Harness",
+      "sign": "HARNESS",
+      "use": "harness",
+      "kind": "brick-store",
+      "material": "brick",
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "March 1906 Sanborn, sheet 3, block 72. The harness shop is drawn in brick, two stories, with a birds room beside it. In 1893 and 1898 this shop was frame."
+    },
+    {
+      "id": "vanderveer-light-1893",
+      "name": "Bushnell Electric Light & Power Co.",
+      "sign": "ELECTRIC LIGHT",
+      "use": "electric light and power",
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "March 1906 Sanborn, sheet 2, and the February 1912 sheet, label the Bushnell Electric Light & Power Co. beside the pump works. The 1893 name on this plant was Vanderveer & Logsdon."
+    },
+    {
+      "id": "nef-mfg-1893",
+      "name": "Bushnell Tank & Fence Works",
+      "sign": "TANK WORKS",
+      "use": "tanks and fence",
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "March 1906 Sanborn, sheet 2, the large brick plant west of the tracks labeled Bushnell Tank & Fence Works. The February 1912 sheet calls it Bushnell Tank Works. The 1893 sheet labeled a brick plant in this district N.E.F. Manufacturing Co."
+    },
+    {
+      "id": "pinckley-lumber-1893",
+      "name": "J. C. Simpson & Co.",
+      "sign": "LUMBER",
+      "use": "lumber yard",
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "March 1906 Sanborn, sheet 3, lumber sheds along the railroad labeled J. C. Simpson & Co. The 1893 name on this yard was Mack & M. Pinckley."
+    },
+    {
+      "id": "roach-livery",
+      "name": "J. W. Roach Livery",
+      "sign": "ROACH LIVERY",
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "March 1906 Sanborn, sheet 3, block 81, labels J. W. Roach Livery. The 1885 history names John Roach's livery. The barn stays on the west side near Barnes."
+    }
+  ],
+  "add": [
+    {
+      "id": "schulze-poultry-1912",
+      "name": "Martin Schulze",
+      "kind": "factory",
+      "use": "poultry and ice house",
+      "material": "brick",
+      "stories": 2,
+      "width": 48,
+      "depth": 36,
+      "x": -1100,
+      "z": -280,
+      "facing": "+z",
+      "paint": "cream",
+      "brick": "red",
+      "sign": "POULTRY",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1912",
+      "steeple": false,
+      "rotation": 0,
+      "sourceMap": "February 1912 Sanborn",
+      "notes": "February 1912 Sanborn, sheet 2, labels Martin Schulze Poultry and Ice House near East Main and East Davis. The March 1906 sheet of this ground was not given this name. The lot is that works block, not a storefront measurement."
+    },
+    {
+      "id": "charles-dwelling-1906-1",
+      "name": "Dwelling",
+      "kind": "house",
+      "use": "dwelling",
+      "material": "frame",
+      "stories": 1,
+      "width": 24,
+      "depth": 32,
+      "x": -2035,
+      "z": 180,
+      "facing": "-x",
+      "paint": "white",
+      "brick": "red",
+      "sign": "",
+      "porch": true,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1906",
+      "plan": "gable-front",
+      "steeple": false,
+      "rotation": 0,
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "A frame house on the east side of Charles Street. The March 1906 Sanborn, sheet 2, shows dwellings beside the pump-works block. No family name is printed."
+    },
+    {
+      "id": "charles-dwelling-1906-2",
+      "name": "Dwelling",
+      "kind": "house",
+      "use": "dwelling",
+      "material": "frame",
+      "stories": 1.5,
+      "width": 26,
+      "depth": 34,
+      "x": -2035,
+      "z": 280,
+      "facing": "-x",
+      "paint": "cream",
+      "brick": "red",
+      "sign": "",
+      "porch": true,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1906",
+      "plan": "gable-ell",
+      "steeple": false,
+      "rotation": 0,
+      "sourceMap": "March 1906 Sanborn",
+      "notes": "A frame house on Charles Street. March 1906 Sanborn, sheet 2. No family name is printed."
+    }
+  ]
+}
