@@ -22,12 +22,12 @@ renderer.toneMappingExposure = 1.08;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xe4c4a0);
-scene.fog = new THREE.FogExp2(0xe4c4a0, 0.00036);
+scene.fog = new THREE.FogExp2(0xe4c4a0, 0.00008);
 scene.environmentIntensity = 0.5;
 
 const sunDir = new THREE.Vector3(-0.78, 0.36, 0.5).normalize();
 const sky = new THREE.Mesh(
-  new THREE.SphereGeometry(3400, 32, 18),
+  new THREE.SphereGeometry(16000, 32, 18),
   new THREE.ShaderMaterial({
     side: THREE.BackSide,
     depthWrite: false,
@@ -72,7 +72,7 @@ const sky = new THREE.Mesh(
 );
 scene.add(sky);
 
-const camera = new THREE.PerspectiveCamera(66, window.innerWidth / window.innerHeight, 0.25, 9000);
+const camera = new THREE.PerspectiveCamera(66, window.innerWidth / window.innerHeight, 0.25, 20000);
 camera.rotation.order = "YXZ";
 
 scene.add(new THREE.HemisphereLight(0xffe0b8, 0x7a5a3c, 0.72));
@@ -108,7 +108,7 @@ orbit.enableDamping = true;
 orbit.enableZoom = false;
 orbit.maxPolarAngle = Math.PI / 2.08;
 orbit.minDistance = 8;
-orbit.maxDistance = 3200;
+orbit.maxDistance = 9000;
 orbit.enabled = false;
 orbit.target.set(-180, 0, 20);
 
@@ -233,6 +233,25 @@ function releaseToMenu() {
   }, 400);
 }
 
+// The 1854 plat fits in a smaller box. Later streets, including Lakelawn, sit outside it.
+const REACH_X = [-4300, 4500];
+const REACH_Z = [-4000, 7800];
+
+function frameOverview() {
+  const wide = shownBuiltYear >= 1970;
+  const focus = wide ? vPlat(-400, 0, 3000) : vPlat(-160, 0, 0);
+  orbit.target.copy(focus);
+  // Sit the camera due south of the focus so true north is toward the top of the picture.
+  camera.position.set(focus.x, wide ? 4000 : 980, focus.z + (wide ? 320 : 820));
+  orbit.update();
+  const where = document.getElementById("where");
+  if (where && mode === "overview") {
+    where.textContent = wide
+      ? "Looking down on the town, with Lakelawn to the southeast"
+      : "Looking down on Hail, Hurst, and the two railroads";
+  }
+}
+
 function enterOverview() {
   flight = null;
   mode = "overview";
@@ -241,14 +260,9 @@ function enterOverview() {
   else lockExitReason = null;
   canvas.classList.remove("looking");
   orbit.enabled = true;
-  const focus = vPlat(-160, 0, 0);
-  orbit.target.copy(focus);
-  // Sit the camera due south of downtown so true north is toward the top of the picture.
-  camera.position.set(focus.x, 980, focus.z + 820);
-  orbit.update();
+  frameOverview();
   document.getElementById("help").hidden = true;
   document.getElementById("mode").textContent = "Walk the streets";
-  document.getElementById("where").textContent = "Looking down on Hail, Hurst, and the two railroads";
   document.getElementById("card").hidden = true;
   syncHint();
 }
@@ -284,8 +298,8 @@ function groundUnderPointer(event) {
   const hit = new THREE.Vector3();
   if (!raycaster.ray.intersectPlane(groundPlane, hit)) return null;
   const plat = worldToPlat(hit.x, hit.z);
-  plat.x = Math.max(-2200, Math.min(1700, plat.x));
-  plat.z = Math.max(-1700, Math.min(1700, plat.z));
+  plat.x = Math.max(REACH_X[0], Math.min(REACH_X[1], plat.x));
+  plat.z = Math.max(REACH_Z[0], Math.min(REACH_Z[1], plat.z));
   return { world: vPlat(plat.x, 0, plat.z), plat };
 }
 
@@ -373,7 +387,7 @@ function zoomTowardPointer(event) {
     flyToward(hit, true);
     return;
   }
-  if (next.y > 1500) return;
+  if (next.y > 7000) return;
   const delta = next.clone().sub(cam);
   camera.position.copy(next);
   orbit.target.add(delta);
@@ -616,8 +630,8 @@ function frame() {
     } else {
       bob *= 0.85;
     }
-    player.x = Math.max(-2300, Math.min(1300, player.x));
-    player.z = Math.max(-1800, Math.min(1800, player.z));
+    player.x = Math.max(REACH_X[0], Math.min(REACH_X[1], player.x));
+    player.z = Math.max(REACH_Z[0], Math.min(REACH_Z[1], player.z));
     applyWalkCamera();
     const feet = vPlat(player.x, 0, player.z);
     sun.position.set(feet.x - 155, 72, feet.z + 100);
@@ -983,6 +997,7 @@ onCensusYear = (year) => {
   setTownNote(year, built);
   if (built === shownBuiltYear) return;
   mountTown(built);
+  if (mode === "overview") frameOverview();
 };
 
 async function loadStats() {
