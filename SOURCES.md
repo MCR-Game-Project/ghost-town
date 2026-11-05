@@ -170,7 +170,7 @@ The figures panel on the right is `public/data/bushnell-years.json`. The slider 
 
 ## The 1890 town
 
-The year slider changes the picture as well as the figures. 1880 is the town in `public/data/bushnell-1880.json`. 1890, 1900, and 1910 are the Sanborn patches described below. 1854, 1860, and 1870 start from the 1880 town and take off every building a source does not yet place. The panel says “Town shown as of 1910” when 1920 through 1950 is selected. 1960 is its own picture and adds nothing, because no map of Hillcrest was found for that year. 1970 and every later stop add Lakelawn Estate from the 1974 quadrangle. 1854, 1860, 1870, 1880, 1890, 1900, 1910, 1960, and 1970 are the years the picture uses.
+The year slider changes the picture as well as the figures. 1880 is the town in `public/data/bushnell-1880.json`. 1890, 1900, and 1910 are the Sanborn patches described below. 1854, 1860, and 1870 start from the 1880 town and take off every building a source does not yet place. 1920 adds the streets the 1918 Good Hope sheet draws past the 1854 plat, and 1930 and 1940 use that picture. 1950 adds the streets the 1944 Avon sheet adds. 1960 adds Hiel Drive. 1970 and every later stop add Lakelawn Estate. 1854, 1860, 1870, 1880, 1890, 1900, 1910, 1920, 1950, 1960, and 1970 are the years the picture uses.
 
 ## The 1854 town
 
@@ -268,6 +268,20 @@ The streets drawn are Hillcrest Drive, Lakeview Drive, Sunrise Lane, Sunset Lane
 
 The earliest map that draws the curved streets and the lake is the USGS Bushnell East 7.5-minute quadrangle, date on map 1974, imprint 1978, aerial photographs 1973, field check 1974. Thirty-six building symbols inside that subdivision were read off the sheet and placed at the 1970 stop. The sheet does not say which symbols are houses and which are outbuildings, and it does not give a footprint, so each one is drawn as a one-story frame house. The 1944 Avon 15-minute quadrangle shows this ground as open land along the east-west road, with the town grid stopping to the north. The 1954 centennial book does not mention Hillcrest or Lakelawn. No 1960 sheet of this corner was found, so the 1960 stop does not add the streets or the houses. One public record dates 4 Hillcrest Drive to 1972 and another dates 14 Hillcrest Drive to 1973. A listing for 15 Hillcrest Drive gives both 1968 and 1974, so that year was not used.
 
+## Streets after the 1854 plat
+
+No Sanborn edition after February 1912 was found at the Library of Congress. The 1954 centennial book names no new subdivision. Street centerlines are the OpenStreetMap ways. A line is drawn at the earliest of these maps that shows it: the 1918 Good Hope sheet, the 1944 Avon sheet, or the 1974 Bushnell East and Bushnell West sheets. The ribbon width is not a surveyed right-of-way. House symbols were copied only where they could be separated from the street ink. On the 1974 sheets the built-up tint hides them, except the 36 symbols around Lake Lawn.
+
+The 1918 Good Hope sheet, shown from the 1920 stop, already draws past the 1854 plat: Catherine, Clark, Clover Lane, East Hess, Frank, Front, Grant, Julia, Walnut, Washington Boulevard, West Harris, the near ends of Osborne, and the outside ends of Cole, Davis, Dean, Hail, Hurst, Jackson, Main, Sperry, Washington, Water, Charles, and North Green. Part of Ludwig Street is on this sheet. The rest of Ludwig is on the 1974 sheet only, so that piece waits until 1970.
+
+The 1944 Avon sheet, shown from the 1950 stop, adds Blaine, Cleveland, the east ends of Gridley, Hail, Osborne, Twyman, and Wells, Harrison, Miller, Smith, the east end of Cole, and Murphy Road. It still shows the Lakelawn ground as open.
+
+Hiel Drive, spelled Hiel, is the loop at the north end of West Main. The 1918 sheet does not draw that loop; the red line of the modern drive falls inside a block. The 1974 Bushnell West quadrangle draws it. A house at 10 Hiel Drive is dated 1951, so the street is on the 1960 stop. The house symbols along the loop were not separated from the built-up tint, so none were copied.
+
+The 1974 sheets add Hillcrest Drive, Lakeview Drive, Sunrise Lane, Sunset Lane, the Lake Lawn pond (elevation 629), and West Hess. Thirty-six building symbols around that pond stay as placed from the east sheet.
+
+Washington Court is in the assessment roll, with houses dated 1990 and 1996 near the north end of West Main. It is not a named way in OpenStreetMap and it is not on the 1974 sheets. No centerline was found, so it is not drawn. Marpatel Drive is named in OpenStreetMap, but that line runs through buildings on the 1974 sheet instead of along a road, so it is not drawn. Prairie Street in the same extract falls outside both 7.5-minute sheets, so it is not drawn. County roads (the numbered 1800th, 1850th, 1900th, 2000th, and 2100th streets, and Industrial Park Road) were left out.
+
 ## Works used
 
 - S. J. Clarke, *History of McDonough County, Illinois* (Springfield: D. W. Lusk, 1878). Library of Congress, [https://www.loc.gov/item/rc01002068/](https://www.loc.gov/item/rc01002068/).
@@ -287,7 +301,9 @@ The earliest map that draws the curved streets and the lake is the USGS Bushnell
 - Newton Bateman and Paul Selby, eds., *Historical Encyclopedia of Illinois* (Chicago: Munsell Publishing Co., 1907). The Bushnell paragraph gives the 1900 population as 2,490 and lists trades without naming the owners. The copy read was the transcription attached to the St. Clair County volume on a genealogy site; the paragraph is the Illinois encyclopedia entry.
 - OpenStreetMap street centerlines for Bushnell, measured in 2026, used to confirm that the surviving grid still matches the 1854 spacing, and used for the Hillcrest, Lakeview, Sunrise, Sunset, and Murphy centerlines after those lines were matched to the 1974 quadrangle.
 - U.S. Geological Survey, Bushnell East, Illinois, 7.5-minute quadrangle, 1:24,000, date on map 1974, aerial photographs 1973, field check 1974. National Map Historical Topographic Map Collection.
-- U.S. Geological Survey, Avon, Illinois, 15-minute quadrangle, 1:62,500, 1944. The same ground before the subdivision.
+- U.S. Geological Survey, Avon, Illinois, 15-minute quadrangle, 1:62,500, 1944. The east side before Lakelawn Estate.
+- U.S. Geological Survey, Good Hope, Illinois, 15-minute quadrangle, 1:62,500, 1918. The street grid before Hiel Drive.
+- U.S. Geological Survey, Bushnell West, Illinois, 7.5-minute quadrangle, 1:24,000, 1974. Hiel Drive and the north end of town.
 - *Bushnell, Illinois, centennial, 1854–1954*, searched for Hillcrest and Lakelawn. Neither name is in the book.
 - McDonough County Illinois Genealogical Society, Bushnell historic photographs, [https://www.mcdcgs.com/bushnell-historic-photos/](https://www.mcdcgs.com/bushnell-historic-photos/) and [https://www.mcdcgs.com/historic-photos/bushnell/](https://www.mcdcgs.com/historic-photos/bushnell/). The pictures are theirs. This project does not copy the image files into the app. Each one is listed in `docs/photo-catalog.md`.
 - Neil Gale, “Bushnell, Illinois, a highly detailed look at a small settlement founded in 1854,” Digital Research Library of Illinois History Journal, 12 April 2022, [https://drloihjournal.blogspot.com/2022/04/bushnell-illinois-highly-detailed-look-from-1854.html](https://drloihjournal.blogspot.com/2022/04/bushnell-illinois-highly-detailed-look-from-1854.html). The page includes a photograph captioned East Main Street, 1907.

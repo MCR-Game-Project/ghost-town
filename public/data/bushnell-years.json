@@ -743,6 +743,10 @@
       "year": 1920,
       "census": [
         {
+          "text": "The 1918 Good Hope sheet draws the streets that had already run past the 1854 plat, including Walnut, Grant, Clark, Washington Boulevard, West Harris, Front, and the north and south ends of the older streets. They are shown from this stop. They are not on the February 1912 Sanborn.",
+          "source": "U.S. Geological Survey, Good Hope, Illinois, 15-minute quadrangle, 1918. OpenStreetMap centerlines matched to that sheet."
+        },
+        {
           "text": "Population 2,716 (1920 census).",
           "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
         }
@@ -815,6 +819,10 @@
       "year": 1950,
       "census": [
         {
+          "text": "The 1944 Avon sheet adds the east-side streets the 1918 sheet does not draw: Miller, Harrison, Cleveland, Blaine, Smith, the east ends of Hail, Gridley, Wells, Twyman, and Osborne, and Murphy Road. Lakelawn Estate is still open ground.",
+          "source": "U.S. Geological Survey, Avon, Illinois, 15-minute quadrangle, 1944. OpenStreetMap centerlines matched to that sheet."
+        },
+        {
           "text": "Population 3,317 (1950 census).",
           "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."
         }
@@ -826,8 +834,8 @@
       "year": 1960,
       "census": [
         {
-          "text": "No map found for the Hillcrest streets. Lakelawn Estate is not drawn on the 1944 Avon quadrangle, and the 1954 centennial book does not mention it. The streets and houses are added at 1970.",
-          "source": "U.S. Geological Survey, Avon, Illinois, 15-minute quadrangle, 1944. Bushnell, Illinois, centennial, 1854–1954, searched for Hillcrest and Lakelawn."
+          "text": "Hiel Drive, the loop north of West Main, is shown from this stop. A house at 10 Hiel Drive is dated 1951. The 1918 Good Hope sheet does not draw the loop. Lakelawn Estate is still not on a map found for 1960.",
+          "source": "U.S. Geological Survey, Bushnell West, Illinois, 7.5-minute quadrangle, 1974. Year built 1951 for 10 Hiel Drive, McDonough County parcel 03-001-529-00. U.S. Geological Survey, Good Hope, Illinois, 15-minute quadrangle, 1918."
         },
         {
           "text": "Population 3,710 (1960 census).",
@@ -841,8 +849,8 @@
       "year": 1970,
       "census": [
         {
-          "text": "Lakelawn Estate is drawn south of town, on the north side of Murphy Road. The 1974 Bushnell East quadrangle shows Hillcrest Drive, Lakeview Drive, Sunrise Lane, Sunset Lane, a lake, and 36 building symbols. The plat date was not found.",
-          "source": "U.S. Geological Survey, Bushnell East, Illinois, 7.5-minute quadrangle, 1974, aerial photographs 1973, field check 1974. Street names from OpenStreetMap centerlines matched to that sheet. The plat is McDonough County Plat Book 4, page 154, document 407882."
+          "text": "Lakelawn Estate, with its pond, is drawn southeast of town: Hillcrest Drive, Lakeview Drive, Sunrise Lane, and Sunset Lane. West Hess is drawn from this stop. Washington Court is not on these sheets.",
+          "source": "U.S. Geological Survey, Bushnell East and Bushnell West, Illinois, 7.5-minute quadrangles, 1974. Street names from OpenStreetMap centerlines matched to those sheets."
         },
         {
           "text": "Population 3,703 (1970 census).",
@@ -866,6 +874,10 @@
     {
       "year": 1990,
       "census": [
+        {
+          "text": "Washington Court is in the year-built records for 1990 and 1996, near the north end of West Main. No centerline was found on a map or in OpenStreetMap, so the court is not drawn.",
+          "source": "Year constructed 1990 for 1200 Washington Court, parcel 03-001-704-00, and 1996 for 1313 Washington Court, parcel 03-001-716-00, McDonough County, as republished from the assessment roll."
+        },
         {
           "text": "Population 3,288 (1990 census).",
           "source": "U.S. decennial census, city of Bushnell, McDonough County, Illinois. 1870 (2,003) and 1880 (2,316) are the counts already used for this town. 1890 (2,314) is also the figure a Rand McNally atlas printed in 1895. 1900 (2,490) is also printed in the Historical Encyclopedia of Illinois (1907). Later decades are the same census series, as compiled in the historical population table for the city."

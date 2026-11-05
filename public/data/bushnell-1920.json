@@ -1,0 +1,1140 @@
+{
+  "shownAs": 1920,
+  "mapLabel": "USGS Good Hope, 1918",
+  "note": "Streets the 1918 Good Hope sheet draws beyond the 1854 plat. They are not on the February 1912 Sanborn, so the 1910 stop does not include them. No plat dates were found.",
+  "add": [],
+  "streets": [
+    {
+      "name": "Catherine Street",
+      "width": 24,
+      "points": [
+        [
+          -2508.4,
+          149.6
+        ],
+        [
+          -2509.0,
+          661.5
+        ],
+        [
+          -2502.3,
+          1037.3
+        ],
+        [
+          -2496.8,
+          1051.0
+        ],
+        [
+          -2486.7,
+          1061.9
+        ],
+        [
+          -2479.1,
+          1066.8
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Clark Street",
+      "width": 24,
+      "points": [
+        [
+          -1253.6,
+          2328.3
+        ],
+        [
+          -1042.3,
+          2331.0
+        ],
+        [
+          -1037.8,
+          2331.1
+        ],
+        [
+          -833.0,
+          2331.0
+        ],
+        [
+          -625.2,
+          2330.5
+        ],
+        [
+          -415.4,
+          2330.0
+        ],
+        [
+          5.9,
+          2328.5
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Clover Lane",
+      "width": 24,
+      "points": [
+        [
+          1019.0,
+          1915.5
+        ],
+        [
+          1016.0,
+          1923.7
+        ],
+        [
+          1011.0,
+          1955.7
+        ],
+        [
+          1009.3,
+          1976.1
+        ],
+        [
+          1005.8,
+          2183.6
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "East Hess Street",
+      "width": 24,
+      "points": [
+        [
+          2099.4,
+          -2198.3
+        ],
+        [
+          2099.8,
+          -1996.8
+        ],
+        [
+          2100.2,
+          -1788.1
+        ],
+        [
+          2098.4,
+          -1571.2
+        ],
+        [
+          2096.6,
+          -1365.9
+        ],
+        [
+          2096.3,
+          -1239.3
+        ],
+        [
+          2096.1,
+          -1153.4
+        ],
+        [
+          2096.6,
+          -1031.2
+        ],
+        [
+          2097.8,
+          -980.4
+        ],
+        [
+          2095.5,
+          -947.3
+        ],
+        [
+          2097.0,
+          -739.2
+        ],
+        [
+          2098.5,
+          -527.0
+        ],
+        [
+          2094.8,
+          -343.3
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Frank Street",
+      "width": 24,
+      "points": [
+        [
+          -2487.6,
+          -226.1
+        ],
+        [
+          -2486.9,
+          -390.1
+        ],
+        [
+          -2466.3,
+          -510.0
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Frank Street",
+      "width": 24,
+      "points": [
+        [
+          -2466.3,
+          -510.0
+        ],
+        [
+          -2480.6,
+          -514.1
+        ],
+        [
+          -2497.5,
+          -524.7
+        ],
+        [
+          -2507.9,
+          -535.8
+        ],
+        [
+          -2517.0,
+          -553.5
+        ],
+        [
+          -2519.8,
+          -568.2
+        ],
+        [
+          -2521.8,
+          -590.4
+        ],
+        [
+          -2521.9,
+          -719.6
+        ],
+        [
+          -2521.9,
+          -738.7
+        ],
+        [
+          -2522.2,
+          -894.7
+        ],
+        [
+          -2516.5,
+          -912.0
+        ],
+        [
+          -2508.8,
+          -923.2
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Front Street",
+      "width": 24,
+      "points": [
+        [
+          -2924.2,
+          153.8
+        ],
+        [
+          -2800.3,
+          153.5
+        ],
+        [
+          -2508.4,
+          149.6
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Grant Street",
+      "width": 24,
+      "points": [
+        [
+          -1234.6,
+          2743.1
+        ],
+        [
+          -1220.0,
+          2749.9
+        ],
+        [
+          -1199.1,
+          2753.5
+        ],
+        [
+          -1040.8,
+          2753.1
+        ],
+        [
+          -932.7,
+          2752.8
+        ],
+        [
+          -832.9,
+          2752.5
+        ],
+        [
+          -672.9,
+          2751.1
+        ],
+        [
+          -623.2,
+          2750.7
+        ],
+        [
+          -416.3,
+          2749.0
+        ],
+        [
+          -213.1,
+          2746.7
+        ],
+        [
+          7.2,
+          2748.8
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Julia Street",
+      "width": 24,
+      "points": [
+        [
+          -2924.2,
+          153.8
+        ],
+        [
+          -2930.8,
+          374.9
+        ],
+        [
+          -2931.8,
+          502.2
+        ],
+        [
+          -2929.9,
+          664.5
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Walnut Street",
+      "width": 24,
+      "points": [
+        [
+          1019.0,
+          1915.5
+        ],
+        [
+          1023.4,
+          1911.3
+        ],
+        [
+          1035.6,
+          1906.1
+        ],
+        [
+          1259.9,
+          1906.4
+        ],
+        [
+          1675.9,
+          1907.3
+        ],
+        [
+          2098.2,
+          1904.2
+        ],
+        [
+          2345.3,
+          1906.3
+        ],
+        [
+          2474.0,
+          1909.8
+        ],
+        [
+          2507.6,
+          1887.6
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Walnut Street",
+      "width": 24,
+      "points": [
+        [
+          -1250.7,
+          1911.7
+        ],
+        [
+          -1043.8,
+          1910.8
+        ],
+        [
+          -1038.6,
+          1910.8
+        ],
+        [
+          -835.6,
+          1910.0
+        ],
+        [
+          -627.3,
+          1909.4
+        ],
+        [
+          -417.5,
+          1908.9
+        ],
+        [
+          2.2,
+          1906.6
+        ],
+        [
+          419.3,
+          1905.9
+        ],
+        [
+          639.2,
+          1903.6
+        ],
+        [
+          792.3,
+          1898.9
+        ],
+        [
+          809.5,
+          1893.7
+        ],
+        [
+          817.5,
+          1889.3
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Washington Boulevard",
+      "width": 24,
+      "points": [
+        [
+          2093.2,
+          1485.3
+        ],
+        [
+          2517.4,
+          1484.6
+        ],
+        [
+          2575.8,
+          1483.5
+        ],
+        [
+          2748.1,
+          1469.3
+        ],
+        [
+          2774.2,
+          1460.2
+        ],
+        [
+          2785.9,
+          1454.5
+        ],
+        [
+          2848.6,
+          1414.9
+        ],
+        [
+          2951.2,
+          1344.5
+        ],
+        [
+          2986.1,
+          1329.6
+        ],
+        [
+          3017.4,
+          1323.9
+        ],
+        [
+          3035.1,
+          1322.2
+        ],
+        [
+          3673.9,
+          1318.0
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "West Harris Avenue",
+      "width": 24,
+      "points": [
+        [
+          2518.2,
+          221.6
+        ],
+        [
+          2516.5,
+          434.0
+        ],
+        [
+          2514.9,
+          638.9
+        ],
+        [
+          2515.8,
+          857.1
+        ],
+        [
+          2516.7,
+          1060.5
+        ],
+        [
+          2517.1,
+          1280.0
+        ],
+        [
+          2517.4,
+          1484.6
+        ],
+        [
+          2522.2,
+          1838.4
+        ],
+        [
+          2507.6,
+          1887.6
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "West Osborne Street",
+      "width": 24,
+      "points": [
+        [
+          1676.1,
+          1703.0
+        ],
+        [
+          1675.9,
+          1907.3
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "East Osborne Street",
+      "width": 24,
+      "points": [
+        [
+          1677.1,
+          -1785.5
+        ],
+        [
+          1676.4,
+          -1571.8
+        ],
+        [
+          1675.8,
+          -1364.5
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "East Osborne Street",
+      "width": 24,
+      "points": [
+        [
+          1675.8,
+          -1364.5
+        ],
+        [
+          1676.0,
+          -1152.5
+        ],
+        [
+          1676.1,
+          -945.4
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "East Osborne Street",
+      "width": 24,
+      "points": [
+        [
+          1676.1,
+          -945.4
+        ],
+        [
+          1674.3,
+          -732.3
+        ],
+        [
+          1672.6,
+          -529.1
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "East Osborne Street",
+      "width": 24,
+      "points": [
+        [
+          1672.6,
+          -529.1
+        ],
+        [
+          1675.0,
+          -310.4
+        ],
+        [
+          1677.1,
+          -113.0
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Jackson Street",
+      "width": 24,
+      "points": [
+        [
+          2516.7,
+          1060.5
+        ],
+        [
+          3860.0,
+          1058.8
+        ],
+        [
+          3912.5,
+          1056.2
+        ],
+        [
+          3939.6,
+          1054.8
+        ],
+        [
+          3963.3,
+          1046.3
+        ],
+        [
+          3984.4,
+          1032.1
+        ],
+        [
+          4001.0,
+          1013.2
+        ],
+        [
+          4070.0,
+          887.4
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "South Dean Street",
+      "width": 24,
+      "points": [
+        [
+          -3905.4,
+          695.2
+        ],
+        [
+          -3432.1,
+          691.2
+        ],
+        [
+          -3287.4,
+          688.1
+        ],
+        [
+          -3122.2,
+          678.4
+        ],
+        [
+          -3011.5,
+          668.3
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "South Dean Street",
+      "width": 24,
+      "points": [
+        [
+          -2509.0,
+          661.5
+        ],
+        [
+          -2293.4,
+          659.3
+        ],
+        [
+          -2086.7,
+          659.7
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "East Davis Street",
+      "width": 24,
+      "points": [
+        [
+          -1255.7,
+          -2104.5
+        ],
+        [
+          -1260.2,
+          -2054.6
+        ],
+        [
+          -1260.4,
+          -1981.9
+        ],
+        [
+          -1260.6,
+          -1903.8
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "West Main Street",
+      "width": 24,
+      "points": [
+        [
+          2518.2,
+          221.6
+        ],
+        [
+          2762.3,
+          217.8
+        ],
+        [
+          2877.5,
+          221.7
+        ],
+        [
+          2897.2,
+          228.9
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "West Main Street",
+      "width": 24,
+      "points": [
+        [
+          3274.3,
+          437.4
+        ],
+        [
+          3704.6,
+          678.5
+        ],
+        [
+          3785.3,
+          723.7
+        ],
+        [
+          4070.0,
+          887.4
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "South Washington Street",
+      "width": 24,
+      "points": [
+        [
+          -2335.2,
+          1468.7
+        ],
+        [
+          -2328.3,
+          1472.7
+        ],
+        [
+          -2299.5,
+          1484.4
+        ],
+        [
+          -2269.1,
+          1491.2
+        ],
+        [
+          -2104.6,
+          1490.8
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "South Washington Street",
+      "width": 24,
+      "points": [
+        [
+          -1713.8,
+          1416.9
+        ],
+        [
+          -1716.3,
+          1232.2
+        ],
+        [
+          -1714.5,
+          1070.1
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "West Hurst Street",
+      "width": 24,
+      "points": [
+        [
+          -416.3,
+          2749.0
+        ],
+        [
+          -418.3,
+          2944.5
+        ],
+        [
+          -398.6,
+          3633.6
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "North Crafford Street",
+      "width": 24,
+      "points": [
+        [
+          2098.5,
+          -527.0
+        ],
+        [
+          2876.4,
+          -530.1
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "West Davis Street",
+      "width": 24,
+      "points": [
+        [
+          -1253.6,
+          2331.2
+        ],
+        [
+          -1257.1,
+          2542.5
+        ],
+        [
+          -1250.0,
+          2720.5
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "West Hail Street",
+      "width": 24,
+      "points": [
+        [
+          2.2,
+          1906.6
+        ],
+        [
+          2.5,
+          2050.6
+        ],
+        [
+          5.9,
+          2328.5
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Ludwig Street",
+      "width": 24,
+      "points": [
+        [
+          -2089.5,
+          -1349.5
+        ],
+        [
+          -2096.4,
+          -1234.5
+        ],
+        [
+          -2096.6,
+          -1138.2
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "North Green Street",
+      "width": 24,
+      "points": [
+        [
+          -1279.7,
+          -2119.0
+        ],
+        [
+          -1458.3,
+          -2226.6
+        ],
+        [
+          -1638.3,
+          -2335.1
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "North Cole Street",
+      "width": 24,
+      "points": [
+        [
+          -1255.7,
+          -2104.5
+        ],
+        [
+          -1054.3,
+          -1985.4
+        ],
+        [
+          -1042.5,
+          -1978.3
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "East Hurst Street",
+      "width": 24,
+      "points": [
+        [
+          -422.2,
+          -2085.4
+        ],
+        [
+          -422.6,
+          -1982.9
+        ],
+        [
+          -422.7,
+          -1951.0
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Charles Street",
+      "width": 24,
+      "points": [
+        [
+          -2095.8,
+          1074.7
+        ],
+        [
+          -2098.5,
+          1196.2
+        ],
+        [
+          -2104.6,
+          1490.8
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "South Sperry Street",
+      "width": 24,
+      "points": [
+        [
+          -2329.7,
+          -1351.2
+        ],
+        [
+          -2234.3,
+          -1347.1
+        ],
+        [
+          -2089.5,
+          -1349.5
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "West Osborne Street",
+      "width": 24,
+      "points": [
+        [
+          1676.1,
+          221.9
+        ],
+        [
+          1676.2,
+          436.5
+        ],
+        [
+          1676.2,
+          642.8
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "West Osborne Street",
+      "width": 24,
+      "points": [
+        [
+          1676.2,
+          642.8
+        ],
+        [
+          1676.3,
+          859.5
+        ],
+        [
+          1676.3,
+          1064.2
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "West Osborne Street",
+      "width": 24,
+      "points": [
+        [
+          1676.3,
+          1064.2
+        ],
+        [
+          1676.3,
+          1282.3
+        ],
+        [
+          1676.3,
+          1485.4
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "East Water Street",
+      "width": 24,
+      "points": [
+        [
+          -1678.8,
+          -1315.8
+        ],
+        [
+          -1683.1,
+          -1265.2
+        ],
+        [
+          -1685.9,
+          -1220.1
+        ],
+        [
+          -1670.1,
+          -1061.7
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "East Water Street",
+      "width": 24,
+      "points": [
+        [
+          -1683.6,
+          -2289.7
+        ],
+        [
+          -1681.4,
+          -2034.5
+        ],
+        [
+          -1679.1,
+          -1777.1
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    }
+  ]
+}

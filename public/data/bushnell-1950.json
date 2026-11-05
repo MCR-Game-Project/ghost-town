@@ -1,0 +1,612 @@
+{
+  "shownAs": 1950,
+  "mapLabel": "USGS Avon, 1944",
+  "note": "Streets the 1944 Avon sheet draws that the 1918 Good Hope sheet does not. Lakelawn Estate is still open ground on this sheet.",
+  "add": [],
+  "streets": [
+    {
+      "name": "Murphy Road",
+      "width": 22,
+      "points": [
+        [
+          -1247.3,
+          -6337.5
+        ],
+        [
+          -1653.3,
+          -5581.2
+        ],
+        [
+          -1741.4,
+          -5416.4
+        ],
+        [
+          -1781.2,
+          -5341.7
+        ],
+        [
+          -1995.2,
+          -4941.7
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Blaine Street",
+      "width": 24,
+      "points": [
+        [
+          299.1,
+          -3506.9
+        ],
+        [
+          320.2,
+          -3497.0
+        ],
+        [
+          348.8,
+          -3491.5
+        ],
+        [
+          392.5,
+          -3489.8
+        ],
+        [
+          433.5,
+          -3483.3
+        ],
+        [
+          464.4,
+          -3475.2
+        ],
+        [
+          485.5,
+          -3473.4
+        ],
+        [
+          530.9,
+          -3474.5
+        ],
+        [
+          721.3,
+          -3489.6
+        ],
+        [
+          764.1,
+          -3489.1
+        ],
+        [
+          788.7,
+          -3486.1
+        ],
+        [
+          810.3,
+          -3478.6
+        ],
+        [
+          827.0,
+          -3466.1
+        ],
+        [
+          833.0,
+          -3457.6
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Cleveland Street",
+      "width": 24,
+      "points": [
+        [
+          0.2,
+          -2618.0
+        ],
+        [
+          420.2,
+          -2620.1
+        ],
+        [
+          837.6,
+          -2623.5
+        ],
+        [
+          1255.8,
+          -2627.0
+        ],
+        [
+          1676.5,
+          -2626.6
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "East Gridley Street",
+      "width": 24,
+      "points": [
+        [
+          433.5,
+          -3483.3
+        ],
+        [
+          425.1,
+          -3437.9
+        ],
+        [
+          423.0,
+          -3403.6
+        ],
+        [
+          426.7,
+          -3239.4
+        ],
+        [
+          423.5,
+          -3043.9
+        ],
+        [
+          420.2,
+          -2620.1
+        ],
+        [
+          419.1,
+          -2409.2
+        ],
+        [
+          418.0,
+          -2198.0
+        ],
+        [
+          416.9,
+          -1990.6
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "East Hail Street",
+      "width": 24,
+      "points": [
+        [
+          461.8,
+          -3809.6
+        ],
+        [
+          431.4,
+          -3752.2
+        ],
+        [
+          368.1,
+          -3633.3
+        ],
+        [
+          299.1,
+          -3506.9
+        ],
+        [
+          52.2,
+          -3047.4
+        ],
+        [
+          16.4,
+          -2979.7
+        ],
+        [
+          12.3,
+          -2968.2
+        ],
+        [
+          8.0,
+          -2956.3
+        ],
+        [
+          2.6,
+          -2932.2
+        ],
+        [
+          0.2,
+          -2618.0
+        ],
+        [
+          -0.9,
+          -2398.0
+        ],
+        [
+          -2.0,
+          -2196.8
+        ],
+        [
+          -2.2,
+          -1987.0
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "East Osborne Street",
+      "width": 24,
+      "points": [
+        [
+          1273.2,
+          -3684.8
+        ],
+        [
+          1285.2,
+          -3691.1
+        ],
+        [
+          1302.6,
+          -3693.9
+        ],
+        [
+          1320.3,
+          -3690.5
+        ],
+        [
+          1479.0,
+          -3601.2
+        ],
+        [
+          1630.2,
+          -3519.4
+        ],
+        [
+          1649.3,
+          -3505.3
+        ],
+        [
+          1664.0,
+          -3490.8
+        ],
+        [
+          1671.8,
+          -3477.4
+        ],
+        [
+          1677.5,
+          -3457.4
+        ],
+        [
+          1675.6,
+          -3283.3
+        ],
+        [
+          1675.4,
+          -3234.8
+        ],
+        [
+          1675.5,
+          -3044.5
+        ],
+        [
+          1676.5,
+          -2626.6
+        ],
+        [
+          1677.9,
+          -2529.7
+        ],
+        [
+          1677.8,
+          -2324.0
+        ],
+        [
+          1674.3,
+          -2204.7
+        ],
+        [
+          1675.7,
+          -1994.0
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "East Twyman Street",
+      "width": 24,
+      "points": [
+        [
+          1273.2,
+          -3684.8
+        ],
+        [
+          1264.2,
+          -3675.0
+        ],
+        [
+          1256.5,
+          -3658.6
+        ],
+        [
+          1253.0,
+          -3630.5
+        ],
+        [
+          1257.4,
+          -3462.4
+        ],
+        [
+          1257.6,
+          -3410.1
+        ],
+        [
+          1256.1,
+          -3044.2
+        ],
+        [
+          1255.8,
+          -2627.0
+        ],
+        [
+          1254.2,
+          -2203.9
+        ],
+        [
+          1256.5,
+          -1988.6
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "East Wells Street",
+      "width": 24,
+      "points": [
+        [
+          833.0,
+          -3457.6
+        ],
+        [
+          840.5,
+          -3427.0
+        ],
+        [
+          837.5,
+          -3043.8
+        ],
+        [
+          837.6,
+          -2623.5
+        ],
+        [
+          837.5,
+          -2408.0
+        ],
+        [
+          837.4,
+          -2201.5
+        ],
+        [
+          835.3,
+          -1993.3
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Harrison Street",
+      "width": 24,
+      "points": [
+        [
+          52.2,
+          -3047.4
+        ],
+        [
+          72.2,
+          -3042.1
+        ],
+        [
+          423.5,
+          -3043.9
+        ],
+        [
+          837.5,
+          -3043.8
+        ],
+        [
+          1256.1,
+          -3044.2
+        ],
+        [
+          1675.5,
+          -3044.5
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Miller Street",
+      "width": 24,
+      "points": [
+        [
+          -372.4,
+          -2189.9
+        ],
+        [
+          -353.7,
+          -2195.5
+        ],
+        [
+          -343.9,
+          -2196.6
+        ],
+        [
+          -2.0,
+          -2196.8
+        ],
+        [
+          418.0,
+          -2198.0
+        ],
+        [
+          837.4,
+          -2201.5
+        ],
+        [
+          1018.0,
+          -2203.6
+        ],
+        [
+          1254.2,
+          -2203.9
+        ],
+        [
+          1674.3,
+          -2204.7
+        ],
+        [
+          1702.2,
+          -2200.9
+        ],
+        [
+          2099.4,
+          -2198.3
+        ],
+        [
+          2652.4,
+          -2189.5
+        ],
+        [
+          2670.0,
+          -2181.7
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Smith Street",
+      "width": 24,
+      "points": [
+        [
+          2978.8,
+          -2774.9
+        ],
+        [
+          2691.4,
+          -2223.2
+        ],
+        [
+          2670.0,
+          -2181.7
+        ],
+        [
+          2572.4,
+          -1993.6
+        ],
+        [
+          2485.2,
+          -1825.4
+        ],
+        [
+          2478.9,
+          -1810.1
+        ],
+        [
+          2472.1,
+          -1785.9
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Cole Street",
+      "width": 24,
+      "points": [
+        [
+          2100.2,
+          -1788.1
+        ],
+        [
+          2316.4,
+          -1789.7
+        ],
+        [
+          2472.1,
+          -1785.9
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Cole Street",
+      "width": 24,
+      "points": [
+        [
+          2472.1,
+          -1785.9
+        ],
+        [
+          3257.2,
+          -1787.8
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Murphy Road",
+      "width": 24,
+      "points": [
+        [
+          -694.1,
+          -7379.4
+        ],
+        [
+          -948.3,
+          -6904.0
+        ],
+        [
+          -1247.3,
+          -6337.5
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Murphy Road",
+      "width": 24,
+      "points": [
+        [
+          -1995.2,
+          -4941.7
+        ],
+        [
+          -2167.2,
+          -4615.2
+        ],
+        [
+          -2834.2,
+          -3371.1
+        ],
+        [
+          -2871.3,
+          -3300.4
+        ],
+        [
+          -2904.3,
+          -3237.6
+        ],
+        [
+          -2963.2,
+          -3126.1
+        ]
+      ],
+      "sourceMap": "USGS Avon 1944",
+      "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    }
+  ]
+}

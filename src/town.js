@@ -1644,6 +1644,43 @@ export function buildTown(data, scene) {
     scene.add(mesh);
   }
 
+  for (const lake of data.water || []) {
+    const size = lake.cell || 14;
+    const positions = [];
+    const half = size / 2;
+    for (const [x, z] of lake.points) {
+      positions.push(
+        x - half, 0.2, z - half,
+        x + half, 0.2, z - half,
+        x + half, 0.2, z + half,
+        x - half, 0.2, z + half,
+      );
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    const indices = [];
+    for (let i = 0; i < lake.points.length; i++) {
+      const a = i * 4;
+      indices.push(a, a + 1, a + 2, a, a + 2, a + 3);
+    }
+    geo.setIndex(indices);
+    geo.computeVertexNormals();
+    const mesh = new THREE.Mesh(
+      geo,
+      new THREE.MeshStandardMaterial({
+        color: 0x3d8eb0,
+        roughness: 0.35,
+        metalness: 0.05,
+        side: THREE.DoubleSide,
+        polygonOffset: true,
+        polygonOffsetFactor: -2,
+      }),
+    );
+    mesh.receiveShadow = true;
+    mesh.renderOrder = 1;
+    scene.add(mesh);
+  }
+
   for (const street of data.streets) {
     if (street.points) {
       addPolylineStreet(street, mats, scene);

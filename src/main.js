@@ -108,7 +108,7 @@ orbit.enableDamping = true;
 orbit.enableZoom = false;
 orbit.maxPolarAngle = Math.PI / 2.08;
 orbit.minDistance = 8;
-orbit.maxDistance = 2400;
+orbit.maxDistance = 3200;
 orbit.enabled = false;
 orbit.target.set(-180, 0, 20);
 
@@ -891,6 +891,8 @@ function builtTownYear(sliderYear) {
   if (!Number.isFinite(year)) return 1880;
   if (year >= 1970) return 1970;
   if (year >= 1960) return 1960;
+  if (year >= 1950) return 1950;
+  if (year >= 1920) return 1920;
   if (year >= 1910) return 1910;
   if (year >= 1900) return 1900;
   if (year >= 1890) return 1890;
@@ -914,7 +916,13 @@ function applyTownPatch(data, patch) {
   }
   for (const building of patch.add || []) data.buildings.push(structuredClone(building));
   for (const street of patch.streets || []) {
-    if (!data.streets.some((item) => item.name === street.name)) data.streets.push(structuredClone(street));
+    if (street.points || !data.streets.some((item) => item.name === street.name && !item.points)) {
+      data.streets.push(structuredClone(street));
+    }
+  }
+  for (const lake of patch.water || []) {
+    data.water = data.water || [];
+    data.water.push(structuredClone(lake));
   }
   if (patch.removeTracks) {
     const drop = new Set(patch.removeTracks);
@@ -955,6 +963,8 @@ function mountTown(builtYear) {
   if (builtYear >= 1890) applyTownPatch(data, townPatches[1890]);
   if (builtYear >= 1900) applyTownPatch(data, townPatches[1900]);
   if (builtYear >= 1910) applyTownPatch(data, townPatches[1910]);
+  if (builtYear >= 1920) applyTownPatch(data, townPatches[1920]);
+  if (builtYear >= 1950) applyTownPatch(data, townPatches[1950]);
   if (builtYear >= 1960) applyTownPatch(data, townPatches[1960]);
   if (builtYear >= 1970) applyTownPatch(data, townPatches[1970]);
   town = data;
@@ -991,6 +1001,8 @@ async function main() {
     [1890, "bushnell-1890.json"],
     [1900, "bushnell-1900.json"],
     [1910, "bushnell-1910.json"],
+    [1920, "bushnell-1920.json"],
+    [1950, "bushnell-1950.json"],
     [1960, "bushnell-1960.json"],
     [1970, "bushnell-1970.json"],
   ];
@@ -1007,8 +1019,10 @@ async function main() {
     1890: payloads[4],
     1900: payloads[5],
     1910: payloads[6],
-    1960: payloads[7],
-    1970: payloads[8],
+    1920: payloads[7],
+    1950: payloads[8],
+    1960: payloads[9],
+    1970: payloads[10],
   };
   addNorthArrow(scene);
   const quality = document.getElementById("quality");

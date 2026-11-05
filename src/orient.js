@@ -46,6 +46,9 @@ export function mirrorPlat(data) {
   for (const track of data.tracks) {
     for (const point of track.points) point[1] = -point[1];
   }
+  for (const lake of data.water || []) {
+    for (const point of lake.points) point[1] = -point[1];
+  }
   for (const tree of data.trees || []) tree.z = -tree.z;
   for (const prop of data.props || []) prop.z = -prop.z;
   for (const place of data.places || []) {
