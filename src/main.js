@@ -244,12 +244,15 @@ function frameOverview() {
   // Sit the camera due south of the focus so true north is toward the top of the picture.
   camera.position.set(focus.x, wide ? 4000 : 980, focus.z + (wide ? 320 : 820));
   orbit.update();
+  setOverviewCaption();
+}
+
+function setOverviewCaption() {
   const where = document.getElementById("where");
-  if (where && mode === "overview") {
-    where.textContent = wide
-      ? "Looking down on the town, with Lakelawn to the southeast"
-      : "Looking down on Hail, Hurst, and the two railroads";
-  }
+  if (!where || mode !== "overview") return;
+  where.textContent = shownBuiltYear >= 1970
+    ? "Looking down on the town, with Lakelawn to the southeast"
+    : "Looking down on Hail, Hurst, and the two railroads";
 }
 
 function enterOverview() {
@@ -997,7 +1000,8 @@ onCensusYear = (year) => {
   setTownNote(year, built);
   if (built === shownBuiltYear) return;
   mountTown(built);
-  if (mode === "overview") frameOverview();
+  // The year changes the town. It does not move the camera.
+  if (mode === "overview") setOverviewCaption();
 };
 
 async function loadStats() {

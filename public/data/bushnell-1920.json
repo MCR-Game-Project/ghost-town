@@ -1135,6 +1135,86 @@
       ],
       "sourceMap": "USGS Good Hope 1918",
       "notes": "Centerline from OpenStreetMap. The 1918 Good Hope 15-minute sheet draws this line outside the 1854 plat. It is not on the February 1912 Sanborn. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Cole Street",
+      "width": 24,
+      "points": [
+        [
+          -646.0,
+          -1841.0
+        ],
+        [
+          -646.0,
+          -1790.0
+        ],
+        [
+          -825.0,
+          -1853.0
+        ],
+        [
+          -1043.0,
+          -1978.0
+        ],
+        [
+          -1256.0,
+          -2105.0
+        ],
+        [
+          -1458.0,
+          -2227.0
+        ],
+        [
+          -1736.0,
+          -2394.0
+        ],
+        [
+          -1872.0,
+          -2476.0
+        ],
+        [
+          -2192.0,
+          -2666.0
+        ],
+        [
+          -2817.0,
+          -3041.0
+        ],
+        [
+          -2963.2,
+          -3126.1
+        ],
+        [
+          -3115.0,
+          -3215.0
+        ],
+        [
+          -3567.0,
+          -3472.0
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "Centerline from OpenStreetMap for Illinois 41, the highway that is Cole Street through Bushnell. The 1974 Bushnell West sheet labels the street Cole where it leaves the grid and draws the same road south to the east-west road. South of the bend, OpenStreetMap calls the pieces North Cole Street, North Green Street, and East 2100th Street. The 1918 Good Hope sheet already draws a road in this corridor from the south side of town to that crossing. The later paved line is a little straighter than the 1918 curve. No plat date was found. The ribbon width is not a surveyed right-of-way."
+    },
+    {
+      "name": "Murphy Road",
+      "width": 24,
+      "points": [
+        [
+          -2963.2,
+          -3126.1
+        ],
+        [
+          -2904.3,
+          -3237.6
+        ],
+        [
+          -2871.3,
+          -3300.4
+        ]
+      ],
+      "sourceMap": "USGS Good Hope 1918",
+      "notes": "The east-west road at the south edge of town where Cole Street's highway meets it. OpenStreetMap calls the road Murphy Road. The 1918 Good Hope sheet draws this crossing. The longer run of Murphy Road toward Lakelawn is on the 1944 Avon sheet and is shown from 1950. The ribbon width is not a surveyed right-of-way."
     }
   ]
 }
