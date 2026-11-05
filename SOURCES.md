@@ -262,11 +262,11 @@ The businesses are the ones the 1885 history describes as then open, plus the tr
 
 ## Lakelawn Estate, the Hillcrest streets
 
-Hillcrest is the Lakelawn Estate subdivision in the southeast of Bushnell, on the north side of Murphy Road, south of Veterans Memorial Park. Legal descriptions call it Lakelawn Estate, recorded in McDonough County Plat Book 4, page 154, as document 407882. Lot 11 is 14 Hillcrest Drive, lot 24 is 15 Hillcrest Drive, and lot 33 is 4 Hillcrest Drive. The plat date was not found. County records before 2000 are not online.
+Hillcrest is the Lakelawn Estate subdivision in the southeast of Bushnell, on the north side of Murphy Road, south of Veterans Memorial Park. A 2026 foreclosure notice describes lot 11 as recorded in McDonough County Plat Book 4, page 154, as document 407882. The assessor’s own legal line says only “LAKELAWN EST SUB ADD” and does not give a book, page, or recording date. The County Clerk and Recorder states that documents recorded before 2000 are not online. Document 407882 is in that older series (a 2026 deed is numbered in the 2026xxxx range), so the plat date was not reachable.
 
 The streets drawn are Hillcrest Drive, Lakeview Drive, Sunrise Lane, Sunset Lane, and the Murphy Road frontage. The centerlines are the OpenStreetMap ways, checked against the roads on the 1974 map. The right-of-way width is not printed, so the ribbon is only wide enough to read as a lane.
 
-The earliest map that draws the curved streets and the lake is the USGS Bushnell East 7.5-minute quadrangle, date on map 1974, imprint 1978, aerial photographs 1973, field check 1974. Thirty-six building symbols inside that subdivision were read off the sheet and placed at the 1970 stop. The sheet does not say which symbols are houses and which are outbuildings, and it does not give a footprint, so each one is drawn as a one-story frame house. The 1944 Avon 15-minute quadrangle shows this ground as open land along the east-west road, with the town grid stopping to the north. The 1954 centennial book does not mention Hillcrest or Lakelawn. No 1960 sheet of this corner was found, so the 1960 stop does not add the streets or the houses. One public record dates 4 Hillcrest Drive to 1972 and another dates 14 Hillcrest Drive to 1973. A listing for 15 Hillcrest Drive gives both 1968 and 1974, so that year was not used.
+The earliest map that draws the curved streets and the lake is the USGS Bushnell East 7.5-minute quadrangle, date on map 1974, imprint 1978, aerial photographs 1973, field check 1974. Thirty-six building symbols inside that subdivision were read off the sheet and placed at the 1970 stop. The sheet does not say which symbols are houses and which are outbuildings, and it does not give a footprint, so each one is drawn as a one-story frame house. Those symbols are not numbered, so a roll year was not pinned to each one. The 1944 Avon 15-minute quadrangle shows this ground as open land along the east-west road, with the town grid stopping to the north. The 1954 centennial book does not mention Hillcrest or Lakelawn. The assessor’s earliest structure year in the subdivision is 1963, at 21 Hillcrest Drive, so the 1960 stop does not add the streets or the houses.
 
 ## Streets after the 1854 plat
 
@@ -276,11 +276,135 @@ The 1918 Good Hope sheet, shown from the 1920 stop, already draws past the 1854 
 
 The 1944 Avon sheet, shown from the 1950 stop, adds Blaine, Cleveland, the east ends of Gridley, Hail, Osborne, Twyman, and Wells, Harrison, Miller, Smith, the east end of Cole, and Murphy Road. It still shows the Lakelawn ground as open.
 
-Hiel Drive, spelled Hiel, is the loop at the north end of West Main. The 1918 sheet does not draw that loop; the red line of the modern drive falls inside a block. The 1974 Bushnell West quadrangle draws it. A house at 10 Hiel Drive is dated 1951, so the street is on the 1960 stop. The house symbols along the loop were not separated from the built-up tint, so none were copied.
+Hiel Drive, spelled Hiel, is the loop at the north end of West Main. The assessor calls the plat Hiel Subdivision. The 1918 sheet does not draw that loop; the red line of the modern drive falls inside a block. The 1974 Bushnell West quadrangle draws it. The earliest structure year on the roll is 1951, at 10 Hiel Drive, so the street is on the 1960 stop. The house symbols along the loop were not separated from the built-up tint, so none were copied. The roll years are listed below.
 
 The 1974 sheets add Hillcrest Drive, Lakeview Drive, Sunrise Lane, Sunset Lane, the Lake Lawn pond (elevation 629), and West Hess. Thirty-six building symbols around that pond stay as placed from the east sheet.
 
-Washington Court is in the assessment roll, with houses dated 1990 and 1996 near the north end of West Main. It is not a named way in OpenStreetMap and it is not on the 1974 sheets. No centerline was found, so it is not drawn. Marpatel Drive is named in OpenStreetMap, but that line runs through buildings on the 1974 sheet instead of along a road, so it is not drawn. Prairie Street in the same extract falls outside both 7.5-minute sheets, so it is not drawn. County roads (the numbered 1800th, 1850th, 1900th, 2000th, and 2100th streets, and Industrial Park Road) were left out.
+Washington Court Addition is on the assessment roll, north of West Main. Four parcels have a structure year: 1990, 1995, 1996, and 2014. It is not a named way in OpenStreetMap and it is not on the 1974 sheets. No centerline was found, and the plat recording date is not online, so it is not drawn. Marpatel Drive is named in OpenStreetMap, but that line runs through buildings on the 1974 sheet instead of along a road, so it is not drawn. Prairie Street in the same extract falls outside both 7.5-minute sheets, so it is not drawn. County roads (the numbered 1800th, 1850th, 1900th, 2000th, and 2100th streets, and Industrial Park Road) were left out.
+
+## Assessor year built, read in 2026
+
+The parcel shapes and legal descriptions are the McDonough County GIS kept by the Supervisor of Assessments and published by the Western Illinois University GIS Center: [https://gis.wiu.edu/js/mcdonough/](https://gis.wiu.edu/js/mcdonough/), service [mcdonough_highway layer 21](https://gis.wiu.edu/arcgis/rest/services/mcdonough_highway/MapServer/21). That layer has the site address, the short legal, and a link to the tax page. It does not have a year-built field and it does not have a plat book or a recording date.
+
+The structure year is the “Year Built” on the property record at the McDonough County Property Tax Inquiry, [https://mcdonoughil.devnetwedge.com/](https://mcdonoughil.devnetwedge.com/), which publishes the Supervisor of Assessments card. Each parcel below was opened in November 2026. The same rows are in `public/data/assessor-years.json`. A blank year means the card has no structure.
+
+The County Clerk and Recorder, Jeremy Benson, says online property search covers documents recorded from 2000 to the current year, and that any document before 2000 is not online and is not emailed: [http://www.mcg.mcdonough.il.us/countyclerk.html](http://www.mcg.mcdonough.il.us/countyclerk.html). The paid Tapestry search was not used. No plat recording date for Lakelawn Estate, Hiel Subdivision, or Washington Court Addition was found on a public page. The same parcel layer names other Bushnell additions, including Hess 1st, Millers, Northwest, Coles, Morris Heights, Eastview Cole, Walton’s Sunrise, and Westwood. Their recording dates are in those same pre-2000 books and were not online either.
+
+### Lakelawn Estate
+
+Fifty-seven parcels. Structure years run from 1963 to 1979. The earliest is 21 Hillcrest Drive. Lot 9, the lake and dam parcel, has no structure year. The streets stay on the 1970 stop because no structure year is 1960 or earlier.
+
+| Address | Parcel | Year built |
+| --- | --- | --- |
+| 1 Hillcrest Dr | 03-001-593-00 | 1968 |
+| 3 Hillcrest Dr | 03-001-592-00 | 1975 |
+| 4 Hillcrest Dr | 03-001-595-00 | 1972 |
+| 5 Hillcrest Dr | 03-001-591-00 | 1975 |
+| 6 Hillcrest Dr | 03-001-594-00 | 1976 |
+| 7 Hillcrest Dr | 03-001-590-00 | 1968 |
+| 8 Hillcrest Dr | 03-001-572-00 | 1964 |
+| 9 Hillcrest Dr | 03-001-589-00 | 1968 |
+| 11 Hillcrest Dr | 03-001-588-00 | 1974 |
+| 13 Hillcrest Dr | 03-001-587-00 | 1972 |
+| 14 Hillcrest Dr | 03-001-573-00 | 1972 |
+| 15 Hillcrest Dr | 03-001-586-00 | 1968 |
+| 17 Hillcrest Dr | 03-001-585-00 | 1975 |
+| 18 Hillcrest Dr | 03-001-574-00 | 1969 |
+| 19 Hillcrest Dr | 03-001-584-00 | 1970 |
+| 21 Hillcrest Dr | 03-001-579-00 | 1963 |
+| 22 Hillcrest Dr | 03-001-575-00 | 1975 |
+| 23 Hillcrest Dr | 03-001-578-00 | 1974 |
+| 24 Hillcrest Dr | 03-001-576-00 | 1977 |
+| 26 Hillcrest Dr | 03-001-577-00 | 1967 |
+| 3 Lakeview Dr | 03-001-610-00 | 1972 |
+| 5 Lakeview Dr | 03-001-611-00 | 1971 |
+| 6 Lakeview Dr | 03-001-570-00 | 1969 |
+| 7 Lakeview Dr | 03-001-612-00 | 1971 |
+| 9 Lakeview Dr | 03-001-613-00 | 1972 |
+| 10 Lakeview Dr | 03-001-569-00 | 1977 |
+| 11 Lakeview Dr | 03-001-614-00 | 1970 |
+| 13 Lakeview Dr | 03-001-615-00 | 1975 |
+| 14 Lakeview Dr | 03-001-568-00 | 1965 |
+| 15 Lakeview Dr | 03-001-616-00 | 1969 |
+| 18 Lakeview Dr | 03-001-567-00 | 1969 |
+| 19 Lakeview Dr | 03-001-563-00 | 1976 |
+| 22 Lakeview Dr | 03-001-566-00 | 1968 |
+| 23 Lakeview Dr | 03-001-564-00 | 1973 |
+| 17 Lakeview Dr | 03-001-622-00 | no structure year |
+| 4 Sunrise Ln | 03-001-621-00 | 1971 |
+| 5 Sunrise Ln | 03-001-618-00 | 1976 |
+| 6 Sunrise Ln | 03-001-620-00 | 1976 |
+| 7 Sunrise Ln | 03-001-619-00 | 1973 |
+| 5 Sunset Ln | 03-001-582-00 | 1975 |
+| 6 Sunset Ln | 03-001-581-00 | 1972 |
+| 21 Sunset Ln | 03-001-583-00 | 1970 |
+| 62 Murphy Rd | 03-001-596-00 | 1968 |
+| 64 Murphy Rd | 03-001-597-00 | 1971 |
+| 66 Murphy Rd | 03-001-598-00 | 1973 |
+| 68 Murphy Rd | 03-001-599-00 | 1973 |
+| 70 Murphy Rd | 03-001-600-00 | 1975 |
+| 72 Murphy Rd | 03-001-601-00 | 1972 |
+| 74 Murphy Rd | 03-001-602-00 | 1977 |
+| 76 Murphy Rd | 03-001-603-00 | 1972 |
+| 78 Murphy Rd | 03-001-604-00 | 1971 |
+| 80 Murphy Rd | 03-001-605-00 | 1972 |
+| 82 Murphy Rd | 03-001-606-00 | 1970 |
+| 84 Murphy Rd | 03-001-607-00 | 1979 |
+| 86 Murphy Rd | 03-001-608-00 | 1972 |
+| 88 Murphy Rd | 03-001-609-00 | 1972 |
+| lake and dam, lot 9 | 03-001-571-00 | no structure year |
+
+### Hiel Subdivision
+
+Twenty-three parcels. The earliest house is 10 Hiel Drive, 1951. One lot, 23 Hiel Drive, has no structure year. A 2014 house at 165 West Harris Avenue is in the same subdivision and is later than the 1970 picture. The loop stays on the 1960 stop. The houses were not drawn, because the 1974 sheet does not separate them from the built-up tint.
+
+| Address | Parcel | Year built |
+| --- | --- | --- |
+| 4 Hiel Dr | 03-001-524-00 | 1967 |
+| 5 Hiel Dr | 03-001-525-00 | 1958 |
+| 6 Hiel Dr | 03-001-526-00 | 1958 |
+| 7 Hiel Dr | 03-001-527-00 | 1967 |
+| 9 Hiel Dr | 03-001-528-00 | 1958 |
+| 10 Hiel Dr | 03-001-529-00 | 1951 |
+| 11 Hiel Dr | 03-001-530-00 | 1968 |
+| 13 Hiel Dr | 03-001-531-00 | 1971 |
+| 14 Hiel Dr | 03-001-532-00 | 1966 |
+| 15 Hiel Dr | 03-001-533-00 | 1958 |
+| 16 Hiel Dr | 03-001-534-00 | 1960 |
+| 18 Hiel Dr | 03-001-535-00 | 1961 |
+| 19 Hiel Dr | 03-001-537-00 | 1960 |
+| 20 Hiel Dr | 03-001-538-00 | 1968 |
+| 21 Hiel Dr | 03-001-536-00 | 1963 |
+| 23 Hiel Dr | 03-001-539-00 | no structure year |
+| 24 Hiel Dr | 03-001-540-00 | 1958 |
+| 25 Hiel Dr | 03-001-541-00 | 1953 |
+| 27 Hiel Dr | 03-001-542-00 | 1960 |
+| 1155 W Main St | 03-001-522-00 | 1968 |
+| 129 W Harris Ave | 03-001-521-00 | 1958 |
+| 141 W Harris Ave | 03-001-520-00 | 1959 |
+| 165 W Harris Ave | 03-001-543-00 | 2014 |
+
+### Washington Court Addition
+
+Fifteen parcels. The dwelling years are 1990 at 1200 (a pool house on the same card is 1999), 1995 at 1245, 1996 at 1313, and 2014 at 1330. The other eleven lots have no structure year. The court is not drawn.
+
+| Address | Parcel | Year built |
+| --- | --- | --- |
+| 1200 Washington Ct | 03-001-704-00 | 1990 house; 1999 pool house |
+| 1245 Washington Ct | 03-001-720-00 | 1995 |
+| 1313 Washington Ct | 03-001-716-00 | 1996 |
+| 1330 Washington Ct | 03-001-710-00 | 2014 |
+| lot 4 | 03-001-707-05 | no structure year |
+| lot 5 | 03-001-707-15 | no structure year |
+| lot 6, except the north 20 feet | 03-001-707-20 | no structure year |
+| north 20 feet of lot 6 | 03-001-707-25 | no structure year |
+| lot 9 | 03-001-712-05 | no structure year |
+| lots 10 and 11 | 03-001-712-10 | no structure year |
+| lot 12 | 03-001-715-00 | no structure year |
+| lot 15 | 03-001-718-00 | no structure year |
+| lot 16 | 03-001-719-00 | no structure year |
+| lot 19 | 03-001-722-00 | no structure year |
+| outlot A | 03-001-723-00 | no structure year |
 
 ## Works used
 
@@ -304,6 +428,9 @@ Washington Court is in the assessment roll, with houses dated 1990 and 1996 near
 - U.S. Geological Survey, Avon, Illinois, 15-minute quadrangle, 1:62,500, 1944. The east side before Lakelawn Estate.
 - U.S. Geological Survey, Good Hope, Illinois, 15-minute quadrangle, 1:62,500, 1918. The street grid before Hiel Drive.
 - U.S. Geological Survey, Bushnell West, Illinois, 7.5-minute quadrangle, 1:24,000, 1974. Hiel Drive and the north end of town.
+- McDonough County Supervisor of Assessments, parcel layer published by the Western Illinois University GIS Center, [https://gis.wiu.edu/js/mcdonough/](https://gis.wiu.edu/js/mcdonough/). Legal descriptions and site addresses for Lakelawn Estate, Hiel Subdivision, and Washington Court Addition, read in November 2026. The layer has no year-built field and no plat date.
+- McDonough County Property Tax Inquiry (DevNet wedge), [https://mcdonoughil.devnetwedge.com/](https://mcdonoughil.devnetwedge.com/). Structure year built on the Supervisor of Assessments card, read in November 2026. The parcel list is `public/data/assessor-years.json`.
+- McDonough County Clerk and Recorder, [http://www.mcg.mcdonough.il.us/countyclerk.html](http://www.mcg.mcdonough.il.us/countyclerk.html). Documents recorded before 2000 are not online and are not emailed. The plat recording dates were not reached.
 - *Bushnell, Illinois, centennial, 1854–1954*, searched for Hillcrest and Lakelawn. Neither name is in the book.
 - McDonough County Illinois Genealogical Society, Bushnell historic photographs, [https://www.mcdcgs.com/bushnell-historic-photos/](https://www.mcdcgs.com/bushnell-historic-photos/) and [https://www.mcdcgs.com/historic-photos/bushnell/](https://www.mcdcgs.com/historic-photos/bushnell/). The pictures are theirs. This project does not copy the image files into the app. Each one is listed in `docs/photo-catalog.md`.
 - Neil Gale, “Bushnell, Illinois, a highly detailed look at a small settlement founded in 1854,” Digital Research Library of Illinois History Journal, 12 April 2022, [https://drloihjournal.blogspot.com/2022/04/bushnell-illinois-highly-detailed-look-from-1854.html](https://drloihjournal.blogspot.com/2022/04/bushnell-illinois-highly-detailed-look-from-1854.html). The page includes a photograph captioned East Main Street, 1907.

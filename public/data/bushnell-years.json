@@ -834,8 +834,8 @@
       "year": 1960,
       "census": [
         {
-          "text": "Hiel Drive, the loop north of West Main, is shown from this stop. A house at 10 Hiel Drive is dated 1951. The 1918 Good Hope sheet does not draw the loop. Lakelawn Estate is still not on a map found for 1960.",
-          "source": "U.S. Geological Survey, Bushnell West, Illinois, 7.5-minute quadrangle, 1974. Year built 1951 for 10 Hiel Drive, McDonough County parcel 03-001-529-00. U.S. Geological Survey, Good Hope, Illinois, 15-minute quadrangle, 1918."
+          "text": "Hiel Drive, the loop north of West Main, is shown from this stop. The assessor dates 10 Hiel Drive to 1951, the earliest house in Hiel Subdivision. The 1918 Good Hope sheet does not draw the loop. Lakelawn Estate stays off this stop: its earliest structure year is 1963.",
+          "source": "McDonough County Supervisor of Assessments, DevNet property record for parcel 03-001-529-00, read 2026. U.S. Geological Survey, Bushnell West, Illinois, 7.5-minute quadrangle, 1974. U.S. Geological Survey, Good Hope, Illinois, 15-minute quadrangle, 1918."
         },
         {
           "text": "Population 3,710 (1960 census).",
@@ -849,8 +849,8 @@
       "year": 1970,
       "census": [
         {
-          "text": "Lakelawn Estate, with its pond, is drawn southeast of town: Hillcrest Drive, Lakeview Drive, Sunrise Lane, and Sunset Lane. West Hess is drawn from this stop. Washington Court is not on these sheets.",
-          "source": "U.S. Geological Survey, Bushnell East and Bushnell West, Illinois, 7.5-minute quadrangles, 1974. Street names from OpenStreetMap centerlines matched to those sheets."
+          "text": "Lakelawn Estate, with its pond, is drawn southeast of town: Hillcrest Drive, Lakeview Drive, Sunrise Lane, and Sunset Lane. The assessor dates its houses from 1963 (21 Hillcrest Drive) through 1979. West Hess is drawn from this stop. Washington Court is not on these sheets.",
+          "source": "U.S. Geological Survey, Bushnell East and Bushnell West, Illinois, 7.5-minute quadrangles, 1974. McDonough County Supervisor of Assessments, DevNet property records for the Lakelawn Estate parcels, read 2026."
         },
         {
           "text": "Population 3,703 (1970 census).",
@@ -875,8 +875,8 @@
       "year": 1990,
       "census": [
         {
-          "text": "Washington Court is in the year-built records for 1990 and 1996, near the north end of West Main. No centerline was found on a map or in OpenStreetMap, so the court is not drawn.",
-          "source": "Year constructed 1990 for 1200 Washington Court, parcel 03-001-704-00, and 1996 for 1313 Washington Court, parcel 03-001-716-00, McDonough County, as republished from the assessment roll."
+          "text": "Washington Court Addition has four houses on the assessor roll: 1200 Washington Court in 1990, 1245 in 1995, 1313 in 1996, and 1330 in 2014. Eleven lots have no structure year. No centerline was found, and the plat recording date is not online, so the court is not drawn.",
+          "source": "McDonough County Supervisor of Assessments, DevNet property records for the Washington Court Addition parcels, read 2026. Parcel numbers are in public/data/assessor-years.json."
         },
         {
           "text": "Population 3,288 (1990 census).",

@@ -1,0 +1,1166 @@
+{
+  "read": "November 2026",
+  "assessor": "McDonough County Supervisor of Assessments, property record published by DevNet wedge",
+  "search": "https://mcdonoughil.devnetwedge.com/",
+  "gis": "https://gis.wiu.edu/js/mcdonough/",
+  "gisService": "https://gis.wiu.edu/arcgis/rest/services/mcdonough_highway/MapServer/21",
+  "note": "Year built is the structure year on the assessor card. The legal description names the subdivision and does not give the plat recording date.",
+  "parcels": [
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-593-00",
+      "address": "1 HILLCREST DR",
+      "legal": "LOT 31 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Two Story Frame/One Story Frame",
+          "yearBuilt": 1968,
+          "areaSqFt": "1,984"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-569-00",
+      "address": "10 LAKEVIEW DR",
+      "legal": "LOT 7 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1977,
+          "areaSqFt": "2,558"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-588-00",
+      "address": "11 HILLCREST DR",
+      "legal": "LOT 26 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Split Level Frame",
+          "yearBuilt": 1974,
+          "areaSqFt": "1,592"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-614-00",
+      "address": "11 LAKEVIEW DR",
+      "legal": "LOT 52 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Split Level Frame",
+          "yearBuilt": 1970,
+          "areaSqFt": "1,148"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-587-00",
+      "address": "13 HILLCREST DR",
+      "legal": "LOT 25 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1972,
+          "areaSqFt": "1,421"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-615-00",
+      "address": "13 LAKEVIEW DR",
+      "legal": "LOT 53 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1975,
+          "areaSqFt": "1,272"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-573-00",
+      "address": "14 HILLCREST DR",
+      "legal": "LOT 11 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1972,
+          "areaSqFt": "742"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-568-00",
+      "address": "14 LAKEVIEW DR",
+      "legal": "LOT 6 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Two Story Masonry/One Story Masonry",
+          "yearBuilt": 1965,
+          "areaSqFt": "1,662"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-586-00",
+      "address": "15 HILLCREST DR",
+      "legal": "LOT 24 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1968,
+          "areaSqFt": "1,507"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-616-00",
+      "address": "15 LAKEVIEW DR",
+      "legal": "ALL LOT 54 & N PT LOT 55 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1969,
+          "areaSqFt": "1,366"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-585-00",
+      "address": "17 HILLCREST DR",
+      "legal": "LOT 23 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Two Story Frame/One Story Frame",
+          "yearBuilt": 1975,
+          "areaSqFt": "1,316"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-622-00",
+      "address": "17 LAKEVIEW DR",
+      "legal": "LOT 60 LAKELAWN EST SUB ADD",
+      "structures": []
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-574-00",
+      "address": "18 HILLCREST DR",
+      "legal": "LOT 12 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Masonry",
+          "yearBuilt": 1969,
+          "areaSqFt": "2,292"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-567-00",
+      "address": "18 LAKEVIEW DR",
+      "legal": "LOT 5 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1969,
+          "areaSqFt": "1,586"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-584-00",
+      "address": "19 HILLCREST DR",
+      "legal": "LOT 22 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Split Level Frame",
+          "yearBuilt": 1970,
+          "areaSqFt": "1,222"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-563-00",
+      "address": "19 LAKEVIEW DR",
+      "legal": "LOT 1 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1976,
+          "areaSqFt": "2,076"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-579-00",
+      "address": "21 HILLCREST DR",
+      "legal": "LOT 17 & E 1/2 LT 18 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1963,
+          "areaSqFt": "1,047"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-583-00",
+      "address": "21 SUNSET LN",
+      "legal": "LOT 21 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Split Level Frame",
+          "yearBuilt": 1970,
+          "areaSqFt": "1,316"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-575-00",
+      "address": "22 HILLCREST DR",
+      "legal": "LOT 13 EX N 10' LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1975,
+          "areaSqFt": "1,617"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-566-00",
+      "address": "22 LAKEVIEW DR",
+      "legal": "LOT 4 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Split Level Frame/One Story Frame/One Story Frame",
+          "yearBuilt": 1968,
+          "areaSqFt": "2,368"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-578-00",
+      "address": "23 HILLCREST DR",
+      "legal": "LOT 16 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1974,
+          "areaSqFt": "1,370"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-564-00",
+      "address": "23 LAKEVIEW DR",
+      "legal": "LOTS 2 & 3 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1973,
+          "areaSqFt": "2,375"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-576-00",
+      "address": "24 HILLCREST DR",
+      "legal": "LOT 14 & N 10' LOT 13 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1977,
+          "areaSqFt": "2,596"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-577-00",
+      "address": "26 HILLCREST DR",
+      "legal": "LOT 15 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1967,
+          "areaSqFt": "3,192"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-592-00",
+      "address": "3 HILLCREST DR",
+      "legal": "LOT 30 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame/Split Level Frame",
+          "yearBuilt": 1975,
+          "areaSqFt": "1,863"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-610-00",
+      "address": "3 LAKEVIEW DR",
+      "legal": "LOT 48 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1972,
+          "areaSqFt": "1,340"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-595-00",
+      "address": "4 HILLCREST DR",
+      "legal": "LOT 33 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Split Level Frame/One Story Frame",
+          "yearBuilt": 1972,
+          "areaSqFt": "1,760"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-621-00",
+      "address": "4 SUNRISE LN",
+      "legal": "LOT 59 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Split Level Frame",
+          "yearBuilt": 1971,
+          "areaSqFt": "1,223"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-591-00",
+      "address": "5 HILLCREST DR",
+      "legal": "LOT 29 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Split Level Frame/One Story Frame",
+          "yearBuilt": 1975,
+          "areaSqFt": "1,348"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-611-00",
+      "address": "5 LAKEVIEW DR",
+      "legal": "LOT 49 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1971,
+          "areaSqFt": "1,176"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-618-00",
+      "address": "5 SUNRISE LN",
+      "legal": "S PT LOT 55 & ALL LOT 56 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Split Level Frame",
+          "yearBuilt": 1976,
+          "areaSqFt": "1,179"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-582-00",
+      "address": "5 SUNSET LN",
+      "legal": "LOT 20 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1975,
+          "areaSqFt": "1,080"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-594-00",
+      "address": "6 HILLCREST DR",
+      "legal": "LOT 32 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1976,
+          "areaSqFt": "1,862"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-570-00",
+      "address": "6 LAKEVIEW DR",
+      "legal": "LOT 8 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Split Level Frame/One Story Frame",
+          "yearBuilt": 1969,
+          "areaSqFt": "1,861"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-620-00",
+      "address": "6 SUNRISE LN",
+      "legal": "LOT 58 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Split Level Frame",
+          "yearBuilt": 1976,
+          "areaSqFt": "1,026"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-581-00",
+      "address": "6 SUNSET LN",
+      "legal": "W 1/2 LT 18 & ALL LT 19 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1972,
+          "areaSqFt": "1,422"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-596-00",
+      "address": "62 MURPHY RD",
+      "legal": "LOT 34 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1968,
+          "areaSqFt": "1,152"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-597-00",
+      "address": "64 MURPHY RD",
+      "legal": "LOT 35 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Split Level Frame",
+          "yearBuilt": 1971,
+          "areaSqFt": "884"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-598-00",
+      "address": "66 MURPHY RD",
+      "legal": "LOT 36 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1973,
+          "areaSqFt": "1,056"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-599-00",
+      "address": "68 MURPHY RD",
+      "legal": "LOT 37 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1973,
+          "areaSqFt": "1,032"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-590-00",
+      "address": "7 HILLCREST DR",
+      "legal": "LOT 28 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame/Shed",
+          "yearBuilt": 1968,
+          "areaSqFt": "1,519"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-612-00",
+      "address": "7 LAKEVIEW DR",
+      "legal": "LOT 50 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Split Level Frame/One Story Frame",
+          "yearBuilt": 1971,
+          "areaSqFt": "1,340"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-619-00",
+      "address": "7 SUNRISE LN",
+      "legal": "LOT 57 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Two Story Frame",
+          "yearBuilt": 1973,
+          "areaSqFt": "1,222"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-600-00",
+      "address": "70 MURPHY RD",
+      "legal": "LOT 38 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1975,
+          "areaSqFt": "1,056"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-601-00",
+      "address": "72 MURPHY RD",
+      "legal": "LOT 39 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1972,
+          "areaSqFt": "1,056"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-602-00",
+      "address": "74 MURPHY RD",
+      "legal": "LOT 40 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1977,
+          "areaSqFt": "1,032"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-603-00",
+      "address": "76 MURPHY RD",
+      "legal": "LOT 41 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1972,
+          "areaSqFt": "1,008"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-604-00",
+      "address": "78 MURPHY RD",
+      "legal": "LOT 42 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1971,
+          "areaSqFt": "1,056"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-572-00",
+      "address": "8 HILLCREST DR",
+      "legal": "LOT 10 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame/One Story Frame/Two Story Frame",
+          "yearBuilt": 1964,
+          "areaSqFt": "3,170"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-605-00",
+      "address": "80 MURPHY RD",
+      "legal": "LOT 43 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1972,
+          "areaSqFt": "1,032"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-606-00",
+      "address": "82 MURPHY RD",
+      "legal": "LOT 44 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Split Level Frame/One Story Frame",
+          "yearBuilt": 1970,
+          "areaSqFt": "1,456"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-607-00",
+      "address": "84 MURPHY RD",
+      "legal": "LOT 45 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1979,
+          "areaSqFt": "1,350"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-608-00",
+      "address": "86 MURPHY RD",
+      "legal": "LOT 46 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1972,
+          "areaSqFt": "1,234"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-609-00",
+      "address": "88 MURPHY RD",
+      "legal": "LOT 47 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1972,
+          "areaSqFt": "1,056"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-589-00",
+      "address": "9 HILLCREST DR",
+      "legal": "LOT 27 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1968,
+          "areaSqFt": "1,400"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-613-00",
+      "address": "9 LAKEVIEW DR",
+      "legal": "LOT 51 LAKELAWN EST SUB ADD",
+      "structures": [
+        {
+          "description": "Two Story Frame/One Story Frame/One Story Frame",
+          "yearBuilt": 1972,
+          "areaSqFt": "2,364"
+        }
+      ]
+    },
+    {
+      "subdivision": "Lakelawn Estate",
+      "parcel": "03-001-571-00",
+      "address": "",
+      "legal": "LOT 9 & 6.8 A LAKE & 2.6 A DAM AREA LAKELAWN EST SUB ADD",
+      "structures": []
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-529-00",
+      "address": "10 HIEL DR",
+      "legal": "LOT 10 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1951,
+          "areaSqFt": "1,825"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-530-00",
+      "address": "11 HIEL DR",
+      "legal": "LOT 11 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1968,
+          "areaSqFt": "1,034"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-522-00",
+      "address": "1155 W MAIN ST",
+      "legal": "PT NE COR LOT 1 & S 1/2 LOT 2 EX W 15' HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Masonry",
+          "yearBuilt": 1968,
+          "areaSqFt": "1,392"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-521-00",
+      "address": "129 W HARRIS AVE",
+      "legal": "SE COR LOT 1 - 120.88' N & S X 100' E & W HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Masonry",
+          "yearBuilt": 1958,
+          "areaSqFt": "1,044"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-531-00",
+      "address": "13 HIEL DR",
+      "legal": "LOT 13 EX N 20' & ALL LOT 12 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Masonry",
+          "yearBuilt": 1971,
+          "areaSqFt": "1,932"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-532-00",
+      "address": "14 HIEL DR",
+      "legal": "N 20' LT 13 & EX N 10' OF LT 14 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1966,
+          "areaSqFt": "1,176"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-520-00",
+      "address": "141 W HARRIS AVE",
+      "legal": "PT W SI LT 1 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1959,
+          "areaSqFt": "1,300"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-533-00",
+      "address": "15 HIEL DR",
+      "legal": "PT LT 14 & ALL LT 15 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1958,
+          "areaSqFt": "1,131"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-534-00",
+      "address": "16 HIEL DR",
+      "legal": "PT LT 17 & ALL LT 16 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Masonry",
+          "yearBuilt": 1960,
+          "areaSqFt": "1,551"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-543-00",
+      "address": "165 W HARRIS AVE",
+      "legal": "LOT 28 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 2014,
+          "areaSqFt": "1,436"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-535-00",
+      "address": "18 HIEL DR",
+      "legal": "PT LT 17 & ALL LT 18 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1961,
+          "areaSqFt": "1,523"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-537-00",
+      "address": "19 HIEL DR",
+      "legal": "ALL LT 19 & PT LT 20 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1960,
+          "areaSqFt": "1,326"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-538-00",
+      "address": "20 HIEL DR",
+      "legal": "PT LTS 20 & 21 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1968,
+          "areaSqFt": "1,194"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-536-00",
+      "address": "21 HIEL DR",
+      "legal": "PT LT 21 & PT LT 22 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1963,
+          "areaSqFt": "1,148"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-539-00",
+      "address": "23 HIEL DR",
+      "legal": "PT LTS 21 & 22 & ALL LT 23 HIEL SUB",
+      "structures": []
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-540-00",
+      "address": "24 HIEL DR",
+      "legal": "LOT 24 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1958,
+          "areaSqFt": "1,286"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-541-00",
+      "address": "25 HIEL DR",
+      "legal": "ALL LT 25 & PT LT 26 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1953,
+          "areaSqFt": "1,512"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-542-00",
+      "address": "27 HIEL DR",
+      "legal": "PT LT 26 & ALL LT 27 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1960,
+          "areaSqFt": "1,923"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-524-00",
+      "address": "4 HIEL DR",
+      "legal": "LOTS 2,3,&4 EX W15' & EX S 1/2 LOT 2 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Masonry",
+          "yearBuilt": 1967,
+          "areaSqFt": "1,555"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-525-00",
+      "address": "5 HIEL DR",
+      "legal": "W 15' LTS 2, 3, 4 & ALL LT 5 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1958,
+          "areaSqFt": "1,228"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-526-00",
+      "address": "6 HIEL DR",
+      "legal": "LT 6 & E 20' LOT 7 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1958,
+          "areaSqFt": "1,052"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-527-00",
+      "address": "7 HIEL DR",
+      "legal": "PT LT 7 & ALL LT 8 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Masonry",
+          "yearBuilt": 1967,
+          "areaSqFt": "1,560"
+        }
+      ]
+    },
+    {
+      "subdivision": "Hiel Subdivision",
+      "parcel": "03-001-528-00",
+      "address": "9 HIEL DR",
+      "legal": "LOT 9 HIEL SUB",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1958,
+          "areaSqFt": "1,164"
+        }
+      ]
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-704-00",
+      "address": "1200 WASHINGTON CT",
+      "legal": "LOTS 1-3 & OUTLOT B WASHINGTON COURT ADD",
+      "structures": [
+        {
+          "description": "Pool House",
+          "yearBuilt": 1999,
+          "areaSqFt": "120"
+        },
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1990,
+          "areaSqFt": "4,446"
+        }
+      ]
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-720-00",
+      "address": "1245 WASHINGTON CT",
+      "legal": "LOT 17 & 18 WASHINGTON COURT ADD",
+      "structures": [
+        {
+          "description": "One Story Masonry",
+          "yearBuilt": 1995,
+          "areaSqFt": "2,112"
+        }
+      ]
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-716-00",
+      "address": "1313 WASHINGTON CT",
+      "legal": "LOT 13 & 14 WASHINGTON COURT ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 1996,
+          "areaSqFt": "1,567"
+        }
+      ]
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-710-00",
+      "address": "1330 WASHINGTON CT",
+      "legal": "LOT 7 & 8 WASHINGTON COURT ADD",
+      "structures": [
+        {
+          "description": "One Story Frame",
+          "yearBuilt": 2014,
+          "areaSqFt": "1,600"
+        }
+      ]
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-707-05",
+      "address": "",
+      "legal": "LOT 4 WASHINGTON COURT ADD",
+      "structures": []
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-707-15",
+      "address": "",
+      "legal": "LOT 5 WASHINGTON COURT ADD",
+      "structures": []
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-707-20",
+      "address": "",
+      "legal": "LOT 6 EX N 20' WASHINGTON COURT ADD",
+      "structures": []
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-707-25",
+      "address": "",
+      "legal": "N 20' LOT 6 WASHINGTON COURT ADD",
+      "structures": []
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-712-05",
+      "address": "",
+      "legal": "LOT 9 WASHINGTON COURT ADD",
+      "structures": []
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-712-10",
+      "address": "",
+      "legal": "LOTS 10 & 11 WASHINGTON COURT ADD",
+      "structures": []
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-715-00",
+      "address": "",
+      "legal": "LOT 12 WASHINGTON COURT ADD",
+      "structures": []
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-718-00",
+      "address": "",
+      "legal": "LOT 15 WASHINGTON COURT ADD",
+      "structures": []
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-719-00",
+      "address": "",
+      "legal": "LOT 16 WASHINGTON COURT ADD",
+      "structures": []
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-722-00",
+      "address": "",
+      "legal": "LOT 19 WASHINGTON COURT ADD",
+      "structures": []
+    },
+    {
+      "subdivision": "Washington Court Addition",
+      "parcel": "03-001-723-00",
+      "address": "",
+      "legal": "OUTLOT A WASHINGTON COURT ADD",
+      "structures": []
+    }
+  ]
+}
