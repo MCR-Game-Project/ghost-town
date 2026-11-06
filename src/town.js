@@ -1628,7 +1628,7 @@ export function buildTown(data, scene) {
   }
 
   // Ground.
-  const prairie = new THREE.Mesh(new THREE.PlaneGeometry(14000, 14000), tiled(mats.grass, 14000 / 28, 14000 / 28));
+  const prairie = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000), tiled(mats.grass, 40000 / 28, 40000 / 28));
   prairie.rotation.x = -Math.PI / 2;
   prairie.receiveShadow = true;
   scene.add(prairie);

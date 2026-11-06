@@ -72,7 +72,7 @@ const sky = new THREE.Mesh(
 );
 scene.add(sky);
 
-const camera = new THREE.PerspectiveCamera(66, window.innerWidth / window.innerHeight, 0.25, 20000);
+const camera = new THREE.PerspectiveCamera(66, window.innerWidth / window.innerHeight, 0.25, 40000);
 camera.rotation.order = "YXZ";
 
 scene.add(new THREE.HemisphereLight(0xffe0b8, 0x7a5a3c, 0.72));
@@ -108,7 +108,7 @@ orbit.enableDamping = true;
 orbit.enableZoom = false;
 orbit.maxPolarAngle = Math.PI / 2.08;
 orbit.minDistance = 8;
-orbit.maxDistance = 9000;
+orbit.maxDistance = 22000;
 orbit.enabled = false;
 orbit.target.set(-180, 0, 20);
 
@@ -234,8 +234,9 @@ function releaseToMenu() {
 }
 
 // The 1854 plat fits in a smaller box. Later streets, including Lakelawn, sit outside it.
-const REACH_X = [-4300, 4500];
-const REACH_Z = [-4000, 7800];
+// Three miles from Hail and the tracks is about 15,840 feet.
+const REACH_X = [-17000, 17000];
+const REACH_Z = [-17000, 17000];
 
 function frameOverview() {
   const wide = shownBuiltYear >= 1970;
@@ -390,7 +391,7 @@ function zoomTowardPointer(event) {
     flyToward(hit, true);
     return;
   }
-  if (next.y > 7000) return;
+  if (next.y > 16000) return;
   const delta = next.clone().sub(cam);
   camera.position.copy(next);
   orbit.target.add(delta);

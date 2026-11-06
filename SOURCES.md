@@ -37,9 +37,9 @@ Which two blocks were the parks is also inferred. The business block of Hail Str
 
 ## The railroads
 
-The Northern Cross, later the Chicago, Burlington & Quincy, was already graded through the town site in 1854. It runs northeast–southwest, 29.8 degrees east of north on the present main line through the Hail Street crossing. The 1913 Illinois Supreme Court opinion in City of Bushnell v. Chicago, Burlington & Quincy Railroad states the same layout: the right of way runs from northeast to southwest, East Main adjoins the east side, West Main adjoins the west side, and Hail is the cross street farthest north, with Hurst and then Barnes to the south. In the model the Burlington is one main track with a short siding by the depot and the elevator. The histories do not give the 1880 track count. The 1886 Sanborn map shows a wide railroad ground between the two Main streets, wide enough for more than a single rail.
+The Northern Cross, later the Chicago, Burlington & Quincy, was already graded through the town site in 1854. The 1885 history says the locomotive was heard in the town's second year. It runs northeast–southwest, 29.8 degrees east of north on the present main line through the Hail Street crossing. Beyond the plat the model keeps that same straight bearing, because the 1918 Good Hope sheet and the 1974 quadrangles show the railroad continuing out of town. The 1913 Illinois Supreme Court opinion in City of Bushnell v. Chicago, Burlington & Quincy Railroad states the same layout: the right of way runs from northeast to southwest, East Main adjoins the east side, West Main adjoins the west side, and Hail is the cross street farthest north, with Hurst and then Barnes to the south. In the model the Burlington is one main track with a short siding by the depot and the elevator. The histories do not give the 1880 track count. The 1886 Sanborn map shows a wide railroad ground between the two Main streets, wide enough for more than a single rail.
 
-The Toledo, Peoria & Warsaw was surveyed through Bushnell in 1867. The city and its citizens subscribed to the stock. By 1885 the county history calls that line part of the Wabash. It crosses the Burlington at about a right angle, so it runs the same direction as Hail Street, 1,680 feet southwest of the Hail crossing. That is just southwest of Davis Street. The crossing is the same one still used by the Keokuk Junction Railway, which inherited the route. A 1914 postcard, discussed on the Towns and Nature blog, places one T. P. & W. depot south of the Burlington station and just west of West Main. Mark says the depot that still exists stands on the east side of the tracks. The building still standing is at East Main and Hurst, and the model puts it there. The crossing itself stays just southwest of Davis Street.
+The Toledo, Peoria & Warsaw was surveyed through Bushnell in 1867, and the city subscribed to the stock. Christopher T. Baer's chronology of the Pennsylvania Railroad and its connections records that the Toledo, Peoria & Warsaw opened between La Harpe and Bushnell on January 1, 1868. By 1885 the county history calls that line part of the Wabash. It crosses the Burlington at about a right angle, so it runs the same direction as Hail Street, 1,680 feet southwest of the Hail crossing. That is just southwest of Davis Street. The line is not drawn in 1854 or 1860. It is drawn from the 1870 stop. A later abandonment inside this radius was not found. The crossing is the same one still used by the Keokuk Junction Railway, which inherited the route. A 1914 postcard, discussed on the Towns and Nature blog, places one T. P. & W. depot south of the Burlington station and just west of West Main. Mark says the depot that still exists stands on the east side of the tracks. The building still standing is at East Main and Hurst, and the model puts it there. The crossing itself stays just southwest of Davis Street.
 
 The Burlington depot in the model is the older wooden depot. The Northern Cross depot predated the Q. A newer CB&Q depot was built after 1900, and the old building was moved and reused as a freight house. So the 1880 station is the frame depot, not the later one. The Bushnell House was remembered as the hotel opposite the Q station.
 
@@ -408,6 +408,20 @@ Fifteen parcels. The dwelling years are 1990 at 1200 (a pool house on the same c
 | lot 19 | 03-001-722-00 | no structure year |
 | outlot A | 03-001-723-00 | no structure year |
 
+The trees in the two parks are the soft maples Elias Beaver set there. The centennial book says that, and it says the proprietors gave one block on each side of the railroad for the parks. It does not say how many trees, how old they were, or the year he planted them beyond the life of those parks. No data found for a count.
+
+No data found for elm-lined streets in Bushnell, for a count of elms, or for their ages. No data found for the year Dutch elm disease reached Bushnell or McDonough County. A 1958 article in Illinois Municipal Review discusses Dutch elm disease as a problem in Illinois and does not name Bushnell. No replacement species after the disease was found for this town, so none are drawn. The elms the picture already scatters in yards are not from a survey.
+
+The centennial book says Bushnell's worst windstorm, on June 10, 1902, tore trees out by the roots and blew roofs off downtown stores. It does not say which trees or how many, so none are removed.
+
+No tornado in 1968 or 1969 was found for Bushnell. NOAA's Storm Events Database, as compiled for McDonough County, lists no tornado in 1968 and lists storm events in 1969 with no tornado. Nothing was removed for a tornado.
+
+No data found for a plat book read building by building inside three miles, so no farm name, barn, or farmhouse was added. The 1871 county atlas was not viewed. The ground, the walk, and the aerial camera now reach three miles from Hail Street at the tracks so those buildings can be added when a sheet is read one symbol at a time.
+
+No data found for a railroad bridge, a highway bridge, or a creek bridge with a place and a date. None are drawn.
+
+Illinois 9 and Illinois 41 are both dated 1918 in a compiled list of state routes. The 1918 Good Hope sheet draws the roads and does not print those numbers. The numbers are noted from 1920 and are not painted on the ground.
+
 ## Works used
 
 - S. J. Clarke, *History of McDonough County, Illinois* (Springfield: D. W. Lusk, 1878). Library of Congress, [https://www.loc.gov/item/rc01002068/](https://www.loc.gov/item/rc01002068/).
@@ -429,7 +443,9 @@ Fifteen parcels. The dwelling years are 1990 at 1200 (a pool house on the same c
 - U.S. Geological Survey, Bushnell East, Illinois, 7.5-minute quadrangle, 1:24,000, date on map 1974, aerial photographs 1973, field check 1974. National Map Historical Topographic Map Collection.
 - U.S. Geological Survey, Avon, Illinois, 15-minute quadrangle, 1:62,500, 1944. The east side before Lakelawn Estate.
 - U.S. Geological Survey, Good Hope, Illinois, 15-minute quadrangle, 1:62,500, 1918. The street grid before Hiel Drive.
-- U.S. Geological Survey, Bushnell West, Illinois, 7.5-minute quadrangle, 1:24,000, 1974. Hiel Drive and the north end of town.
+- Christopher T. Baer, *A General Chronology of the Pennsylvania Railroad Company, Its Predecessors and Successors, and Its Historical Context*, 1868. The entry for January 1, 1868, says the Toledo, Peoria & Warsaw Railway opened between La Harpe and Bushnell.
+- NOAA National Centers for Environmental Information, Storm Events Database, McDonough County, Illinois, as compiled at TornadoLookup for 1950 through 2026. No tornado is listed for 1968. The year 1969 has storm events and no tornado.
+- AARoads, list of Illinois state routes, which dates Illinois 9 and Illinois 41 to 1918. The 1918 quadrangle does not print the numbers.
 - McDonough County Supervisor of Assessments, parcel layer published by the Western Illinois University GIS Center, [https://gis.wiu.edu/js/mcdonough/](https://gis.wiu.edu/js/mcdonough/). Legal descriptions and site addresses for Lakelawn Estate, Hiel Subdivision, and Washington Court Addition, read in November 2026. The layer has no year-built field and no plat date.
 - McDonough County Property Tax Inquiry (DevNet wedge), [https://mcdonoughil.devnetwedge.com/](https://mcdonoughil.devnetwedge.com/). Structure year built on the Supervisor of Assessments card, read in November 2026. The parcel list is `public/data/assessor-years.json`.
 - McDonough County Clerk and Recorder, [http://www.mcg.mcdonough.il.us/countyclerk.html](http://www.mcg.mcdonough.il.us/countyclerk.html). Documents recorded before 2000 are not online and are not emailed. The plat recording dates were not reached.

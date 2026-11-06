@@ -157,16 +157,16 @@
       "name": "C. B. & Q. main line",
       "points": [
         [
-          -2100,
+          -16000,
           0
         ],
         [
-          1600,
+          16000,
           0
         ]
       ],
       "confidence": "sourced",
-      "notes": "The Northern Cross, renamed into the CB&Q, was graded across the town site before the 1854 plat. Streets were laid parallel to it. One main track plus a siding is inferred; the 1886 map shows railroad ground wide enough for more than a single rail."
+      "notes": "The Northern Cross, later the Chicago, Burlington and Quincy, was graded across the town site before the 1854 plat. The 1885 history says the locomotive was heard in the town's second year. The line is drawn on the same bearing beyond the plat because the 1918 Good Hope and 1974 Bushnell sheets show it continuing. One main track plus a siding is inferred; the 1886 map shows railroad ground wide enough for more than a single rail."
     },
     {
       "id": "cbq-siding",
@@ -192,15 +192,15 @@
       "points": [
         [
           -1680,
-          -1800
+          -16000
         ],
         [
           -1680,
-          1800
+          16000
         ]
       ],
       "confidence": "sourced",
-      "notes": "Surveyed through Bushnell in 1867. By 1885 the county history calls it part of the Wabash. The Keokuk Junction Railway inherited the route and still crosses the Burlington at about a right angle, parallel to Hail Street, 1,680 feet southwest of the Hail crossing. That is just southwest of Davis Street."
+      "notes": "The 1885 county history says the Toledo, Peoria and Warsaw surveyed through Bushnell in 1867 and that the city subscribed to the stock. Christopher T. Baer's Pennsylvania Railroad chronology records that the railway opened between La Harpe and Bushnell on January 1, 1868. By 1885 the county history calls the line part of the Wabash. It is shown from the 1870 stop, the first picture after that opening, and not in 1854 or 1860. The line beyond the plat follows the same right angle to the Burlington. The Keokuk Junction Railway later inherited the route."
     }
   ],
   "blocks": [
