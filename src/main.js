@@ -978,6 +978,7 @@ function mountTown(builtYear) {
   disposeTown();
   const data = structuredClone(townSource);
   if (builtYear < 1880) applyTownPatch(data, townPatches[builtYear]);
+  if (builtYear >= 1880 && townPatches.rural1880) applyTownPatch(data, townPatches.rural1880);
   if (builtYear >= 1890) applyTownPatch(data, townPatches[1890]);
   if (builtYear >= 1900) applyTownPatch(data, townPatches[1900]);
   if (builtYear >= 1910) applyTownPatch(data, townPatches[1910]);
@@ -1032,6 +1033,13 @@ async function main() {
   if (responses.some((response) => !response.ok)) throw new Error("A town file did not load.");
   const payloads = await Promise.all(responses.map((response) => response.json()));
   townSource = payloads[0];
+  const ruralNotes = await Promise.all(
+    ["bushnell-rural-1880.json", "bushnell-rural-1920.json", "bushnell-rural-1950.json", "bushnell-rural-1970.json"].map(async (name) => {
+      const response = await fetch(`${import.meta.env.BASE_URL}data/${name}`);
+      if (!response.ok) throw new Error("A countryside file did not load.");
+      return response.json();
+    }),
+  );
   townPatches = {
     1854: payloads[1],
     1860: payloads[2],
@@ -1044,6 +1052,13 @@ async function main() {
     1960: payloads[9],
     1970: payloads[10],
   };
+  townPatches.rural1880 = ruralNotes[0];
+  for (const [year, extra] of [[1920, ruralNotes[1]], [1950, ruralNotes[2]], [1970, ruralNotes[3]]]) {
+    const patch = townPatches[year];
+    patch.add = [...(patch.add || []), ...(extra.add || [])];
+    patch.streets = [...(patch.streets || []), ...(extra.streets || [])];
+    if (extra.remove?.length) patch.remove = [...(patch.remove || []), ...extra.remove];
+  }
   addNorthArrow(scene);
   const quality = document.getElementById("quality");
   quality.value = shot ? "fine" : "street";

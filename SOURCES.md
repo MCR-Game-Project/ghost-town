@@ -416,9 +416,23 @@ The centennial book says Bushnell's worst windstorm, on June 10, 1902, tore tree
 
 No tornado in 1968 or 1969 was found for Bushnell. NOAA's Storm Events Database, as compiled for McDonough County, lists no tornado in 1968 and lists storm events in 1969 with no tornado. Nothing was removed for a tornado.
 
-No data found for a plat book read building by building inside three miles, so no farm name, barn, or farmhouse was added. The 1871 county atlas was not viewed. The ground, the walk, and the aerial camera now reach three miles from Hail Street at the tracks so those buildings can be added when a sheet is read one symbol at a time.
+## Countryside within three miles
 
-No data found for a railroad bridge, a highway bridge, or a creek bridge with a place and a date. None are drawn.
+The ground already reaches three miles from Hail Street at the tracks. This pass puts rural buildings and roads on it from the quadrangles, not from a guessed farm list.
+
+The 1871 Andreas, Lyter atlas of McDonough County is the Illinois DNR historical-plat layer "MCDONOUGH 1871". The sheet is georeferenced and shows the section grid, owner names in script, and small residence marks. The script could not be read letter by letter without guessing, so no family name was copied onto a building. No acreage was copied for the same reason. No data found for a reliable owner name on a placed building.
+
+Buildings are the isolated black squares on the USGS Good Hope 15-minute sheet (1918) and the USGS Avon 15-minute sheet (1944), inside three miles of Hail Street and outside the 1854 plat. Where a 1918 square also sits on a black mark of the 1871 atlas, it is drawn from 1880: 81 houses and 16 barns. The other 1918 squares are drawn from 1920: 57 houses and 12 barns. A second square in the same yard is drawn as a barn. The sheet uses one symbol for every building and does not say which mark is the barn. The 1944 squares that are not already on the 1918 sheet are drawn from the 1950 stop: 74 houses and 13 barns. The Good Hope sheet ends just east of town, so the east side of the circle comes from the Avon sheet.
+
+The 1918 Good Hope sheet labels Maple Grove School, School No. 5, Birds School, Possum Hollow School, and Railroad School. Those words were not pinned to a measured building symbol, so they are not given a separate schoolhouse. A square already counted above may be the school.
+
+Roads are the red lines on the 1974 Bushnell East and Bushnell West quadrangles, kept where a straight run is at least about half a mile and it lies outside the town plat. Thirteen of those runs are also ink on the 1918 sheet and are drawn from 1920. Six are ink on the 1944 sheet and not on the 1918 sheet, and are drawn from 1950. Seventeen are on the 1974 sheets only and are drawn from 1970. None of those stretches print a name.
+
+No data found for a crop on a named farm. The 1885 history says the first grain James Cole bought in Bushnell was wheat brought by John C. Ross, who lived near Vermont, which is outside this circle. County-wide crops were not painted on the fields. No orchard symbol was separated from the woodland tint, so no orchard was drawn.
+
+No data found for a bridge with a place and a date. The sheets show roads crossing creeks. They do not label those crossings as bridges, so none are drawn.
+
+David Kepple's farm is in the 1885 history, on section 20 of Mound Township and later on other sections. The history does not locate the house inside the section, so it is not drawn.
 
 Illinois 9 and Illinois 41 are both dated 1918 in a compiled list of state routes. The 1918 Good Hope sheet draws the roads and does not print those numbers. The numbers are noted from 1920 and are not painted on the ground.
 
