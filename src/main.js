@@ -22,7 +22,7 @@ renderer.toneMappingExposure = 1.08;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xe4c4a0);
-scene.fog = new THREE.FogExp2(0xe4c4a0, 0.00008);
+scene.fog = new THREE.Fog(0xe4c4a0, 80, 1800);
 scene.environmentIntensity = 0.5;
 
 const sunDir = new THREE.Vector3(-0.78, 0.36, 0.5).normalize();
@@ -167,7 +167,26 @@ function setShadow(size) {
   cam.right = size;
   cam.top = size;
   cam.bottom = -size;
+  cam.near = 6;
+  cam.far = Math.max(700, size * 2.8);
   cam.updateProjectionMatrix();
+}
+
+function fitPicture() {
+  const fog = scene.fog;
+  if (mode === "walk") {
+    camera.near = 0.12;
+    camera.far = 2600;
+    fog.near = 90;
+    fog.far = 1900;
+  } else {
+    const span = Math.max(camera.position.distanceTo(orbit.target), camera.position.y, 16);
+    camera.near = Math.min(50, Math.max(0.2, span * 0.015));
+    camera.far = Math.min(18000, Math.max(900, span * 14));
+    fog.near = span * 0.7;
+    fog.far = span * 6;
+  }
+  camera.updateProjectionMatrix();
 }
 
 const QUALITY = {
@@ -264,6 +283,11 @@ function enterOverview() {
   canvas.classList.remove("looking");
   orbit.enabled = true;
   frameOverview();
+  if (sun.shadow.mapSize.x < 4096) {
+    sun.shadow.mapSize.set(4096, 4096);
+    sun.shadow.dispose();
+    sun.shadow.needsUpdate = true;
+  }
   document.getElementById("help").hidden = true;
   document.getElementById("mode").textContent = "Walk the streets";
   document.getElementById("card").hidden = true;
@@ -275,6 +299,8 @@ function enterWalk() {
   mode = "walk";
   orbit.enabled = false;
   document.getElementById("mode").textContent = "See the whole town";
+  const quality = document.getElementById("quality");
+  if (quality) applyQuality(quality.value);
   applyWalkCamera();
   syncHint();
 }
@@ -662,11 +688,14 @@ function frame() {
       orbit.update();
     }
     const focus = orbit.target;
-    sun.position.set(focus.x - 420, 190, focus.z + 180);
+    const lift = Math.min(1400, 180 + camera.position.y * 0.22);
+    sun.position.set(focus.x - lift, lift, focus.z + lift * 0.42);
     sun.target.position.copy(focus);
-    setShadow(1200);
+    const shadowSpan = Math.min(3400, Math.max(150, camera.position.y * 1.35));
+    setShadow(shadowSpan);
   }
-  if (overviewLabels) overviewLabels.visible = camera.position.y > 70;
+  if (overviewLabels) overviewLabels.visible = mode === "overview" && camera.position.y > 720;
+  fitPicture();
   const compass = document.getElementById("compass");
   if (compass) {
     const show = mode === "overview";

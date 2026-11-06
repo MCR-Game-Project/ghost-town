@@ -2078,8 +2078,9 @@ function addStreetNames(data, mats, scene) {
     const sprite = new THREE.Sprite(
       new THREE.SpriteMaterial({ map: aerial.tex, transparent: true, depthTest: false, sizeAttenuation: false }),
     );
-    // Constant screen size. 0.064 is about 44px tall at this camera, narrow enough that neighbors stay apart.
-    const spriteH = 0.064;
+    // Constant screen size, and only while the camera is high enough that the
+    // painted street names are too small to read. 0.042 keeps neighbors from stacking.
+    const spriteH = 0.042;
     sprite.scale.set(spriteH * aerial.aspect, spriteH, 1);
     sprite.center.set(0.5, 0.5);
     sprite.renderOrder = 10;

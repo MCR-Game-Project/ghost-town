@@ -606,6 +606,9 @@ export function makeMaterials() {
       roughness: 1,
       uvFeet: { u: 22, v: 22 },
       normalScale: 0.85,
+      polygonOffset: true,
+      polygonOffsetFactor: -1.5,
+      polygonOffsetUnits: -2,
     }),
     streetCross: std({
       map: streetCrossTex.map,
@@ -615,6 +618,9 @@ export function makeMaterials() {
       roughness: 1,
       uvFeet: { u: 22, v: 22 },
       normalScale: 0.85,
+      polygonOffset: true,
+      polygonOffsetFactor: -1.5,
+      polygonOffsetUnits: -2,
     }),
     grass: std({
       map: grassTex.map,
