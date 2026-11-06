@@ -424,7 +424,15 @@ The 1871 Andreas, Lyter atlas of McDonough County is the Illinois DNR historical
 
 Buildings are the isolated black squares on the USGS Good Hope 15-minute sheet (1918) and the USGS Avon 15-minute sheet (1944), inside three miles of Hail Street and outside the 1854 plat. Where a 1918 square also sits on a black mark of the 1871 atlas, it is drawn from 1880: 81 houses and 16 barns. The other 1918 squares are drawn from 1920: 57 houses and 12 barns. A second square in the same yard is drawn as a barn. The sheet uses one symbol for every building and does not say which mark is the barn. The 1944 squares that are not already on the 1918 sheet are drawn from the 1950 stop: 74 houses and 13 barns. The Good Hope sheet ends just east of town, so the east side of the circle comes from the Avon sheet.
 
-The 1918 Good Hope sheet labels Maple Grove School, School No. 5, Birds School, Possum Hollow School, and Railroad School. Those words were not pinned to a measured building symbol, so they are not given a separate schoolhouse. A square already counted above may be the school.
+The 1918 Good Hope sheet labels five country schools. Each is a one-room frame schoolhouse, drawn from the 1920 stop. Mark asked for a good-faith guess where the printed name was not measured onto a symbol. The place is the black square nearest that name. The U.S. Geological Survey place list, which reads the same names off the topographic maps, agrees with those squares. No earlier date was found, so none is drawn before 1920. The 1974 quadrangles still show buildings in these neighborhoods and do not say the schools were gone, so they stay.
+
+- **Maple Grove School.** About 2.9 miles north-northwest of Hail Street, at the section corner where the railroad crosses the east-west road, by benchmark 659. Estimate from the 1918 label and the square just west of that corner. A farmhouse already stands on that square, so the schoolhouse is set just north of it.
+- **School No. 5.** About 2.2 miles north of Hail Street, on the north line of section 16, just west of the north-south road. Estimate from the 1918 label and the square beside it.
+- **Birds School.** About 1.8 miles west-northwest of Hail Street, south of section 30. Estimate from the 1918 label and the square just south of the words.
+- **Possum Hollow School.** About 2.5 miles southwest of Hail Street, west of the Drowning Fork, by the 611-foot mark. Estimate from the 1918 label and that square.
+- **Railroad School.** About 1.8 miles south of Hail Street, east of the north-south road and beside the railroad. Estimate from the 1918 label and the square east of the words.
+
+The centennial book names Cottonwood School south of the city and does not locate these five. The 1885 county history does not name them.
 
 Roads are the red lines on the 1974 Bushnell East and Bushnell West quadrangles, kept where a straight run is at least about half a mile and it lies outside the town plat. Thirteen of those runs are also ink on the 1918 sheet and are drawn from 1920. Six are ink on the 1944 sheet and not on the 1918 sheet, and are drawn from 1950. Seventeen are on the 1974 sheets only and are drawn from 1970. None of those stretches print a name.
 
