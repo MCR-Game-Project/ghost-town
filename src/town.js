@@ -1830,6 +1830,44 @@ export function buildTown(data, scene) {
     scene.add(posts, lanterns, caps);
   }
 
+  const railViewport = { value: new THREE.Vector2(1280, 800) };
+  // Keeps a rail from shrinking to a soft hairline in an aerial view.
+  // Up close it stays the real width of the steel.
+  const makeRailMaterial = (color, minPixels, halfWidth) => {
+    const mat = new THREE.MeshStandardMaterial({
+      color,
+      metalness: 0.58,
+      roughness: 0.36,
+    });
+    mat.polygonOffset = true;
+    mat.polygonOffsetFactor = -1;
+    mat.polygonOffsetUnits = -1;
+    mat.onBeforeCompile = (shader) => {
+      shader.uniforms.railViewport = railViewport;
+      shader.uniforms.railMinPx = { value: minPixels };
+      shader.uniforms.railHalf = { value: halfWidth };
+      shader.vertexShader = shader.vertexShader.replace(
+        "#include <project_vertex>",
+        `
+          vec4 mvPosition = vec4(transformed, 1.0);
+          mvPosition = modelViewMatrix * mvPosition;
+          vec3 railOut = normalize(mat3(modelViewMatrix) * vec3(1.0, 0.0, 0.0));
+          float railDepth = max(1.0, -mvPosition.z);
+          float worldPerPx = (railDepth * 2.0) / max(1.0, projectionMatrix[1][1] * railViewport.y);
+          float targetHalf = min(1.55, railMinPx * worldPerPx * 0.5);
+          float extra = max(0.0, targetHalf - railHalf);
+          mvPosition.xyz += railOut * sign(position.x) * extra;
+          gl_Position = projectionMatrix * mvPosition;
+        `,
+      );
+    };
+    mat.customProgramCacheKey = () => `rail-${color}-${minPixels}`;
+    return mat;
+  };
+  const railBody = makeRailMaterial("#343b42", 2.1, 0.2);
+  const railCap = makeRailMaterial("#c5ced4", 0, 0.08);
+  const noteRailSize = (renderer) => renderer.getDrawingBufferSize(railViewport.value);
+
   const addTrack = (points) => {
     for (let i = 0; i < points.length - 1; i++) {
       const [x1, z1] = points[i];
@@ -1839,18 +1877,30 @@ export function buildTown(data, scene) {
       const len = Math.hypot(dx, dz);
       const yaw = Math.atan2(dx, dz);
       const mid = new THREE.Vector3((x1 + x2) / 2, 0, (z1 + z2) / 2);
-      const ballast = new THREE.Mesh(new THREE.BoxGeometry(10, 0.35, len), tiled(mats.ballast, 2, len / 8));
+      const ballastMat = tiled(mats.ballast, 1, len / 8);
+      for (const key of ["map", "normalMap", "roughnessMap"]) {
+        if (ballastMat[key]) ballastMat[key].anisotropy = 8;
+      }
+      const ballast = new THREE.Mesh(new THREE.BoxGeometry(14, 0.48, len), ballastMat);
       ballast.position.copy(mid);
-      ballast.position.y = 0.12;
+      ballast.position.y = 0.24;
       ballast.rotation.y = yaw;
       ballast.receiveShadow = true;
       scene.add(ballast);
       for (const side of [-2.35, 2.35]) {
-        const rail = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.35, len), mats.metal);
-        rail.position.set(mid.x + Math.cos(yaw) * side, 0.45, mid.z - Math.sin(yaw) * side);
+        const across = Math.cos(yaw) * side;
+        const along = -Math.sin(yaw) * side;
+        const rail = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.36, len), railBody);
+        rail.position.set(mid.x + across, 0.64, mid.z + along);
         rail.rotation.y = yaw;
         rail.castShadow = true;
+        rail.onBeforeRender = noteRailSize;
         scene.add(rail);
+        const cap = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.07, len), railCap);
+        cap.position.set(mid.x + across, 0.85, mid.z + along);
+        cap.rotation.y = yaw;
+        cap.onBeforeRender = noteRailSize;
+        scene.add(cap);
       }
     }
   };
