@@ -1513,6 +1513,20 @@ export function buildTown(data, scene) {
   // The 1875 graded school: red brick on a stone basement that reads as an extra story.
   // The 1907 encyclopedia plate is the later West Side School, so it is not copied.
   const addSchool = (b) => {
+    // A one-room country school. The town's graded school, below, is a different building.
+    if (b.plan === "country") {
+      const body = paintOf(b);
+      const wallH = 12;
+      box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+      gable(b.width, b.depth, 6.5, wallH, mats.roofDark);
+      box(mats.trimDark, 0, 4.4, b.depth / 2 + 0.12, 3.4, 7.4, 0.12);
+      box(mats.glass, -b.width * 0.28, 6.4, b.depth / 2 + 0.1, 2.6, 4.4, 0.08);
+      box(mats.glass, b.width * 0.28, 6.4, b.depth / 2 + 0.1, 2.6, 4.4, 0.08);
+      box(body, 0, wallH + 2.6, -b.depth * 0.12, 4.4, 4.6, 4.4);
+      box(mats.roofDark, 0, wallH + 5.4, -b.depth * 0.12, 5.4, 1.4, 5.4);
+      signFor(b, wallH);
+      return wallH + 7;
+    }
     const baseH = 10;
     const floorH = 12;
     const upper = b.stories * floorH;
