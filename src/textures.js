@@ -365,58 +365,65 @@ function groundMaps(ruts) {
 }
 
 function grassMaps(deep) {
-  const w = 256;
-  const h = 256;
+  const w = 512;
+  const h = 512;
   return packMaps(w, h, (px, height, rough) => {
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
         const n = hash(x, y);
-        const clump = hash(x >> 2, y >> 2);
-        let r = (deep ? 70 : 92) + clump * 30;
-        let g = (deep ? 110 : 128) + clump * 36 + (n > 0.7 ? 16 : 0);
-        let b = (deep ? 42 : 52) + clump * 12;
+        const clump = hash(x >> 3, y >> 3);
+        let r = (deep ? 74 : 96) + clump * 20;
+        let g = (deep ? 114 : 132) + clump * 20 + (n > 0.84 ? 4 : 0);
+        let b = (deep ? 46 : 54) + clump * 8;
         const i = y * w + x;
         const o = i * 4;
         px[o] = r;
         px[o + 1] = g;
         px[o + 2] = b;
         px[o + 3] = 255;
-        height[i] = 0.4 + (n > 0.55 ? 0.35 : 0);
-        rough[i] = 0.95;
+        height[i] = 0.3 + (n > 0.72 ? 0.1 : 0);
+        rough[i] = 0.96;
       }
     }
   });
 }
 
 function ballastMaps() {
-  const w = 128;
-  const h = 128;
+  const w = 256;
+  const h = 256;
   return packMaps(w, h, (px, height, rough) => {
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
-        const tie = y % 22 < 5;
         const n = hash(x, y);
+        const across = x / w;
+        // Four ties in each 8-foot repeat, about 9 inches wide and 2 feet apart.
+        const onTie = y % 64 < 22 && across > 0.16 && across < 0.84;
         let r;
         let g;
         let b;
-        if (tie) {
-          r = 92;
-          g = 70;
-          b = 48;
+        let hv;
+        if (onTie) {
+          const grain = hash(x >> 1, y);
+          r = 78 + grain * 16;
+          g = 56 + grain * 8;
+          b = 36 + grain * 6;
+          hv = 0.78;
         } else {
-          const v = 130 + n * 50;
-          r = v;
-          g = v - 4;
-          b = v - 10;
+          const speck = hash(x >> 2, y >> 2);
+          const v = 108 + n * 22 + (speck - 0.5) * 14;
+          r = v + 8;
+          g = v + 3;
+          b = v - 8;
+          hv = 0.32 + n * 0.35;
         }
         const i = y * w + x;
         const o = i * 4;
-        px[o] = r;
-        px[o + 1] = g;
-        px[o + 2] = b;
+        px[o] = Math.max(0, Math.min(255, r));
+        px[o + 1] = Math.max(0, Math.min(255, g));
+        px[o + 2] = Math.max(0, Math.min(255, b));
         px[o + 3] = 255;
-        height[i] = tie ? 0.25 : 0.4 + n * 0.5;
-        rough[i] = 0.94;
+        height[i] = hv;
+        rough[i] = onTie ? 0.86 : 0.97;
       }
     }
   });
@@ -623,7 +630,7 @@ export function makeMaterials() {
       color: "#ffffff",
       roughness: 1,
       uvFeet: { u: 8, v: 8 },
-      normalScale: 0.35,
+      normalScale: 0.22,
     }),
     park: std({
       map: parkTex.map,
@@ -632,7 +639,7 @@ export function makeMaterials() {
       color: "#ffffff",
       roughness: 1,
       uvFeet: { u: 7, v: 7 },
-      normalScale: 0.35,
+      normalScale: 0.22,
     }),
     ballast: std({
       map: ballastTex.map,
