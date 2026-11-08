@@ -1970,7 +1970,7 @@ export function buildTown(data, scene) {
   shade.castShadow = true;
   scene.add(trunks, leaves, shade);
 
-  const streetNames = addStreetNames(data, mats, scene);
+  addStreetNames(data, mats, scene);
 
   // Merge static building parts.
   for (const [mat, geos] of buckets) {
@@ -2005,7 +2005,7 @@ export function buildTown(data, scene) {
 
   scene.add(picks);
 
-  return { colliders, picks, materials: mats, overviewLabels: streetNames.overviewLabels };
+  return { colliders, picks, materials: mats };
 }
 
 const streetLabelCache = new Map();
@@ -2065,8 +2065,7 @@ function streetLabelTexture(name, ink) {
   const key = `${ink}:${name}`;
   if (streetLabelCache.has(key)) return streetLabelCache.get(key);
   const upper = name.toUpperCase();
-  const split = upper.endsWith(" STREET") ? [upper.slice(0, -7), "STREET"] : [upper];
-  const lines = ink === "aerial" ? split : [upper];
+  const lines = [upper];
   const measure = document.createElement("canvas").getContext("2d");
   measure.font = '700 150px Georgia, "Palatino Linotype", Palatino, serif';
   const textWidth = Math.max(...lines.map((line) => Math.ceil(measure.measureText(line).width)));
@@ -2082,13 +2081,6 @@ function streetLabelTexture(name, ink) {
     g.lineWidth = 14;
     g.strokeRect(8, 8, c.width - 16, c.height - 16);
     g.fillStyle = "#24180f";
-  } else if (ink === "aerial") {
-    g.fillStyle = "#24180f";
-    g.fillRect(0, 0, c.width, c.height);
-    g.strokeStyle = "#f3e6c8";
-    g.lineWidth = 16;
-    g.strokeRect(10, 10, c.width - 20, c.height - 20);
-    g.fillStyle = "#f6edd6";
   } else {
     g.lineWidth = 22;
     g.strokeStyle = "rgba(28, 18, 10, 0.92)";
@@ -2111,10 +2103,8 @@ function streetLabelTexture(name, ink) {
 }
 
 function addStreetNames(data, mats, scene) {
-  const overviewLabels = new THREE.Group();
-  overviewLabels.name = "overview-street-names";
   const roads = data.streets.filter((street) => street.name.endsWith("Street"));
-    roads.forEach((street) => {
+  roads.forEach((street) => {
     const painted = streetLabelTexture(street.name, "road");
     const letterH = Math.min(street.width * 0.48, 32);
     const letterW = letterH * painted.aspect;
@@ -2137,24 +2127,7 @@ function addStreetNames(data, mats, scene) {
       mesh.renderOrder = 2;
       scene.add(mesh);
     }
-
-    const aerial = streetLabelTexture(street.name, "aerial");
-    const sprite = new THREE.Sprite(
-      new THREE.SpriteMaterial({ map: aerial.tex, transparent: true, depthTest: false, sizeAttenuation: false }),
-    );
-    // Constant screen size. 0.064 is about 44px tall at this camera, narrow enough that neighbors stay apart.
-    const spriteH = 0.064;
-    sprite.scale.set(spriteH * aerial.aspect, spriteH, 1);
-    sprite.center.set(0.5, 0.5);
-    sprite.renderOrder = 10;
-    // Cross streets are labeled in the block between East Main and Crafford, on the east side.
-    // The parallel streets are labeled between Hurst and Hail, so the two sets do not pile up.
-    if (street.axis === "z") sprite.position.set(street.at, 48, 370);
-    else sprite.position.set(-220, 48, street.at);
-    overviewLabels.add(sprite);
   });
-  overviewLabels.visible = false;
-  scene.add(overviewLabels);
 
   const crosses = roads.filter((street) => street.axis === "z");
   const parallels = roads.filter((street) => street.axis === "x");
@@ -2170,7 +2143,6 @@ function addStreetNames(data, mats, scene) {
       }
     }
   }
-  return { overviewLabels };
 }
 
 function makeCornerPost(crossName, parallelName, x, z) {

@@ -119,7 +119,6 @@ let bob = 0;
 let mode = "walk";
 let colliders = [];
 let picks = null;
-let overviewLabels = null;
 let town = null;
 let townSource = null;
 let townPatches = {};
@@ -667,7 +666,6 @@ function frame() {
     sun.target.position.copy(focus);
     setShadow(1200);
   }
-  if (overviewLabels) overviewLabels.visible = camera.position.y > 70;
   const compass = document.getElementById("compass");
   if (compass) {
     const show = mode === "overview";
@@ -990,7 +988,6 @@ function mountTown(builtYear) {
   const built = buildTown(town, townGroup);
   colliders = built.colliders;
   picks = built.picks;
-  overviewLabels = built.overviewLabels;
   shownBuiltYear = builtYear;
   const quality = document.getElementById("quality");
   if (quality) applyQuality(quality.value);
