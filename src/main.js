@@ -419,6 +419,7 @@ window.addEventListener("pointerup", () => {
 });
 window.addEventListener("pointermove", (event) => {
   if (mode !== "walk") return;
+  if (event.target instanceof Element && event.target.closest("#stats, #tools, #help, #walk-hint")) return;
   const locked = document.pointerLockElement === canvas;
   if (!locked && !dragging) return;
   const sens = locked ? 0.0022 : 0.0055;
@@ -429,9 +430,10 @@ window.addEventListener("pointermove", (event) => {
 document.addEventListener("pointerlockchange", () => {
   const locked = document.pointerLockElement === canvas;
   canvas.classList.toggle("looking", locked);
-  if (!locked && wasLocked && mode === "walk" && lockExitReason !== "overview") showMenu(true);
+  // Letting go of the mouse must not open the menu. That menu is what
+  // covered the year slider. Only Esc, Q, or Stop walking asks for it.
   wasLocked = locked;
-  if (!locked) lockExitReason = null;
+  if (!locked && lockExitReason !== "menu") lockExitReason = null;
   syncHint();
 });
 
@@ -461,7 +463,6 @@ document.getElementById("start").addEventListener("click", () => {
   lockCooldown = false;
   document.getElementById("help").hidden = true;
   enterWalk();
-  canvas.requestPointerLock?.();
 });
 document.getElementById("stop").addEventListener("click", () => {
   releaseToMenu();
@@ -478,11 +479,6 @@ document.getElementById("mode").addEventListener("click", () => {
   if (mode === "walk") enterOverview();
   else enterWalk();
 });
-canvas.addEventListener("click", () => {
-  if (lockCooldown || mode !== "walk" || menuIsOpen()) return;
-  canvas.requestPointerLock?.();
-});
-
 let overviewPointer = null;
 canvas.addEventListener("pointerdown", (event) => {
   if (mode !== "overview" || event.button !== 0) return;
