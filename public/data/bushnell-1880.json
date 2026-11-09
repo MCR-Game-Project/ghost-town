@@ -201,6 +201,22 @@
       ],
       "confidence": "sourced",
       "notes": "The 1885 county history says the Toledo, Peoria and Warsaw surveyed through Bushnell in 1867 and that the city subscribed to the stock. Christopher T. Baer's Pennsylvania Railroad chronology records that the railway opened between La Harpe and Bushnell on January 1, 1868. By 1885 the county history calls the line part of the Wabash. It is shown from the 1870 stop, the first picture after that opening, and not in 1854 or 1860. The line beyond the plat follows the same right angle to the Burlington. The Keokuk Junction Railway later inherited the route."
+    },
+    {
+      "id": "cbq-st-louis",
+      "railroad": "Chicago, Burlington & Quincy",
+      "name": "St. Louis branch",
+      "points": [
+        [-7860, 0],
+        [-8434, -487],
+        [-8848, -1046],
+        [-9248, -1751],
+        [-9840, -2787],
+        [-10591, -4067],
+        [-11377, -5421]
+      ],
+      "confidence": "sourced",
+      "notes": "The 1913 account in the centennial book calls Bushnell the junction of the Burlington, the T. P. & W., and the St. Louis branch of the Burlington. A railroad operating list says the Rockford, Rock Island and St. Louis built this line in 1870; it later was the CB&Q Beardstown line. It is not drawn in 1854 or 1860. It is drawn from 1870. The curve is the line that leaves the Quincy main on the 1974 Bushnell West sheet, southwest of town near benchmark 650, and bends south. The Bushnell-to-Roseville piece was abandoned in 1981, after the years drawn here, so it is not taken up. No wye or extra yard track was dated, so none is added."
     }
   ],
   "blocks": [

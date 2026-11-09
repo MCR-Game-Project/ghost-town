@@ -13,6 +13,9 @@
     "west-house-1870",
     "wyckoff-house-1870"
   ],
+  "removeStreetNames": [
+    "Cole Street"
+  ],
   "removeTracks": [
     "cbq-siding"
   ],

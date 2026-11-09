@@ -7,9 +7,13 @@
     "american-house-52",
     "german-methodist-1857"
   ],
+  "removeStreetNames": [
+    "Cole Street"
+  ],
   "removeTracks": [
     "tpw",
-    "cbq-siding"
+    "cbq-siding",
+    "cbq-st-louis"
   ],
   "update": [
     {

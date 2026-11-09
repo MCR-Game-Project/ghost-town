@@ -1194,7 +1194,7 @@
         ]
       ],
       "sourceMap": "USGS Good Hope 1918",
-      "notes": "Centerline from OpenStreetMap for Illinois 41, the highway that is Cole Street through Bushnell. The 1974 Bushnell West sheet labels the street Cole where it leaves the grid and draws the same road south to the east-west road. South of the bend, OpenStreetMap calls the pieces North Cole Street, North Green Street, and East 2100th Street. The 1918 Good Hope sheet already draws a road in this corridor from the south side of town to that crossing. The later paved line is a little straighter than the 1918 curve. No plat date was found. The ribbon width is not a surveyed right-of-way."
+      "notes": "The south leg of Cole Street, the highway, leaves the town Cole Street between Hail and Barnes and runs south to Murphy Road. It is drawn from 1920 because the 1918 Good Hope sheet already shows that road. The 1974 Bushnell West sheet labels the street Cole and draws the same south leg. The line meets the grid because Hail, Hurst, Barnes, Davis, Gridley, Wells, and Twyman are extended to Cole Street from 1880. The ribbon width is not a surveyed right-of-way."
     },
     {
       "name": "Murphy Road",

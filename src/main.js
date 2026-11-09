@@ -936,6 +936,18 @@ function applyTownPatch(data, patch) {
     data.water = data.water || [];
     data.water.push(structuredClone(lake));
   }
+  if (patch.removeStreetNames) {
+    const drop = new Set(patch.removeStreetNames);
+    data.streets = data.streets.filter((street) => !drop.has(street.name));
+  }
+  if (patch.extendStreets) {
+    for (const change of patch.extendStreets) {
+      const street = data.streets.find((item) => item.name === change.name && !item.points);
+      if (!street) continue;
+      if (Number.isFinite(change.from)) street.from = Math.min(street.from, change.from);
+      if (Number.isFinite(change.to)) street.to = Math.max(street.to, change.to);
+    }
+  }
   if (patch.removeTracks) {
     const drop = new Set(patch.removeTracks);
     data.tracks = data.tracks.filter((track) => !drop.has(track.id));
@@ -972,6 +984,20 @@ function mountTown(builtYear) {
   disposeTown();
   const data = structuredClone(townSource);
   if (builtYear < 1880) applyTownPatch(data, townPatches[builtYear]);
+  // Cole Street meets the cross streets from 1880. The 1854 survey does not name it.
+  if (builtYear >= 1880) {
+    applyTownPatch(data, {
+      extendStreets: [
+        { name: "Davis Street", from: -1871 },
+        { name: "Barnes Street", from: -1871 },
+        { name: "Hurst Street", from: -1871 },
+        { name: "Hail Street", from: -1871 },
+        { name: "Gridley Street", from: -1871 },
+        { name: "Wells Street", from: -1871 },
+        { name: "Twyman Street", from: -1871 },
+      ],
+    });
+  }
   if (builtYear >= 1880 && townPatches.rural1880) applyTownPatch(data, townPatches.rural1880);
   if (builtYear >= 1890) applyTownPatch(data, townPatches[1890]);
   if (builtYear >= 1900) applyTownPatch(data, townPatches[1900]);

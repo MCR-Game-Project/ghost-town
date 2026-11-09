@@ -5,9 +5,13 @@
   "keep": [
     "markham-house-1854"
   ],
+  "removeStreetNames": [
+    "Cole Street"
+  ],
   "removeTracks": [
     "tpw",
-    "cbq-siding"
+    "cbq-siding",
+    "cbq-st-louis"
   ],
   "add": [],
   "removePropTypes": [
