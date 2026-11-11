@@ -703,7 +703,7 @@ export function buildTown(data, scene) {
         cap.applyMatrix4(new THREE.Matrix4().makeTranslation(x, wall + 11, 0));
         cap.applyMatrix4(buildingMatrix);
         put(mats.roofDark, cap);
-        box(mats.trim, x, wall + 13.4, 0, 0.15, 3.2, 0.15);
+        if (b.facade.flags !== false) box(mats.trim, x, wall + 13.4, 0, 0.15, 3.2, 0.15);
       }
     }
     if (b.facade?.paddock) {

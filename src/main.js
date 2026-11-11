@@ -874,7 +874,22 @@ function renderStats(data) {
   };
   earlier.addEventListener("click", () => stepYear(-1));
   later.addEventListener("click", () => stepYear(1));
-  show(initial);
+  // A year between stops, such as 1945, is already built. The figures stay on the nearest earlier stop.
+  if (Number.isFinite(requested) && !years.includes(requested)) {
+    const nearest = years.reduce((found, year, index) => (year <= requested ? index : found), initial);
+    readout.textContent = String(requested);
+    slider.setAttribute("aria-valuetext", String(requested));
+    slider.value = String(nearest);
+    const entry = data.years[nearest];
+    earlier.disabled = nearest <= 0;
+    later.disabled = nearest >= years.length - 1;
+    fillFacts(drops.census, entry.census);
+    fillFacts(drops.school, entry.school);
+    fillBusinesses(drops.businesses, entry.businesses);
+    onCensusYear(requested);
+  } else {
+    show(initial);
+  }
 }
 
 let onCensusYear = () => {};
@@ -1018,8 +1033,18 @@ function mountTown(builtYear, sliderYear = builtYear) {
     const burned = new Set(["mickelberry-main", "mickelberry-office", "mickelberry-north"]);
     data.buildings = data.buildings.filter((building) => !burned.has(building.id));
   }
+  // The postcard signs and flags are drawn through 1940. From 1941 on, the same barns stay as plain white barns.
   if (sliderYear > 1940) {
-    data.buildings = data.buildings.filter((building) => !String(building.id).startsWith("truman-"));
+    for (const building of data.buildings) {
+      if (!String(building.id).startsWith("truman-")) continue;
+      building.sign = "";
+      if (building.facade) {
+        building.facade.flags = false;
+        delete building.facade.sign2;
+        delete building.facade.sign3;
+        delete building.facade.upperSign;
+      }
+    }
   }
   town = data;
   const built = buildTown(town, townGroup);
@@ -1036,6 +1061,7 @@ onCensusYear = (year) => {
   setTownNote(year, built);
   const eraBand = (value) => {
     if (value >= 1965 && value < 1970) return "after-mickelberry";
+    // 1941–1949 keep the 1920 town and take the stud-farm signs and flags off.
     if (value > 1940 && value < 1950) return "after-stud-farm";
     return "same";
   };

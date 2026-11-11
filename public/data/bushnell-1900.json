@@ -159,12 +159,14 @@
         "photoMatch": true,
         "photoSource": "Mark's illustrated postcard, Trumans' Pioneer Stud Farm.",
         "cupolas": true,
+        "flags": true,
         "paddock": true,
         "sign2": "SHIRES.",
         "sign3": "PERCHERON & HACKNEY STALLIONS"
       },
+      "survivesTo": 2026,
       "sourceMap": "Mark Rauschert, Nov 2026",
-      "notes": "Location per Mark Rauschert, Nov 2026. The 1918 Good Hope sheet shows this wedge, between the CB&Q Quincy main and the St. Louis branch, open of the farmhouses copied from that sheet. The footprint is an estimate from the illustrated postcard. Shown from the 1900 stop through 1940. A year after 1940 takes it off. The postcard spelling is Trumans' Pioneer Stud Farm."
+      "notes": "Location per Mark Rauschert, Nov 2026. The 1918 Good Hope sheet shows this wedge, between the CB&Q Quincy main and the St. Louis branch, open of the farmhouses copied from that sheet. The footprint is an estimate from the illustrated postcard. The painted signs and flags are the postcard, shown from 1900 through 1940. From 1941 the barns stay and those signs and flags come off. Post-1940 appearance unknown; buildings kept per Mark (some still standing in 2026); signs removed as unverified. survivesTo 2026 records that some of the buildings still stand. Which buildings is not recorded, so the group stays when later years are added. No year after 1970 is in the model. The postcard spelling is Trumans' Pioneer Stud Farm."
     },
     {
       "id": "truman-champion",
@@ -193,8 +195,9 @@
         "photoSource": "Mark's illustrated postcard, Trumans' Pioneer Stud Farm.",
         "sign2": "PERCHERONS"
       },
+      "survivesTo": 2026,
       "sourceMap": "Mark Rauschert, Nov 2026",
-      "notes": "Location per Mark Rauschert, Nov 2026. The 1918 Good Hope sheet shows this wedge, between the CB&Q Quincy main and the St. Louis branch, open of the farmhouses copied from that sheet. The footprint is an estimate from the illustrated postcard. Shown from the 1900 stop through 1940. A year after 1940 takes it off. The postcard spelling is Trumans' Pioneer Stud Farm."
+      "notes": "Location per Mark Rauschert, Nov 2026. The 1918 Good Hope sheet shows this wedge, between the CB&Q Quincy main and the St. Louis branch, open of the farmhouses copied from that sheet. The footprint is an estimate from the illustrated postcard. The painted signs are the postcard, shown from 1900 through 1940. From 1941 the barn stays and the sign comes off. Post-1940 appearance unknown; buildings kept per Mark (some still standing in 2026); signs removed as unverified. survivesTo 2026 records that some of the buildings still stand. Which buildings is not recorded, so the group stays when later years are added. No year after 1970 is in the model. The postcard spelling is Trumans' Pioneer Stud Farm."
     },
     {
       "id": "truman-hackneys",
@@ -222,8 +225,9 @@
         "photoMatch": true,
         "photoSource": "Mark's illustrated postcard, Trumans' Pioneer Stud Farm."
       },
+      "survivesTo": 2026,
       "sourceMap": "Mark Rauschert, Nov 2026",
-      "notes": "Location per Mark Rauschert, Nov 2026. The 1918 Good Hope sheet shows this wedge, between the CB&Q Quincy main and the St. Louis branch, open of the farmhouses copied from that sheet. The footprint is an estimate from the illustrated postcard. Shown from the 1900 stop through 1940. A year after 1940 takes it off. The postcard spelling is Trumans' Pioneer Stud Farm."
+      "notes": "Location per Mark Rauschert, Nov 2026. The 1918 Good Hope sheet shows this wedge, between the CB&Q Quincy main and the St. Louis branch, open of the farmhouses copied from that sheet. The footprint is an estimate from the illustrated postcard. The painted sign is the postcard, shown from 1900 through 1940. From 1941 the barn stays and the sign comes off. Post-1940 appearance unknown; buildings kept per Mark (some still standing in 2026); signs removed as unverified. survivesTo 2026 records that some of the buildings still stand. Which buildings is not recorded, so the group stays when later years are added. No year after 1970 is in the model. The postcard spelling is Trumans' Pioneer Stud Farm."
     },
     {
       "id": "truman-shire",
@@ -251,8 +255,9 @@
         "photoMatch": true,
         "photoSource": "Mark's illustrated postcard, Trumans' Pioneer Stud Farm."
       },
+      "survivesTo": 2026,
       "sourceMap": "Mark Rauschert, Nov 2026",
-      "notes": "Location per Mark Rauschert, Nov 2026. The 1918 Good Hope sheet shows this wedge, between the CB&Q Quincy main and the St. Louis branch, open of the farmhouses copied from that sheet. The footprint is an estimate from the illustrated postcard. Shown from the 1900 stop through 1940. A year after 1940 takes it off. The postcard spelling is Trumans' Pioneer Stud Farm."
+      "notes": "Location per Mark Rauschert, Nov 2026. The 1918 Good Hope sheet shows this wedge, between the CB&Q Quincy main and the St. Louis branch, open of the farmhouses copied from that sheet. The footprint is an estimate from the illustrated postcard. The painted sign is the postcard, shown from 1900 through 1940. From 1941 the shed stays and the sign comes off. Post-1940 appearance unknown; buildings kept per Mark (some still standing in 2026); signs removed as unverified. survivesTo 2026 records that some of the buildings still stand. Which buildings is not recorded, so the group stays when later years are added. No year after 1970 is in the model. The postcard spelling is Trumans' Pioneer Stud Farm."
     }
   ],
   "update": [
