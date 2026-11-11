@@ -1018,6 +1018,9 @@ function mountTown(builtYear, sliderYear = builtYear) {
     const burned = new Set(["mickelberry-main", "mickelberry-office", "mickelberry-north"]);
     data.buildings = data.buildings.filter((building) => !burned.has(building.id));
   }
+  if (sliderYear > 1940) {
+    data.buildings = data.buildings.filter((building) => !String(building.id).startsWith("truman-"));
+  }
   town = data;
   const built = buildTown(town, townGroup);
   colliders = built.colliders;
@@ -1031,8 +1034,12 @@ onCensusYear = (year) => {
   if (!townSource) return;
   const built = builtTownYear(year);
   setTownNote(year, built);
-  const fireBand = (value) => value >= 1965 && value < 1970;
-  if (built === shownBuiltYear && fireBand(year) === fireBand(shownSliderYear)) return;
+  const eraBand = (value) => {
+    if (value >= 1965 && value < 1970) return "after-mickelberry";
+    if (value > 1940 && value < 1950) return "after-stud-farm";
+    return "same";
+  };
+  if (built === shownBuiltYear && eraBand(year) === eraBand(shownSliderYear)) return;
   shownSliderYear = year;
   mountTown(built, year);
   // The year changes the town. It does not move the camera.

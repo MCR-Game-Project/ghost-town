@@ -668,6 +668,16 @@ export function buildTown(data, scene) {
             ? 22
             : Math.min(Math.max(b.width * 0.62, 10), 28),
     });
+    if (b.facade?.sign3) {
+      signs.push({
+        title: b.facade.sign3,
+        subtitle: "",
+        style: "board",
+        position: new THREE.Vector3(b.x, y - 3.4, b.z).addScaledVector(outward, reach),
+        rotation: rot,
+        width: Math.min(Math.max(b.width * 0.7, 12), 36),
+      });
+    }
     if (b.facade?.upperSign) {
       signs.push({
         title: b.facade.upperSign,
@@ -678,6 +688,63 @@ export function buildTown(data, scene) {
         width: Math.min(b.width * 0.46, 14),
       });
     }
+  };
+
+  const addStudBarn = (b) => {
+    const body = mats.siding.white;
+    const wall = b.stories > 1 ? 22 : 16;
+    box(body, 0, wall / 2, 0, b.width, wall, b.depth);
+    gable(b.width, b.depth, b.depth > 40 ? 10 : 6, wall, mats.roofDark);
+    if (b.facade?.cupolas) {
+      for (const x of [-b.width * 0.22, b.width * 0.22]) {
+        box(body, x, wall + 6, 0, 4, 6, 4);
+        const cap = new THREE.ConeGeometry(3.2, 4, 4);
+        cap.rotateY(Math.PI / 4);
+        cap.applyMatrix4(new THREE.Matrix4().makeTranslation(x, wall + 11, 0));
+        cap.applyMatrix4(buildingMatrix);
+        put(mats.roofDark, cap);
+        box(mats.trim, x, wall + 13.4, 0, 0.15, 3.2, 0.15);
+      }
+    }
+    if (b.facade?.paddock) {
+      const fence = (x, z, w, d) => {
+        box(mats.trimDark, x, 2.2, z, w, 0.15, 0.15);
+        box(mats.trimDark, x, 3.6, z, w, 0.12, 0.12);
+      };
+      fence(0, b.depth / 2 + 28, b.width + 80, 0.2);
+      fence(0, b.depth / 2 + 70, b.width + 80, 0.2);
+      for (const x of [-(b.width + 80) / 2, (b.width + 80) / 2]) {
+        box(mats.trimDark, x, 2.2, b.depth / 2 + 49, 0.15, 0.15, 42);
+        box(mats.trimDark, x, 3.6, b.depth / 2 + 49, 0.12, 0.12, 42);
+      }
+      box(mats.dirt, 0, 0.08, b.depth / 2 + 18, 12, 0.08, 50);
+      for (let i = 0; i < 6; i++) {
+        const spot = new THREE.Vector3(-b.width * 0.7 + i * 14, 0, -b.depth / 2 - 16);
+        spot.applyMatrix4(buildingMatrix);
+        extraTrees.push({ x: spot.x, z: spot.z, kind: "maple", scale: 1.1 });
+      }
+    }
+    signFor(b, wall * 0.62);
+    return wall + 12;
+  };
+
+  const addHoseTower = (b) => {
+    const body = mats.brick.red;
+    box(body, 0, 6, 0, b.width, 12, b.depth);
+    box(mats.trimDark, 0, 4.5, b.depth / 2 + 0.12, 3.4, 7, 0.14);
+    box(body, 0, 28, 0, 8, 32, 8);
+    for (const side of [-1, 1]) {
+      box(mats.trim, side * 4.1, 28, 0, 0.2, 10, 3.2);
+      box(mats.trim, 0, 28, side * 4.1, 3.2, 10, 0.2);
+    }
+    box(mats.roofDark, 0, 46, 0, 10, 0.4, 10);
+    const cap = new THREE.ConeGeometry(6.5, 8, 4);
+    cap.rotateY(Math.PI / 4);
+    cap.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 50, 0));
+    cap.applyMatrix4(buildingMatrix);
+    put(mats.roofDark, cap);
+    signFor(b, 10);
+    return 54;
   };
 
   const addCrossingShanty = (b) => {
@@ -1961,6 +2028,8 @@ export function buildTown(data, scene) {
     else if (b.id === "presbyterian-church-1917") height = addGothicChurch(b);
     else if (b.id === "junction-depot") height = addJunctionDepot(b);
     else if (b.id === "hurst-crossing-shanty") height = addCrossingShanty(b);
+    else if (b.facade?.studBarn) height = addStudBarn(b);
+    else if (b.facade?.hoseTower) height = addHoseTower(b);
     else if (b.kind === "house") height = addHouse(b);
     else if (b.id === "hendee-house-26") height = addHendeeHouse(b);
     else if (b.kind === "frame-store") height = addStore(b, true);

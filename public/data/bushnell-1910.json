@@ -931,6 +931,35 @@
       "rotation": 0,
       "sourceMap": "Mark's undated postcard, Bushnell Ill., looking west on Hurst",
       "notes": "A small gabled watchman's shanty and a crossing-gate arm beside the Hurst Street crossing of the Burlington. No Sanborn label for a watchman's house was read. The postcard, estimated about 1905 to 1915, shows both. The side of the street is an estimate. Drawn from the 1910 stop."
+    },
+    {
+      "id": "east-main-hose-tower",
+      "name": "Hose tower",
+      "kind": "shed",
+      "use": "fire station",
+      "material": "brick",
+      "stories": 1,
+      "width": 22,
+      "depth": 18,
+      "x": 300,
+      "z": -230,
+      "facing": "+z",
+      "paint": "red",
+      "brick": "red",
+      "sign": "",
+      "porch": false,
+      "party": [],
+      "confidence": "inferred",
+      "year": "1910",
+      "steeple": false,
+      "rotation": 0,
+      "facade": {
+        "hoseTower": true,
+        "photoMatch": true,
+        "photoSource": "Mark's postcard from the 300 block of East Main, the tower in the distance."
+      },
+      "sourceMap": "Mark Rauschert, Nov 2026",
+      "notes": "Location per Mark Rauschert, Nov 2026: the 500 block of East Main, south of the Ball Bros. buildings at East Main and Gridley. No Sanborn engine-house or hose-house label was read on this block, so the year is an estimate and the tower is drawn from the 1910 stop, the postcard's era. The station at the base and the open belfry follow that postcard. Ball Bros. is the name already on the corner from the centennial photograph."
     }
   ],
   "streetStyle": {

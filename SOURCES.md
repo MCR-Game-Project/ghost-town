@@ -558,3 +558,11 @@ Mark's photograph looks south, with a long brick row on the right and THE DEMOCR
 ### Hurst Street looking west
 
 Mark's undated postcard, captioned "BUSHNELL ILL.," looks west across the Burlington at Hurst, about 1905 to 1915. The 400 block, Hurst to Hail, is the Hail side of Hurst. The CLOTHIERS sign already on the store beside the Hotel Alexander is the readable word. The three-story hotel with the iron balcony is the Alexander, on the same block. No Sanborn label for a crossing watchman's house was read. The shanty and the gate arm are drawn from the postcard, from the 1910 stop, and the side of the street is an estimate.
+
+### Truman's Pioneer Stud Farm
+
+Location per Mark Rauschert, Nov 2026: south of town, between the tracks. That is the wedge between the CB&Q Quincy main and the St. Louis branch, southwest of the town edge. The 1918 Good Hope sheet shows farmhouses in that neighborhood and open ground between those two lines. The barns stand in that open ground. The footprint is an estimate from the illustrated postcard. Mark's years are 1900 through 1940. The model has no stop between 1920 and 1950, so a year after 1940, including 1945, takes the farm off, and it is not drawn in 1950. The signs are the words read on the postcard: THE PIONEER STUD FARM, SHIRES., PERCHERON & HACKNEY STALLIONS, CHAMPION STUD, PERCHERONS, HACKNEYS, and SHIRE. No horses are drawn.
+
+### Hose tower, 500 block of East Main
+
+Location per Mark Rauschert, Nov 2026: the 500 block of East Main, south of the Ball Bros. buildings. Those buildings are already at East Main and Gridley, from the centennial photograph. No Sanborn sheet read for this pass labels an engine house or a hose house on that block, so the year is an estimate. The tower is drawn from the 1910 stop. It is a small station with a tall open belfry, the shape in the postcard taken from the 300 block. The name Ball Bros. stays on the corner already named from that photograph. No new business name is added.
