@@ -147,6 +147,28 @@
       "id": "german-methodist-1857",
       "sourceMap": "February 1912 Sanborn",
       "notes": "The German Methodist church, built in 1857 at West Hail and Jackson, is still drawn on February 1912 Sanborn sheet 5, block 62, the Hail end of the Jackson side. The sheet labels it German M.E. Church and marks it vacant. The building stays."
+    },
+    {
+      "id": "house-153",
+      "name": "Hendee Home",
+      "stories": 2.5,
+      "width": 44,
+      "depth": 38,
+      "x": -470,
+      "z": 1088,
+      "facing": "+x",
+      "material": "frame",
+      "paint": "darkred",
+      "porch": true,
+      "confidence": "sourced",
+      "year": "1912",
+      "sourceMap": "February 1912 Sanborn, sheet 3, and Mark's address",
+      "facade": {
+        "hendeeHome": true,
+        "photoMatch": true,
+        "photoSource": "Mark's undated photograph, labeled the Hendee Home at 304 West Hurst."
+      },
+      "notes": "Mark places the Hendee Home at 304 West Hurst. The 1909 numbering puts the 300s on the block from Jackson to Washington, and this is the house already on the Hurst end of that block, Barnes side. Which side of Hurst took the even numbers was not found, so the side is an estimate. February 1912 is the first sheet that draws these lots. No year-built was found in the assessor file. The Italianate front, belvedere, and stacked porch are from the photograph. The label is Hendee Home. The 1885 history names S. A. Hendee and J. W. Hendee and does not say which of them lived here."
     }
   ],
   "add": [
@@ -778,13 +800,13 @@
       "kind": "house",
       "use": "dwelling",
       "material": "brick",
-      "stories": 2,
-      "width": 32,
-      "depth": 40,
-      "x": 80,
-      "z": -780,
-      "facing": "+x",
-      "paint": "cream",
+      "stories": 2.5,
+      "width": 40,
+      "depth": 46,
+      "x": 60,
+      "z": -686,
+      "facing": "+z",
+      "paint": "white",
       "brick": "red",
       "sign": "",
       "porch": true,
@@ -795,7 +817,13 @@
       "rotation": 0,
       "year": "1912",
       "sourceMap": "February 1912 Sanborn",
-      "notes": "Two-story brick dwelling on lot 7 of block 49, the Hail end. February 1912 Sanborn, sheet 6. The Methodist church has moved to block 73 by this sheet. Lots 8, 5, and 3 have no dwelling. No family name is printed."
+      "notes": "February 1912 Sanborn, sheet 6, block 49, lot 7, the Hail end of the Crafford side, a brick dwelling. The plat lot for that number sits on Crafford at Hail. The earlier coordinates put the same building mid-block; it is moved onto that lot. The turret, dormer, and columned porch are from Mark's 1915 postcard. The sheet's story count is two; the postcard reads taller because of the tower, so 2.5 stories is an estimate. No family name is printed.",
+      "facade": {
+        "turretHouse": true,
+        "photoMatch": true,
+        "photoDate": "1915 per Mark",
+        "photoSource": "Mark's hand-colored postcard, corner of Hail and Crafford, looking north."
+      }
     },
     {
       "id": "block70-lot5-1912",
@@ -822,5 +850,8 @@
       "sourceMap": "February 1912 Sanborn",
       "notes": "Three-story brick dwelling on block 70, about lot 5, the Hurst side between Dean and Jackson. February 1912 Sanborn, sheet 3. The sheet colors it pink. No family name is printed. Earlier detail sheets do not reach this block."
     }
-  ]
+  ],
+  "streetStyle": {
+    "crafford": true
+  }
 }

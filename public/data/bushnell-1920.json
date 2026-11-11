@@ -2,7 +2,36 @@
   "shownAs": 1920,
   "mapLabel": "USGS Good Hope, 1918",
   "note": "Streets the 1918 Good Hope sheet draws beyond the 1854 plat. They are not on the February 1912 Sanborn, so the 1910 stop does not include them. No plat dates were found.",
-  "add": [],
+  "add": [
+    {
+      "id": "presbyterian-church-1917",
+      "name": "First Presbyterian Church",
+      "kind": "church",
+      "use": "church",
+      "material": "brick",
+      "brick": "dark",
+      "stories": 1,
+      "width": 56,
+      "depth": 64,
+      "x": -520,
+      "z": 420,
+      "facing": "+x",
+      "sign": "PRESBYTERIAN",
+      "confidence": "sourced",
+      "year": "1917",
+      "porch": false,
+      "party": [],
+      "paint": "cream",
+      "steeple": false,
+      "rotation": 0,
+      "sourceMap": "Centennial book, 1854–1954; Mark's postcard",
+      "facade": {
+        "photoMatch": true,
+        "photoSource": "Postcard captioned First Presbyterian Church, Bushnell, Ill."
+      },
+      "notes": "The congregation's building was dedicated in 1869 on this ground and is the plainer church drawn through 1910. In May 1903 the old church, which faced north, was turned to face west on the corner lot, and dedicated again on 3 January 1904. The centennial book says the building was enlarged to its present size beginning in the spring of 1917, the Smith Memorial Hall work having started in the summer of 1916. The crenellated tower, pointed windows, and cross gables are that enlarged church, from Mark's postcard. The model has no 1917 stop, so the new front appears at the 1920 stop, the first one after the enlargement. The earlier building stays through 1910."
+    }
+  ],
   "streets": [
     {
       "name": "Catherine Street",
@@ -13,7 +42,7 @@
           149.6
         ],
         [
-          -2509.0,
+          -2509,
           661.5
         ],
         [
@@ -22,7 +51,7 @@
         ],
         [
           -2496.8,
-          1051.0
+          1051
         ],
         [
           -2486.7,
@@ -46,15 +75,15 @@
         ],
         [
           -1042.3,
-          2331.0
+          2331
         ],
         [
           -1037.8,
           2331.1
         ],
         [
-          -833.0,
-          2331.0
+          -833,
+          2331
         ],
         [
           -625.2,
@@ -62,7 +91,7 @@
         ],
         [
           -415.4,
-          2330.0
+          2330
         ],
         [
           5.9,
@@ -77,15 +106,15 @@
       "width": 24,
       "points": [
         [
-          1019.0,
+          1019,
           1915.5
         ],
         [
-          1016.0,
+          1016,
           1923.7
         ],
         [
-          1011.0,
+          1011,
           1955.7
         ],
         [
@@ -145,12 +174,12 @@
           -947.3
         ],
         [
-          2097.0,
+          2097,
           -739.2
         ],
         [
           2098.5,
-          -527.0
+          -527
         ],
         [
           2094.8,
@@ -174,7 +203,7 @@
         ],
         [
           -2466.3,
-          -510.0
+          -510
         ]
       ],
       "sourceMap": "USGS Good Hope 1918",
@@ -186,7 +215,7 @@
       "points": [
         [
           -2466.3,
-          -510.0
+          -510
         ],
         [
           -2480.6,
@@ -201,7 +230,7 @@
           -535.8
         ],
         [
-          -2517.0,
+          -2517,
           -553.5
         ],
         [
@@ -226,7 +255,7 @@
         ],
         [
           -2516.5,
-          -912.0
+          -912
         ],
         [
           -2508.8,
@@ -265,7 +294,7 @@
           2743.1
         ],
         [
-          -1220.0,
+          -1220,
           2749.9
         ],
         [
@@ -294,7 +323,7 @@
         ],
         [
           -416.3,
-          2749.0
+          2749
         ],
         [
           -213.1,
@@ -337,7 +366,7 @@
       "width": 24,
       "points": [
         [
-          1019.0,
+          1019,
           1915.5
         ],
         [
@@ -365,7 +394,7 @@
           1906.3
         ],
         [
-          2474.0,
+          2474,
           1909.8
         ],
         [
@@ -394,7 +423,7 @@
         ],
         [
           -835.6,
-          1910.0
+          1910
         ],
         [
           -627.3,
@@ -482,7 +511,7 @@
         ],
         [
           3673.9,
-          1318.0
+          1318
         ]
       ],
       "sourceMap": "USGS Good Hope 1918",
@@ -498,7 +527,7 @@
         ],
         [
           2516.5,
-          434.0
+          434
         ],
         [
           2514.9,
@@ -514,7 +543,7 @@
         ],
         [
           2517.1,
-          1280.0
+          1280
         ],
         [
           2517.4,
@@ -538,7 +567,7 @@
       "points": [
         [
           1676.1,
-          1703.0
+          1703
         ],
         [
           1675.9,
@@ -577,7 +606,7 @@
           -1364.5
         ],
         [
-          1676.0,
+          1676,
           -1152.5
         ],
         [
@@ -617,12 +646,12 @@
           -529.1
         ],
         [
-          1675.0,
+          1675,
           -310.4
         ],
         [
           1677.1,
-          -113.0
+          -113
         ]
       ],
       "sourceMap": "USGS Good Hope 1918",
@@ -637,7 +666,7 @@
           1060.5
         ],
         [
-          3860.0,
+          3860,
           1058.8
         ],
         [
@@ -657,11 +686,11 @@
           1032.1
         ],
         [
-          4001.0,
+          4001,
           1013.2
         ],
         [
-          4070.0,
+          4070,
           887.4
         ]
       ],
@@ -701,7 +730,7 @@
       "width": 24,
       "points": [
         [
-          -2509.0,
+          -2509,
           661.5
         ],
         [
@@ -781,7 +810,7 @@
           723.7
         ],
         [
-          4070.0,
+          4070,
           887.4
         ]
       ],
@@ -842,7 +871,7 @@
       "points": [
         [
           -416.3,
-          2749.0
+          2749
         ],
         [
           -418.3,
@@ -862,7 +891,7 @@
       "points": [
         [
           2098.5,
-          -527.0
+          -527
         ],
         [
           2876.4,
@@ -885,7 +914,7 @@
           2542.5
         ],
         [
-          -1250.0,
+          -1250,
           2720.5
         ]
       ],
@@ -938,7 +967,7 @@
       "points": [
         [
           -1279.7,
-          -2119.0
+          -2119
         ],
         [
           -1458.3,
@@ -986,7 +1015,7 @@
         ],
         [
           -422.7,
-          -1951.0
+          -1951
         ]
       ],
       "sourceMap": "USGS Good Hope 1918",
@@ -1141,56 +1170,56 @@
       "width": 24,
       "points": [
         [
-          -646.0,
-          -1841.0
+          -646,
+          -1841
         ],
         [
-          -646.0,
-          -1790.0
+          -646,
+          -1790
         ],
         [
-          -825.0,
-          -1853.0
+          -825,
+          -1853
         ],
         [
-          -1043.0,
-          -1978.0
+          -1043,
+          -1978
         ],
         [
-          -1256.0,
-          -2105.0
+          -1256,
+          -2105
         ],
         [
-          -1458.0,
-          -2227.0
+          -1458,
+          -2227
         ],
         [
-          -1736.0,
-          -2394.0
+          -1736,
+          -2394
         ],
         [
-          -1872.0,
-          -2476.0
+          -1872,
+          -2476
         ],
         [
-          -2192.0,
-          -2666.0
+          -2192,
+          -2666
         ],
         [
-          -2817.0,
-          -3041.0
+          -2817,
+          -3041
         ],
         [
           -2963.2,
           -3126.1
         ],
         [
-          -3115.0,
-          -3215.0
+          -3115,
+          -3215
         ],
         [
-          -3567.0,
-          -3472.0
+          -3567,
+          -3472
         ]
       ],
       "sourceMap": "USGS Good Hope 1918",
@@ -1216,5 +1245,11 @@
       "sourceMap": "USGS Good Hope 1918",
       "notes": "The east-west road at the south edge of town where Cole Street's highway meets it. OpenStreetMap calls the road Murphy Road. The 1918 Good Hope sheet draws this crossing. The longer run of Murphy Road toward Lakelawn is on the 1944 Avon sheet and is shown from 1950. The ribbon width is not a surveyed right-of-way."
     }
-  ]
+  ],
+  "remove": [
+    "presbyterian-church"
+  ],
+  "streetStyle": {
+    "rile": true
+  }
 }

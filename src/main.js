@@ -927,6 +927,11 @@ function applyTownPatch(data, patch) {
     if (found) Object.assign(found, update);
   }
   for (const building of patch.add || []) data.buildings.push(structuredClone(building));
+  if (patch.streetStyle) data.streetStyle = { ...(data.streetStyle || {}), ...patch.streetStyle };
+  if (patch.props) {
+    data.props = data.props || [];
+    for (const prop of patch.props) data.props.push(structuredClone(prop));
+  }
   for (const street of patch.streets || []) {
     if (street.points || !data.streets.some((item) => item.name === street.name && !item.points)) {
       data.streets.push(structuredClone(street));

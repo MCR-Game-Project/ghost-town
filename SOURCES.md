@@ -482,3 +482,51 @@ Illinois 9 and Illinois 41 are both dated 1918 in a compiled list of state route
 - Neil Gale, “Bushnell, Illinois, a highly detailed look at a small settlement founded in 1854,” Digital Research Library of Illinois History Journal, 12 April 2022, [https://drloihjournal.blogspot.com/2022/04/bushnell-illinois-highly-detailed-look-from-1854.html](https://drloihjournal.blogspot.com/2022/04/bushnell-illinois-highly-detailed-look-from-1854.html). The page includes a photograph captioned East Main Street, 1907.
 - CardCow Bushnell postcard index, [https://www.cardcow.com/viewall/71409/](https://www.cardcow.com/viewall/71409/). One card could be opened from here: the M. E. Church, postmarked 27 August 1909, [https://www.cardcow.com/514754/me-church-bushnell/](https://www.cardcow.com/514754/me-church-bushnell/).
 - eBay shop search “bushnell il”, [https://www.ebay.com/shop/bushnell-il](https://www.ebay.com/shop/bushnell-il). Listings change. None were copied.
+
+## Street photographs, 1907 to about 1920
+
+These fronts are drawn from photographs Mark sent. The pictures are not pasted onto the buildings. A detail marked as an estimate was not read off a map.
+
+The street on the east side of the tracks is Crafford in the centennial book and on the modern street. Some Sanborn labels are hard to tell from Crawford. The model keeps Crafford. The parallel street one block farther east is Rile Street, named for county surveyor William H. Rile. It is not spelled Riley in the plat or in the model.
+
+### 400 block of East Main, 1907
+
+Mark's photograph is the 400 block in 1907. On the numbering used here, 400 starts at Hurst and 500 starts at Hail, so this block is Hurst to Hail. The stores fill the left side of the picture and the right side is open, with trees. East Main runs northeast, parallel to the tracks. Looking southwest, toward Hurst, puts the Crafford side of the street on the left and the railroad ground on the right. That is the side the picture shows: block 59, the East Main face, Sanborn block 59 on January 1886 sheet 3, August 1893 sheet 3, May 1898 sheet 3, March 1906 sheet 4, and February 1912 sheet 6 where that block was drawn. The door-by-door labels on those sheets were not copied. The row of shops is already in the 1880 file from the 1886 pattern.
+
+The brick fronts take the photograph's tall round arches, corbelled and bracketed cornices, awnings, and sidewalk posts. One wider front, an estimate of which bay, carries the center pediment. The only sign read in the picture is BOSTON STORE, put on one brick front as an estimate of the bay. The centennial walk also names a Boston Store on East Main and does not give the lot. Other signs in the picture were not clear, so no other name was added. The poles along this block and the 400 block of West Main are in the pictures. The street was already dirt. These fronts appear at the 1900 stop, the stop a year of 1907 uses. In 1870 the store row is not drawn.
+
+### West Main, 400 and 500 blocks, and the Hotel Alexander
+
+Mark's street photograph is captioned "West Main Street, Bushnell, Ill. Early 1900s." He dates it 1907. The car looks later than 1907, so the year is his and the caption's "early 1900s" is kept. The 400 block is the near, left-hand part, and the street runs on toward the 500 block, so the camera looks northeast. The buildings on the left are then the Dean side: block 60, Hurst to Hail, and block 47, Hail to Gridley. Sanborn sheets for block 60 are January 1886 sheet 3 and March 1906 sheet 4. Block 47 is on the same sheets. Door names were not copied.
+
+The large three-story building is the hotel. The August 1893 Sanborn labels it Alexander, and the 1880 name on the same building is Hendee House, built in the summer of 1871. A closer postcard in Mark's hand reads "This is the hotel ... at Hotel Alexander." That front is used from 1890 on for the name, and the brick front with round-arched hoods, the full second-floor iron balcony, the smaller center balcony on the third floor, and the arched entries are the postcard. The lower building on the viewer's left has an enclosed upper bay and a wooden balcony. The building on the viewer's right is signed only CLOTHIERS. No proprietor is added. A taller three-story block farther down the 500 block is an estimate of which existing front, and of the story count. The signs in the street photograph were not readable, so none of those were copied.
+
+### First Presbyterian Church, Hurst
+
+The church is on the Hurst end of the Dean side of block 71, January 1886 Sanborn sheet 2, and still there on the August 1893, May 1898, and March 1906 sheets. The centennial book says the building was dedicated in 1869, turned in 1903 from facing north to facing west on the corner lot, and dedicated again on 3 January 1904. It was enlarged to its present size beginning in the spring of 1917. Mark's postcard, "First Presbyterian Church, Bushnell, Ill.," is that enlarged church: dark red brick, a crenellated tower, pointed windows, and cross gables. He says it stood from at least 1920. The enlarged front is drawn from the 1920 stop, the first stop after 1917. The plainer church stays through 1910. The corner walk and the small tree are in the postcard.
+
+### Rile Street, 1920
+
+Mark dates a residential view of Rile Street to 1920. The spelling in the model is Rile. The dirt street, wheel ruts, grass parkways, curbs, concrete walks, poles, and a denser row of street trees are drawn on Rile from 1920. The trees are not called elms. No source found here names the species on this street, and no year was found for Dutch elm disease in Bushnell, so nothing is removed later. Houses already on the lots keep their story counts. From 1920 they gain a bay window, which is the general front in the picture, not a measured opening. No house was added.
+
+### Hail and Crafford, 1915
+
+Mark's hand-colored postcard is dated 1915 and looks north from Hail and Crafford. North along this grid, toward Galesburg, is northeast. The brick house on the right is February 1912 Sanborn sheet 6, block 49, lot 7, the Hail end of the Crafford side, the brick dwelling already added for that sheet. It is moved from the middle of the block onto that lot. The turret, dormer, and columned porch are the postcard. The sheet says two stories. The tower makes it read as two and a half, which is an estimate. No family name is on the sheet. From 1910 the Hail-to-Gridley stretch of Crafford takes the postcard's dirt road, curb, walks, parkway, poles, and thinner street trees. The thin canopy is the spring foliage in that one picture. Frame houses already on the lots are left. None were added.
+
+### T. P. & W. depot, 1914
+
+The postcard is captioned "T. & P. W. Depot, Bushnell, Ill. — 44100-R" and is handwritten 1914. It is the depot already at East Main and Hurst. The 2016 McDonough County Voice account, quoting the Bushnell Historical Society, says that building is the one depot of three still standing, so it is kept through 1970. The board-and-batten walls, deep eaves, bay, chimney, finial, cinder platform, right-hand shed, pole, and trees are the postcard. A low building on the left was not read on a Sanborn sheet, so it is not drawn. No earlier picture of this front was found, so the 1914 front is used for the years the depot is already shown.
+
+### Junction depot
+
+Mark's undated photograph is labeled Train Intersection. It is a dark one-story depot in two gables, with BUSHNELL on the end, a platform, an order board, and a telegraph pole. It is not the wooden T. P. & W. depot and not the wooden C. B. & Q. depot between the Main streets. It is drawn beside the crossing of those two railroads, just southwest of Davis. The Sanborn lettering at the crossing was not read, so the footprint is an estimate and no railroad name is put on the building. The picture is not given a year. No locomotive is in the model, so none is drawn.
+
+### Hendee Home, 304 West Hurst
+
+Mark's undated photograph is the Hendee Home at 304 West Hurst. The number is from the 1909 numbering. The 300 block of West Hurst is the block from Jackson to Washington. The house already on the Hurst end of that block, Barnes side, is restyled from the 1910 stop. February 1912 sheet 3 is the first sheet that draws these lots. No year-built was found on the assessor cards used here. Which side of Hurst took the even numbers was not found, so the side is an estimate. The dark clapboard, oculus, belvedere, stacked porch, side porch, and stone base are the photograph. The 1885 history names S. A. Hendee and J. W. Hendee and does not say which of them lived in this house, so the sign is Hendee Home, which is Mark's label.
+
+### Not placed
+
+Truman's Pioneer Stud Farm is not drawn. The centennial book says J. H. Truman of Whittlesea and his four sons organized it in 1885. A sale catalogue and John Hallwas say the business began in 1878 in Chicago and later moved to Bushnell. Mark's years are 1900 through 1940. The postcard is captioned "Trumans' Pioneer Stud Farm," the plural possessive, and also "America's Largest Importers." The centennial uses "Truman Pioneer Stud Farm" and "the Trumans." No source found here gives a section, road, or lot. The leads, none of them a pin: the West Main sale barns, including the centennial's "where Stratton's are now," which are the in-town barns and not the paddock picture; a 39-acre and later 92-acre tract "at the intersection" of the Chicago, Burlington & Quincy and the Toledo, Peoria & Western, from the 2004 sesquicentennial history as retold by the Community News Market; and the Melvin Farm "south of Bushnell between the railroad tracks," the same article, after the West Main barns burned. Hallwas says the large barn in the postcard was still standing and gives no address.
+
+The William Bradbury house is not drawn. Mark dates the photograph about 1920 and does not have the address. The centennial book, the 1885 county history, the assessor file, and a web search did not give a street or lot. The genealogical society's caption, "Home of William Bradbury, Bushnell, IL," also gives no street. It is not the William Bradbury house on Hill Street in another city, and not the Bradbury of Campbelltown, Australia.

@@ -180,6 +180,330 @@
       "use": "saloon",
       "sourceMap": "May 1898 Sanborn",
       "notes": "May 1898 Sanborn, sheet 2, block 72, a room of the brick block labeled Sal."
+    },
+    {
+      "id": "dry-goods-1",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "corbel",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "right",
+        "photoDate": "1907",
+        "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907."
+      },
+      "notes": "Facade matched to Mark's 1907 photograph of the 400 block of East Main, Hurst to Hail, the Crafford side. Round arches, a corbelled and bracketed cornice, an awning, and sidewalk posts are from that picture. The lot within the block is an estimate. The January 1886 Sanborn already shows storefronts along this side.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+    },
+    {
+      "id": "hardware-3",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 4,
+        "cornice": "corbel",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "right",
+        "photoDate": "1907",
+        "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907.",
+        "cornerPediment": true
+      },
+      "notes": "Facade matched to Mark's 1907 photograph of the 400 block of East Main, Hurst to Hail, the Crafford side. Round arches, a corbelled and bracketed cornice, an awning, and sidewalk posts are from that picture. The lot within the block is an estimate. The January 1886 Sanborn already shows storefronts along this side. The center pediment is the ornate front near the middle of that photograph. Which door it is on the block is an estimate.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+    },
+    {
+      "id": "boots---shoes-4",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "corbel",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "right",
+        "photoDate": "1907",
+        "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907."
+      },
+      "notes": "The 1907 East Main photograph reads BOSTON STORE on a near storefront. The centennial walk also names a Boston Store on East Main. Which bay of the Hurst–Hail block is an estimate. No other sign in that photograph was clear enough to copy.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row",
+      "name": "Boston Store",
+      "sign": "BOSTON STORE",
+      "confidence": "sourced"
+    },
+    {
+      "id": "bakery-5",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "corbel",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "right",
+        "photoDate": "1907",
+        "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907."
+      },
+      "notes": "Facade matched to Mark's 1907 photograph of the 400 block of East Main, Hurst to Hail, the Crafford side. Round arches, a corbelled and bracketed cornice, an awning, and sidewalk posts are from that picture. The lot within the block is an estimate. The January 1886 Sanborn already shows storefronts along this side.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+    },
+    {
+      "id": "zook---johnson-7",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "corbel",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "right",
+        "photoDate": "1907",
+        "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907."
+      },
+      "notes": "Facade matched to Mark's 1907 photograph of the 400 block of East Main, Hurst to Hail, the Crafford side. Round arches, a corbelled and bracketed cornice, an awning, and sidewalk posts are from that picture. The lot within the block is an estimate. The January 1886 Sanborn already shows storefronts along this side.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+    },
+    {
+      "id": "furniture-8",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "corbel",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "right",
+        "photoDate": "1907",
+        "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907."
+      },
+      "notes": "Facade matched to Mark's 1907 photograph of the 400 block of East Main, Hurst to Hail, the Crafford side. Round arches, a corbelled and bracketed cornice, an awning, and sidewalk posts are from that picture. The lot within the block is an estimate. The January 1886 Sanborn already shows storefronts along this side.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+    },
+    {
+      "id": "grocery-24",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "bracket",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "left",
+        "photoDate": "1907 per Mark; the printed caption says early 1900s.",
+        "photoSource": "Mark's photograph of the 400 and 500 blocks of West Main."
+      },
+      "notes": "West Main 400 block, Hurst to Hail, the Dean side. The 1907 street photograph, captioned early 1900s, shows two-story brick fronts with arched windows and awnings. The door is not named in the picture.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+    },
+    {
+      "id": "general-store-27",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "bracket",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "left",
+        "photoDate": "1907 per Mark; the printed caption says early 1900s.",
+        "photoSource": "Mark's photograph of the 400 and 500 blocks of West Main."
+      },
+      "notes": "Mark's Hotel Alexander postcard shows a two-story brick store on the viewer's right of the hotel. The painted word is CLOTHIERS. No firm name is given, so none is added.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row",
+      "sign": "CLOTHIERS",
+      "name": "Clothing"
+    },
+    {
+      "id": "dry-goods-30",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "bracket",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "left",
+        "photoDate": "1907 per Mark; the printed caption says early 1900s.",
+        "photoSource": "Mark's photograph of the 400 and 500 blocks of West Main."
+      },
+      "notes": "West Main 400 block brick front from the early-1900s street photograph. The sign in the picture is not readable.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+    },
+    {
+      "id": "meat-market-31",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "bracket",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "left",
+        "photoDate": "1907 per Mark; the printed caption says early 1900s.",
+        "photoSource": "Mark's photograph of the 400 and 500 blocks of West Main."
+      },
+      "notes": "West Main 400 block brick front from the early-1900s street photograph. The sign in the picture is not readable.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+    },
+    {
+      "id": "dry-goods-32",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "bracket",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "left",
+        "photoDate": "1907 per Mark; the printed caption says early 1900s.",
+        "photoSource": "Mark's photograph of the 400 and 500 blocks of West Main."
+      },
+      "notes": "West Main 500 block, Hail to Gridley, the Dean side. The street photograph continues past Hail. The sign is not readable.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+    },
+    {
+      "id": "grocery-33",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "bracket",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "left",
+        "photoDate": "1907 per Mark; the printed caption says early 1900s.",
+        "photoSource": "Mark's photograph of the 400 and 500 blocks of West Main."
+      },
+      "notes": "West Main 500 block brick front from the early-1900s street photograph.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+    },
+    {
+      "id": "hardware-36",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "bracket",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "left",
+        "photoDate": "1907 per Mark; the printed caption says early 1900s.",
+        "photoSource": "Mark's photograph of the 400 and 500 blocks of West Main."
+      },
+      "notes": "West Main 500 block brick front from the early-1900s street photograph.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+    },
+    {
+      "id": "grocery-38",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "bracket",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "left",
+        "photoDate": "1907 per Mark; the printed caption says early 1900s.",
+        "photoSource": "Mark's photograph of the 400 and 500 blocks of West Main."
+      },
+      "notes": "West Main 500 block brick front from the early-1900s street photograph.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+    },
+    {
+      "id": "drugs-39",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "bracket",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "left",
+        "photoDate": "1907 per Mark; the printed caption says early 1900s.",
+        "photoSource": "Mark's photograph of the 400 and 500 blocks of West Main."
+      },
+      "notes": "West Main 500 block brick front from the early-1900s street photograph.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+    },
+    {
+      "id": "public-hall-41",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "bracket",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "left",
+        "photoDate": "1907 per Mark; the printed caption says early 1900s.",
+        "photoSource": "Mark's photograph of the 400 and 500 blocks of West Main."
+      },
+      "notes": "West Main 500 block brick front from the early-1900s street photograph.",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+    },
+    {
+      "id": "general-store-40",
+      "stories": 3,
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 4,
+        "cornice": "bracket",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "left",
+        "photoDate": "1907 per Mark; the printed caption says early 1900s.",
+        "photoSource": "Mark's photograph of the 400 and 500 blocks of West Main."
+      },
+      "notes": "The early-1900s West Main photograph shows a taller three-story brick block farther down the street, on the 500 block past Hail. Which of the existing fronts it is, and the exact story count before the picture, were not read on a Sanborn label. The three stories are an estimate from the photograph."
+    },
+    {
+      "id": "harness-25",
+      "facade": {
+        "cornerBay": true,
+        "photoMatch": true,
+        "photoSource": "Mark's Hotel Alexander postcard, the lower building on the viewer's left."
+      },
+      "notes": "The building immediately southwest of the Hotel Alexander. Mark's postcard shows a lower two-story front with an enclosed upper bay and a covered wooden balcony. No sign on it was readable."
     }
-  ]
+  ],
+  "streetStyle": {
+    "mains": true
+  }
 }
