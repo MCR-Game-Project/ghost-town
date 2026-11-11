@@ -4,7 +4,8 @@
   "note": "Nearest fire-insurance map to the 1900 census. May 1898, four sheets. Shop names on the Hurst brick block are the labels read on sheet 2. Where a 1898 label could not be read, the 1893 name is kept.",
   "remove": [
     "b80-316-1886",
-    "excelsior-mill"
+    "excelsior-mill",
+    "high-school"
   ],
   "streets": [],
   "add": [
@@ -501,6 +502,58 @@
         "photoSource": "Mark's Hotel Alexander postcard, the lower building on the viewer's left."
       },
       "notes": "The building immediately southwest of the Hotel Alexander. Mark's postcard shows a lower two-story front with an enclosed upper bay and a covered wooden balcony. No sign on it was readable."
+    },
+    {
+      "id": "grocery-0",
+      "name": "Bank of Bushnell",
+      "kind": "brick-store",
+      "material": "brick",
+      "brick": "red",
+      "stories": 2,
+      "width": 36,
+      "sign": "BANK OF BUSHNELL",
+      "confidence": "sourced",
+      "year": "1900",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "bracket",
+        "cornerPediment": true,
+        "awning": true,
+        "door": "right",
+        "tall": true,
+        "storefront": "iron",
+        "upperSign": "DENTIST",
+        "photoSource": "Mark's undated photograph of the 400 block of East Main, looking north, and the postcard from the 300 block."
+      },
+      "notes": "The Hurst corner of the 400 block of East Main, Crafford side, block 59. Mark's view looking north, and the postcard taken from the 300 block, both show this corner as a two-story red brick bank. The signs read BANK OF BUSHNELL and DENTIST. A 1900 paving petition names the Bank of Bushnell as the end of an East Main stretch, and does not give the lot. No Sanborn label for this bank was read. The corner is the one across Hurst from the 300 block. The partial grocery word farther down the block is not copied as a firm name."
+    },
+    {
+      "id": "block72-1893-meat",
+      "sign": "BILLIARD HALL",
+      "facade": {
+        "cornerPediment": true,
+        "ironFront": true,
+        "cornerBay": true,
+        "cornice": "bracket",
+        "sign2": "LUNCH ROOM",
+        "photoMatch": true,
+        "photoSource": "Mark's postcard, East Main St., Bushnell, Illinois, from the 300 block looking north."
+      },
+      "notes": "August 1893 Sanborn, sheet 2, the Hurst corner room of the brick block on the 300 block of East Main, block 72. Mark's postcard shows an ornate two-story brick with a corner bay and a projecting sign, BILLIARD HALL and LUNCH ROOM. Those are sign words, not an owner's name. The May 1898 sheet reads the corner room as Photo and a room further west as lunch, so which room carried the sign is an estimate. The 1893 sheet called this corner a market."
+    },
+    {
+      "id": "dry-goods-30",
+      "sign": "THE DEMOCRAT",
+      "name": "The Democrat",
+      "notes": "The readable cornice sign in Mark's about-1900 view looking south on West Main. The McDonough Democrat began in 1884. A 1908 paving note sends a route east on Hail to the Democrat office, which puts the office at Hail and West Main, the near end of this view. The exact bay is an estimate. The photograph is not used to call any other door a newspaper."
+    },
+    {
+      "id": "bakery-5",
+      "sign": "GROCERY",
+      "name": "Grocery",
+      "notes": "Mark's view north on the 400 block of East Main shows a sign ending in GROCERY. The letters before it were not legible, so they are not used. This is the generic word only, on an existing stand-in past the pediment."
     }
   ],
   "streetStyle": {

@@ -123,6 +123,7 @@ let town = null;
 let townSource = null;
 let townPatches = {};
 let shownBuiltYear = null;
+let shownSliderYear = null;
 const townGroup = new THREE.Group();
 townGroup.name = "town";
 townGroup.rotation.y = ORIENT;
@@ -985,7 +986,7 @@ function disposeTown() {
   }
 }
 
-function mountTown(builtYear) {
+function mountTown(builtYear, sliderYear = builtYear) {
   disposeTown();
   const data = structuredClone(townSource);
   if (builtYear < 1880) applyTownPatch(data, townPatches[builtYear]);
@@ -1011,6 +1012,12 @@ function mountTown(builtYear) {
   if (builtYear >= 1950) applyTownPatch(data, townPatches[1950]);
   if (builtYear >= 1960) applyTownPatch(data, townPatches[1960]);
   if (builtYear >= 1970) applyTownPatch(data, townPatches[1970]);
+  // The 1960 stop still has the Mickelberry plant. It burned on 26 February 1965.
+  // Years 1965 through 1969 keep only the cold room and the shed. 1970 drops those too.
+  if (sliderYear >= 1965 && sliderYear < 1970) {
+    const burned = new Set(["mickelberry-main", "mickelberry-office", "mickelberry-north"]);
+    data.buildings = data.buildings.filter((building) => !burned.has(building.id));
+  }
   town = data;
   const built = buildTown(town, townGroup);
   colliders = built.colliders;
@@ -1024,8 +1031,10 @@ onCensusYear = (year) => {
   if (!townSource) return;
   const built = builtTownYear(year);
   setTownNote(year, built);
-  if (built === shownBuiltYear) return;
-  mountTown(built);
+  const fireBand = (value) => value >= 1965 && value < 1970;
+  if (built === shownBuiltYear && fireBand(year) === fireBand(shownSliderYear)) return;
+  shownSliderYear = year;
+  mountTown(built, year);
   // The year changes the town. It does not move the camera.
   if (mode === "overview") setOverviewCaption();
 };
@@ -1087,7 +1096,10 @@ async function main() {
   const quality = document.getElementById("quality");
   quality.value = shot ? "fine" : "street";
   quality.addEventListener("change", () => applyQuality(quality.value));
-  mountTown(builtTownYear(params.get("year") || 1880));
+  const openingYear = Number(params.get("year"));
+  const sliderYear = Number.isFinite(openingYear) ? openingYear : 1880;
+  shownSliderYear = sliderYear;
+  mountTown(builtTownYear(sliderYear), sliderYear);
 
   const select = document.getElementById("places");
   for (const place of town.places) {

@@ -656,7 +656,7 @@ export function buildTown(data, scene) {
     const reach = peaked ? b.depth / 2 + 0.55 : depot ? b.depth / 2 + 5.5 : b.depth / 2 + 0.55;
     signs.push({
       title: b.sign,
-      subtitle: peaked || depot || hendee ? "" : b.confidence === "sourced" ? b.use : "",
+      subtitle: b.facade?.sign2 || (peaked || depot || hendee ? "" : b.confidence === "sourced" ? b.use : ""),
       style: peaked ? "painted" : "board",
       position: new THREE.Vector3(b.x, y, b.z).addScaledVector(outward, reach),
       rotation: rot,
@@ -668,6 +668,27 @@ export function buildTown(data, scene) {
             ? 22
             : Math.min(Math.max(b.width * 0.62, 10), 28),
     });
+    if (b.facade?.upperSign) {
+      signs.push({
+        title: b.facade.upperSign,
+        subtitle: "",
+        style: "board",
+        position: new THREE.Vector3(b.x, y + 4.2, b.z).addScaledVector(outward, reach),
+        rotation: rot,
+        width: Math.min(b.width * 0.46, 14),
+      });
+    }
+  };
+
+  const addCrossingShanty = (b) => {
+    const body = paintOf(b);
+    box(body, 0, 5, 0, b.width, 10, b.depth);
+    gable(b.width, b.depth, 3.2, 10, mats.roofDark);
+    box(mats.trimDark, 0, 4.2, b.depth / 2 + 0.1, 2.4, 6.4, 0.12);
+    box(mats.trunk, b.width / 2 + 6, 8, 2, 0.5, 16, 0.5);
+    box(mats.trim, b.width / 2 + 14, 14.5, 2, 16, 0.35, 0.35);
+    signFor(b, 8);
+    return 14;
   };
 
   // Wood-shingle roofs. "side" ridges run across the front. "front" ridges run back from the street.
@@ -1724,6 +1745,73 @@ export function buildTown(data, scene) {
     return 30;
   };
 
+  // East Side School, opened in the winter of 1904, after the 1875 building burned in 1896.
+  const addEastSideSchool = (b) => {
+    const body = mats.brick.red;
+    const base = 8;
+    const floor = 11;
+    const stories = 3;
+    const wall = base + stories * floor;
+    box(mats.stone, 0, base / 2, 0, b.width + 1.6, base, b.depth + 1.6);
+    box(body, 0, base + (stories * floor) / 2, 0, b.width, stories * floor, b.depth);
+    for (let s = 1; s <= stories; s++) {
+      box(mats.stone, 0, base + s * floor, 0, b.width + 0.4, 0.45, b.depth + 0.4);
+    }
+    hipRoof(b.width, b.depth, 8, wall, mats.roofDark, 0, 0);
+    const fz = b.depth / 2 + 0.12;
+    const cols = 5;
+    for (let c = 0; c < cols; c++) {
+      const x = -b.width * 0.28 + (c * b.width * 0.56) / (cols - 1);
+      box(mats.glass, x, base * 0.45, fz, 3.2, 2.2, 0.06);
+      box(mats.stone, x, base * 0.45 - 1.3, fz + 0.08, 3.8, 0.28, 0.2);
+      for (let s = 0; s < stories; s++) {
+        const y = base + s * floor + floor * 0.55;
+        for (const dx of [-1.35, 1.35]) {
+          box(mats.trim, x + dx, y, fz, 2.1, 6.4, 0.12);
+          box(mats.glass, x + dx, y, fz + 0.06, 1.5, 5.2, 0.05);
+          box(mats.stone, x + dx, y - 3.5, fz + 0.1, 2.5, 0.28, 0.22);
+        }
+      }
+    }
+    const tx = b.width / 2 - 9;
+    const tz = fz - 8;
+    box(body, tx, 22, tz, 18, 44, 18);
+    box(mats.stone, tx, 1.2, tz, 19.2, 2.4, 19.2);
+    for (const side of [-1, 1]) {
+      box(mats.stone, tx + side * 8.6, 22, tz, 1.1, 40, 18.4);
+      box(mats.stone, tx, 22, tz + side * 8.6, 18.4, 40, 1.1);
+    }
+    box(mats.stone, tx, 6.2, tz + 9.2, 8, 10, 2.4);
+    box(mats.trimDark, tx, 5.4, tz + 10.2, 5.2, 8.2, 0.2);
+    archHood(mats.stone, tx, 9.2, tz + 10.3, 6.4, 3.2, "z");
+    frontSash(tx - 2.2, 18, tz + 9.2, 2.4, 6.2, "round", false, mats.stone);
+    frontSash(tx + 2.2, 18, tz + 9.2, 2.4, 6.2, "round", false, mats.stone);
+    box(mats.trim, tx, 28, tz + 9.3, 3.4, 3.4, 0.16);
+    box(mats.glass, tx, 28, tz + 9.4, 2.2, 2.2, 0.05);
+    box(body, tx, 40, tz, 16, 10, 16);
+    for (const face of [0, 1, 2, 3]) {
+      const ang = face * Math.PI / 2;
+      box(mats.trimDark, tx + Math.sin(ang) * 8.1, 40, tz + Math.cos(ang) * 8.1, face % 2 ? 6 : 0.2, 6, face % 2 ? 0.2 : 6);
+    }
+    const cap = new THREE.ConeGeometry(12, 14, 4);
+    cap.rotateY(Math.PI / 4);
+    cap.applyMatrix4(new THREE.Matrix4().makeTranslation(tx, 52, tz));
+    cap.applyMatrix4(buildingMatrix);
+    put(mats.roofDark, cap);
+    chimneyStack(mats.brick.red, -b.width * 0.32, wall + 3, -b.depth * 0.2, 2.4, 7, 2.4);
+    chimneyStack(mats.brick.red, b.width * 0.05, wall + 2, -b.depth * 0.25, 2.2, 6, 2.2);
+    for (let i = 0; i < 8; i++) {
+      const z = -b.depth / 2 + (i * b.depth) / 7;
+      box(mats.metal, b.width / 2 + 6, 2.2, z, 0.12, 3.6, 0.12);
+      box(mats.metal, b.width / 2 + 6, 3.8, z, 0.08, 0.08, 1.2);
+    }
+    const tree = new THREE.Vector3(-b.width * 0.7, 0, fz + 8);
+    tree.applyMatrix4(buildingMatrix);
+    extraTrees.push({ x: tree.x, z: tree.z, kind: "maple", scale: 1.6 });
+    signFor(b, wall - 2);
+    return wall + 16;
+  };
+
   // The 1875 graded school: red brick on a stone basement that reads as an extra story.
   // The 1907 encyclopedia plate is the later West Side School, so it is not copied.
   const addSchool = (b) => {
@@ -1793,6 +1881,42 @@ export function buildTown(data, scene) {
     return wallH + 10;
   };
 
+  // C. S. Norcross factory, concrete block, corner of Dean and Davis, contract May 1906.
+  const addNorcross = (b) => {
+    const body = mats.stone;
+    const wall = 26;
+    box(body, 0, wall / 2, 0, b.width, wall, b.depth);
+    box(body, 0, wall + 1.6, b.depth / 2 - 0.4, b.width + 0.6, 3.2, 1.4);
+    box(body, 0, wall + 3.4, b.depth / 2 - 0.4, b.width * 0.42, 2.4, 1.6);
+    for (const side of [-1, 1]) {
+      box(body, side * (b.width / 2), wall / 2 + 1.2, 0, 1.6, wall + 2.4, b.depth + 0.4);
+      box(body, side * (b.width / 2), wall + 2.6, b.depth * 0.15, 1.8, 4.2, 6);
+    }
+    const fz = b.depth / 2 + 0.1;
+    const cols = 4;
+    for (let i = 0; i < cols; i++) {
+      const x = -b.width * 0.32 + (i * b.width * 0.64) / (cols - 1);
+      frontSash(x, 8, fz, 2.6, 5.2, "flat", false, mats.stone);
+      frontSash(x, 18.5, fz, 2.6, 5.2, "flat", false, mats.stone);
+    }
+    box(mats.roofDark, 0, 11.2, fz + 3.2, 12, 0.35, 6);
+    for (const x of [-5, 5]) box(mats.trimDark, x, 5.6, fz + 5.6, 0.4, 10.4, 0.4);
+    box(mats.trimDark, 0, 4.2, fz, 4.2, 7.6, 0.16);
+    signFor(b, wall - 1);
+    return wall + 6;
+  };
+
+  // A plain industrial block. No gable, chimney, or trim beyond the walls and a flat roof.
+  const addPlainPlant = (b) => {
+    const floors = Math.max(1, Number(b.stories) || 1);
+    const h = floors * 14;
+    const body = b.material === "brick" ? brickOf(b) : paintOf(b);
+    box(body, 0, h / 2, 0, b.width, h, b.depth);
+    box(mats.roofDark, 0, h + 0.25, 0, b.width + 0.8, 0.5, b.depth + 0.8);
+    if (b.sign) signFor(b, h * 0.6);
+    return h + 2;
+  };
+
   const addShed = (b) => {
     const wallH = 12;
     const body = paintOf(b);
@@ -1836,6 +1960,7 @@ export function buildTown(data, scene) {
     else if (b.facade?.turretHouse) height = addTurretHouse(b);
     else if (b.id === "presbyterian-church-1917") height = addGothicChurch(b);
     else if (b.id === "junction-depot") height = addJunctionDepot(b);
+    else if (b.id === "hurst-crossing-shanty") height = addCrossingShanty(b);
     else if (b.kind === "house") height = addHouse(b);
     else if (b.id === "hendee-house-26") height = addHendeeHouse(b);
     else if (b.kind === "frame-store") height = addStore(b, true);
@@ -1845,7 +1970,10 @@ export function buildTown(data, scene) {
     else if (b.kind === "elevator") height = addElevator(b);
     else if (b.kind === "mill") height = addMill(b);
     else if (b.kind === "barn") height = addBarn(b);
+    else if (b.facade?.norcross) height = addNorcross(b);
+    else if (b.facade?.plainPlant) height = addPlainPlant(b);
     else if (b.kind === "factory") height = addFactory(b);
+    else if (b.facade?.eastSide1904) height = addEastSideSchool(b);
     else if (b.kind === "school") height = addSchool(b);
     else height = addShed(b);
 
@@ -2255,6 +2383,12 @@ export function buildTown(data, scene) {
         post.position.set(x, 13, street.at + Math.sign(street.at || 1) * street.width * 0.42);
         scene.add(post);
       }
+      const span = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, street.width * 0.7), mats.trimDark);
+      span.position.set(-280, 22, street.at);
+      scene.add(span);
+      const lamp = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.7, 1.4), mats.lamp);
+      lamp.position.set(-280, 21.2, street.at);
+      scene.add(lamp);
     }
   }
 
