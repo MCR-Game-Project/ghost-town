@@ -2274,8 +2274,8 @@ export function buildTown(data, scene) {
   const makeRailMaterial = (color, minPixels, halfWidth) => {
     const mat = new THREE.MeshStandardMaterial({
       color,
-      metalness: 0.58,
-      roughness: 0.36,
+      metalness: 0.22,
+      roughness: 0.4,
     });
     mat.polygonOffset = true;
     mat.polygonOffsetFactor = -1;
@@ -2302,8 +2302,8 @@ export function buildTown(data, scene) {
     mat.customProgramCacheKey = () => `rail-${color}-${minPixels}`;
     return mat;
   };
-  const railBody = makeRailMaterial("#343b42", 2.1, 0.2);
-  const railCap = makeRailMaterial("#c5ced4", 0, 0.08);
+  const railBody = makeRailMaterial("#a3adb4", 2.1, 0.2);
+  const railCap = makeRailMaterial("#e6ebef", 0, 0.08);
   const noteRailSize = (renderer) => renderer.getDrawingBufferSize(railViewport.value);
 
   const addTrack = (points) => {
@@ -2315,7 +2315,7 @@ export function buildTown(data, scene) {
       const len = Math.hypot(dx, dz);
       const yaw = Math.atan2(dx, dz);
       const mid = new THREE.Vector3((x1 + x2) / 2, 0, (z1 + z2) / 2);
-      const ballastMat = tiled(mats.ballast, 1, len / 8);
+      const ballastMat = tiled(mats.trackBed, 1, len / 8);
       for (const key of ["map", "normalMap", "roughnessMap"]) {
         if (ballastMat[key]) ballastMat[key].anisotropy = 8;
       }

@@ -429,6 +429,55 @@ function ballastMaps() {
   });
 }
 
+// Rail bed only. Dark rust gravel and near-black ties, so the line is not another dirt road.
+function trackBedMaps() {
+  const w = 256;
+  const h = 256;
+  return packMaps(w, h, (px, height, rough) => {
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const n = hash(x, y);
+        const across = x / w;
+        const onTie = y % 64 < 20 && across > 0.18 && across < 0.82;
+        let r;
+        let g;
+        let b;
+        let hv;
+        if (onTie) {
+          const grain = hash(x >> 1, y);
+          r = 34 + grain * 12;
+          g = 22 + grain * 7;
+          b = 14 + grain * 4;
+          hv = 0.74;
+        } else {
+          const speck = hash(x >> 2, y >> 2);
+          r = 108 + n * 32 + (speck - 0.5) * 20;
+          g = 48 + n * 14 + (speck - 0.5) * 8;
+          b = 26 + n * 8 + (speck - 0.5) * 5;
+          if (speck > 0.9) {
+            r += 24;
+            g += 8;
+            b += 3;
+          } else if (speck < 0.08) {
+            r *= 0.6;
+            g *= 0.55;
+            b *= 0.5;
+          }
+          hv = 0.26 + n * 0.3;
+        }
+        const i = y * w + x;
+        const o = i * 4;
+        px[o] = Math.max(0, Math.min(255, r));
+        px[o + 1] = Math.max(0, Math.min(255, g));
+        px[o + 2] = Math.max(0, Math.min(255, b));
+        px[o + 3] = 255;
+        height[i] = hv;
+        rough[i] = onTie ? 0.9 : 0.98;
+      }
+    }
+  });
+}
+
 function picketMaps() {
   const w = 64;
   const h = 256;
@@ -505,6 +554,7 @@ export function makeMaterials() {
   const grassTex = grassMaps(false);
   const parkTex = grassMaps(true);
   const ballastTex = ballastMaps();
+  const trackBedTex = trackBedMaps();
   const awningTex = awningMaps();
   const picketTex = picketMaps();
 
@@ -649,6 +699,15 @@ export function makeMaterials() {
       roughness: 1,
       uvFeet: { u: 6, v: 6 },
       normalScale: 0.6,
+    }),
+    trackBed: std({
+      map: trackBedTex.map,
+      normalMap: trackBedTex.normalMap,
+      roughnessMap: trackBedTex.roughnessMap,
+      color: "#ffffff",
+      roughness: 1,
+      uvFeet: { u: 6, v: 6 },
+      normalScale: 0.65,
     }),
     awning: std({
       map: awningTex,
