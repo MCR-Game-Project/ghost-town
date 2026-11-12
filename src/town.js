@@ -2470,9 +2470,15 @@ export function buildTown(data, scene) {
     box(white, -b.width / 2 - 3.2, 9.0, -2, 7.2, 0.2, b.depth * 0.55);
     box(body, -b.width / 2 - 5.6, 4.2, -b.depth * 0.18, 1.6, 7.6, 1.6);
     box(body, -b.width / 2 - 5.6, 4.2, b.depth * 0.12, 1.6, 7.6, 1.6);
+    const frontPorchX = b.width * 0.18;
+    box(white, frontPorchX, 8.2, fz + 3.4, 15, 0.62, 7.2);
+    box(white, frontPorchX, 7.8, fz + 3.4, 16.2, 0.28, 8);
+    for (const x of [frontPorchX - 6, frontPorchX, frontPorchX + 6]) {
+      box(white, x, 4.2, fz + 6.2, 0.38, 7.6, 0.38);
+    }
     const rx = b.width / 2 + 4.6;
-    box(white, rx, 7.55, 1.2, 12.2, 0.62, 16.4);
-    box(white, rx, 7.95, 1.2, 10.6, 0.18, 15.2);
+    box(white, rx, 7.55, 1.2, 12.2, 0.55, 16.4);
+    box(white, rx, 7.9, 1.2, 10.8, 0.18, 15.2);
     box(body, rx + 2.6, 4.1, 6.2, 1.55, 7.4, 1.55);
     box(body, rx - 1.4, 4.1, 6.2, 1.55, 7.4, 1.55);
     box(white, rx + 2.6, 7.9, 6.2, 1.9, 0.35, 1.9);
@@ -2486,22 +2492,13 @@ export function buildTown(data, scene) {
       box(mats.trimDark, rx + 3.4, 2.6, 0.2 + i * 2.2, 0.12, 0.9, 0.12);
       box(mats.trimDark, rx - 2.2, 2.6, 0.2 + i * 2.2, 0.12, 0.9, 0.12);
     }
-    const hedgeBall = new THREE.SphereGeometry(1, 10, 8);
-    for (let i = 0; i < 18; i++) {
-      const lump = 2.4 + (i % 4) * 0.45;
-      const x = -b.width / 2 - 4 + (i * (b.width + 10)) / 17;
-      const z = fz + 17 + (i % 3) * 0.8 - (i % 2) * 0.5;
-      const clump = hedgeBall.clone();
-      clump.scale(1.5 + (i % 3) * 0.35, lump * 0.55, 1.2);
-      clump.translate(x, lump * 0.45, z);
-      clump.applyMatrix4(buildingMatrix);
-      put(i % 2 ? mats.leaf : mats.leafDark, clump);
-    }
+    box(mats.leaf, 0, 1.7, fz + 15.5, b.width + 10, 3.1, 2.6);
+    box(mats.leafDark, 0, 2.7, fz + 15.6, b.width + 6, 1.1, 1.8);
     box(mats.stone, 0, 0.12, fz + 24, b.width + 24, 0.16, 6.5);
     box(mats.stone, 0, 0.32, fz + 20.6, b.width + 24, 0.38, 0.7);
     box(white, 0, 12.3, 0, b.width + 0.8, 0.38, b.depth + 0.8);
     const yardTrees = [
-      [b.width * 0.48, fz + 6, 2.5],
+      [b.width * 0.55, fz + 8, 2.8],
     ];
     for (const [x, z, scale] of yardTrees) {
       const spot = new THREE.Vector3(x, 0, z);
@@ -2976,16 +2973,31 @@ export function buildTown(data, scene) {
   const craffordNorth = streetByName("Crafford Street");
   if (craffordNorth) dressStreet({ ...craffordNorth, from: 980, to: 1280 }, { curb: true, walk: true, inset: 6 });
   if ((data.meta?.shownYear || 0) >= 1970) {
-    const asphalt = new THREE.MeshStandardMaterial({ color: "#5e6164", roughness: 0.95, metalness: 0.02 });
+    const asphalt = new THREE.MeshStandardMaterial({ color: "#6a6d70", roughness: 0.96, metalness: 0 });
     asphalt.polygonOffset = true;
     asphalt.polygonOffsetFactor = -1;
     asphalt.polygonOffsetUnits = -1;
+    asphalt.onBeforeCompile = (shader) => {
+      shader.vertexShader = shader.vertexShader
+        .replace("#include <common>", "#include <common>\nvarying vec3 vPaveWorld;")
+        .replace("#include <begin_vertex>", "#include <begin_vertex>\nvPaveWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;");
+      shader.fragmentShader = shader.fragmentShader
+        .replace("#include <common>", `#include <common>
+varying vec3 vPaveWorld;
+float pHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return fract(p.x*p.y); }
+float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
+  return mix(mix(pHash(i),pHash(i+vec2(1.0,0.0)),f.x), mix(pHash(i+vec2(0.0,1.0)),pHash(i+vec2(1.0,1.0)),f.x), f.y); }`)
+        .replace("#include <color_fragment>", `#include <color_fragment>
+          float n = pNoise(vPaveWorld.xz * 0.35);
+          diffuseColor.rgb *= mix(vec3(0.92), vec3(1.05), n);`);
+    };
+    asphalt.customProgramCacheKey = () => "asphalt-plain";
     for (const street of [eastMain, craffordNorth]) {
       if (!street) continue;
       const len = Math.abs(street.to - street.from);
       const mid = (street.from + street.to) / 2;
       const mesh = new THREE.Mesh(
-        street.axis === "x" ? new THREE.PlaneGeometry(len, street.width * 0.86) : new THREE.PlaneGeometry(street.width * 0.86, len),
+        street.axis === "x" ? new THREE.PlaneGeometry(len, street.width + 4) : new THREE.PlaneGeometry(street.width + 4, len),
         asphalt,
       );
       mesh.rotation.x = -Math.PI / 2;
@@ -2993,6 +3005,13 @@ export function buildTown(data, scene) {
       mesh.receiveShadow = true;
       scene.add(mesh);
     }
+    const lampPost = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.22, 12, 8), mats.trimDark);
+    lampPost.position.set(278, 6, 162);
+    const lampGlobe = new THREE.Mesh(new THREE.SphereGeometry(0.55, 16, 12), new THREE.MeshStandardMaterial({ color: "#f4f1e4", emissive: "#fff6dd", emissiveIntensity: 0.35, roughness: 0.4 }));
+    lampGlobe.position.set(278, 12.3, 162);
+    const lampCap = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.42, 0.35, 8), mats.trimDark);
+    lampCap.position.set(278, 12.8, 162);
+    scene.add(lampPost, lampGlobe, lampCap);
   }
   if (style.mains) {
     for (const name of ["West Main Street"]) {
@@ -3068,8 +3087,8 @@ export function buildTown(data, scene) {
   const lobeCount = 7;
   const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.45, 0.7, 1, 6), mats.trunk, allTrees.length);
   const branches = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.1, 0.18, 1, 5), mats.trunk, allTrees.length * branchCount);
-  const lobes = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 1), mats.leaf, allTrees.length * lobeCount);
-  const lobesDark = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 0), mats.leafDark, allTrees.length * lobeCount);
+  const lobes = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 2), mats.leaf, allTrees.length * lobeCount);
+  const lobesDark = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 1), mats.leafDark, allTrees.length * lobeCount);
   const dummy = new THREE.Object3D();
   const lobePattern = [
     [0, 2.2, 0, 3.6, 2.6],
@@ -3257,7 +3276,9 @@ function streetLabelTexture(name, ink) {
 
 function addStreetNames(data, mats, scene) {
   const roads = data.streets.filter((street) => street.name.endsWith("Street"));
+  const pavedYear = (data.meta?.shownYear || 0) >= 1970;
   roads.forEach((street) => {
+    if (pavedYear && (street.name === "East Main Street" || street.name === "Crafford Street")) return;
     const painted = streetLabelTexture(street.name, "road");
     const letterH = Math.min(street.width * 0.48, 32);
     const letterW = letterH * painted.aspect;
