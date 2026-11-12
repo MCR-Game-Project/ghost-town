@@ -3748,11 +3748,11 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
       scene.add(mesh);
     }
     const lampPost = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.22, 12, 8), mats.trimDark);
-    lampPost.position.set(330, 6, 158);
+    lampPost.position.set(330, 6, 179);
     const lampGlobe = new THREE.Mesh(new THREE.SphereGeometry(0.55, 16, 12), new THREE.MeshStandardMaterial({ color: "#f4f1e4", emissive: "#fff6dd", emissiveIntensity: 0.35, roughness: 0.4 }));
-    lampGlobe.position.set(330, 12.3, 158);
+    lampGlobe.position.set(330, 12.3, 179);
     const lampCap = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.42, 0.35, 8), mats.trimDark);
-    lampCap.position.set(330, 12.8, 158);
+    lampCap.position.set(330, 12.8, 179);
     scene.add(lampPost, lampGlobe, lampCap);
   }
   if (style.mains) {
