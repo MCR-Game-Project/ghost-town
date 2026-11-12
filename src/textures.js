@@ -621,21 +621,26 @@ vec3 gAlbedo(vec3 world, vec2 uv) {
   float mid = gFbm(p * 0.16 + 4.0);
   float fine = gFbm(p * 0.72 + 11.0);
   ${grass ? `vec3 col = mix(${deep}, ${light}, broad);
-  col = mix(col, col * vec3(0.92, 1.04, 0.9), (mid - 0.5) * 0.35);
-  col += (fine - 0.5) * 0.04;
-  return col;` : `vec3 soil = mix(vec3(0.40, 0.28, 0.16), vec3(0.58, 0.42, 0.26), broad);
-  soil = mix(soil, soil * vec3(1.05, 0.98, 0.9), (mid - 0.5) * 0.28);
-  soil += (fine - 0.5) * 0.035;
+  col = mix(col, vec3(0.22, 0.40, 0.14), smoothstep(0.35, 0.7, mid) * 0.45);
+  col = mix(col, vec3(0.50, 0.62, 0.28), smoothstep(0.55, 0.9, fine) * 0.28);
+  return col;` : `vec3 soil = mix(vec3(0.36, 0.24, 0.14), vec3(0.62, 0.46, 0.28), broad);
+  soil = mix(soil, soil * vec3(0.82, 0.78, 0.7), smoothstep(0.45, 0.8, mid) * 0.35);
+  soil += (fine - 0.5) * 0.08;
   ${ruts ? `float across = ${acrossExpr};
-  float rut = exp(-pow((across - 0.36) / 0.045, 2.0)) + exp(-pow((across - 0.64) / 0.045, 2.0));
-  soil *= 1.0 - rut * 0.2;
-  float shoulder = smoothstep(0.0, 0.07, across) * smoothstep(1.0, 0.93, across);
-  soil = mix(soil * 0.78, soil, shoulder);` : ""}
+  float along = ${across === "x" ? "uv.y" : "uv.x"};
+  float rut = exp(-pow((across - 0.34) / 0.07, 2.0)) + exp(-pow((across - 0.66) / 0.07, 2.0));
+  float wobble = sin(along * 36.0 + broad * 5.0) * 0.015;
+  rut = max(rut, exp(-pow((across - 0.34 - wobble) / 0.04, 2.0)) * 0.65);
+  soil *= 1.0 - rut * 0.28;
+  float gravel = smoothstep(0.72, 0.95, fine);
+  soil = mix(soil, soil * vec3(1.15, 1.08, 0.95), gravel * 0.22);
+  float shoulder = smoothstep(0.0, 0.08, across) * smoothstep(1.0, 0.92, across);
+  soil = mix(soil * 0.72, soil, shoulder);` : ""}
   return soil;`}
 }`)
       .replace("#include <color_fragment>", "#include <color_fragment>\ndiffuseColor.rgb *= gAlbedo(vGWorld, vGUv);");
   };
-  mat.customProgramCacheKey = () => `ground-${key}`;
+  mat.customProgramCacheKey = () => `ground-v3-${key}`;
   mat.userData.ground = key;
   return mat;
 }

@@ -5978,7 +5978,7 @@
       "sign": "WAGONS",
       "porch": false,
       "paint": "red",
-      "x": 282.0,
+      "x": 228.0,
       "z": -226.0,
       "facing": "+z",
       "party": [
@@ -6193,7 +6193,7 @@
         "sourcePhoto": "public/photos/hotel-alexander-west-main-400.png",
         "photoDate": "undated",
         "citation": "Hotel Alexander photograph, the 1871 Hendee House on West Main",
-        "camera": { "year": 1910, "x": -175, "z": -140, "lx": -250, "lz": -220, "fov": 40, "pitch": -0.07 },
+        "camera": { "year": 1910, "x": -185, "z": -152, "lx": -255, "lz": -215, "fov": 38, "pitch": -0.08 },
         "estimates": ["The lot along West Main is inferred."],
         "wall": "#8d3a32",
         "trim": "#f4efe4",

@@ -34,7 +34,7 @@
         "sourcePhoto": "public/photos/funeral-home-2010.png",
         "photoDate": "2010",
         "citation": "photo from Mark, 771 N. Crafford St., 2010",
-        "camera": { "year": 1970, "x": 1058, "z": 648, "lx": 1142, "lz": 505, "fov": 50, "pitch": -0.09 },
+        "camera": { "year": 1970, "x": 1074, "z": 622, "lx": 1142, "lz": 505, "fov": 38, "pitch": -0.1 },
         "estimates": ["No year-built was found. The house is first drawn at the 1920 stop.", "No Sanborn footprint was matched. The footprint is the photograph."],
         "wall": "#8d3a32",
         "wallKind": "brick",

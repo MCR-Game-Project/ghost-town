@@ -1370,7 +1370,7 @@ export function buildTown(data, scene) {
   // pilasters, and the carriage bay are that picture. The curved roof sits behind the right bay.
   const addBallCream = (b) => {
     const wallH = 26;
-    const body = paintOf(b);
+    const body = mats.siding.cream;
     const red = mats.siding.red;
     const fz = b.depth / 2;
     box(body, 0, wallH / 2, -0.35, b.width, wallH, b.depth - 0.5);
@@ -1396,7 +1396,7 @@ export function buildTown(data, scene) {
         put(red, oval);
       }
     }
-    const pedX = -b.width * 0.14;
+    const pedX = -b.width * 0.18;
     drawPediment(body, b.width * 0.58, 5.4, wallH + 1.2, fz + 0.7, pedX);
     const leftW = b.width * 0.64;
     const bays = 3;
@@ -1409,28 +1409,25 @@ export function buildTown(data, scene) {
     }
     for (let col = 0; col < bays; col++) {
       const x = -b.width / 2 + 0.35 + gap * (col + 0.5);
-      frontSash(x, wallH * 0.66, fz + 0.15, Math.max(1.8, gap - 1.5), 7.6, "flat", false, body);
+      frontSash(x, wallH * 0.66, fz + 0.15, Math.max(3.2, gap - 1.15), 8.4, "flat", false, body);
     }
     box(body, 0, 11.4, fz + 0.3, b.width + 0.3, 0.7, 0.7);
-    const shopFrame = (x, gw, gh) => {
-      box(body, x - gw / 2, 5.2, fz + 0.22, 0.32, gh, 0.36);
-      box(body, x + gw / 2, 5.2, fz + 0.22, 0.32, gh, 0.36);
-      box(body, x, 5.2 + gh / 2, fz + 0.22, gw + 0.3, 0.32, 0.36);
-      box(body, x, 1.15, fz + 0.18, gw, 0.7, 0.28);
-      box(mats.glass, x, 6.15, fz + 0.08, gw - 0.7, 5.4, 0.06);
-      box(mats.glass, x, 9.35, fz + 0.1, gw - 0.7, 1.05, 0.05);
-      box(body, x, 8.65, fz + 0.16, gw - 0.4, 0.14, 0.14);
-      box(mats.trimDark, x, 2.35, fz + 0.12, gw - 0.85, 1.45, 0.12);
-      box(body, x, 4.7, fz + 0.2, 1.7, 6.4, 0.16);
-      box(mats.glass, x, 5.3, fz + 0.28, 1.15, 4.4, 0.05);
+    const shopGlass = (x, gw) => {
+      box(red, x - gw / 2, 5.5, fz + 0.4, 0.85, 10.4, 0.85);
+      box(red, x + gw / 2, 5.5, fz + 0.4, 0.85, 10.4, 0.85);
+      box(body, x, 10.7, fz + 0.32, gw + 0.5, 0.5, 0.45);
+      box(mats.glass, x, 6.15, fz + 0.1, gw - 1.3, 7.2, 0.06);
+      box(mats.glass, x, 10.15, fz + 0.14, gw - 1.3, 1.45, 0.05);
+      box(body, x, 9.25, fz + 0.22, gw - 0.8, 0.16, 0.16);
+      box(mats.trimDark, x, 1.85, fz + 0.16, gw - 1.4, 1.35, 0.14);
     };
-    shopFrame(-b.width * 0.3, 5.4, 9.2);
-    shopFrame(-b.width * 0.02, 5.2, 9.2);
+    shopGlass(-b.width * 0.34, b.width * 0.2);
+    shopGlass(-b.width * 0.12, b.width * 0.2);
     const cx = b.width * 0.32;
     box(red, cx - b.width * 0.14, wallH * 0.7, fz + 0.35, 0.45, 9.4, 0.5);
     box(red, cx + b.width * 0.14, wallH * 0.7, fz + 0.35, 0.45, 9.4, 0.5);
     box(body, cx, wallH * 0.74, fz + 0.4, b.width * 0.22, 5.6, 0.2);
-    shopFrame(cx, 4.2, 9.0);
+    shopGlass(cx, b.width * 0.2);
     const vault = new THREE.CylinderGeometry(4.6, 4.6, b.depth * 0.42, 18, 1, false, 0, Math.PI);
     vault.rotateX(Math.PI / 2);
     vault.translate(cx, wallH + 3.4, -1.2);
@@ -2361,9 +2358,9 @@ export function buildTown(data, scene) {
     const fz = b.depth / 2;
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.stone, 0, 1.15, 0, b.width + 0.6, 2.3, b.depth + 0.6);
-    box(white, 0, wallH - 0.2, 0, b.width + 4.4, 0.85, b.depth + 4.4);
-    box(white, 0, wallH + 0.45, 0, b.width + 3.2, 0.4, b.depth + 3.2);
-    hipRoof(b.width + 2.4, b.depth + 2.4, 12, wallH + 0.5, roof, 0, 0);
+    box(white, 0, wallH - 0.35, 0, b.width + 10, 0.7, b.depth + 10);
+    box(white, 0, wallH + 0.15, 0, b.width + 7.2, 0.42, b.depth + 7.2);
+    hipRoof(b.width + 8, b.depth + 8, 6.2, wallH + 0.2, roof, 0, 0);
     dentilCourse(wallH - 0.95, fz + 1.7, b.width + 1.2);
     bracketRow(wallH - 1.45, fz + 1.05, b.width + 0.4);
     for (const side of [-1, 1]) {
@@ -2390,33 +2387,36 @@ export function buildTown(data, scene) {
     }
     box(white, 0, wallH + 14.6, dz + 4.2, 0.35, 1.6, 0.35);
     for (const x of [-2.5, 2.5]) frontSash(x, wallH + 5.4, dz + 3.15, 2.6, 4.8, "round", false, white);
-    frontSash(-b.width * 0.32, 17.4, fz + 0.22, 3.2, 6.4, "flat", false, white);
-    frontSash(b.width * 0.32, 17.4, fz + 0.22, 3.2, 6.4, "flat", false, white);
-    box(white, 0, 17.6, fz + 0.32, 9.2, 7.6, 0.4);
-    for (const x of [-1.8, 1.8]) frontSash(x, 17.3, fz + 0.5, 2.5, 5.6, "round", false, white);
-    frontSash(-b.width * 0.34, 6.6, fz + 0.22, 2.8, 5.8, "flat", false, white);
-    frontSash(b.width * 0.28, 6.6, fz + 0.22, 2.6, 5.4, "flat", false, white);
+    const widePair = (x, y, w, h) => {
+      frontSash(x - w * 0.26, y, fz + 0.22, w * 0.44, h, "flat", false, white);
+      frontSash(x + w * 0.26, y, fz + 0.22, w * 0.44, h, "flat", false, white);
+    };
+    widePair(-b.width * 0.32, 17.2, 9.2, 6.6);
+    box(white, 0, 17.4, fz + 0.28, 11.5, 7.8, 0.35);
+    for (const x of [-2.6, 2.6]) frontSash(x, 17.3, fz + 0.48, 3.6, 6.2, "round", false, white);
+    widePair(b.width * 0.32, 17.2, 9.2, 6.6);
+    widePair(-b.width * 0.32, 6.5, 9.4, 6.4);
+    widePair(b.width * 0.3, 6.5, 8.6, 6.2);
     for (const side of [-1, 1]) {
       sideSash(side * (b.width / 2 + 0.12), 17.2, -4, side, 2.4, 5.4, "flat", false, white);
       sideSash(side * (b.width / 2 + 0.12), 6.4, 2, side, 2.3, 5.2, "flat", false, white);
     }
-    const porchX = -b.width * 0.08;
-    const porchW = b.width * 0.7;
-    const porchD = 9;
-    box(white, porchX, 9.15, fz + porchD * 0.45, porchW, 0.4, porchD);
-    hipRoof(porchW + 1.2, porchD + 1, 2.6, 9.4, roof, porchX, fz + porchD * 0.45);
-    drawPediment(white, porchW * 0.48, 3.4, 9.15, fz + porchD - 0.2, porchX - 1.5);
+    const porchX = -b.width * 0.12;
+    const porchW = b.width * 0.62;
+    const porchD = 13;
+    box(white, porchX, 9.05, fz + porchD * 0.42, porchW, 0.45, porchD);
+    hipRoof(porchW + 1.6, porchD + 1.2, 2.2, 9.25, roof, porchX, fz + porchD * 0.42);
+    drawPediment(white, porchW * 0.55, 4.2, 9.05, fz + porchD - 0.4, porchX - 2);
     const pierSpots = [
-      [porchX - porchW / 2 + 1.1, fz + porchD - 0.7],
-      [porchX + porchW / 2 - 1.1, fz + porchD - 0.7],
-      [porchX - 2, fz + porchD - 0.7],
-      [porchX - porchW / 2 + 1.1, fz + 1.1],
+      [porchX - porchW / 2 + 1.4, fz + porchD - 0.9],
+      [porchX + porchW / 2 - 1.4, fz + porchD - 0.9],
+      [porchX - 1.5, fz + porchD - 0.9],
+      [porchX - porchW / 2 + 1.4, fz + 1.4],
     ];
     for (const [x, z] of pierSpots) {
-      box(body, x, 4.3, z, 1.7, 7.8, 1.7);
-      box(white, x, 8.4, z, 2.05, 0.4, 2.05);
-      box(mats.stone, x, 0.45, z, 2.1, 0.7, 2.1);
-      box(white, x, 4.6, z - 1.3, 0.48, 8.2, 0.48);
+      box(body, x, 4.2, z, 2.35, 7.6, 2.35);
+      box(white, x, 8.2, z, 2.8, 0.45, 2.8);
+      box(mats.stone, x, 0.5, z, 2.7, 0.8, 2.7);
     }
     paneledDoor(porchX - 1.2, fz + 0.15, 3.4, 7.4);
     for (let i = 0; i < 4; i++) {
@@ -2426,9 +2426,9 @@ export function buildTown(data, scene) {
     hipRoof(7.6, b.depth * 0.62, 2.3, 9.3, roof, -b.width / 2 - 3.2, -2);
     box(body, -b.width / 2 - 5.6, 4.2, -b.depth * 0.18, 1.6, 7.6, 1.6);
     box(body, -b.width / 2 - 5.6, 4.2, b.depth * 0.12, 1.6, 7.6, 1.6);
-    const rx = b.width / 2 + 4.2;
-    box(white, rx, 8.5, 1.5, 8.4, 0.35, 14);
-    hipRoof(8.8, 14.4, 2.2, 8.7, roof, rx, 1.5);
+    const rx = b.width / 2 + 4.6;
+    box(white, rx, 7.15, 1.2, 11, 0.32, 16);
+    hipRoof(11.4, 16.6, 1.15, 7.3, roof, rx, 1.2);
     box(body, rx + 2.6, 4.1, 6.2, 1.55, 7.4, 1.55);
     box(body, rx - 1.4, 4.1, 6.2, 1.55, 7.4, 1.55);
     box(white, rx + 2.6, 7.9, 6.2, 1.9, 0.35, 1.9);
@@ -2456,9 +2456,9 @@ export function buildTown(data, scene) {
     box(mats.stone, 0, 0.12, fz + 24, b.width + 24, 0.16, 6.5);
     box(mats.stone, 0, 0.32, fz + 20.6, b.width + 24, 0.38, 0.7);
     const yardTrees = [
-      [b.width * 1.45, fz + 26, 2.5],
-      [-b.width * 1.25, fz + 22, 2.3],
-      [b.width * 0.15, -b.depth * 0.35, 1.6],
+      [b.width * 1.55, fz + 10, 3.4],
+      [-b.width * 1.45, fz + 12, 3.1],
+      [b.width * 0.4, -b.depth * 0.2, 2.2],
     ];
     for (const [x, z, scale] of yardTrees) {
       const spot = new THREE.Vector3(x, 0, z);
