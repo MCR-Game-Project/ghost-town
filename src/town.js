@@ -1354,24 +1354,80 @@ export function buildTown(data, scene) {
     return wallH + 10;
   };
 
-  // The older red-brick neighbor on the viewer's left in the same 2010 photograph.
-  const addArchedNeighbor = (b) => {
-    const wallH = b.stories * 12;
+  // North end of the 500 block, the corner in Mark's 2010 photograph.
+  // Round-arched upper windows, plate glass, a white canopy, and the letters M, C, and P.
+  const addMcpCorner = (b) => {
+    const wallH = 26;
     const body = mats.brick.red;
-    const fz = b.depth / 2 + 0.14;
+    const fz = b.depth / 2 + 0.16;
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
-    box(mats.stone, 0, 0.45, 0, b.width + 0.3, 0.9, b.depth + 0.3);
-    box(mats.stone, 0, wallH + 0.45, 0, b.width + 0.4, 0.9, b.depth + 0.3);
-    box(mats.reveal, 0, wallH * 0.6, fz - 0.02, 8.4, 9.6, 0.16);
-    box(mats.glass, 0, wallH * 0.56, fz + 0.05, 6.6, 7.4, 0.06);
-    box(mats.stone, 0, wallH * 0.56 - 4.2, fz + 0.1, 8.8, 0.28, 0.3);
-    archHood(mats.stone, 0, wallH * 0.56 + 3.4, fz + 0.16, 9.4, 5.4, "z");
-    const med = new THREE.CylinderGeometry(1.15, 1.15, 0.22, 16);
-    med.rotateX(Math.PI / 2);
-    med.translate(-b.width * 0.3, wallH * 0.84, fz + 0.05);
-    med.applyMatrix4(buildingMatrix);
-    put(mats.trim, med);
-    return wallH + 4;
+    box(mats.stone, 0, 0.55, 0, b.width + 0.5, 1.1, b.depth + 0.5);
+    box(body, 0, wallH + 1.15, 0, b.width + 0.35, 2.3, b.depth + 0.35);
+    box(mats.stone, 0, wallH - 0.15, fz, b.width + 0.2, 0.45, 0.35);
+    const finial = new THREE.SphereGeometry(1.05, 14, 10);
+    finial.translate(b.width * 0.08, wallH + 3.5, fz - 0.2);
+    finial.applyMatrix4(buildingMatrix);
+    put(mats.siding.red, finial);
+    const archAt = (x, y, z, w, h) => {
+      box(mats.reveal, x, y, z, w, h, 0.12);
+      box(mats.glass, x, y - 0.2, z + 0.06, w * 0.78, h * 0.72, 0.05);
+      box(mats.trim, x, y - 0.2, z + 0.1, 0.08, h * 0.7, 0.04);
+      archHood(mats.stone, x, y + h * 0.28, z + 0.12, w + 0.4, w * 0.48, "z");
+    };
+    const groups = [-b.width * 0.3, -b.width * 0.02, b.width * 0.26];
+    for (const gx of groups) {
+      for (const dx of [-2.3, 2.3]) archAt(gx + dx, wallH * 0.68, fz, 3.6, 6.4);
+    }
+    const plates = [-b.width * 0.34, -b.width * 0.08, b.width * 0.2];
+    for (const x of plates) {
+      box(mats.glass, x, 5.6, fz, 8.4, 7.2, 0.08);
+      box(mats.trim, x, 5.6, fz + 0.08, 0.1, 6.6, 0.04);
+      box(mats.stone, x, 9.4, fz + 0.1, 8.8, 0.28, 0.28);
+    }
+    const doorX = -b.width * 0.18;
+    box(mats.trim, doorX, 5.2, fz + 0.06, 4.2, 8.4, 0.16);
+    box(mats.glass, doorX - 0.7, 5.4, fz + 0.12, 1.3, 6.2, 0.05);
+    box(mats.glass, doorX + 0.7, 5.4, fz + 0.12, 1.3, 6.2, 0.05);
+    const canopyZ = fz + 3.4;
+    box(mats.siding.white, doorX, 11.4, canopyZ, 14, 0.28, 6.2);
+    for (const dx of [-5.2, 5.2]) {
+      const bracket = new THREE.TorusGeometry(2.4, 0.14, 6, 10, Math.PI / 2);
+      bracket.rotateY(Math.PI / 2);
+      bracket.translate(doorX + dx, 9.2, canopyZ - 0.4);
+      bracket.applyMatrix4(buildingMatrix);
+      put(mats.siding.white, bracket);
+    }
+    const gridley = -b.width / 2 - 0.12;
+    const along = Math.max(4, Math.round(b.depth / 14));
+    for (let i = 0; i < along; i++) {
+      const z = -b.depth / 2 + ((i + 0.5) * b.depth) / along;
+      sideSash(gridley, wallH * 0.68, z, -1, 3.4, 6.2, "round", false, mats.stone);
+      if (i % 2 === 0) box(mats.glass, gridley - 0.02, 5.4, z, 0.08, 6.2, 4.6);
+    }
+    const rot = (FACING[b.facing] ?? 0) + THREE.MathUtils.degToRad(b.rotation || 0);
+    const outward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
+    const right = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
+    const letters = [
+      ["M", b.width * 0.38],
+      ["C", b.width * 0.12],
+      ["P", -b.width * 0.16],
+    ];
+    for (const [letter, localX] of letters) {
+      const disk = new THREE.CylinderGeometry(1.35, 1.35, 0.2, 18);
+      disk.rotateX(Math.PI / 2);
+      disk.translate(localX, wallH * 0.9, fz + 0.02);
+      disk.applyMatrix4(buildingMatrix);
+      put(mats.siding.white, disk);
+      signs.push({
+        title: letter,
+        subtitle: "",
+        style: "painted",
+        position: new THREE.Vector3(b.x, wallH * 0.9, b.z).addScaledVector(right, localX).addScaledVector(outward, b.depth / 2 + 0.55),
+        rotation: rot,
+        width: 3.1,
+      });
+    }
+    return wallH + 8;
   };
 
   const addStore = (b, frame) => {
@@ -2107,7 +2163,7 @@ export function buildTown(data, scene) {
     else if (b.facade?.studBarn) height = addStudBarn(b);
     else if (b.facade?.hoseTower) height = addHoseTower(b);
     else if (b.facade?.ballCream) height = addBallCream(b);
-    else if (b.facade?.archedNeighbor) height = addArchedNeighbor(b);
+    else if (b.facade?.mcpCorner) height = addMcpCorner(b);
     else if (b.kind === "house") height = addHouse(b);
     else if (b.id === "hendee-house-26") height = addHendeeHouse(b);
     else if (b.kind === "frame-store") height = addStore(b, true);
