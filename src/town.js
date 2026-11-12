@@ -1396,38 +1396,44 @@ export function buildTown(data, scene) {
         put(red, oval);
       }
     }
-    const pedX = -b.width * 0.18;
-    drawPediment(body, b.width * 0.58, 5.4, wallH + 1.2, fz + 0.7, pedX);
-    const leftW = b.width * 0.64;
-    const bays = 3;
-    const gap = leftW / bays;
-    for (let i = 0; i <= bays; i++) {
-      const x = -b.width / 2 + 0.35 + i * gap;
-      box(red, x, wallH * 0.66, fz + 0.48, 0.85, 11.2, 0.85);
-      box(red, x, wallH * 0.66 + 5.8, fz + 0.58, 1.15, 0.5, 1.05);
-      box(mats.stone, x, wallH * 0.66 - 5.7, fz + 0.52, 1.05, 0.45, 1.0);
-    }
-    for (let col = 0; col < bays; col++) {
-      const x = -b.width / 2 + 0.35 + gap * (col + 0.5);
-      frontSash(x, wallH * 0.66, fz + 0.15, Math.max(3.2, gap - 1.15), 8.4, "flat", false, body);
-    }
-    box(body, 0, 11.4, fz + 0.3, b.width + 0.3, 0.7, 0.7);
-    const shopGlass = (x, gw) => {
-      box(red, x - gw / 2, 5.5, fz + 0.4, 0.85, 10.4, 0.85);
-      box(red, x + gw / 2, 5.5, fz + 0.4, 0.85, 10.4, 0.85);
-      box(body, x, 10.7, fz + 0.32, gw + 0.5, 0.5, 0.45);
-      box(mats.glass, x, 6.15, fz + 0.1, gw - 1.3, 7.2, 0.06);
-      box(mats.glass, x, 10.15, fz + 0.14, gw - 1.3, 1.45, 0.05);
-      box(body, x, 9.25, fz + 0.22, gw - 0.8, 0.16, 0.16);
-      box(mats.trimDark, x, 1.85, fz + 0.16, gw - 1.4, 1.35, 0.14);
+    const narrow = (x0, count, span) => {
+      const slot = span / count;
+      for (let i = 0; i <= count; i++) {
+        const x = x0 + i * slot;
+        box(red, x, wallH * 0.64, fz + 0.46, 0.48, 13.2, 0.58);
+        box(red, x, wallH * 0.64 + 6.8, fz + 0.58, 0.78, 0.42, 0.78);
+      }
+      for (let i = 0; i < count; i++) {
+        const x = x0 + (i + 0.5) * slot;
+        frontSash(x, wallH * 0.62, fz + 0.16, slot * 0.55, 9.6, "flat", false, body);
+      }
     };
-    shopGlass(-b.width * 0.34, b.width * 0.2);
-    shopGlass(-b.width * 0.12, b.width * 0.2);
-    const cx = b.width * 0.32;
+    const leftSpan = b.width * 0.62;
+    const leftX = -b.width / 2 + 0.6;
+    narrow(leftX, 6, leftSpan);
+    const pedX = leftX + leftSpan / 2;
+    drawPediment(body, b.width * 0.26, 3.1, wallH + 1.05, fz + 0.9, pedX);
+    const rightSpan = b.width * 0.28;
+    const rightX = b.width / 2 - rightSpan - 0.5;
+    narrow(rightX, 2, rightSpan);
+    box(body, 0, 11.55, fz + 0.28, b.width + 0.2, 0.55, 0.42);
+    const shopSpan = b.width * 0.94;
+    const shops = 4;
+    const sw = shopSpan / shops;
+    for (let i = 0; i <= shops; i++) {
+      box(red, -shopSpan / 2 + i * sw, 6.3, fz + 0.42, 0.62, 12.4, 0.7);
+    }
+    for (let i = 0; i < shops; i++) {
+      const x = -shopSpan / 2 + (i + 0.5) * sw;
+      box(mats.glass, x, 5.7, fz + 0.1, sw - 1.05, 8.6, 0.06);
+      box(mats.glass, x, 10.55, fz + 0.14, sw - 1.05, 1.7, 0.05);
+      box(body, x, 9.6, fz + 0.2, sw - 0.55, 0.16, 0.14);
+      box(mats.trimDark, x, 1.15, fz + 0.14, sw - 1.1, 1.05, 0.12);
+    }
+    const cx = rightX + rightSpan / 2;
     box(red, cx - b.width * 0.14, wallH * 0.7, fz + 0.35, 0.45, 9.4, 0.5);
     box(red, cx + b.width * 0.14, wallH * 0.7, fz + 0.35, 0.45, 9.4, 0.5);
     box(body, cx, wallH * 0.74, fz + 0.4, b.width * 0.22, 5.6, 0.2);
-    shopGlass(cx, b.width * 0.2);
     const vault = new THREE.CylinderGeometry(4.6, 4.6, b.depth * 0.42, 18, 1, false, 0, Math.PI);
     vault.rotateX(Math.PI / 2);
     vault.translate(cx, wallH + 3.4, -1.2);
@@ -1470,19 +1476,27 @@ export function buildTown(data, scene) {
       frontSash(x, y, z, w, h, "round", false, mats.trim);
       box(mats.trim, x, y + h * 0.48, z + 0.28, 0.55, 0.7, 0.35);
     };
-    const groups = [-b.width * 0.3, -b.width * 0.02, b.width * 0.26];
+    const endX = b.width * 0.34;
+    archAt(endX, wallH * 0.66, fz, 8.4, 9.2);
+    const diskEnd = new THREE.CylinderGeometry(1.7, 1.7, 0.5, 18);
+    diskEnd.rotateX(Math.PI / 2);
+    diskEnd.translate(endX, wallH * 0.94, fz + 0.42);
+    diskEnd.applyMatrix4(buildingMatrix);
+    put(mats.siding.white, diskEnd);
+    const groups = [-b.width * 0.28, -b.width * 0.02];
     for (const gx of groups) {
-      for (const dx of [-2.3, 2.3]) archAt(gx + dx, wallH * 0.68, fz, 3.6, 6.4);
+      for (const dx of [-2.6, 2.6]) archAt(gx + dx, wallH * 0.68, fz, 4.2, 7.6);
     }
-    const plates = [-b.width * 0.34, -b.width * 0.08, b.width * 0.22];
+    const plates = [-b.width * 0.32, -b.width * 0.04, b.width * 0.28];
     for (const x of plates) {
-      box(mats.reveal, x, 5.4, fz - 0.22, 7.4, 6.6, 0.18);
-      box(mats.glass, x, 5.8, fz + 0.06, 7.0, 5.8, 0.06);
-      box(body, x - 3.7, 5.6, fz + 0.16, 0.28, 6.8, 0.28);
-      box(body, x + 3.7, 5.6, fz + 0.16, 0.28, 6.8, 0.28);
-      box(mats.trim, x, 5.6, fz + 0.14, 0.1, 5.6, 0.06);
-      box(mats.stone, x, 1.7, fz + 0.2, 8.6, 1.1, 0.4);
-      box(mats.stone, x, 9.5, fz + 0.22, 8.8, 0.32, 0.4);
+      const gw = x > 0 ? 12 : 8.2;
+      box(mats.reveal, x, 5.6, fz - 0.22, gw, 8.4, 0.18);
+      box(mats.glass, x, 6.1, fz + 0.06, gw - 0.5, 7.6, 0.06);
+      box(body, x - gw / 2, 6.1, fz + 0.16, 0.32, 8.6, 0.32);
+      box(body, x + gw / 2, 6.1, fz + 0.16, 0.32, 8.6, 0.32);
+      box(mats.trim, x, 6.1, fz + 0.14, 0.1, 7.2, 0.06);
+      box(mats.stone, x, 1.4, fz + 0.2, gw + 0.8, 1.15, 0.4);
+      box(mats.stone, x, 10.4, fz + 0.22, gw + 1, 0.36, 0.4);
     }
     const doorX = -b.width * 0.18;
     box(mats.trim, doorX - 1.8, 5.2, fz + 0.16, 0.28, 8.4, 0.28);
@@ -2371,22 +2385,23 @@ export function buildTown(data, scene) {
         box(white, x, wallH - 1.35, z, 0.7, 0.7, 0.4);
       }
     }
-    const dormerW = 16;
-    const dz = fz - 2.2;
-    box(white, 0, wallH + 2.6, dz, dormerW - 0.6, 4.4, 5.5);
-    clapboardTriangle(white, dormerW, 6.6, wallH + 4.6, "z", dz + 2.9, 0, dz);
-    gableAt(dormerW + 0.8, 6.4, 6.6, wallH + 4.6, roof, 0, dz);
-    const tilt = Math.atan2(6.2, dormerW / 2);
-    const rakeLen = Math.hypot(dormerW / 2, 6.2);
-    for (const [angle, x] of [[tilt, -dormerW / 4], [Math.PI - tilt, dormerW / 4]]) {
-      const rake = new THREE.BoxGeometry(rakeLen, 0.7, 0.32);
+    const dormerW = 18;
+    const dormerX = -b.width * 0.16;
+    const dz = fz - 1.2;
+    box(white, dormerX, wallH + 3.2, dz, dormerW - 0.4, 5.6, 6.2);
+    clapboardTriangle(white, dormerW, 9.4, wallH + 5.6, "z", dz + 3.2, dormerX, dz);
+    gableAt(dormerW + 1.2, 7.2, 9.4, wallH + 5.6, roof, dormerX, dz);
+    const tilt = Math.atan2(9.4, dormerW / 2);
+    const rakeLen = Math.hypot(dormerW / 2, 9.4);
+    for (const [angle, x] of [[tilt, dormerX - dormerW / 4], [Math.PI - tilt, dormerX + dormerW / 4]]) {
+      const rake = new THREE.BoxGeometry(rakeLen, 0.85, 0.38);
       rake.applyMatrix4(new THREE.Matrix4().makeRotationZ(angle));
-      rake.applyMatrix4(new THREE.Matrix4().makeTranslation(x, wallH + 8.4 + 3.1, dz + 4.3));
+      rake.applyMatrix4(new THREE.Matrix4().makeTranslation(x, wallH + 5.6 + 4.7, dz + 3.5));
       rake.applyMatrix4(buildingMatrix);
       put(white, rake);
     }
-    box(white, 0, wallH + 14.6, dz + 4.2, 0.35, 1.6, 0.35);
-    for (const x of [-2.5, 2.5]) frontSash(x, wallH + 5.4, dz + 3.15, 2.6, 4.8, "round", false, white);
+    box(white, dormerX, wallH + 15.4, dz + 3.6, 0.42, 2.2, 0.42);
+    for (const x of [-2.8, 2.8]) frontSash(dormerX + x, wallH + 6.2, dz + 3.3, 2.8, 5.4, "round", false, white);
     const widePair = (x, y, w, h) => {
       frontSash(x - w * 0.26, y, fz + 0.22, w * 0.44, h, "flat", false, white);
       frontSash(x + w * 0.26, y, fz + 0.22, w * 0.44, h, "flat", false, white);
@@ -2456,9 +2471,8 @@ export function buildTown(data, scene) {
     box(mats.stone, 0, 0.12, fz + 24, b.width + 24, 0.16, 6.5);
     box(mats.stone, 0, 0.32, fz + 20.6, b.width + 24, 0.38, 0.7);
     const yardTrees = [
-      [b.width * 1.55, fz + 10, 3.4],
-      [-b.width * 1.45, fz + 12, 3.1],
-      [b.width * 0.4, -b.depth * 0.2, 2.2],
+      [b.width * 0.95, fz + 8, 4.2],
+      [-b.width * 0.55, fz + 6, 2.4],
     ];
     for (const [x, z, scale] of yardTrees) {
       const spot = new THREE.Vector3(x, 0, z);
@@ -2866,8 +2880,9 @@ export function buildTown(data, scene) {
       const stone = mats.stone.clone();
       stone.vertexColors = false;
       for (const side of [-1, 1]) {
-        const curbOff = side * (street.width / 2 + 0.4);
-        const walkOff = side * (street.width / 2 + 7.5);
+        const inset = opt.inset || 0;
+        const curbOff = side * (street.width / 2 - inset + 0.4);
+        const walkOff = side * (street.width / 2 - inset - 2.6);
         if (opt.curb) {
           const curb = new THREE.Mesh(
             street.axis === "x" ? new THREE.BoxGeometry(len, 0.45, 0.7) : new THREE.BoxGeometry(0.7, 0.45, len),
@@ -2927,8 +2942,10 @@ export function buildTown(data, scene) {
     const crafford = streetByName("Crafford Street");
     if (crafford) dressStreet({ ...crafford, from: 0, to: 450 }, { ruts: true, curb: true, walk: true, poles: true, trees: "spring" });
   }
+  const eastMain = streetByName("East Main Street");
+  if (eastMain) dressStreet({ ...eastMain, from: -520, to: 560 }, { curb: true, walk: true, inset: 8 });
   if (style.mains) {
-    for (const name of ["East Main Street", "West Main Street"]) {
+    for (const name of ["West Main Street"]) {
       const street = streetByName(name);
       if (!street) continue;
       dressStreet({ ...street, from: -520, to: 520 }, { curb: true, walk: true });

@@ -129,7 +129,7 @@ townGroup.name = "town";
 townGroup.rotation.y = ORIENT;
 scene.add(townGroup);
 const keys = new Set();
-const eye = 5.5;
+let eye = 5.5;
 const raycaster = new THREE.Raycaster();
 const clock = new THREE.Clock();
 
@@ -1194,10 +1194,10 @@ async function main() {
         camera.fov = Number(params.get("fov"));
         camera.updateProjectionMatrix();
       }
-      if (params.get("pitch")) {
-        pitch = Number(params.get("pitch"));
-        applyWalkCamera();
-      }
+      if (params.get("eye")) eye = Number(params.get("eye"));
+      else eye = 5.25;
+      if (params.get("pitch")) pitch = Number(params.get("pitch"));
+      applyWalkCamera();
     } else {
       const named = town.places.find((place) => place.id === shot);
       goToPlace(named || town.places.find((place) => place.id === "hail-main"));
