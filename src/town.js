@@ -189,7 +189,7 @@ export function buildTown(data, scene) {
   // Unnamed shops on Main, Hail, and Hurst. Bay width follows the street photographs:
   // a brick front is about twelve feet to a window, a false front about fourteen.
   // Door side alternates so the row is not a repeated stamp. No proprietor is painted on.
-  const drawStreetFront = (b, wallH, frame) => {
+  const drawStreetFront = (b, wallH, frame, groundOnly = false) => {
     const fz = b.depth / 2 + 0.14;
     const bays = frame
       ? Math.max(2, Math.min(3, Math.round(b.width / 14)))
@@ -199,7 +199,7 @@ export function buildTown(data, scene) {
     const archMat = frame ? mats.trim : mats.voussoir;
     const doorAt = idHash(b.id) % 2 === 0 ? bays - 1 : 0;
     const winW = Math.min(frame ? 3.4 : 4.6, Math.max(2.4, gap * 0.46));
-    if (b.stories > 1) {
+    if (b.stories > 1 && !groundOnly) {
       box(mats.stone, 0, wallH * 0.5, fz + 0.01, b.width * 0.94, 0.22, 0.12);
       for (let col = 0; col < bays; col++) {
         const x = -b.width / 2 + gap * (col + 0.5);
@@ -207,7 +207,7 @@ export function buildTown(data, scene) {
         if (b.stories > 2) frontSash(x, wallH * 0.42, fz, winW, 5.6, arch, false, archMat, frame);
       }
     }
-    if (!frame) {
+    if (!frame && !groundOnly) {
       box(mats.trim, 0, wallH - 0.15, fz + 0.05, b.width + 0.5, 0.55, 0.55);
       dentilCourse(wallH - 0.7, fz + 0.22, b.width);
       bracketRow(wallH - 0.85, fz, b.width);
@@ -237,6 +237,7 @@ export function buildTown(data, scene) {
       }
     }
     if (b.stories > 1) drawAwning(b.width * 0.9, fz, 10.6);
+    if (groundOnly) return;
     const party = b.party || [];
     for (const side of [-1, 1]) {
       if (party.includes(side === -1 ? "left" : "right")) continue;
@@ -253,41 +254,57 @@ export function buildTown(data, scene) {
   const drawFacade = (b, wallH) => {
     const f = b.facade;
     const fz = b.depth / 2 + 0.14;
-    const bays = Math.max(2, f.bays || 3);
+    const bays = Math.max(1, f.bays || 3);
+    const upperBays = Math.max(1, f.upperBays || bays);
     const gap = b.width / bays;
+    const upperGap = b.width / upperBays;
     const arch = f.arches || "flat";
-    const archMat = arch === "flat" ? mats.stone : mats.voussoir;
+    const archMat = f.hood === "cream" ? mats.siding.cream : f.hood === "white" ? mats.siding.white : arch === "flat" ? mats.stone : mats.voussoir;
     const doorAt =
       f.door === "center" ? Math.floor((bays - 1) / 2) : f.door === "left" ? 0 : f.door === "none" ? -1 : bays - 1;
-    const winW = Math.min(6.2, Math.max(2.8, gap * 0.48));
+    const winW = Math.min(6.2, Math.max(2.2, upperGap * 0.52));
     const winH = b.stories > 2 ? 6.1 : f.tall ? 8.6 : 7.3;
-    if (b.stories > 1) box(mats.stone, 0, wallH * 0.5, fz + 0.01, b.width * 0.96, 0.26, 0.14);
-    for (let col = 0; col < bays; col++) {
-      const x = -b.width / 2 + gap * (col + 0.5);
-      const gw = Math.max(2.8, gap - (f.storefront === "iron" ? 0.7 : 1.4));
-      if (col === doorAt) {
-        const dw = f.door === "center" ? Math.min(5.0, gap - 0.7) : Math.min(3.6, gap - 0.55);
-        paneledDoor(x, fz, dw, 7.4, true);
-        if (f.door === "center") box(mats.trim, x, 4.15, fz + 0.16, 0.1, 6.6, 0.04);
-      } else {
-        box(mats.trimDark, x, 1.1, fz, gw, 1.45, 0.2);
-        box(mats.reveal, x, 5.15, fz - 0.04, gw * 0.9, 5.4, 0.12);
-        box(mats.glass, x, 5.15, fz + 0.02, gw * 0.84, 5.15, 0.06);
-        box(mats.trim, x, 5.15, fz + 0.1, gw + 0.16, 5.7, 0.08);
-        box(mats.trim, x, 5.15, fz + 0.14, 0.08, 5.0, 0.04);
-        box(mats.glass, x, 8.25, fz + 0.02, gw * 0.84, 0.66, 0.05);
-        box(mats.stone, x, 8.7, fz + 0.1, gw + 0.22, 0.24, 0.22);
-        if (f.storefront === "iron") {
-          box(mats.trimDark, x - gw / 2 - 0.14, 4.9, fz + 0.12, 0.26, 8.6, 0.22);
-          box(mats.trimDark, x + gw / 2 + 0.14, 4.9, fz + 0.12, 0.26, 8.6, 0.22);
-          box(mats.stone, x - gw / 2 - 0.14, 0.55, fz + 0.16, 0.38, 0.7, 0.28);
-          box(mats.stone, x + gw / 2 + 0.14, 0.55, fz + 0.16, 0.38, 0.7, 0.28);
-          box(mats.trim, x - gw / 2 - 0.14, 9.05, fz + 0.16, 0.4, 0.3, 0.28);
-          box(mats.trim, x + gw / 2 + 0.14, 9.05, fz + 0.16, 0.4, 0.3, 0.28);
+    const plate = f.storefront === "plate";
+    if (b.stories > 1 && f.ground !== "keep") box(mats.stone, 0, wallH * 0.5, fz + 0.01, b.width * 0.96, 0.26, 0.14);
+    if (f.ground !== "keep") {
+      for (let col = 0; col < bays; col++) {
+        const x = -b.width / 2 + gap * (col + 0.5);
+        const gw = Math.max(2.8, gap - (f.storefront === "iron" || plate ? 0.55 : 1.4));
+        if (col === doorAt) {
+          const dw = f.door === "center" ? Math.min(5.0, gap - 0.7) : Math.min(3.6, gap - 0.55);
+          paneledDoor(x, fz, dw, plate ? 8.2 : 7.4, true);
+          if (f.door === "center") box(mats.trim, x, 4.15, fz + 0.16, 0.1, 6.6, 0.04);
+        } else if (plate) {
+          box(mats.siding.white, x, 0.7, fz, gw, 1.15, 0.18);
+          box(mats.glass, x, 5.4, fz + 0.04, gw * 0.92, 7.6, 0.06);
+          box(mats.trim, x, 5.4, fz + 0.1, 0.08, 7.4, 0.04);
+        } else {
+          box(f.brickBase ? brickOf(b) : mats.trimDark, x, f.brickBase ? 1.45 : 1.1, fz, gw, f.brickBase ? 2.5 : 1.45, 0.2);
+          box(mats.reveal, x, 5.15, fz - 0.04, gw * 0.9, 5.4, 0.12);
+          box(mats.glass, x, 5.15, fz + 0.02, gw * 0.84, 5.15, 0.06);
+          box(mats.trim, x, 5.15, fz + 0.1, gw + 0.16, 5.7, 0.08);
+          box(mats.trim, x, 5.15, fz + 0.14, 0.08, 5.0, 0.04);
+          box(mats.glass, x, 8.25, fz + 0.02, gw * 0.84, 0.66, 0.05);
+          box(mats.stone, x, 8.7, fz + 0.1, gw + 0.22, 0.24, 0.22);
+          if (f.storefront === "iron") {
+            box(mats.trimDark, x - gw / 2 - 0.14, 4.9, fz + 0.12, 0.26, 8.6, 0.22);
+            box(mats.trimDark, x + gw / 2 + 0.14, 4.9, fz + 0.12, 0.26, 8.6, 0.22);
+            box(mats.stone, x - gw / 2 - 0.14, 0.55, fz + 0.16, 0.38, 0.7, 0.28);
+            box(mats.stone, x + gw / 2 + 0.14, 0.55, fz + 0.16, 0.38, 0.7, 0.28);
+            box(mats.trim, x - gw / 2 - 0.14, 9.05, fz + 0.16, 0.4, 0.3, 0.28);
+            box(mats.trim, x + gw / 2 + 0.14, 9.05, fz + 0.16, 0.4, 0.3, 0.28);
+          }
         }
       }
-      if (b.stories > 1) frontSash(x, wallH * 0.72, fz, winW, winH, arch, false, archMat);
-      if (b.stories > 2) frontSash(x, wallH * 0.45, fz, winW * 0.92, winH * 0.86, arch, false, archMat);
+    }
+    if (b.stories > 1) {
+      const fill = f.upperFill === "russet" ? mats.siding.darkred : null;
+      for (let col = 0; col < upperBays; col++) {
+        const x = -b.width / 2 + upperGap * (col + 0.5);
+        frontSash(x, wallH * 0.72, fz, winW, winH, arch, false, archMat);
+        if (fill) box(fill, x, wallH * 0.72, fz + 0.1, winW * 0.7, winH * 0.72, 0.08);
+        if (b.stories > 2) frontSash(x, wallH * 0.45, fz, winW * 0.92, winH * 0.86, arch, false, archMat);
+      }
     }
     if (f.cornice === "bracket" || f.cornice === "plain" || f.cornice === "corbel") {
       box(mats.trim, 0, wallH - 0.2, fz, b.width + 0.5, 0.5, 0.5);
@@ -305,7 +322,21 @@ export function buildTown(data, scene) {
         box(mats.trim, x, wallH * 0.9, fz + 0.08, 0.85, 0.45, 0.36);
       }
     }
-    if (f.awning) drawAwning(b.width * 0.9, fz);
+    if (f.pentRoof) {
+      localBox(mats.roofSlate, 0, 10.5, fz + 2.3, b.width * 0.98, 0.2, 5.4, -0.38);
+      box(mats.trimDark, 0, 9.55, fz + 0.2, b.width, 0.28, 0.35);
+    } else if (f.awning) drawAwning(b.width * 0.9, fz);
+    if (f.stripedCanopy) {
+      const canopyW = b.width * 0.36;
+      const origin = b.width / 2 - canopyW / 2 - 0.3;
+      const stripes = 7;
+      const sw = canopyW / stripes;
+      for (let i = 0; i < stripes; i++) {
+        const sx = origin - canopyW / 2 + sw * (i + 0.5);
+        localBox(i % 2 ? mats.siding.white : mats.siding.red, sx, 10.7, fz + 2.15, sw * 0.98, 0.1, 4.6, -0.3);
+      }
+      box(mats.trimDark, origin, 10.15, fz + 4.2, canopyW, 0.16, 0.16);
+    }
     if (f.posts) {
       const z = b.depth / 2 + 3.1;
       const n = Math.max(2, bays);
@@ -642,6 +673,20 @@ export function buildTown(data, scene) {
     if (!b.sign) return;
     const rot = (FACING[b.facing] ?? 0) + THREE.MathUtils.degToRad(b.rotation || 0);
     const outward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
+    if (b.facade?.signBand) {
+      const right = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
+      const canopy = b.facade.stripedCanopy ? b.width * 0.34 : 0;
+      const width = Math.max(8, b.width - canopy - 1.4);
+      signs.push({
+        title: b.sign,
+        subtitle: "",
+        style: "band",
+        position: new THREE.Vector3(b.x, 10.5, b.z).addScaledVector(outward, b.depth / 2 + 0.7).addScaledVector(right, -canopy / 2),
+        rotation: rot,
+        width,
+      });
+      return;
+    }
     // A peaked false front carries its name in the gable, where the 1880s photograph puts BALL BROS.
     const peaked = b.facade?.peak;
     const depot = b.kind === "depot";
@@ -1443,6 +1488,10 @@ export function buildTown(data, scene) {
         // finished as a pediment with a cornice and returns.
         const rise = Math.min(10, Math.max(7.2, b.width * 0.34));
         drawPediment(body, b.width + 0.15, rise, wallH - 0.1, b.depth / 2 + 0.24);
+      } else if (b.facade?.flatTop) {
+        const fz = b.depth / 2 + 0.16;
+        box(body, 0, wallH + 1.1, fz, b.width + 0.3, 2.2, 0.8);
+        box(mats.trim, 0, wallH + 2.05, fz + 0.15, b.width + 0.5, 0.36, 0.4);
       } else {
         drawFalseFront(b, wallH, body);
       }
@@ -1462,6 +1511,7 @@ export function buildTown(data, scene) {
     if (b.facade?.peak) drawPeakedStorefront(b, wallH);
     else if (b.facade?.bays) drawFacade(b, wallH);
     else drawStreetFront(b, wallH, frame);
+    if (b.facade?.bays && b.facade?.ground === "keep") drawStreetFront(b, wallH, frame, true);
     if (b.facade?.cornerBay) {
       const bx = b.width / 2 - 4.5;
       const fz = b.depth / 2;

@@ -9,6 +9,72 @@
     "mickelberry-cold",
     "mickelberry-shed"
   ],
+  "update": [
+    {
+      "id": "grocery-0",
+      "name": "Something Special",
+      "sign": "Something Special",
+      "brick": "buff",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 4,
+        "upperBays": 6,
+        "hood": "cream",
+        "cornice": "bracket",
+        "cornerPediment": true,
+        "tall": true,
+        "storefront": "plate",
+        "door": "center",
+        "upperFill": "russet",
+        "signBand": true,
+        "stripedCanopy": true,
+        "photoDate": "2010. The sign is not drawn before the 1970 stop.",
+        "photoSource": "photo from Mark, E Main 400 block south end, 2010"
+      },
+      "sourceMap": "photo from Mark, E Main 400 block south end, 2010",
+      "notes": "photo from Mark, E Main 400 block south end, 2010. The Hurst-corner front of the 400 block is the wide cream brick building in that photograph: six upstairs windows filled with red-brown panels under cream hoods, a cornice with dentils and brackets, and a central pediment with a finial. The ground floor is glass, with a brown band reading Something Special and a red-and-white striped canopy at the right end. Something Special is the 2010 sign. It is not drawn before 1970. The earlier years keep the red brick bank front."
+    },
+    {
+      "id": "dry-goods-1",
+      "brick": "green",
+      "sign": "",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "hood": "white",
+        "cornice": "corbel",
+        "tall": true,
+        "storefront": "iron",
+        "door": "right",
+        "pentRoof": true,
+        "brickBase": true,
+        "photoDate": "2010",
+        "photoSource": "photo from Mark, E Main 400 block south end, 2010"
+      },
+      "notes": "photo from Mark, E Main 400 block south end, 2010. The front next to the Hurst corner is the green-painted brick building: three upstairs windows under white arched hoods, a corbelled cornice, a shingled pent roof, and a low brick base. No name is printed on this front. The 1907 iron storefront and canvas awning stay through 1960."
+    },
+    {
+      "id": "millinery-2",
+      "paint": "gray",
+      "sign": "",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 2,
+        "hood": "white",
+        "cornice": "plain",
+        "flatTop": true,
+        "tall": true,
+        "storefront": "plate",
+        "door": "right",
+        "photoDate": "2010",
+        "photoSource": "photo from Mark, E Main 400 block south end, 2010"
+      },
+      "notes": "photo from Mark, E Main 400 block south end, 2010. The third front north of the Hurst corner is painted gray-white, with two arched hoods upstairs and a later glass storefront. No name on that front was read. The earlier frame storefront stays through 1960."
+    }
+  ],
   "streets": [
     {
       "name": "Hillcrest Drive",

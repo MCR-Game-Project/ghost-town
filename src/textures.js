@@ -121,6 +121,10 @@ function brickMaps(kind = "red") {
             r = 196 + tone * 36;
             g = 176 + tone * 30;
             b = 142 + tone * 22;
+          } else if (kind === "green") {
+            r = 154 + tone * 24;
+            g = 164 + tone * 22;
+            b = 112 + tone * 16;
           }
           if (weather > 0.82) {
             r += 28;
@@ -549,6 +553,7 @@ function std(opts) {
 export function makeMaterials() {
   const brickTex = brickMaps();
   const buffTex = brickMaps("buff");
+  const greenTex = brickMaps("green");
   const sidingTex = sidingMaps(0.2);
   const shingleTex = shingleMaps();
   const tinTex = tinMaps();
@@ -612,6 +617,16 @@ export function makeMaterials() {
         normalMap: buffTex.normalMap,
         roughnessMap: buffTex.roughnessMap,
         color: "#efe2c8",
+        roughness: 1,
+        uvFeet: brickFeet,
+        vary: true,
+        normalScale: 0.8,
+      }),
+      green: std({
+        map: greenTex.map,
+        normalMap: greenTex.normalMap,
+        roughnessMap: greenTex.roughnessMap,
+        color: "#e4e6c8",
         roughness: 1,
         uvFeet: brickFeet,
         vary: true,
@@ -799,6 +814,24 @@ export function makeSignTexture(title, subtitle, style = "board") {
   c.width = 1024;
   c.height = subtitle ? 360 : 256;
   const g = c.getContext("2d");
+  if (style === "band") {
+    g.fillStyle = "#4a3424";
+    g.fillRect(0, 0, c.width, c.height);
+    g.fillStyle = "#f7f1e4";
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    let size = 92;
+    g.font = `italic 600 ${size}px Georgia, "Palatino Linotype", Palatino, serif`;
+    while (size > 40 && g.measureText(title).width > 960) {
+      size -= 4;
+      g.font = `italic 600 ${size}px Georgia, "Palatino Linotype", Palatino, serif`;
+    }
+    g.fillText(title, c.width / 2, c.height / 2);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 16;
+    return tex;
+  }
   if (style === "painted") {
     g.fillStyle = "#f4ead4";
     g.fillRect(0, 0, c.width, c.height);

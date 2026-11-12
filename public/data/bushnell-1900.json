@@ -362,10 +362,11 @@
         "tall": true,
         "storefront": "iron",
         "door": "right",
+        "hood": "white",
         "photoDate": "1907",
         "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907."
       },
-      "notes": "Facade matched to Mark's 1907 photograph of the 400 block of East Main, Hurst to Hail, the Crafford side. Round arches, a corbelled and bracketed cornice, an awning, and sidewalk posts are from that picture. The lot within the block is an estimate. The January 1886 Sanborn already shows storefronts along this side.",
+      "notes": "Facade matched to Mark's 1907 photograph of the 400 block of East Main, Hurst to Hail, the Crafford side. Round arches, a corbelled and bracketed cornice, an awning, and sidewalk posts are from that picture. The lot within the block is an estimate. The January 1886 Sanborn already shows storefronts along this side. photo from Mark, E Main 400 block south end, 2010, shows this next front north of the Hurst corner with three upstairs windows under white hoods and the same corbelled cornice. The green paint is the 2010 photograph and is not drawn in this year.",
       "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
     },
     {
@@ -381,10 +382,9 @@
         "storefront": "iron",
         "door": "right",
         "photoDate": "1907",
-        "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907.",
-        "cornerPediment": true
+        "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907."
       },
-      "notes": "Facade matched to Mark's 1907 photograph of the 400 block of East Main, Hurst to Hail, the Crafford side. Round arches, a corbelled and bracketed cornice, an awning, and sidewalk posts are from that picture. The lot within the block is an estimate. The January 1886 Sanborn already shows storefronts along this side. The center pediment is the ornate front near the middle of that photograph. Which door it is on the block is an estimate.",
+      "notes": "Facade matched to Mark's 1907 photograph of the 400 block of East Main, Hurst to Hail, the Crafford side. Round arches, a corbelled and bracketed cornice, an awning, and sidewalk posts are from that picture. The lot within the block is an estimate. The January 1886 Sanborn already shows storefronts along this side. A center pediment was tried on this bay as an estimate of the 1907 photograph. photo from Mark, E Main 400 block south end, 2010, shows that pediment on the Hurst-corner front, so it is not drawn here.",
       "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
     },
     {
@@ -672,8 +672,27 @@
       "notes": "The building immediately southwest of the Hotel Alexander. Mark's postcard shows a lower two-story front with an enclosed upper bay and a covered wooden balcony. No sign on it was readable."
     },
     {
+      "id": "millinery-2",
+      "paint": "gray",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 2,
+        "hood": "white",
+        "cornice": "plain",
+        "flatTop": true,
+        "tall": true,
+        "ground": "keep",
+        "photoDate": "The photograph is dated 2010. No date was found for these two hoods. They are drawn from the 1900 stop with the other 400-block fronts. That start is an estimate.",
+        "photoSource": "photo from Mark, E Main 400 block south end, 2010"
+      },
+      "notes": "photo from Mark, E Main 400 block south end, 2010. The third front north of the Hurst corner is the gray-white front with two arched hoods. No Sanborn label was read for this door, and the 1907 photograph was not used to name it. The earlier frame storefront stays. The modern ground floor is the 2010 photograph and is not drawn in this year.",
+      "sourceMap": "photo from Mark, E Main 400 block south end, 2010"
+    },
+    {
       "id": "grocery-0",
       "name": "Bank of Bushnell",
+      "use": "bank",
       "kind": "brick-store",
       "material": "brick",
       "brick": "red",
@@ -693,9 +712,11 @@
         "tall": true,
         "storefront": "iron",
         "upperSign": "DENTIST",
+        "upperBays": 6,
+        "hood": "cream",
         "photoSource": "Mark's undated photograph of the 400 block of East Main, looking north, and the postcard from the 300 block."
       },
-      "notes": "The Hurst corner of the 400 block of East Main, Crafford side, block 59. Mark's view looking north, and the postcard taken from the 300 block, both show this corner as a two-story red brick bank. The signs read BANK OF BUSHNELL and DENTIST. A 1900 paving petition names the Bank of Bushnell as the end of an East Main stretch, and does not give the lot. No Sanborn label for this bank was read. The corner is the one across Hurst from the 300 block. The partial grocery word farther down the block is not copied as a firm name."
+      "notes": "The Hurst corner of the 400 block of East Main, Crafford side, block 59. Mark's view looking north, and the postcard taken from the 300 block, both show this corner as a two-story red brick bank. The signs read BANK OF BUSHNELL and DENTIST. A 1900 paving petition names the Bank of Bushnell as the end of an East Main stretch, and does not give the lot. No Sanborn label for this bank was read. The corner is the one across Hurst from the 300 block. The partial grocery word farther down the block is not copied as a firm name. photo from Mark, E Main 400 block south end, 2010, shows six tall upstairs windows under cream hoods, and a cornice with dentils, brackets, and a central pediment and finial. Those upper details are drawn here. The brick stays red, which is what the earlier photograph shows. The cream paint, the filled panels, and the ground-floor sign are the 2010 photograph and are not drawn in this year."
     },
     {
       "id": "block72-1893-meat",

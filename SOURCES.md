@@ -495,6 +495,16 @@ Mark's photograph is the 400 block in 1907. On the numbering used here, 400 star
 
 The brick fronts take the photograph's tall round arches, corbelled and bracketed cornices, awnings, and sidewalk posts. One wider front, an estimate of which bay, carries the center pediment. The only sign read in the picture is BOSTON STORE, put on one brick front as an estimate of the bay. The centennial walk also names a Boston Store on East Main and does not give the lot. Other signs in the picture were not clear, so no other name was added. The poles along this block and the 400 block of West Main are in the pictures. The street was already dirt. These fronts appear at the 1900 stop, the stop a year of 1907 uses. In 1870 the store row is not drawn.
 
+photo from Mark, E Main 400 block south end, 2010. The south end is the Hurst end. Looking at the Crafford side, the corner is on the right. Three fronts stand there, and they are the three already in the row. The corner is the bank front. The next is the dry-goods stand-in. The third is the frame millinery stand-in. The 2010 photograph shows later ground floors, so those stay off until the 1970 stop. The iron storefronts, the canvas awnings, and the bank signs stay through 1960.
+
+The upper floor of the corner front has six tall windows under cream hoods. The cornice has dentils, brackets, and a central pediment with a finial. The looking-north photograph already calls this corner red brick with a pediment, so the brick stays red until 1970. The six windows and the cream hoods are the 2010 count, and the earlier bay count on this door was not read from a Sanborn sheet. At the 1970 stop the wall is the cream brick of the photograph, the windows are filled with red-brown panels, and the ground floor is glass under a brown band. The band reads Something Special. That is a 2010 sign, so it is not drawn before 1970. A red-and-white striped canopy covers the right end of that ground floor, and only in 1970.
+
+The next front keeps three round-arched windows, white hoods, and the corbelled cornice from 1900. The green paint, the shingled pent roof, and the low brick base are the 2010 photograph, drawn at the 1970 stop. No name is printed on that front.
+
+The third front is the frame shop. From 1900 it has two arched hoods and a plain top. The 2010 glass storefront is drawn at the 1970 stop. No name on it was read.
+
+The 1907 pediment had been placed on a wider front farther up the block, and that bay was an estimate. The 2010 photograph shows the pediment on the Hurst-corner front, which already carries one, so the farther pediment is taken off.
+
 ### West Main, 400 and 500 blocks, and the Hotel Alexander
 
 Mark's street photograph is captioned "West Main Street, Bushnell, Ill. Early 1900s." He dates it 1907. The car looks later than 1907, so the year is his and the caption's "early 1900s" is kept. The 400 block is the near, left-hand part, and the street runs on toward the 500 block, so the camera looks northeast. The buildings on the left are then the Dean side: block 60, Hurst to Hail, and block 47, Hail to Gridley. Sanborn sheets for block 60 are January 1886 sheet 3 and March 1906 sheet 4. Block 47 is on the same sheets. Door names were not copied.
