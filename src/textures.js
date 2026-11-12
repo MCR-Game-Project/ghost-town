@@ -783,12 +783,12 @@ export function makeMaterials() {
     voussoir: std({ color: "#8a4036", roughness: 0.86, uvFeet: { u: 2, v: 2 } }),
     reveal: std({ color: "#1c140f", roughness: 0.95, uvFeet: { u: 4, v: 4 } }),
     glass: std({
-      color: "#9eb4c0",
-      roughness: 0.08,
-      metalness: 0.58,
-      envMapIntensity: 1.45,
-      emissive: "#243038",
-      emissiveIntensity: 0.04,
+      color: "#4d6270",
+      roughness: 0.1,
+      metalness: 0.74,
+      envMapIntensity: 1.7,
+      emissive: "#1c2830",
+      emissiveIntensity: 0.03,
       uvFeet: { u: 8, v: 8 },
     }),
     stone: std({
