@@ -2321,19 +2321,18 @@ export function buildTown(data, scene) {
     {
       const canvas = document.createElement("canvas");
       canvas.width = 256;
-      canvas.height = 128;
+      canvas.height = 256;
       const g = canvas.getContext("2d");
-      g.fillStyle = "#c9c0b2";
-      g.fillRect(0, 0, 256, 128);
+      g.fillStyle = "#b3aa9c";
+      g.fillRect(0, 0, 256, 256);
       const bw = 64;
       const bh = 32;
-      const mortar = 4;
-      for (let row = 0; row < 4; row++) {
+      const mortar = 5;
+      for (let row = 0; row < 8; row++) {
         const off = row % 2 ? bw / 2 : 0;
         for (let col = -1; col < 5; col++) {
           const n = ((row * 3 + col * 5) % 5) - 2;
-          const pink = (row + col) % 7 === 0 ? 8 : 0;
-          g.fillStyle = `rgb(${216 + n + pink}, ${205 + n}, ${187 + n - pink * 0.4})`;
+          g.fillStyle = `rgb(${216 + n * 3}, ${205 + n * 2}, ${187 + n * 2})`;
           g.fillRect(col * bw + off + mortar, row * bh + mortar, bw - mortar * 2, bh - mortar * 2);
         }
       }
@@ -2341,9 +2340,11 @@ export function buildTown(data, scene) {
       tex.colorSpace = THREE.SRGBColorSpace;
       tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
       body.map = tex;
-      body.color.set("#D8CDBB");
-      body.userData.uvFeet = { u: 2.7, v: 1.35 };
+      body.color.set("#ffffff");
+      body.userData.uvFeet = { u: 2.4, v: 2.4 };
     }
+    const pink = body.clone();
+    pink.color.set("#f0ddd4");
     const headBrick = mats.brick.red.clone();
     headBrick.color.set("#9a4538");
     const wood = mats.trimDark.clone();
@@ -2358,6 +2359,9 @@ export function buildTown(data, scene) {
     const fz = b.depth / 2 + 0.12;
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.stone, 0, 0.35, 0, b.width + 0.2, 0.7, b.depth + 0.2);
+    for (const [px, py, pw, ph] of [[-10.4, 28.4, 3.4, 1.5], [-12.2, 24.6, 1.8, 2.4], [-5.5, 29.6, 2.6, 1.2], [-11.6, 18.8, 1.5, 1.8]]) {
+      box(pink, px, py, fz + 0.04, pw, ph, 0.08);
+    }
     const flatFace = (mat, x, y, z, radius, thick) => {
       const shape = new THREE.Shape();
       shape.moveTo(radius, 0);
@@ -2523,32 +2527,37 @@ export function buildTown(data, scene) {
       geo.applyMatrix4(buildingMatrix);
       put(mat, geo);
     };
-    const surround = (x, y, w, h) => {
-      const sill = y - h * 0.46;
-      const spring = y + h * 0.12;
-      const rad = w * 0.4;
-      box(mats.trim, x, y - 0.2, fz + 0.16, w * 0.7, h * 0.86, 0.16);
-      for (let k = 0; k < 8; k++) {
-        box(inset, x, sill + 0.4 + k * (h * 0.09), fz + 0.28, w * 0.52, 0.04, 0.03);
+    const archMat = new THREE.MeshStandardMaterial({ color: "#f6f3ec", roughness: 0.76 });
+    const surround = (x, y, w, h, glass) => {
+      const sill = y - h * 0.48;
+      const spring = y + h * 0.02;
+      const rad = w * 0.36;
+      const openingH = spring - sill;
+      if (glass) {
+        box(mats.reveal, x, (sill + spring) / 2, fz - 0.02, w * 0.58, openingH * 0.92, 0.16);
+        box(mats.glass, x, (sill + spring) / 2, fz + 0.08, w * 0.46, openingH * 0.82, 0.04);
+        box(archMat, x - w * 0.34, (sill + spring) / 2, fz + 0.24, 0.08, openingH, 0.12);
+        box(archMat, x + w * 0.34, (sill + spring) / 2, fz + 0.24, 0.08, openingH, 0.12);
+        box(archMat, x, sill, fz + 0.24, w * 0.76, 0.08, 0.12);
+      } else {
+        box(archMat, x, (sill + spring) / 2, fz + 0.16, w * 0.58, openingH * 0.96, 0.14);
+        for (let k = 0; k < 7; k++) {
+          box(inset, x, sill + 0.35 + k * (openingH * 0.12), fz + 0.26, w * 0.42, 0.035, 0.03);
+        }
+        box(archMat, x - w * 0.38, (sill + spring) / 2, fz + 0.36, 0.16, openingH, 0.24);
+        box(archMat, x + w * 0.38, (sill + spring) / 2, fz + 0.36, 0.16, openingH, 0.24);
+        box(archMat, x, sill, fz + 0.36, w * 0.92, 0.14, 0.26);
       }
-      box(mats.trim, x, sill, fz + 0.4, w + 0.2, 0.16, 0.34);
-      box(mats.trim, x - w * 0.42, (sill + spring) / 2, fz + 0.42, 0.2, spring - sill, 0.3);
-      box(mats.trim, x + w * 0.42, (sill + spring) / 2, fz + 0.42, 0.2, spring - sill, 0.3);
-      const n = 7;
-      for (let k = 0; k < n; k++) {
-        const ang = (Math.PI * (k + 0.5)) / n;
-        const geo = new THREE.BoxGeometry(0.4, 0.28, 0.32);
-        geo.rotateZ(ang - Math.PI / 2);
-        geo.translate(x + Math.cos(ang) * rad, spring + Math.sin(ang) * rad, fz + 0.46);
-        geo.applyMatrix4(buildingMatrix);
-        put(mats.trim, geo);
-      }
-      box(mats.trim, x, spring + rad + 0.1, fz + 0.52, 0.34, 0.4, 0.3);
+      const arch = new THREE.TorusGeometry(rad, glass ? 0.07 : 0.13, 8, 24, Math.PI);
+      arch.translate(x, spring, fz + (glass ? 0.26 : 0.4));
+      arch.applyMatrix4(buildingMatrix);
+      put(archMat, arch);
+      box(archMat, x, spring + rad, fz + (glass ? 0.28 : 0.42), 0.16, glass ? 0.2 : 0.26, 0.14);
     };
     const leftXs = [-10.6, -6.7, -2.8];
     const rightXs = [2.3, 5.5, 8.7];
-    for (const x of leftXs) surround(x, 21.2, 2.7, 12.4);
-    for (const x of rightXs) surround(x, 18.8, 2.15, 10.8);
+    for (const x of leftXs) surround(x, 21.2, 2.7, 12.4, false);
+    for (const x of rightXs) surround(x, 18.8, 2.15, 11.4, true);
     const xs = rightXs;
     const gap = rightXs[1] - rightXs[0];
     const panelMid = (xs[0] + xs[2]) / 2;
