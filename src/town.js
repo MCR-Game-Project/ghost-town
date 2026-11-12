@@ -532,7 +532,7 @@ export function buildTown(data, scene) {
     const fl = push(x0, y0, zf, 0, 0, 1);
     const fr = push(x1, y0, zf, 0, 0, 1);
     const fp = push(0, y1, zf, 0, 0, 1);
-    tri(fl, fp, fr);
+      tri(fl, fr, fp);
     const bl = push(x0, y0, zb, 0, 0, -1);
     const bp = push(0, y1, zb, 0, 0, -1);
     const br = push(x1, y0, zb, 0, 0, -1);
@@ -2102,66 +2102,180 @@ export function buildTown(data, scene) {
     return plate + 16;
   };
 
+  // 2010 south end of the 400 block. Cream paint, filled panels, and the
+  // Something Special band are the photograph. The 1900 stop keeps the red bank.
+  const addSomethingSpecial = (b) => {
+    const wallH = 28;
+    const body = mats.trim.clone();
+    body.color.set("#e6dcc8");
+    body.roughness = 0.9;
+    const russet = mats.siding.red.clone();
+    russet.map = null;
+    russet.normalMap = null;
+    russet.roughnessMap = null;
+    russet.color.set("#a56a62");
+    const brown = mats.trimDark.clone();
+    brown.color.set("#3f2c24");
+    const fz = b.depth / 2;
+    box(body, 0, wallH / 2, -0.15, b.width, wallH, b.depth - 0.3);
+    box(mats.stone, 0, 0.55, 0, b.width + 0.4, 1.1, b.depth + 0.3);
+    const count = 6;
+    const span = b.width * 0.88;
+    for (let i = 0; i < count; i++) {
+      const x = -span / 2 + (span * (i + 0.5)) / count;
+      const w = 2.55;
+      const h = 7.4;
+      const y = 18.4;
+      box(russet, x, y, fz - 0.05, w * 0.78, h * 0.86, 0.1);
+      box(mats.trim, x - w / 2, y, fz + 0.12, 0.16, h, 0.22);
+      box(mats.trim, x + w / 2, y, fz + 0.12, 0.16, h, 0.22);
+      box(mats.trim, x, y + h / 2, fz + 0.16, w + 0.2, 0.18, 0.28);
+      box(mats.trim, x, y + h / 2 + 0.32, fz + 0.42, w + 0.7, 0.28, 0.7);
+      box(mats.trim, x, y - h / 2 - 0.16, fz + 0.28, w + 0.5, 0.16, 0.4);
+    }
+    const cy = 24.8;
+    box(body, 0, cy - 0.2, fz + 0.12, b.width, 1.1, 0.8);
+    dentilCourse(cy + 0.05, fz + 0.55, b.width * 0.96, { w: 0.26, h: 0.28, d: 0.26, gap: 0.7 });
+    bracketRow(cy - 0.7, fz + 0.08, b.width * 0.94, mats.trim);
+    box(mats.trim, 0, cy + 0.42, fz + 0.72, b.width + 0.5, 0.28, 0.95);
+    const paraBottom = cy + 0.28;
+    box(body, 0, paraBottom + 1.35, fz - 0.05, b.width, 2.5, 1.5);
+    box(mats.trim, 0, paraBottom + 2.65, fz + 0.08, b.width + 0.3, 0.18, 1.55);
+    drawPediment(body, b.width * 0.46, 2.6, paraBottom + 2.55, fz + 0.12);
+    const finial = new THREE.SphereGeometry(0.32, 12, 8);
+    finial.translate(0, paraBottom + 5.5, fz + 0.35);
+    finial.applyMatrix4(buildingMatrix);
+    put(mats.trim, finial);
+    box(brown, -b.width * 0.08, 12.15, fz + 0.32, b.width * 0.5, 2.15, 0.32);
+    const aw = b.width * 0.3;
+    const ax = b.width * 0.3;
+    for (let i = 0; i < 9; i++) {
+      box(i % 2 ? mats.siding.white : russet, ax - aw / 2 + ((i + 0.5) * aw) / 9, 12.15, fz + 0.38, aw / 9 - 0.04, 2.05, 0.18);
+    }
+    box(mats.reveal, 0, 6.2, fz - 0.12, b.width * 0.9, 7.2, 0.12);
+    box(mats.glassShop, -b.width * 0.22, 6.1, fz + 0.02, b.width * 0.28, 6.4, 0.05);
+    box(mats.glassShop, b.width * 0.22, 6.1, fz + 0.02, b.width * 0.32, 6.4, 0.05);
+    box(mats.trim, 0, 6.1, fz + 0.1, 0.14, 6.6, 0.12);
+    const rot = (FACING[b.facing] ?? 0) + THREE.MathUtils.degToRad(b.rotation || 0);
+    const outward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
+    const right = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
+    signs.push({
+      title: "Something Special",
+      subtitle: "",
+      style: "band",
+      position: new THREE.Vector3(b.x, 12.15, b.z).addScaledVector(right, -b.width * 0.08).addScaledVector(outward, b.depth / 2 + 0.7),
+      rotation: rot,
+      width: b.width * 0.46,
+    });
+    return wallH + 10;
+  };
+
+  // The green front just north of Something Special, from the same 2010 photograph.
+  const addGreenNeighbor = (b) => {
+    const wallH = 24;
+    const body = mats.brick.green.clone();
+    body.color.set("#c5c6a2");
+    const fz = b.depth / 2;
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(mats.brick.red, 0, 1.3, fz + 0.05, b.width, 2.6, 0.8);
+    const n = 3;
+    const gap = b.width / n;
+    for (let i = 0; i < n; i++) {
+      const x = -b.width / 2 + gap * (i + 0.5);
+      frontSash(x, 16.2, fz, Math.min(3.2, gap - 1.4), 6.4, "segmental", false, mats.trim);
+    }
+    box(body, 0, wallH + 0.4, fz + 0.05, b.width, 1.1, 0.7);
+    const corbels = Math.max(8, Math.round(b.width / 1.5));
+    for (let i = 0; i < corbels; i++) {
+      const x = -b.width / 2 + ((i + 0.5) * b.width) / corbels;
+      box(body, x, wallH - 0.55, fz + 0.28, 0.55, 0.7, 0.4);
+    }
+    localBox(mats.roof, 0, 11.4, fz + 1.6, b.width * 0.96, 0.16, 3.2, -0.35);
+    box(mats.reveal, 0, 5.6, fz - 0.05, b.width * 0.86, 6.2, 0.1);
+    box(mats.glassShop, 0, 5.6, fz + 0.04, b.width * 0.72, 5.6, 0.05);
+    return wallH + 4;
+  };
+
+  // The gray front with two arched hoods, third north of the Hurst corner.
+  const addGrayHoods = (b) => {
+    const wallH = 22;
+    const body = mats.siding.gray.clone();
+    body.color.set("#d9d4cc");
+    const fz = b.depth / 2;
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(body, 0, wallH + 0.7, fz, b.width + 0.2, 1.5, 0.6);
+    box(mats.trim, 0, wallH + 1.4, fz + 0.12, b.width + 0.3, 0.16, 0.4);
+    for (const x of [-b.width * 0.22, b.width * 0.22]) {
+      frontSash(x, 14.6, fz, 3.1, 6.2, "round", false, mats.trimDark);
+    }
+    box(mats.reveal, 0, 5.2, fz - 0.04, b.width * 0.8, 6.4, 0.1);
+    box(mats.glassShop, 0, 5.2, fz + 0.04, b.width * 0.66, 5.8, 0.05);
+    return wallH + 4;
+  };
+
   // Hurst Street just east of East Main, the two 2010 storefronts.
   const addHurstBuff = (b) => {
-    const wallH = 24;
-    const body = mats.brick.buff;
-    const wood = mats.siding.darkred;
+    const wallH = 26;
+    const body = mats.brick.buff.clone();
+    body.color.set("#c4b48a");
+    const wood = mats.trimDark.clone();
+    wood.color.set("#6a3a30");
     const fz = b.depth / 2 + 0.14;
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
-    box(mats.stone, 0, 0.4, 0, b.width + 0.3, 0.8, b.depth + 0.3);
-    box(body, 0, wallH + 0.7, fz, b.width + 0.4, 1.3, 0.7);
-    const n = Math.max(8, Math.round(b.width / 1.6));
-    for (let i = 0; i < n; i++) {
-      const x = -b.width / 2 + ((i + 0.5) * b.width) / n;
-      box(body, x, wallH - 0.35, fz + 0.15, 0.7, 0.7, 0.45);
-    }
+    box(mats.stone, 0, 0.45, 0, b.width + 0.3, 0.9, b.depth + 0.3);
     const cols = 4;
     const gap = b.width / cols;
     for (let i = 0; i < cols; i++) {
       const x = -b.width / 2 + gap * (i + 0.5);
-      box(mats.plank, x, wallH * 0.68, fz, gap - 1.6, 8.2, 0.16);
-      box(mats.trimDark, x, wallH * 0.68, fz + 0.08, 0.12, 7.6, 0.06);
-      archHood(body, x, wallH * 0.68 + 3.6, fz + 0.12, gap - 1.2, 2.2, "z");
+      const w = Math.min(3.4, gap - 1.5);
+      box(wood, x, 17.2, fz + 0.02, w * 0.72, 7.2, 0.1);
+      frontSash(x, 17.2, fz, w, 7.4, "segmental", false, body, false, false);
+      box(wood, x, 17.2, fz + 0.16, 0.1, 6.6, 0.06);
     }
-    box(wood, 0, 6.2, fz + 0.2, b.width + 0.2, 11.2, 0.5);
-    for (const x of [-b.width * 0.26, b.width * 0.26]) {
-      box(mats.glass, x, 5.4, fz + 0.62, b.width * 0.3, 6.6, 0.08);
-      archHood(wood, x, 8.5, fz + 0.48, b.width * 0.38, 4.4, "z");
-      archHood(mats.glass, x, 8.6, fz + 0.66, b.width * 0.3, 3.2, "z");
-      box(wood, x, 5.2, fz + 0.62, 0.4, 8.4, 0.22);
+    const cy = wallH - 0.4;
+    box(body, 0, cy, fz + 0.08, b.width, 1.2, 0.7);
+    const corbels = Math.max(10, Math.round(b.width / 1.4));
+    for (let i = 0; i < corbels; i++) {
+      const x = -b.width / 2 + ((i + 0.5) * b.width) / corbels;
+      box(body, x, cy - 0.7, fz + 0.32, 0.5, 0.85, 0.42);
     }
-    box(wood, 0, 5.6, fz + 0.7, b.width * 0.14, 9.2, 0.34);
+    box(body, 0, cy + 0.7, fz + 0.2, b.width + 0.3, 0.7, 0.55);
+    box(wood, 0, 6.4, fz + 0.16, b.width, 11.4, 0.4);
+    for (const x of [-b.width * 0.24, b.width * 0.24]) {
+      voussoirArch(wood, mats.trim, x, 8.2, fz + 0.42, b.width * 0.32);
+      box(mats.glassShop, x, 5.6, fz + 0.08, b.width * 0.22, 6.2, 0.05);
+    }
+    box(wood, 0, 6.2, fz + 0.28, b.width * 0.1, 8.4, 0.22);
     return wallH + 4;
   };
 
   const addHurstPressed = (b) => {
-    const wallH = 24;
+    const wallH = 26;
     const body = mats.brick.red;
     const black = mats.coal;
     const fz = b.depth / 2 + 0.14;
-    box(body, 0, wallH / 2 + 2, 0, b.width, wallH - 4, b.depth);
-    box(mats.siding.gray, 0, 1.3, 0, b.width, 2.6, b.depth);
-    box(mats.siding.white, 0, 7.2, fz + 0.08, b.width, 8.4, 0.35);
-    box(black, 0, 11.6, fz + 0.12, b.width + 0.2, 0.7, 0.28);
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(mats.siding.gray, 0, 1.2, 0, b.width, 2.4, b.depth);
+    box(mats.siding.white, 0, 6.6, fz + 0.06, b.width, 8.2, 0.28);
+    box(black, 0, 10.9, fz + 0.16, b.width + 0.1, 0.55, 0.22);
     const piers = 5;
     for (let i = 0; i < piers; i++) {
       const x = -b.width / 2 + (b.width * i) / (piers - 1);
-      box(black, x, 6.4, fz + 0.2, 0.45, 10, 0.28);
+      box(black, x, 6.2, fz + 0.22, 0.42, 10.2, 0.28);
     }
-    for (const x of [-b.width * 0.28, b.width * 0.05, b.width * 0.32]) {
-      box(mats.glass, x, 6.2, fz + 0.28, 2.2, 3.2, 0.06);
-    }
-    box(mats.siding.white, b.width * 0.18, 4.8, fz + 0.3, 2.4, 6.4, 0.12);
+    box(mats.siding.white, 0, 5.4, fz + 0.2, b.width * 0.16, 6.6, 0.12);
     const cols = 5;
-    const gap = (b.width - 2) / cols;
+    const gap = (b.width - 1.2) / cols;
     for (let i = 0; i < cols; i++) {
-      const x = -b.width / 2 + 1 + gap * (i + 0.5);
-      box(mats.siding.white, x, wallH * 0.7, fz, gap - 1.1, 8.4, 0.14);
-      archHood(mats.siding.white, x, wallH * 0.7 + 3.4, fz + 0.16, gap - 0.5, 2.6, "z");
+      const x = -b.width / 2 + 0.6 + gap * (i + 0.5);
+      box(mats.siding.white, x, 17.4, fz + 0.02, gap * 0.55, 7.2, 0.1);
+      frontSash(x, 17.4, fz, Math.min(2.8, gap - 1.1), 7.2, "round", false, mats.siding.white, false, false);
     }
-    box(black, 0, wallH + 0.45, fz, b.width + 0.5, 1.1, 0.7);
-    drawPediment(black, b.width * 0.34, 4.2, wallH + 0.8, fz + 0.2);
+    const cy = wallH - 0.2;
+    box(black, 0, cy, fz + 0.2, b.width + 0.4, 1.3, 0.85);
+    box(black, 0, cy + 1.15, fz + 0.05, b.width, 1.6, 0.7);
+    box(black, 0, cy + 2.0, fz + 0.18, b.width + 0.3, 0.22, 0.55);
+    drawPediment(black, b.width * 0.38, 2.4, cy + 1.9, fz + 0.16);
     return wallH + 8;
   };
 
@@ -2177,14 +2291,17 @@ export function buildTown(data, scene) {
     box(red, 0, brickH + 0.2, 0, b.width + 0.7, 0.45, b.depth + 0.7);
     box(slate, 0, brickH + 5.5, 0, b.width - 0.8, 9, b.depth - 0.6);
     gable(b.width - 0.4, b.depth - 0.2, 8, brickH + 10, slate);
-    const porchX = -b.width * 0.22;
-    box(body, porchX, 6.6, fz + 2.4, 14, 12.6, 5.2);
-    archHood(mats.stone, porchX, 4.6, fz + 5.5, 10.4, 6.4, "z");
-    for (const dx of [-3.2, 3.2]) box(mats.trim, porchX + dx, 5.6, fz + 4.8, 0.7, 9.2, 0.7);
-    box(mats.trim, porchX, 5.4, fz + 2.2, 3.6, 7.8, 0.2);
-    box(mats.glass, porchX, 6.8, fz + 2.4, 1.5, 3, 0.05);
+    const porchX = -b.width * 0.18;
+    box(body, porchX, 6.2, fz + 1.6, 16, 11.6, 3.4);
+    voussoirArch(mats.stone, body, porchX, 2.4, fz + 3.4, 11.2);
+    box(mats.trim, porchX, 4.6, fz + 1.5, 3.2, 7.4, 0.18);
+    box(mats.glass, porchX, 6.4, fz + 1.7, 1.4, 2.6, 0.05);
+    for (const dx of [-6.4, -4.6]) {
+      box(mats.trim, porchX + dx, 4.4, fz + 3.6, 0.42, 8.2, 0.42);
+      box(mats.stone, porchX + dx, 0.35, fz + 3.6, 0.7, 0.5, 0.7);
+    }
     for (let i = 0; i < 4; i++) {
-      box(mats.stone, porchX, 0.28 + i * 0.32, fz + 9.2 - i * 1.15, 8.2, 0.32, 1.35);
+      box(mats.stone, porchX, 0.22 + i * 0.28, fz + 6.4 + i * 0.7, 6.4, 0.28, 1.1);
     }
     const bay = b.width * 0.24;
     box(body, bay, 6.2, fz + 1.5, 11, 9.2, 3);
@@ -2440,7 +2557,7 @@ export function buildTown(data, scene) {
       box(mats.trimDark, x, wallH - 2.1, fz + 0.35, 0.45, 1.7, 0.85);
     }
     // Hotel Alexander postcard: round-arched hoods on every floor, iron balconies.
-    const bays = 6;
+    const bays = 7;
     const gap = b.width / bays;
     const ironRail = (x, y, z, w) => {
       box(mats.metal, x, y, z, w, 0.1, 0.1);
@@ -2462,8 +2579,12 @@ export function buildTown(data, scene) {
       } else {
         frontSash(x, 6.2, fz, Math.min(3.1, gap - 1.1), 7.4, "round", false, mats.voussoir);
       }
-      frontSash(x, 17.8, fz, Math.min(3.1, gap - 1.1), 6.8, "round", false, mats.voussoir);
-      frontSash(x, 28.8, fz, Math.min(2.8, gap - 1.3), 6.2, "round", false, mats.voussoir);
+      for (const dx of [-0.7, 0.7]) {
+        frontSash(x + dx, 17.6, fz, Math.min(1.5, gap * 0.32), 6.2, "segmental", false, mats.voussoir, false, false);
+        frontSash(x + dx, 28.4, fz, Math.min(1.4, gap * 0.3), 5.6, "segmental", false, mats.voussoir, false, false);
+      }
+      archHood(mats.voussoir, x, 21.2, fz + 0.2, Math.min(gap - 0.6, 4.2), 1.3, "z");
+      archHood(mats.voussoir, x, 31.6, fz + 0.18, Math.min(gap - 0.8, 3.8), 1.15, "z");
     }
     const deckZ = b.depth / 2 + 3.4;
     box(mats.plank, 0, 13.6, deckZ, b.width * 0.96, 0.28, 5.2);
@@ -2732,13 +2853,14 @@ export function buildTown(data, scene) {
     const wallH = 24;
     const body = mats.brick.red;
     const white = mats.trim;
-    const roof = mats.roofTan;
+    const roof = mats.roof.clone();
+    roof.color.set("#8d8a78");
     const fz = b.depth / 2;
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.stone, 0, 1.15, 0, b.width + 0.6, 2.3, b.depth + 0.6);
     box(white, 0, wallH - 0.35, 0, b.width + 10, 0.7, b.depth + 10);
     box(white, 0, wallH + 0.15, 0, b.width + 7.2, 0.42, b.depth + 7.2);
-    hipRoof(b.width + 8, b.depth + 8, 6.2, wallH + 0.2, roof, 0, 0);
+    hipRoof(b.width + 6, b.depth + 6, 3.2, wallH - 0.4, roof, 0, -1.5);
     dentilCourse(wallH - 0.95, fz + 1.7, b.width + 1.2);
     bracketRow(wallH - 1.45, fz + 1.05, b.width + 0.4);
     for (const side of [-1, 1]) {
@@ -2783,18 +2905,11 @@ export function buildTown(data, scene) {
       const y0 = wallH + 0.2;
       const faceZ = fz + 2.7;
       clapboardTriangle(white, gw, rise, y0, "z", faceZ, gx, faceZ);
-      pair(gx, y0 + rise * 0.4, faceZ + 0.15, 5.4, 3.6, "round");
+      pair(gx, y0 + rise * 0.55, faceZ + 0.15, 4.6, 3.2, "round");
       const run = gw / 2;
       const slopeLen = Math.hypot(run, rise) * 0.98;
       const angle = Math.atan2(rise, run);
-      const depth = 3.4;
       for (const sign of [-1, 1]) {
-        const geo = new THREE.BoxGeometry(slopeLen, 0.2, depth);
-        const local = new THREE.Matrix4().makeRotationZ(-sign * angle);
-        local.premultiply(new THREE.Matrix4().makeTranslation(gx + sign * run * 0.48, y0 + rise * 0.48, faceZ - depth * 0.35));
-        geo.applyMatrix4(local);
-        geo.applyMatrix4(buildingMatrix);
-        put(roof, geo);
         const barge = new THREE.BoxGeometry(slopeLen, 0.32, 0.18);
         const rake = new THREE.Matrix4().makeRotationZ(-sign * angle);
         rake.premultiply(new THREE.Matrix4().makeTranslation(gx + sign * run * 0.48, y0 + rise * 0.48, faceZ + 0.16));
@@ -2825,8 +2940,10 @@ export function buildTown(data, scene) {
     for (let i = 0; i < 4; i++) {
       box(mats.stone, right.x + right.width * 0.28, 0.22 + i * 0.26, fz + 7.4 + i * 0.75, 4.4, 0.26, 0.95);
     }
-    box(mats.leaf, 0, 1.7, fz + 15.5, b.width + 10, 3.1, 2.6);
-    box(mats.leafDark, 0, 2.7, fz + 15.6, b.width + 6, 1.1, 1.8);
+    for (let i = 0; i < 16; i++) {
+      const x = -b.width / 2 - 2 + ((b.width + 4) * (i + 0.5)) / 16;
+      box(i % 2 ? mats.leaf : mats.leafDark, x, 1.6, fz + 12.5, 2.2, 2.6 + (i % 3) * 0.4, 1.8);
+    }
     box(mats.stone, 0, 0.12, fz + 24, b.width + 24, 0.16, 6.5);
     box(mats.stone, 0, 0.32, fz + 20.6, b.width + 24, 0.38, 0.7);
     box(white, 0, 12.3, 0, b.width + 0.8, 0.38, b.depth + 0.8);
@@ -2863,7 +2980,9 @@ export function buildTown(data, scene) {
     const handDrawn = Boolean(
       b.facade?.hendeeHome || b.facade?.turretHouse || b.facade?.studBarn || b.facade?.hoseTower ||
       b.facade?.ballCream || b.facade?.mcpCorner || b.facade?.hurst292 || b.facade?.funeralHome ||
-      b.facade?.hurstBuff || b.facade?.hurstPressed || b.facade?.bays || b.facade?.norcross ||
+      b.facade?.hurstBuff || b.facade?.hurstPressed || b.facade?.signBand || b.facade?.pentRoof ||
+      (b.id === "millinery-2" && b.facade?.storefront === "plate") ||
+      b.facade?.bays || b.facade?.norcross ||
       b.facade?.plainPlant || b.facade?.eastSide1904 ||
       b.id === "presbyterian-church-1917" || b.id === "junction-depot" || b.id === "hurst-crossing-shanty" ||
       b.id === "hendee-house-26"
@@ -2886,6 +3005,9 @@ export function buildTown(data, scene) {
     else if (b.facade?.mcpCorner) height = addMcpCorner(b);
     else if (b.facade?.hurst292) height = addHurst292(b);
     else if (b.facade?.funeralHome) height = addFuneralHome(b);
+    else if (b.facade?.signBand) height = addSomethingSpecial(b);
+    else if (b.facade?.pentRoof) height = addGreenNeighbor(b);
+    else if (b.id === "millinery-2" && b.facade?.storefront === "plate") height = addGrayHoods(b);
     else if (b.facade?.hurstBuff) height = addHurstBuff(b);
     else if (b.facade?.hurstPressed) height = addHurstPressed(b);
     else if (b.kind === "house") height = addHouse(b);
@@ -3486,7 +3608,7 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
   for (const s of signs) {
     const tex = makeSignTexture(s.title, s.subtitle, s.style);
     const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.84, metalness: 0 });
-    const h = s.style === "molded" ? s.width * 0.2 : s.style === "letter" ? s.width * 0.95 : s.subtitle ? s.width * 0.36 : s.width * 0.28;
+    const h = s.style === "molded" ? s.width * 0.2 : s.style === "band" ? s.width * 0.22 : s.style === "letter" ? s.width * 0.95 : s.subtitle ? s.width * 0.36 : s.width * 0.28;
     if (s.style === "letter" || s.style === "molded") {
       mat.transparent = true;
       mat.alphaTest = 0.35;
@@ -3499,7 +3621,7 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
     board.castShadow = true;
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(s.width, h), mat);
     mesh.position.z = 0.16;
-    if (s.style === "letter" || s.style === "molded") group.add(mesh);
+    if (s.style === "letter" || s.style === "molded" || s.style === "band") group.add(mesh);
     else {
       const bracketL = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.7, 0.45), mats.trimDark);
       const bracketR = bracketL.clone();

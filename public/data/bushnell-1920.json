@@ -40,7 +40,7 @@
           { "id": "center", "width": 16, "note": "Paired windows on both floors. About 16 feet." },
           { "id": "right", "width": 16, "note": "Window bay with the center-right porch and the steps at its outer end. About 16 feet." }
         ],
-        "estimates": ["No year-built was found. The house is first drawn at the 1920 stop.", "No Sanborn footprint was matched. The footprint is the photograph."],
+        "estimates": ["No year-built was found. The house is first drawn at the 1920 stop.", "No Sanborn footprint was matched. The footprint is the photograph.", "The left gable, the two porches, and the hedge are traced from the 2010 photograph. The column count is an estimate."],
         "wall": "#8d3a32",
         "wallKind": "brick",
         "trim": "#f4efe4",

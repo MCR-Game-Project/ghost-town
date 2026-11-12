@@ -6194,7 +6194,7 @@
         "photoDate": "undated",
         "citation": "Hotel Alexander photograph, the 1871 Hendee House on West Main",
         "camera": { "year": 1910, "x": -175, "z": -165, "lx": -255, "lz": -205, "fov": 42, "pitch": 0.12, "eye": 5.25 },
-        "estimates": ["The lot along West Main is inferred."],
+        "estimates": ["The lot along West Main is inferred. Seven bays of paired windows under segmental arches are the Hotel Alexander photograph. The photograph does not show a painted name on the wall."],
         "wall": "#8d3a32",
         "trim": "#f4efe4",
         "floors": [12, 12, 12],
