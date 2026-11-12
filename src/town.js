@@ -1854,42 +1854,45 @@ export function buildTown(data, scene) {
       fanlight(x, spring + 0.04, z + 0.1, w * 0.43, w > 6 ? 5 : 3);
       voussoirArch(body, mats.stone, x, spring, z + 0.38, w * 1.06);
     };
-    const pairCenters = [-15, 0, 15];
+    const pairCenters = [-17, 0, 17];
     const frameMat = mats.trim.clone();
     frameMat.color.set("#f4efe4");
+    const winW = 5.25;
+    const winH = 7.9;
     for (const gx of pairCenters) {
-      for (const dx of [-3.3, 3.3]) {
+      for (const dx of [-3.05, 3.05]) {
         const x = gx + dx;
-        const y = 16.8;
-        const w = 4.4;
-        const h = 8.2;
-        const spring = y + 1.2;
-        box(mats.reveal, x, y - 0.4, fz - 0.12, w * 0.72, h * 0.55, 0.2);
-        box(mats.glass, x, y - 0.6, fz + 0.02, w * 0.5, h * 0.42, 0.04);
-        box(frameMat, x - w * 0.34, y - 0.3, fz + 0.2, 0.16, h * 0.62, 0.2);
-        box(frameMat, x + w * 0.34, y - 0.3, fz + 0.2, 0.16, h * 0.62, 0.2);
-        box(frameMat, x, y - h * 0.38, fz + 0.2, w * 0.78, 0.14, 0.2);
-        const arch = new THREE.TorusGeometry(w * 0.36, 0.14, 8, 22, Math.PI);
-        arch.translate(x, spring, fz + 0.24);
+        const sill = 13.5;
+        const rectH = winH - winW / 2;
+        const springY = sill + rectH;
+        box(mats.reveal, x, sill + rectH / 2, fz - 0.16, winW * 0.92, rectH, 0.22);
+        box(mats.glass, x, sill + rectH / 2, fz + 0.02, winW * 0.78, rectH * 0.9, 0.05);
+        box(frameMat, x - winW * 0.46, sill + rectH / 2, fz + 0.22, 0.22, rectH, 0.24);
+        box(frameMat, x + winW * 0.46, sill + rectH / 2, fz + 0.22, 0.22, rectH, 0.24);
+        box(frameMat, x, sill, fz + 0.22, winW, 0.2, 0.24);
+        const arch = new THREE.TorusGeometry(winW * 0.46, 0.2, 10, 24, Math.PI);
+        arch.translate(x, springY, fz + 0.24);
         arch.applyMatrix4(buildingMatrix);
         put(frameMat, arch);
+        const fan = new THREE.CircleGeometry(winW * 0.36, 18, 0, Math.PI);
+        fan.translate(x, springY, fz + 0.04);
+        fan.applyMatrix4(buildingMatrix);
+        put(mats.glass, fan);
       }
     }
-    const endX = b.width * 0.16;
-    const plates = [-b.width * 0.32, -b.width * 0.04, b.width * 0.28];
+    const plates = [-16.5, 0, 16.5];
     for (const x of plates) {
-      const gw = x > 0 ? 11.2 : 7.8;
-      box(mats.reveal, x, 5.5, fz - 0.28, gw * 0.94, 8.0, 0.12);
-      box(mats.glassShop, x, 5.65, fz - 0.12, gw - 0.85, 6.2, 0.05);
-      box(mats.trim, x, 8.9, fz + 0.06, gw - 0.7, 0.1, 0.08);
-      box(mats.glassShop, x, 9.7, fz - 0.06, gw - 1.1, 1.35, 0.04);
-      box(mats.trim, x, 5.65, fz + 0.02, 0.1, 6.8, 0.08);
-      box(body, x - gw / 2, 5.7, fz + 0.18, 0.36, 8.4, 0.36);
-      box(body, x + gw / 2, 5.7, fz + 0.18, 0.36, 8.4, 0.36);
-      box(mats.stone, x, 1.35, fz + 0.28, gw + 0.7, 0.28, 0.5);
-      box(mats.stone, x, 9.85, fz + 0.36, gw + 0.9, 0.32, 0.62);
+      const gw = 14.2;
+      box(mats.reveal, x, 5.2, fz - 0.28, gw * 0.96, 8.4, 0.12);
+      box(mats.glassShop, x, 4.7, fz - 0.1, gw - 1.1, 6.6, 0.05);
+      box(mats.trim, x, 8.15, fz + 0.08, gw - 0.8, 0.12, 0.1);
+      box(mats.glassShop, x, 9.05, fz - 0.04, gw - 1.4, 1.45, 0.05);
+      box(body, x - gw / 2, 5.4, fz + 0.2, 0.42, 9.2, 0.4);
+      box(body, x + gw / 2, 5.4, fz + 0.2, 0.42, 9.2, 0.4);
+      box(mats.stone, x, 1.15, fz + 0.28, gw + 0.5, 0.28, 0.5);
+      box(mats.stone, x, 10.0, fz + 0.32, gw + 0.6, 0.28, 0.5);
     }
-    const doorX = -b.width * 0.18;
+    const doorX = 0;
     box(mats.trim, doorX - 1.8, 5.2, fz + 0.2, 0.28, 8.4, 0.32);
     box(mats.trim, doorX + 1.8, 5.2, fz + 0.2, 0.28, 8.4, 0.32);
     box(mats.trim, doorX, 9.2, fz + 0.2, 3.9, 0.28, 0.32);
@@ -1956,7 +1959,7 @@ export function buildTown(data, scene) {
     };
     medal(-8, 17.6, "M");
     medal(8, 17.6, "C");
-    medal(22, 17.6, "P");
+    medal(25, 17.6, "P");
     return wallH + 8;
   };
 
@@ -2684,9 +2687,9 @@ export function buildTown(data, scene) {
 
   // 292 West Hurst, the 2010 photograph: brick first story, slate mansard, arched porch.
   const addHurst292 = (b) => {
-    const brickH = 12;
+    const brickH = 11.4;
     const body = mats.brick.soft.clone();
-    body.color.set("#8a5a42");
+    body.color.set("#7d4e3a");
     const slate = new THREE.MeshStandardMaterial({ color: "#5B6878", roughness: 0.8, metalness: 0.06 });
     slate.onBeforeCompile = (shader) => {
       shader.vertexShader = shader.vertexShader
@@ -2707,74 +2710,114 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     red.color.set("#8d3030");
     const fz = b.depth / 2;
     box(body, 0, brickH / 2, 0, b.width, brickH, b.depth);
-    box(mats.stone, 0, 0.45, 0, b.width + 0.3, 0.9, b.depth + 0.3);
-    const addSlope = (yaw, ex, ez, span, angle, len, lift) => {
-      const geo = new THREE.BoxGeometry(span, 0.38, len);
-      geo.translate(0, 0, -len / 2);
+    box(mats.stone, 0, 0.4, 0, b.width + 0.3, 0.8, b.depth + 0.3);
+    const putSlope = (yaw, eaveX, eaveZ, span, angle, length, y) => {
+      const geo = new THREE.BoxGeometry(span, 0.34, length);
+      geo.translate(0, 0, -length / 2);
       geo.rotateX(angle);
       geo.rotateY(yaw);
-      geo.translate(ex, brickH + lift, ez);
+      geo.translate(eaveX, y, eaveZ);
       geo.applyMatrix4(buildingMatrix);
       put(slate, geo);
     };
-    for (const [yaw, ex, ez] of [
-      [0, 0, b.depth / 2],
-      [Math.PI, 0, -b.depth / 2],
-      [Math.PI / 2, b.width / 2, 0],
-      [-Math.PI / 2, -b.width / 2, 0],
-    ]) {
-      const out = yaw === 0 ? 1 : yaw === Math.PI ? -1 : 0;
+    const faces = [
+      [0, 0, b.depth / 2, b.width],
+      [Math.PI, 0, -b.depth / 2, b.width],
+      [Math.PI / 2, b.width / 2, 0, b.depth],
+      [-Math.PI / 2, -b.width / 2, 0, b.depth],
+    ];
+    for (const [yaw, ex, ez, span] of faces) {
+      const outZ = yaw === 0 ? 1 : yaw === Math.PI ? -1 : 0;
       const outX = yaw === Math.PI / 2 ? 1 : yaw < 0 ? -1 : 0;
-      addSlope(yaw, ex + outX * 0.4, ez + out * 0.4, (Math.abs(yaw) === Math.PI / 2 ? b.depth : b.width) + 0.4, 0.55, 2.2, 0.05);
-      addSlope(yaw, ex, ez, (Math.abs(yaw) === Math.PI / 2 ? b.depth : b.width) + 0.2, 1.05, 7.2, 0.35);
+      putSlope(yaw, ex + outX * 1.7, ez + outZ * 1.7, span + 3.2, 0.42, 3.1, brickH - 0.15);
+      putSlope(yaw, ex + outX * 0.15, ez + outZ * 0.15, span + 0.8, 1.22, 12.8, brickH + 1.05);
     }
-    box(slate, 0, brickH + 11.5, 0, b.width - 5, 0.45, b.depth - 5);
-    box(red, 0, brickH + 0.45, fz + 2.35, b.width + 1.2, 0.5, 0.42);
-    box(red, 0, brickH + 0.45, -fz - 2.35, b.width + 1.2, 0.5, 0.42);
-    const cap = new THREE.SphereGeometry(0.55, 12, 10);
-    cap.translate(0, brickH + 12.4, 0);
-    cap.applyMatrix4(buildingMatrix);
-    put(red, cap);
-    const archX = -b.width * 0.08;
-    const archW = 12;
-    const porchD = 6.2;
+    box(slate, 0, brickH + 13.2, 0, b.width - 7, 0.4, b.depth - 7);
+    box(red, 0, brickH + 0.28, 0, b.width + 1.4, 0.42, b.depth + 1.4);
+    const archX = -3.2;
+    const openW = 9.8;
+    const rad = openW / 2;
+    const spring = 3.5;
+    const porchD = 8.2;
     const porchFront = fz + porchD;
-    box(body, archX - archW / 2, 5.6, fz + porchD / 2, 1.8, 11.2, porchD);
-    box(body, archX + archW / 2, 5.6, fz + porchD / 2, 1.8, 11.2, porchD);
-    box(body, archX, 11.2, fz + porchD / 2, archW + 2.2, 1.6, porchD + 0.4);
-    voussoirArch(body, mats.stone, archX, 1.2, porchFront + 0.2, archW - 1.2);
-    box(mats.reveal, archX, 4.6, fz - 1.2, archW * 0.62, 7.6, 0.3);
-    box(mats.trim, archX, 4.4, fz - 0.9, 2.6, 7.2, 0.16);
-    for (let i = 0; i < 4; i++) box(mats.stone, archX, 0.22 + i * 0.22, porchFront + 0.6 + i * 0.65, 5.2, 0.22, 0.8);
-    const walkMat = new THREE.MeshStandardMaterial({ color: "#d9d4cc", roughness: 0.92 });
-    box(walkMat, archX, 0.1, fz + 16, 4.8, 0.14, 16);
-    const porchL = -b.width * 0.34;
-    box(mats.plank, porchL, 0.45, fz + 3.2, 10, 0.28, 6.4);
-    box(mats.trim, porchL, 9.6, fz + 3.1, 10.4, 0.28, 6.8);
-    for (const dx of [-3.6, 0, 3.4]) {
-      box(mats.siding.white, porchL + dx, 5.0, fz + 5.8, 0.5, 9.2, 0.5);
+    const pier = 1.7;
+    const porchRoofY = 11.15;
+    box(body, archX - openW / 2 - pier / 2, 5.6, fz + porchD / 2, pier, 11.2, porchD);
+    box(body, archX + openW / 2 + pier / 2, 5.6, fz + porchD / 2, pier, 11.2, porchD);
+    const crown = spring + rad;
+    box(body, archX, (crown + porchRoofY) / 2, porchFront - 0.55, openW + 0.3, porchRoofY - crown, 1.5);
+    for (let i = 0; i < 14; i++) {
+      const ang = (Math.PI * (i + 0.5)) / 14;
+      const geo = new THREE.BoxGeometry(1.15, 1.15, 1.55);
+      geo.rotateZ(ang - Math.PI / 2);
+      geo.translate(archX + Math.cos(ang) * (rad + 0.2), spring + Math.sin(ang) * (rad + 0.2), porchFront - 0.45);
+      geo.applyMatrix4(buildingMatrix);
+      put(body, geo);
     }
-    const bay = b.width * 0.32;
-    box(body, bay, 5.6, fz + 5.2, 12.4, 10.8, 6.2);
-    for (const dx of [-3.4, 0, 3.4]) frontSash(bay + dx, 5.5, fz + 8.4, 2.2, 5.6, "flat", false, mats.trim);
-    const dormR = bay;
-    box(slate, dormR, brickH + 6.4, fz + 2.2, 8.2, 7.2, 3.4);
-    box(mats.trim, dormR, brickH + 6.6, fz + 4.0, 5.6, 6.4, 0.45);
-    frontSash(dormR, brickH + 6.5, fz + 4.3, 3.5, 5.6, "round", false, mats.trim);
-    archHood(mats.trim, dormR, brickH + 9.2, fz + 4.5, 4.4, 2.4, "z");
-    const dormL = -b.width * 0.24;
-    box(mats.trim, dormL, brickH + 6.0, fz + 1.6, 6.6, 4.2, 2.0);
-    drawPediment(mats.trim, 6.8, 2.0, brickH + 7.9, fz + 2.2, dormL);
-    frontSash(dormL - 1.15, brickH + 6.0, fz + 2.5, 1.7, 3.2, "flat", false, mats.trim);
-    frontSash(dormL + 1.15, brickH + 6.0, fz + 2.5, 1.7, 3.2, "flat", false, mats.trim);
+    const recess = new THREE.MeshStandardMaterial({ color: "#3a312c", roughness: 1 });
+    box(recess, archX, 4.8, fz + 0.8, openW - 0.6, 8.4, 0.4);
+    box(mats.trim, archX - 1.5, 4.3, fz + 1.15, 2.5, 7.2, 0.22);
+    box(mats.glass, archX - 1.5, 6.2, fz + 1.32, 0.9, 2.2, 0.06);
+    frontSash(archX + 2.1, 5.4, fz + 0.7, 2.3, 4.4, "flat", false, mats.trim);
+    box(mats.plank, archX, 0.28, fz + porchD / 2, openW + pier, 0.22, porchD - 0.4);
+    const leftEdge = -b.width / 2 + 0.6;
+    const rightEdge = archX + openW / 2 + pier;
+    const roofMid = (leftEdge + rightEdge) / 2;
+    const roofW = rightEdge - leftEdge;
+    box(body, roofMid, porchRoofY, fz + porchD / 2, roofW, 0.42, porchD + 0.2);
+    box(mats.trim, roofMid, porchRoofY + 0.42, porchFront + 0.12, roofW + 0.3, 0.55, 0.38);
+    box(mats.trim, leftEdge, porchRoofY + 0.42, fz + porchD / 2, 0.38, 0.55, porchD + 0.4);
+    for (const x of [-17.2, -14.0, -10.9]) {
+      const col = new THREE.CylinderGeometry(0.32, 0.38, 10.2, 12);
+      col.translate(x, 5.3, porchFront - 0.4);
+      col.applyMatrix4(buildingMatrix);
+      put(mats.siding.white, col);
+    }
+    const bayX = 11.5;
+    box(body, bayX, 5.5, fz + 1.5, 7.2, 10.4, 2.2);
+    const cheek = (sign) => {
+      const wall = new THREE.BoxGeometry(3.6, 10.2, 0.6);
+      wall.rotateY(sign * 0.62);
+      wall.translate(bayX + sign * 4.5, 5.5, fz + 1.7);
+      wall.applyMatrix4(buildingMatrix);
+      put(body, wall);
+      const pane = new THREE.BoxGeometry(1.7, 4.6, 0.08);
+      pane.rotateY(sign * 0.62);
+      pane.translate(bayX + sign * 5.15, 5.6, fz + 2.15);
+      pane.applyMatrix4(buildingMatrix);
+      put(mats.glass, pane);
+      const frame = new THREE.BoxGeometry(2.15, 5.2, 0.12);
+      frame.rotateY(sign * 0.62);
+      frame.translate(bayX + sign * 5.0, 5.6, fz + 1.95);
+      frame.applyMatrix4(buildingMatrix);
+      put(mats.trim, frame);
+    };
+    cheek(-1);
+    cheek(1);
+    frontSash(bayX, 5.6, fz + 2.7, 2.4, 5.2, "flat", false, mats.trim);
+    const dormR = bayX;
+    box(slate, dormR, brickH + 7.6, fz + 0.6, 7.6, 8.2, 2.4);
+    box(mats.trim, dormR - 2.7, brickH + 6.8, fz + 2.0, 0.42, 6.6, 0.46);
+    box(mats.trim, dormR + 2.7, brickH + 6.8, fz + 2.0, 0.42, 6.6, 0.46);
+    box(mats.trim, dormR, brickH + 3.6, fz + 2.0, 5.8, 0.36, 0.46);
+    box(mats.glass, dormR, brickH + 6.5, fz + 2.15, 4.4, 5.2, 0.08);
+    const dormArch = new THREE.TorusGeometry(2.35, 0.26, 10, 22, Math.PI);
+    dormArch.translate(dormR, brickH + 9.05, fz + 2.2);
+    dormArch.applyMatrix4(buildingMatrix);
+    put(mats.trim, dormArch);
+    const dormL = -8.5;
+    box(mats.trim, dormL, brickH + 8.2, fz + 1.5, 6.4, 3.6, 1.1);
+    drawPediment(mats.trim, 6.6, 2.4, brickH + 9.8, fz + 1.9, dormL);
+    frontSash(dormL - 1.15, brickH + 8.1, fz + 1.85, 1.6, 2.6, "flat", false, mats.trim, false, false);
+    frontSash(dormL + 1.15, brickH + 8.1, fz + 1.85, 1.6, 2.6, "flat", false, mats.trim, false, false);
+    for (let i = 0; i < 5; i++) box(mats.stone, archX, 0.16 + i * 0.2, porchFront + 0.7 + i * 0.72, 6.2, 0.2, 0.78);
+    const walkMat = new THREE.MeshStandardMaterial({ color: "#efeae2", roughness: 0.9 });
+    box(walkMat, archX, 0.28, porchFront + 26, 5.4, 0.22, 46);
     const shrub = mats.leaf.clone();
     shrub.color.set("#3d6a34");
     const clumps = [
-      [-b.width * 0.42, fz + 6.2, 1.15],
-      [-b.width * 0.18, fz + 7.4, 0.85],
-      [b.width * 0.08, fz + 6.6, 1.0],
-      [b.width * 0.46, fz + 6.4, 1.2],
-      [archX + 2.2, fz + 5.2, 0.55],
+      [-b.width * 0.46, fz + 4.2, 0.9],
+      [b.width * 0.46, fz + 4.4, 1.0],
     ];
     for (const [x, z, s] of clumps) {
       for (const [dx, dy, dz, sc] of [
@@ -4011,6 +4054,14 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
       walk400.position.set(-350, 1.15, 188);
       walk400.receiveShadow = true;
       scene.add(approach, walk400);
+      const southWalk = new THREE.Mesh(new THREE.BoxGeometry(240, 0.32, 52), concrete);
+      southWalk.position.set(400, 0.34, 106);
+      southWalk.receiveShadow = true;
+      const yellow = new THREE.MeshStandardMaterial({ color: "#e2c04a", roughness: 0.72 });
+      const southCurb = new THREE.Mesh(new THREE.BoxGeometry(240, 0.58, 1.15), yellow);
+      southCurb.position.set(400, 0.52, 133);
+      southCurb.castShadow = true;
+      scene.add(southWalk, southCurb);
     }
     const hurst = streetByName("Hurst Street");
     if (hurst) {
