@@ -3505,14 +3505,14 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
       canvas.width = 128;
       canvas.height = 64;
       const g = canvas.getContext("2d");
-      g.fillStyle = "#d8c0b0";
+      g.fillStyle = "#8f5644";
       g.fillRect(0, 0, 128, 64);
-      const shades = ["#9A4A32", "#a35238", "#8f442e", "#9A4A32"];
+      const shades = ["#9A4A32", "#9d4e36", "#964832", "#9A4A32"];
       for (let row = 0; row < 4; row++) {
         const off = row % 2 ? 32 : 0;
         for (let col = -1; col < 5; col++) {
           g.fillStyle = shades[(row + col + 3) % shades.length];
-          g.fillRect(col * 32 + off + 1, row * 16 + 1, 30, 14);
+          g.fillRect(col * 32 + off + 1, row * 16 + 1, 31, 15);
         }
       }
       const tex = new THREE.CanvasTexture(canvas);
@@ -3530,8 +3530,8 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.stone, 0, 1.05, 0, b.width + 0.5, 2.1, b.depth + 0.5);
     box(body, gx, wallH / 2, fz + proj / 2, gw, wallH, proj);
-    box(white, 0, wallH + 0.45, 0, b.width + 3.4, 1.25, b.depth + 3.4);
-    box(white, gx, wallH + 0.45, fz + proj / 2, gw + 2.2, 1.25, proj + 1.4);
+    box(white, 0, wallH + 0.28, 0, b.width + 1.8, 0.7, b.depth + 1.8);
+    box(white, gx, wallH + 0.28, fz + proj / 2, gw + 0.8, 0.7, proj + 0.6);
     hipRoof(b.width + 0.6, b.depth + 0.6, 6.2, wallH + 0.9, roof, 2, -2);
     const rise = 8.8;
     const y0 = wallH + 0.55;
@@ -3573,11 +3573,23 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
       }
     }
     const porchD = 8.2;
-    const porchW = 20;
+    const porchW = 16;
+    const porchFrontZ = fz + proj + porchD;
     const porchZ = fz + proj + porchD / 2;
-    box(mats.plank, gx, 1.05, porchZ, porchW - 0.4, 0.4, porchD);
-    box(white, gx, 9.35, porchZ, porchW + 1.2, 0.36, porchD + 0.5);
-    clapboardTriangle(white, porchW + 0.4, 2.6, 9.5, "z", fz + proj + porchD + 0.15, gx, fz + proj + porchD + 0.15);
+    box(mats.plank, gx, 1.05, porchZ, porchW - 0.6, 0.35, porchD - 0.4);
+    box(white, gx, 9.15, porchZ, porchW, 0.18, porchD);
+    clapboardTriangle(white, porchW, 2.3, 9.2, "z", porchFrontZ + 0.08, gx, porchFrontZ + 0.08);
+    const pRun = porchW / 2;
+    const pRise = 2.3;
+    const pLen = Math.hypot(pRun, pRise);
+    const pAng = Math.atan2(pRise, pRun);
+    for (const sign of [-1, 1]) {
+      const trim = new THREE.BoxGeometry(pLen, 0.16, 0.18);
+      trim.rotateZ(-sign * pAng);
+      trim.translate(gx + sign * pRun * 0.48, 9.2 + pRise * 0.42, porchFrontZ + 0.16);
+      trim.applyMatrix4(buildingMatrix);
+      put(white, trim);
+    }
     for (let i = 0; i < 4; i++) {
       const cx = gx - porchW / 2 + 1.6 + ((porchW - 3.2) * i) / 3;
       const post = new THREE.CylinderGeometry(0.26, 0.32, 7.8, 12);
@@ -3586,10 +3598,10 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
       put(white, post);
     }
     const rx = b.width * 0.3;
-    const rw = 15;
-    const rd = 7.2;
-    box(mats.plank, rx, 1.0, fz + rd / 2, rw, 0.35, rd);
-    box(white, rx, 8.7, fz + rd / 2, rw + 0.8, 0.32, rd + 0.4);
+    const rw = 12;
+    const rd = 6.4;
+    box(mats.plank, rx, 1.0, fz + rd / 2, rw - 0.4, 0.3, rd - 0.3);
+    box(white, rx, 8.55, fz + rd / 2, rw, 0.16, rd);
     for (let i = 0; i < 3; i++) {
       const cx = rx - rw / 2 + 1.4 + ((rw - 2.8) * i) / 2;
       const post = new THREE.CylinderGeometry(0.24, 0.3, 7.2, 12);
@@ -3597,14 +3609,48 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
       post.applyMatrix4(buildingMatrix);
       put(white, post);
     }
-    const hedge = mats.leaf.clone();
-    hedge.color.set("#3a6832");
     const lawn = new THREE.MeshStandardMaterial({ color: "#6d9448", roughness: 0.96 });
-    box(lawn, 4, 0.16, fz + 28, b.width + 50, 0.2, 48);
-    box(hedge, -4, 2.15, fz + 27, b.width + 36, 4.3, 4.2);
-    const spot = new THREE.Vector3(b.width * 0.22, 0, fz + 6);
-    spot.applyMatrix4(buildingMatrix);
-    extraTrees.push({ x: spot.x, z: spot.z, kind: "maple", scale: 3.6 });
+    box(lawn, 0, 0.12, fz + 70, 120, 0.16, 150);
+    const hedgeMat = mats.leaf.clone();
+    hedgeMat.color.set("#3f6e36");
+    const hedgeDark = mats.leafDark.clone();
+    hedgeDark.color.set("#2f5528");
+    for (let i = 0; i < 28; i++) {
+      const x = -20 + i * 3.5;
+      const h = 3.3 + ((i * 5) % 5) * 0.28;
+      const top = new THREE.SphereGeometry(1.05 + (i % 3) * 0.1, 16, 12);
+      top.translate(x, h - 0.15, fz + 74);
+      top.applyMatrix4(buildingMatrix);
+      put(i % 2 ? hedgeMat : hedgeDark, top);
+      const bodyH = new THREE.SphereGeometry(1.1, 14, 10);
+      bodyH.translate(x + 0.35, h - 0.95, fz + 74.2);
+      bodyH.applyMatrix4(buildingMatrix);
+      put(hedgeDark, bodyH);
+    }
+    const trunk = new THREE.CylinderGeometry(0.85, 1.15, 22, 12);
+    trunk.translate(16, 13, fz + 58);
+    trunk.applyMatrix4(buildingMatrix);
+    put(mats.trunk, trunk);
+    const leaf = mats.leaf.clone();
+    leaf.color.set("#3d7a34");
+    const leafDark = mats.leafDark.clone();
+    leafDark.color.set("#2c5c28");
+    const clumps = [
+      [0, 18, 0, 9.5],
+      [-6, 16, 2, 7.2],
+      [7, 17, -1.5, 7.6],
+      [2, 22, 1, 6.8],
+      [-3, 14, -2, 6.2],
+      [5, 13, 2.5, 6.4],
+      [-8, 19, -1, 5.8],
+      [9, 20, 1.5, 6.6],
+    ];
+    for (const [dx, dy, dz, r] of clumps) {
+      const ball = new THREE.SphereGeometry(r, 18, 14);
+      ball.translate(16 + dx, dy + 7, fz + 58 + dz);
+      ball.applyMatrix4(buildingMatrix);
+      put(dx > 2 ? leafDark : leaf, ball);
+    }
     chimneyStack(body, b.width * 0.12, wallH + 7, -b.depth * 0.08, 1.8, 6.5, 1.8);
     return wallH + 16;
   };
