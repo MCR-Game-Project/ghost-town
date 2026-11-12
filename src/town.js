@@ -1612,6 +1612,69 @@ export function buildTown(data, scene) {
     return plate + 16;
   };
 
+  // Hurst Street just east of East Main, the two 2010 storefronts.
+  const addHurstBuff = (b) => {
+    const wallH = 24;
+    const body = mats.brick.buff;
+    const wood = mats.siding.darkred;
+    const fz = b.depth / 2 + 0.14;
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(mats.stone, 0, 0.4, 0, b.width + 0.3, 0.8, b.depth + 0.3);
+    box(body, 0, wallH + 0.7, fz, b.width + 0.4, 1.3, 0.7);
+    const n = Math.max(8, Math.round(b.width / 1.6));
+    for (let i = 0; i < n; i++) {
+      const x = -b.width / 2 + ((i + 0.5) * b.width) / n;
+      box(body, x, wallH - 0.35, fz + 0.15, 0.7, 0.7, 0.45);
+    }
+    const cols = 4;
+    const gap = b.width / cols;
+    for (let i = 0; i < cols; i++) {
+      const x = -b.width / 2 + gap * (i + 0.5);
+      box(mats.plank, x, wallH * 0.68, fz, gap - 1.6, 8.2, 0.16);
+      box(mats.trimDark, x, wallH * 0.68, fz + 0.08, 0.12, 7.6, 0.06);
+      archHood(body, x, wallH * 0.68 + 3.6, fz + 0.12, gap - 1.2, 2.2, "z");
+    }
+    box(wood, 0, 6.2, fz + 0.2, b.width + 0.2, 11.2, 0.5);
+    for (const x of [-b.width * 0.26, b.width * 0.26]) {
+      box(mats.glass, x, 5.4, fz + 0.62, b.width * 0.3, 6.6, 0.08);
+      archHood(wood, x, 8.5, fz + 0.48, b.width * 0.38, 4.4, "z");
+      archHood(mats.glass, x, 8.6, fz + 0.66, b.width * 0.3, 3.2, "z");
+      box(wood, x, 5.2, fz + 0.62, 0.4, 8.4, 0.22);
+    }
+    box(wood, 0, 5.6, fz + 0.7, b.width * 0.14, 9.2, 0.34);
+    return wallH + 4;
+  };
+
+  const addHurstPressed = (b) => {
+    const wallH = 24;
+    const body = mats.brick.red;
+    const black = mats.coal;
+    const fz = b.depth / 2 + 0.14;
+    box(body, 0, wallH / 2 + 2, 0, b.width, wallH - 4, b.depth);
+    box(mats.siding.gray, 0, 1.3, 0, b.width, 2.6, b.depth);
+    box(mats.siding.white, 0, 7.2, fz + 0.08, b.width, 8.4, 0.35);
+    box(black, 0, 11.6, fz + 0.12, b.width + 0.2, 0.7, 0.28);
+    const piers = 5;
+    for (let i = 0; i < piers; i++) {
+      const x = -b.width / 2 + (b.width * i) / (piers - 1);
+      box(black, x, 6.4, fz + 0.2, 0.45, 10, 0.28);
+    }
+    for (const x of [-b.width * 0.28, b.width * 0.05, b.width * 0.32]) {
+      box(mats.glass, x, 6.2, fz + 0.28, 2.2, 3.2, 0.06);
+    }
+    box(mats.siding.white, b.width * 0.18, 4.8, fz + 0.3, 2.4, 6.4, 0.12);
+    const cols = 5;
+    const gap = (b.width - 2) / cols;
+    for (let i = 0; i < cols; i++) {
+      const x = -b.width / 2 + 1 + gap * (i + 0.5);
+      box(mats.siding.white, x, wallH * 0.7, fz, gap - 1.1, 8.4, 0.14);
+      archHood(mats.siding.white, x, wallH * 0.7 + 3.4, fz + 0.16, gap - 0.5, 2.6, "z");
+    }
+    box(black, 0, wallH + 0.45, fz, b.width + 0.5, 1.1, 0.7);
+    drawPediment(black, b.width * 0.34, 4.2, wallH + 0.8, fz + 0.2);
+    return wallH + 8;
+  };
+
   // 292 West Hurst, the 2010 photograph: brick first story, slate mansard, arched porch.
   const addHurst292 = (b) => {
     const brickH = 13;
@@ -2202,6 +2265,8 @@ export function buildTown(data, scene) {
     else if (b.facade?.ballCream) height = addBallCream(b);
     else if (b.facade?.mcpCorner) height = addMcpCorner(b);
     else if (b.facade?.hurst292) height = addHurst292(b);
+    else if (b.facade?.hurstBuff) height = addHurstBuff(b);
+    else if (b.facade?.hurstPressed) height = addHurstPressed(b);
     else if (b.kind === "house") height = addHouse(b);
     else if (b.id === "hendee-house-26") height = addHendeeHouse(b);
     else if (b.kind === "frame-store") height = addStore(b, true);

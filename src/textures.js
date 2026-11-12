@@ -86,7 +86,7 @@ function packMaps(w, h, paint) {
   };
 }
 
-function brickMaps() {
+function brickMaps(kind = "red") {
   const w = 512;
   const h = 512;
   const periodX = 128;
@@ -117,6 +117,11 @@ function brickMaps() {
           let r = 148 + tone * 55;
           let g = 62 + tone * 28;
           let b = 46 + tone * 16;
+          if (kind === "buff") {
+            r = 196 + tone * 36;
+            g = 176 + tone * 30;
+            b = 142 + tone * 22;
+          }
           if (weather > 0.82) {
             r += 28;
             g += 24;
@@ -543,6 +548,7 @@ function std(opts) {
 
 export function makeMaterials() {
   const brickTex = brickMaps();
+  const buffTex = brickMaps("buff");
   const sidingTex = sidingMaps(0.2);
   const shingleTex = shingleMaps();
   const tinTex = tinMaps();
@@ -601,6 +607,16 @@ export function makeMaterials() {
       red: brick("#9a4034"),
       dark: brick("#7d332c"),
       soft: brick("#a85a3e"),
+      buff: std({
+        map: buffTex.map,
+        normalMap: buffTex.normalMap,
+        roughnessMap: buffTex.roughnessMap,
+        color: "#efe2c8",
+        roughness: 1,
+        uvFeet: brickFeet,
+        vary: true,
+        normalScale: 0.8,
+      }),
     },
     siding: {
       white: siding("#f4efe4"),
