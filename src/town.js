@@ -2429,73 +2429,62 @@ export function buildTown(data, scene) {
       frontSash(x + w * 0.28, y, z, w * 0.42, h, arch, false, white);
     };
     for (const bay of placed) {
-      const zFace = bay.id === "left-gable" ? fz + 3.4 : fz + 0.2;
-      if (bay.id === "left-gable") {
-        box(body, bay.x, 12, fz + 1.6, bay.width - 0.4, 22, 3.2);
-        const gableRise = 11;
-        box(white, bay.x, wallH + 2.4, fz + 1.6, bay.width - 0.8, 4.2, 3.4);
-        clapboardTriangle(white, bay.width, gableRise, wallH + 4.2, "z", fz + 3.4, bay.x, fz + 1.6);
-        pair(bay.x, wallH + 6.4, fz + 3.5, 6.2, 5.2, "round");
-      }
+      const zFace = bay.id === "left-gable" ? fz + 2.8 : fz + 0.2;
+      if (bay.id === "left-gable") box(body, bay.x, 12, fz + 1.3, bay.width - 0.6, 22, 2.6);
       pair(bay.x, 17.2, zFace, Math.min(8.4, bay.width * 0.7), 6.2);
       pair(bay.x, 6.6, zFace, Math.min(8.4, bay.width * 0.7), 6.0);
     }
     const left = placed[0];
     const right = placed[placed.length - 1];
+    // One front gable over the left bay. Its ridge runs back from the street.
+    {
+      const gx = left.x;
+      const gw = Math.min(left.width, 13);
+      const rise = 6.4;
+      const y0 = wallH + 0.2;
+      const faceZ = fz + 2.7;
+      clapboardTriangle(white, gw, rise, y0, "z", faceZ, gx, faceZ);
+      pair(gx, y0 + rise * 0.4, faceZ + 0.15, 5.4, 3.6, "round");
+      const run = gw / 2;
+      const slopeLen = Math.hypot(run, rise) * 0.98;
+      const angle = Math.atan2(rise, run);
+      const depth = 3.4;
+      for (const sign of [-1, 1]) {
+        const geo = new THREE.BoxGeometry(slopeLen, 0.2, depth);
+        const local = new THREE.Matrix4().makeRotationZ(-sign * angle);
+        local.premultiply(new THREE.Matrix4().makeTranslation(gx + sign * run * 0.48, y0 + rise * 0.48, faceZ - depth * 0.35));
+        geo.applyMatrix4(local);
+        geo.applyMatrix4(buildingMatrix);
+        put(roof, geo);
+        const barge = new THREE.BoxGeometry(slopeLen, 0.32, 0.18);
+        const rake = new THREE.Matrix4().makeRotationZ(-sign * angle);
+        rake.premultiply(new THREE.Matrix4().makeTranslation(gx + sign * run * 0.48, y0 + rise * 0.48, faceZ + 0.16));
+        barge.applyMatrix4(rake);
+        barge.applyMatrix4(buildingMatrix);
+        put(white, barge);
+      }
+    }
     for (const side of [-1, 1]) {
       sideSash(side * (b.width / 2 + 0.12), 17.2, -4, side, 2.4, 5.4, "flat", false, white);
       sideSash(side * (b.width / 2 + 0.12), 6.4, 2, side, 2.3, 5.2, "flat", false, white);
     }
-    const porchX = left.x;
-    const porchW = left.width + 2;
-    const porchD = 8;
-    box(white, porchX, 8.05, fz + porchD * 0.45, porchW + 1.2, 0.7, porchD);
-    box(white, porchX, 8.5, fz + porchD * 0.45, porchW, 0.2, porchD - 0.4);
-    const pierSpots = [
-      [porchX - porchW / 2 + 1.4, fz + porchD - 0.9],
-      [porchX + porchW / 2 - 1.4, fz + porchD - 0.9],
-      [porchX - 1.5, fz + porchD - 0.9],
-      [porchX - porchW / 2 + 1.4, fz + 1.4],
-    ];
-    for (const [x, z] of pierSpots) {
-      box(body, x, 4.1, z, 1.25, 7.2, 1.25);
-      box(white, x, 7.9, z, 1.6, 0.28, 1.6);
-      box(mats.stone, x, 0.35, z, 1.5, 0.55, 1.5);
-      box(white, x, 4.2, z - 1.35, 0.36, 7.6, 0.36);
-    }
-    paneledDoor(porchX - 1.2, fz + 0.15, 3.4, 7.4);
+    const addPorch = (x, w, d) => {
+      const zc = fz + d * 0.42;
+      box(mats.plank, x, 1.05, zc, w - 0.6, 0.7, d - 0.8);
+      box(white, x, 8.2, zc, w + 1, 0.7, d + 0.4);
+      box(white, x, 8.7, zc, w + 0.2, 0.22, d);
+      const n = 4;
+      for (let i = 0; i < n; i++) {
+        const cx = x - w / 2 + 1.1 + ((w - 2.2) * i) / (n - 1);
+        box(white, cx, 4.6, fz + d - 0.45, 0.7, 7.2, 0.7);
+        box(mats.stone, cx, 0.4, fz + d - 0.45, 0.95, 0.5, 0.95);
+      }
+    };
+    addPorch(left.x, left.width + 1, 8);
+    addPorch(right.x, right.width - 1, 7);
+    paneledDoor(left.x, fz + 0.15, 3.2, 7.2);
     for (let i = 0; i < 4; i++) {
-      box(mats.stone, porchX - 1.2, 0.22 + i * 0.28, fz + 3.2 + i * 0.85, 5.2, 0.28, 1.05);
-    }
-    box(white, -b.width / 2 - 3.2, 8.55, -2, 8.4, 0.7, b.depth * 0.62);
-    box(white, -b.width / 2 - 3.2, 9.0, -2, 7.2, 0.2, b.depth * 0.55);
-    box(body, -b.width / 2 - 5.6, 4.2, -b.depth * 0.18, 1.6, 7.6, 1.6);
-    box(body, -b.width / 2 - 5.6, 4.2, b.depth * 0.12, 1.6, 7.6, 1.6);
-    const frontPorchX = right.x;
-    const rightPorchW = right.width - 1;
-    box(white, frontPorchX, 8.05, fz + 3.6, rightPorchW + 1, 0.62, 7.4);
-    box(white, frontPorchX, 7.7, fz + 3.6, rightPorchW + 1.8, 0.26, 8.2);
-    for (const x of [frontPorchX - rightPorchW * 0.38, frontPorchX, frontPorchX + rightPorchW * 0.38]) {
-      box(white, x, 4.2, fz + 6.6, 0.4, 7.6, 0.4);
-    }
-    for (let i = 0; i < 4; i++) {
-      box(mats.stone, frontPorchX + rightPorchW * 0.42, 0.22 + i * 0.28, fz + 7.2 + i * 0.7, 4.2, 0.28, 0.9);
-    }
-    const rx = b.width / 2 + 4.6;
-    box(white, rx, 7.55, 1.2, 12.2, 0.55, 16.4);
-    box(white, rx, 7.9, 1.2, 10.8, 0.18, 15.2);
-    box(body, rx + 2.6, 4.1, 6.2, 1.55, 7.4, 1.55);
-    box(body, rx - 1.4, 4.1, 6.2, 1.55, 7.4, 1.55);
-    box(white, rx + 2.6, 7.9, 6.2, 1.9, 0.35, 1.9);
-    box(white, rx - 1.4, 7.9, 6.2, 1.9, 0.35, 1.9);
-    for (let i = 0; i < 5; i++) {
-      box(body, rx + 0.6, 0.28 + i * 0.32, fz + 1.2 + i * 0.85, 4.4, 0.32, 1.05);
-    }
-    box(mats.trimDark, rx + 3.4, 3.4, 3.2, 0.12, 2.4, 9);
-    box(mats.trimDark, rx - 2.2, 3.4, 3.2, 0.12, 2.4, 9);
-    for (let i = 0; i < 4; i++) {
-      box(mats.trimDark, rx + 3.4, 2.6, 0.2 + i * 2.2, 0.12, 0.9, 0.12);
-      box(mats.trimDark, rx - 2.2, 2.6, 0.2 + i * 2.2, 0.12, 0.9, 0.12);
+      box(mats.stone, right.x + right.width * 0.28, 0.22 + i * 0.26, fz + 7.4 + i * 0.75, 4.4, 0.26, 0.95);
     }
     box(mats.leaf, 0, 1.7, fz + 15.5, b.width + 10, 3.1, 2.6);
     box(mats.leafDark, 0, 2.7, fz + 15.6, b.width + 6, 1.1, 1.8);
@@ -3092,10 +3081,8 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
     });
   }
   const allTrees = data.trees.concat(extraTrees);
-  const branchCount = 5;
   const lobeCount = 7;
   const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.45, 0.7, 1, 6), mats.trunk, allTrees.length);
-  const branches = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.1, 0.18, 1, 5), mats.trunk, allTrees.length * branchCount);
   const lobes = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 2), mats.leaf, allTrees.length * lobeCount);
   const lobesDark = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 1), mats.leafDark, allTrees.length * lobeCount);
   const dummy = new THREE.Object3D();
@@ -3116,16 +3103,6 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
     dummy.rotation.set(0, i * 0.7, 0);
     dummy.updateMatrix();
     trunks.setMatrixAt(i, dummy.matrix);
-    for (let b = 0; b < branchCount; b++) {
-      const ang = (b / branchCount) * Math.PI * 2 + i * 0.4;
-      const len = (2.8 + (b % 3) * 0.7) * s;
-      const lift = trunkH * (0.55 + (b % 3) * 0.12);
-      dummy.position.set(t.x + Math.cos(ang) * len * 0.35, lift, t.z + Math.sin(ang) * len * 0.35);
-      dummy.scale.set(s * 0.55, len, s * 0.55);
-      dummy.rotation.set(1.05, ang, 0);
-      dummy.updateMatrix();
-      branches.setMatrixAt(i * branchCount + b, dummy.matrix);
-    }
     lobePattern.forEach((lobe, k) => {
       const spin = i * 0.9 + k;
       const ox = Math.cos(spin) * lobe[0] * s;
@@ -3141,7 +3118,7 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
       (k % 2 ? lobes : lobesDark).setMatrixAt(i * lobeCount + k, dummy.matrix);
     });
   });
-  for (const mesh of [trunks, branches, lobes, lobesDark]) {
+  for (const mesh of [trunks, lobes, lobesDark]) {
     mesh.castShadow = true;
     scene.add(mesh);
   }
