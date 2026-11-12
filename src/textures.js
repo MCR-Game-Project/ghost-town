@@ -863,6 +863,27 @@ export function makeMaterials() {
       mat.customProgramCacheKey = () => "glass-sky";
       return mat;
     })(),
+    glassShop: (() => {
+      const mat = std({
+        color: "#243038",
+        roughness: 0.22,
+        metalness: 0.12,
+        envMapIntensity: 0.45,
+        emissive: "#1a242c",
+        emissiveIntensity: 0.08,
+        uvFeet: { u: 8, v: 8 },
+      });
+      mat.onBeforeCompile = (shader) => {
+        shader.fragmentShader = shader.fragmentShader.replace(
+          "#include <color_fragment>",
+          `#include <color_fragment>
+           float sky = clamp(0.25 - vViewPosition.y * 0.02, 0.0, 1.0);
+           diffuseColor.rgb = mix(vec3(0.16, 0.22, 0.26), vec3(0.34, 0.44, 0.50), sky);`,
+        );
+      };
+      mat.customProgramCacheKey = () => "glass-shop";
+      return mat;
+    })(),
     stone: std({
       map: stoneTex.map,
       normalMap: stoneTex.normalMap,

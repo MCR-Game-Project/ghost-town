@@ -102,13 +102,14 @@ export function buildTown(data, scene) {
     const frame = archMat || mats.trim;
     const rail = Math.max(0.14, Math.min(0.28, w * 0.08));
     box(mats.reveal, x, y, z - 0.16, w * 0.9, h * 0.9, 0.16);
-    box(mats.glass, x, y, z + 0.02, w - rail * 2.2, h - rail * 2.2, 0.05);
+    box(mats.glass, x, y + h * 0.24, z + 0.02, w - rail * 2.4, h * 0.4, 0.05);
+    box(mats.glass, x, y - h * 0.24, z + 0.02, w - rail * 2.4, h * 0.4, 0.05);
     box(frame, x - w / 2, y, z + 0.1, rail, h + rail, 0.18);
     box(frame, x + w / 2, y, z + 0.1, rail, h + rail, 0.18);
     box(frame, x, y + h / 2, z + 0.1, w + rail, rail, 0.18);
     box(frame, x, y - h / 2, z + 0.1, w + rail, rail, 0.18);
+    box(frame, x, y, z + 0.16, w - rail * 1.4, rail * 0.9, 0.1);
     box(frame, x, y, z + 0.14, rail * 0.55, h - rail * 2.4, 0.08);
-    box(frame, x, y + h * 0.02, z + 0.14, w - rail * 2.2, rail * 0.5, 0.08);
     box(mats.stone, x, y - h / 2 - 0.16, z + 0.18, w + 0.7, 0.16, 0.4);
     if (arch === "segmental") archHood(archMat, x, y + h / 2 - 0.02, z + 0.08, w + 0.28, (w + 0.28) * 0.26, "z");
     else if (arch === "round") archHood(archMat, x, y + h / 2 - w * 0.16, z + 0.08, w + 0.2, (w + 0.2) * 0.5, "z");
@@ -1434,17 +1435,17 @@ export function buildTown(data, scene) {
       if (door) {
         box(cream, x - sw * 0.22, 5.2, fz + 0.22, 0.16, 8.2, 0.16);
         box(cream, x + sw * 0.22, 5.2, fz + 0.22, 0.16, 8.2, 0.16);
-        box(mats.glass, x - sw * 0.12, 5.4, fz + 0.12, sw * 0.16, 7.2, 0.05);
-        box(mats.glass, x + sw * 0.12, 5.4, fz + 0.12, sw * 0.16, 7.2, 0.05);
+        box(mats.glassShop, x - sw * 0.12, 5.4, fz + 0.12, sw * 0.16, 7.2, 0.05);
+        box(mats.glassShop, x + sw * 0.12, 5.4, fz + 0.12, sw * 0.16, 7.2, 0.05);
       } else {
         for (const k of [-0.28, 0, 0.28]) {
-          box(mats.glass, x + k * sw, 5.3, fz + 0.1, sw * 0.22, 7.4, 0.05);
+          box(mats.glassShop, x + k * sw, 5.3, fz + 0.1, sw * 0.22, 7.4, 0.05);
         }
         box(cream, x - sw * 0.14, 5.3, fz + 0.2, 0.12, 7.6, 0.12);
         box(cream, x + sw * 0.14, 5.3, fz + 0.2, 0.12, 7.6, 0.12);
       }
       for (const k of [-0.3, -0.1, 0.1, 0.3]) {
-        box(mats.glass, x + k * sw, 10.35, fz + 0.14, sw * 0.16, 1.35, 0.05);
+        box(mats.glassShop, x + k * sw, 10.35, fz + 0.14, sw * 0.16, 1.35, 0.05);
       }
       box(cream, x, 9.45, fz + 0.22, sw - 0.5, 0.16, 0.14);
       box(mats.trimDark, x, 1.2, fz + 0.16, sw - 0.9, 1.05, 0.12);
@@ -2447,9 +2448,8 @@ export function buildTown(data, scene) {
     const porchX = bayX;
     const porchW = 16;
     const porchD = 8;
-    box(white, porchX, 8.7, fz + porchD * 0.4, porchW, 0.28, porchD);
-    hipRoof(porchW + 0.8, porchD + 0.6, 2.4, 8.85, mats.roofSlate, porchX, fz + porchD * 0.4);
-    drawPediment(mats.roofSlate, 8.5, 2.8, 8.7, fz + porchD - 0.2, porchX);
+    box(white, porchX, 8.15, fz + porchD * 0.4, porchW + 1.4, 0.7, porchD + 0.8);
+    box(white, porchX, 8.6, fz + porchD * 0.4, porchW + 0.3, 0.22, porchD);
     const pierSpots = [
       [porchX - porchW / 2 + 1.4, fz + porchD - 0.9],
       [porchX + porchW / 2 - 1.4, fz + porchD - 0.9],
@@ -2466,13 +2466,13 @@ export function buildTown(data, scene) {
     for (let i = 0; i < 4; i++) {
       box(mats.stone, porchX - 1.2, 0.22 + i * 0.28, fz + 3.2 + i * 0.85, 5.2, 0.28, 1.05);
     }
-    box(white, -b.width / 2 - 3.2, 9.1, -2, 7.2, 0.38, b.depth * 0.62);
-    hipRoof(7.6, b.depth * 0.62, 2.3, 9.3, mats.roofSlate, -b.width / 2 - 3.2, -2);
+    box(white, -b.width / 2 - 3.2, 8.55, -2, 8.4, 0.7, b.depth * 0.62);
+    box(white, -b.width / 2 - 3.2, 9.0, -2, 7.2, 0.2, b.depth * 0.55);
     box(body, -b.width / 2 - 5.6, 4.2, -b.depth * 0.18, 1.6, 7.6, 1.6);
     box(body, -b.width / 2 - 5.6, 4.2, b.depth * 0.12, 1.6, 7.6, 1.6);
     const rx = b.width / 2 + 4.6;
-    box(white, rx, 7.15, 1.2, 11, 0.32, 16);
-    hipRoof(11.4, 16.6, 1.15, 7.3, mats.roofSlate, rx, 1.2);
+    box(white, rx, 7.55, 1.2, 12.2, 0.62, 16.4);
+    box(white, rx, 7.95, 1.2, 10.6, 0.18, 15.2);
     box(body, rx + 2.6, 4.1, 6.2, 1.55, 7.4, 1.55);
     box(body, rx - 1.4, 4.1, 6.2, 1.55, 7.4, 1.55);
     box(white, rx + 2.6, 7.9, 6.2, 1.9, 0.35, 1.9);
@@ -2501,7 +2501,7 @@ export function buildTown(data, scene) {
     box(mats.stone, 0, 0.32, fz + 20.6, b.width + 24, 0.38, 0.7);
     box(white, 0, 12.3, 0, b.width + 0.8, 0.38, b.depth + 0.8);
     const yardTrees = [
-      [b.width * 0.42, fz + 4, 1.55],
+      [b.width * 0.48, fz + 6, 2.5],
     ];
     for (const [x, z, scale] of yardTrees) {
       const spot = new THREE.Vector3(x, 0, z);
@@ -2973,6 +2973,27 @@ export function buildTown(data, scene) {
   }
   const eastMain = streetByName("East Main Street");
   if (eastMain) dressStreet({ ...eastMain, from: -520, to: 560 }, { curb: true, walk: true, inset: 8 });
+  const craffordNorth = streetByName("Crafford Street");
+  if (craffordNorth) dressStreet({ ...craffordNorth, from: 980, to: 1280 }, { curb: true, walk: true, inset: 6 });
+  if ((data.meta?.shownYear || 0) >= 1970) {
+    const asphalt = new THREE.MeshStandardMaterial({ color: "#5e6164", roughness: 0.95, metalness: 0.02 });
+    asphalt.polygonOffset = true;
+    asphalt.polygonOffsetFactor = -1;
+    asphalt.polygonOffsetUnits = -1;
+    for (const street of [eastMain, craffordNorth]) {
+      if (!street) continue;
+      const len = Math.abs(street.to - street.from);
+      const mid = (street.from + street.to) / 2;
+      const mesh = new THREE.Mesh(
+        street.axis === "x" ? new THREE.PlaneGeometry(len, street.width * 0.86) : new THREE.PlaneGeometry(street.width * 0.86, len),
+        asphalt,
+      );
+      mesh.rotation.x = -Math.PI / 2;
+      mesh.position.set(street.axis === "x" ? mid : street.at, 0.09, street.axis === "x" ? street.at : mid);
+      mesh.receiveShadow = true;
+      scene.add(mesh);
+    }
+  }
   if (style.mains) {
     for (const name of ["West Main Street"]) {
       const street = streetByName(name);
@@ -3043,44 +3064,59 @@ export function buildTown(data, scene) {
     });
   }
   const allTrees = data.trees.concat(extraTrees);
-  const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.55, 0.85, 1, 6), mats.trunk, allTrees.length);
-  const leaves = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 1), mats.leaf, allTrees.length);
-  const shade = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 1), mats.leafDark, allTrees.length);
-  const puff = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 1), mats.leaf, allTrees.length * 3);
+  const branchCount = 5;
+  const lobeCount = 7;
+  const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.45, 0.7, 1, 6), mats.trunk, allTrees.length);
+  const branches = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.1, 0.18, 1, 5), mats.trunk, allTrees.length * branchCount);
+  const lobes = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 1), mats.leaf, allTrees.length * lobeCount);
+  const lobesDark = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 0), mats.leafDark, allTrees.length * lobeCount);
   const dummy = new THREE.Object3D();
+  const lobePattern = [
+    [0, 2.2, 0, 3.6, 2.6],
+    [2.6, 0.8, 1.2, 2.7, 2.1],
+    [-2.8, 1.1, -0.6, 3.0, 2.2],
+    [1.1, 1.8, -2.4, 2.3, 1.8],
+    [-1.4, 2.4, 2.1, 2.5, 1.9],
+    [0.6, 0.2, 2.8, 2.1, 1.6],
+    [-0.4, 3.1, -1.2, 2.0, 1.5],
+  ];
   allTrees.forEach((t, i) => {
     const s = t.scale || 1;
-    const trunkH = (t.kind === "maple" ? 16 : 13) * s;
+    const trunkH = (7.5 + (i % 3)) * s;
     dummy.position.set(t.x, trunkH / 2, t.z);
-    dummy.scale.set(s * 1.05, trunkH, s * 1.05);
-    dummy.rotation.set(0, 0, 0);
+    dummy.scale.set(s * 0.9, trunkH, s * 0.9);
+    dummy.rotation.set(0, i * 0.7, 0);
     dummy.updateMatrix();
     trunks.setMatrixAt(i, dummy.matrix);
-    dummy.position.set(t.x, trunkH + 6.2 * s, t.z);
-    dummy.scale.set(7.4 * s, 5.2 * s, 7.4 * s);
-    dummy.updateMatrix();
-    leaves.setMatrixAt(i, dummy.matrix);
-    dummy.position.set(t.x, trunkH + 4.4 * s, t.z);
-    dummy.scale.set(5.6 * s, 3.4 * s, 5.6 * s);
-    dummy.updateMatrix();
-    shade.setMatrixAt(i, dummy.matrix);
-    const clumps = [
-      [2.4 * s, 1.6 * s, 4.8 * s, 3.2 * s],
-      [-2.8 * s, 2.4 * s, 4.2 * s, 3.6 * s],
-      [0.4 * s, 3.6 * s, 3.4 * s, 2.8 * s],
-    ];
-    clumps.forEach((clump, k) => {
-      dummy.position.set(t.x + clump[0], trunkH + 6.6 * s + clump[1], t.z + clump[2] * 0.15);
-      dummy.scale.set(clump[3], clump[3] * 0.85, clump[3]);
+    for (let b = 0; b < branchCount; b++) {
+      const ang = (b / branchCount) * Math.PI * 2 + i * 0.4;
+      const len = (2.8 + (b % 3) * 0.7) * s;
+      const lift = trunkH * (0.55 + (b % 3) * 0.12);
+      dummy.position.set(t.x + Math.cos(ang) * len * 0.35, lift, t.z + Math.sin(ang) * len * 0.35);
+      dummy.scale.set(s * 0.55, len, s * 0.55);
+      dummy.rotation.set(1.05, ang, 0);
       dummy.updateMatrix();
-      puff.setMatrixAt(i * 3 + k, dummy.matrix);
+      branches.setMatrixAt(i * branchCount + b, dummy.matrix);
+    }
+    lobePattern.forEach((lobe, k) => {
+      const spin = i * 0.9 + k;
+      const ox = Math.cos(spin) * lobe[0] * s;
+      const oz = Math.sin(spin) * lobe[2] * s;
+      dummy.position.set(t.x + ox, trunkH + lobe[1] * s, t.z + oz);
+      dummy.scale.set(lobe[3] * s, lobe[4] * s, lobe[3] * s * 0.9);
+      dummy.rotation.set(0.2, spin, 0.15);
+      dummy.updateMatrix();
+      (k % 2 ? lobesDark : lobes).setMatrixAt(i * lobeCount + k, dummy.matrix);
+      dummy.position.set(t.x + ox * 0.6, trunkH + lobe[1] * s * 0.75, t.z + oz * 0.6);
+      dummy.scale.set(lobe[3] * s * 0.72, lobe[4] * s * 0.6, lobe[3] * s * 0.7);
+      dummy.updateMatrix();
+      (k % 2 ? lobes : lobesDark).setMatrixAt(i * lobeCount + k, dummy.matrix);
     });
   });
-  trunks.castShadow = true;
-  leaves.castShadow = true;
-  shade.castShadow = true;
-  puff.castShadow = true;
-  scene.add(trunks, leaves, shade, puff);
+  for (const mesh of [trunks, branches, lobes, lobesDark]) {
+    mesh.castShadow = true;
+    scene.add(mesh);
+  }
 
   addStreetNames(data, mats, scene);
 
