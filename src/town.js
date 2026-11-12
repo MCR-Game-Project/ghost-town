@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { makeMaterials, makeSignTexture } from "./textures.js";
 import { mirrorPlat } from "./orient.js";
+import { drawFacadeSpec } from "./facade/assemble.js";
 
 const FACING = { "+z": 0, "-z": Math.PI, "+x": Math.PI / 2, "-x": -Math.PI / 2 };
 
@@ -2481,7 +2482,14 @@ export function buildTown(data, scene) {
     );
     begin(b.x, b.z, b.facing, b.rotation || 0);
     let height = 20;
-    if (b.facade?.hendeeHome) height = addHendeeHome(b);
+    if (b.facadeSpec) {
+      height = drawFacadeSpec(b, {
+        box, put, mats, THREE, buildingMatrix, frontSash, archHood, hipRoof, gable, gableAt,
+        dentilCourse, bracketRow, drawPediment, chimneyStack, paneledDoor, localBox,
+        clapboardTriangle, extraTrees, signs, FACING, tint,
+        year: data.meta?.shownYear || data.year || 1880,
+      });
+    } else if (b.facade?.hendeeHome) height = addHendeeHome(b);
     else if (b.facade?.turretHouse) height = addTurretHouse(b);
     else if (b.id === "presbyterian-church-1917") height = addGothicChurch(b);
     else if (b.id === "junction-depot") height = addJunctionDepot(b);
@@ -2530,7 +2538,7 @@ export function buildTown(data, scene) {
   }
 
   // Ground.
-  const prairie = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000), tiled(mats.grass, 40000 / 28, 40000 / 28));
+  const prairie = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000), tiled(mats.grass, 40000 / 14, 40000 / 14));
   prairie.rotation.x = -Math.PI / 2;
   prairie.receiveShadow = true;
   scene.add(prairie);
@@ -2596,8 +2604,8 @@ export function buildTown(data, scene) {
     const mesh = new THREE.Mesh(
       geo,
       street.axis === "x"
-        ? tiled(mats.street, len / 48, 1)
-        : tiled(mats.streetCross, 1, len / 48),
+        ? tiled(mats.street, len / 18, street.width / 8)
+        : tiled(mats.streetCross, street.width / 8, len / 18),
     );
     mesh.rotation.x = -Math.PI / 2;
     if (street.axis === "x") mesh.position.set((street.from + street.to) / 2, 0.05, street.at);

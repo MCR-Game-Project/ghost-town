@@ -79,6 +79,9 @@ function packMaps(w, h, paint) {
   map.colorSpace = THREE.SRGBColorSpace;
   map.wrapS = map.wrapT = THREE.RepeatWrapping;
   map.anisotropy = 16;
+  map.generateMipmaps = true;
+  map.minFilter = THREE.LinearMipmapLinearFilter;
+  map.magFilter = THREE.LinearFilter;
   return {
     map,
     normalMap: normalsFromHeight(height, w, h, 2.4),
@@ -114,9 +117,9 @@ function brickMaps(kind = "red") {
           const brickId = row * 17 + Math.floor((x + off) / periodX);
           const tone = hash(brickId, row * 3);
           const weather = hash(brickId * 5, 9);
-          let r = 148 + tone * 55;
-          let g = 62 + tone * 28;
-          let b = 46 + tone * 16;
+          let r = 132 + tone * 78;
+          let g = 48 + tone * 42;
+          let b = 36 + tone * 24;
           if (kind === "buff") {
             r = 196 + tone * 36;
             g = 176 + tone * 30;
@@ -325,28 +328,37 @@ function plankMaps() {
 }
 
 function groundMaps(ruts) {
-  const w = 512;
-  const h = 512;
+  const w = 1024;
+  const h = 1024;
   return packMaps(w, h, (px, height, rough) => {
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
         const n = hash(x, y);
-        const blot = hash(x >> 3, y >> 3);
-        let r = 126 + blot * 36 + (n - 0.5) * 22;
-        let g = 96 + blot * 24 + (n - 0.5) * 16;
-        let b = 58 + blot * 14 + (n - 0.5) * 10;
+        const fine = hash(x * 3, y * 5);
+        const blot = hash(x >> 4, y >> 4);
+        let r = 126 + blot * 36 + (n - 0.5) * 18 + (fine - 0.5) * 14;
+        let g = 96 + blot * 24 + (n - 0.5) * 12 + (fine - 0.5) * 10;
+        let b = 58 + blot * 14 + (n - 0.5) * 8 + (fine - 0.5) * 6;
+        const edge = Math.min(x, w - 1 - x, y, h - 1 - y);
+        if (edge < w * 0.06) {
+          const k = 1 - edge / (w * 0.06);
+          r *= 1 - k * 0.28;
+          g *= 1 - k * 0.3;
+          b *= 1 - k * 0.22;
+        }
         let hv = 0.45 + blot * 0.15;
         if (ruts) {
           const along = ruts === "v" ? y : x;
           const across = ruts === "v" ? x : y;
           const groove = (cy) => {
-            const wobble = Math.sin(along * 0.02) * 10;
+            const wobble = Math.sin(along * 0.01) * 18;
             const d = Math.abs(across - (cy + wobble));
-            if (d < 16) return 1 - d / 16;
+            const band = w * 0.028;
+            if (d < band) return 1 - d / band;
             return 0;
           };
-          const g1 = groove(150);
-          const g2 = groove(300);
+          const g1 = groove(w * 0.34);
+          const g2 = groove(w * 0.66);
           const rut = Math.max(g1, g2);
           if (rut > 0) {
             r *= 1 - rut * 0.28;
@@ -379,16 +391,17 @@ function groundMaps(ruts) {
 }
 
 function grassMaps(deep) {
-  const w = 512;
-  const h = 512;
+  const w = 1024;
+  const h = 1024;
   return packMaps(w, h, (px, height, rough) => {
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
         const n = hash(x, y);
-        const clump = hash(x >> 3, y >> 3);
-        let r = (deep ? 74 : 96) + clump * 20;
-        let g = (deep ? 114 : 132) + clump * 20 + (n > 0.84 ? 4 : 0);
-        let b = (deep ? 46 : 54) + clump * 8;
+        const blade = hash(x * 2 + 3, y * 3 + 1);
+        const clump = hash(x >> 5, y >> 5);
+        let r = (deep ? 70 : 88) + clump * 28 + blade * 18;
+        let g = (deep ? 108 : 124) + clump * 36 + blade * 22 + (n > 0.9 ? 10 : 0);
+        let b = (deep ? 42 : 48) + clump * 12 + blade * 6;
         const i = y * w + x;
         const o = i * 4;
         px[o] = r;

@@ -30,6 +30,29 @@
         "photoDate": "The photograph is dated 2010. No year-built was found. The house is first drawn at the 1920 stop. That start is an estimate.",
         "photoSource": "photo from Mark, 771 N. Crafford St., 2010"
       },
+      "facadeSpec": {
+        "sourcePhoto": "public/photos/funeral-home-2010.png",
+        "photoDate": "2010",
+        "citation": "photo from Mark, 771 N. Crafford St., 2010",
+        "camera": { "year": 1970, "x": 1110, "z": 605, "lx": 1120, "lz": 500 },
+        "estimates": ["No year-built was found. The house is first drawn at the 1920 stop.", "No Sanborn footprint was matched. The footprint is the photograph."],
+        "wall": "#8d3a32",
+        "wallKind": "brick",
+        "trim": "#f4efe4",
+        "floors": [12, 12],
+        "cornice": "bracket",
+        "bays": [
+          { "width": 12, "windows": ["sash", "sash"] },
+          { "width": 16, "windows": ["door", "pair-arch"] },
+          { "width": 12, "windows": ["sash", "sash"] }
+        ],
+        "roof": { "type": "hip", "kind": "shingle", "color": "#c4a86a", "rise": 11 },
+        "dormer": { "width": 15, "windows": 2, "rise": 6.2 },
+        "porch": { "width": 28, "depth": 9, "columns": true, "doorX": -2 },
+        "hedge": { "z": 18, "count": 16 },
+        "chimney": true,
+        "signs": []
+      },
       "sourceMap": "photo from Mark, 771 N. Crafford St., 2010",
       "notes": "photo from Mark, 771 N. Crafford St., 2010. A brick foursquare with a hipped roof, a front gable dormer with two arched windows, white eaves and brackets, porches on brick piers, and white-trimmed windows. The address is 771 N. Crafford St. on dodsworthfh.com/location/bushnell and on legacy.com. The given coordinates, 40.554749, -90.505232, put it on the East Main side of Crafford, in the 700 block, Wells to Twyman. March 1906 sheet 5 and February 1912 sheet 7 draw blocks east of Wells, and those lots were not copied, so no Sanborn footprint was matched. The footprint is the photograph, and that is an estimate. No year-built was found, so the house is first drawn at the 1920 stop, and that start is an estimate. No family name is printed. The Martin-Hollis name is not painted on."
     },

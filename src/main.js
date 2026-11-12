@@ -21,8 +21,8 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.08;
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xe4c4a0);
-scene.fog = new THREE.FogExp2(0xe4c4a0, 0.00008);
+scene.background = new THREE.Color(0xb9d0e4);
+scene.fog = new THREE.FogExp2(0xb7c9d6, 0.00016);
 scene.environmentIntensity = 0.5;
 
 const sunDir = new THREE.Vector3(-0.78, 0.36, 0.5).normalize();
@@ -32,9 +32,9 @@ const sky = new THREE.Mesh(
     side: THREE.BackSide,
     depthWrite: false,
     uniforms: {
-      top: { value: new THREE.Color("#6e8eb8") },
-      horizon: { value: new THREE.Color("#f0c08a") },
-      haze: { value: new THREE.Color("#e7c3a0") },
+      top: { value: new THREE.Color("#2f6eae") },
+      horizon: { value: new THREE.Color("#d5e6f5") },
+      haze: { value: new THREE.Color("#b9d0e4") },
       sunDir: { value: sunDir.clone() },
     },
     vertexShader: `
@@ -56,7 +56,7 @@ const sky = new THREE.Mesh(
         vec3 col = mix(haze, horizon, smoothstep(0.0, 0.16, h));
         col = mix(col, top, pow(h, 0.72));
         float land = smoothstep(0.04, -0.12, dir.y);
-        col = mix(col, vec3(0.55, 0.58, 0.36), land * 0.9);
+        col = mix(col, vec3(0.62, 0.68, 0.48), land * 0.55);
         float cloud = sin(dir.x * 7.0 + dir.z * 3.5) * sin(dir.z * 5.5 - dir.x * 2.2);
         cloud = smoothstep(0.42, 0.9, cloud * 0.5 + 0.5);
         cloud *= smoothstep(0.12, 0.4, h);
@@ -64,7 +64,7 @@ const sky = new THREE.Mesh(
         float disc = pow(max(dot(dir, sunDir), 0.0), 220.0);
         float glow = pow(max(dot(dir, sunDir), 0.0), 7.0);
         col += vec3(1.0, 0.9, 0.62) * disc * 1.2;
-        col += vec3(1.0, 0.62, 0.32) * glow * 0.45;
+        col += vec3(1.0, 0.92, 0.75) * glow * 0.22;
         gl_FragColor = vec4(col, 1.0);
       }
     `,
@@ -75,11 +75,11 @@ scene.add(sky);
 const camera = new THREE.PerspectiveCamera(66, window.innerWidth / window.innerHeight, 0.25, 40000);
 camera.rotation.order = "YXZ";
 
-scene.add(new THREE.HemisphereLight(0xffe6c8, 0x5a4636, 0.5));
+scene.add(new THREE.HemisphereLight(0xd5e4f4, 0x6d7a58, 0.55));
 const fill = new THREE.DirectionalLight(0xffd8b4, 0.32);
 fill.position.set(120, 80, -40);
 scene.add(fill);
-const sun = new THREE.DirectionalLight(0xffd0a4, 2.85);
+const sun = new THREE.DirectionalLight(0xfff3dd, 2.35);
 sun.castShadow = true;
 sun.shadow.mapSize.set(shot ? 4096 : 2048, shot ? 4096 : 2048);
 sun.shadow.camera.near = 8;
@@ -93,7 +93,7 @@ function bakeEnvironment() {
   const dome = new THREE.Mesh(new THREE.SphereGeometry(40, 24, 14), sky.material);
   const ground = new THREE.Mesh(
     new THREE.SphereGeometry(40, 16, 8, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2),
-    new THREE.MeshBasicMaterial({ color: "#8d623c", side: THREE.BackSide }),
+    new THREE.MeshBasicMaterial({ color: "#8aa07a", side: THREE.BackSide }),
   );
   env.add(dome, ground);
   const pmrem = new THREE.PMREMGenerator(renderer);
@@ -1049,6 +1049,8 @@ function mountTown(builtYear, sliderYear = builtYear) {
     }
   }
   town = data;
+  data.meta = data.meta || {};
+  data.meta.shownYear = builtYear;
   const built = buildTown(town, townGroup);
   colliders = built.colliders;
   picks = built.picks;

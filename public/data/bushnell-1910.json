@@ -201,6 +201,26 @@
         "photoDate": "The photograph is dated 2010. No construction date was found. No earlier front for this lot was read on the Sanborn sheets, so this is the front that is drawn. It is first shown at the 1910 stop. That start is an estimate.",
         "photoSource": "photo from Mark, Hurst St east of E Main, 2010"
       },
+      "facadeSpec": {
+        "sourcePhoto": "public/photos/hurst-east-of-e-main-2010.png",
+        "photoDate": "2010",
+        "citation": "photo from Mark, Hurst St east of E Main, 2010",
+        "camera": { "year": 1910, "x": -442, "z": 308, "lx": -360, "lz": 312 },
+        "estimates": ["The Hail side, the order from the corner, and the 1910 start are estimates."],
+        "wall": "#cbb892",
+        "wallKind": "brick",
+        "trim": "#6e2e2a",
+        "floors": [12, 12],
+        "cornice": "corbel",
+        "bays": [
+          { "width": 11, "windows": ["storefront", "segmental"] },
+          { "width": 11, "windows": ["storefront", "segmental"] },
+          { "width": 11, "windows": ["storefront", "segmental"] },
+          { "width": 11, "windows": ["storefront", "segmental"] }
+        ],
+        "storefront": { "frame": "#6e2e2a", "height": 9 },
+        "signs": []
+      },
       "notes": "photo from Mark, Hurst St east of E Main, 2010. The tan brick front just east of East Main on Hurst: four segmental upstairs windows with boarded shutters, a corbelled cornice, and a dark red-brown wood storefront with two round-arched windows and a center panel. Block 59 is Hurst to Hail, East Main to Crafford. The February 1912 and earlier sheets were read for that block. W. J. Vertree's fence factory is labeled on the Hurst side in 1898, and no footprint was found, so these two bays are not that labeled works. The side of Hurst and the exact lots are an estimate. No name is printed. The modern metal building at the right edge of the photograph is not dated before 1970, so it is not drawn."
     },
     {
@@ -230,6 +250,28 @@
         "photoMatch": true,
         "photoDate": "The photograph is dated 2010. No construction date was found. No earlier front for this lot was read on the Sanborn sheets, so this is the front that is drawn. It is first shown at the 1910 stop. That start is an estimate.",
         "photoSource": "photo from Mark, Hurst St east of E Main, 2010"
+      },
+      "facadeSpec": {
+        "sourcePhoto": "public/photos/hurst-east-of-e-main-2010.png",
+        "photoDate": "2010",
+        "citation": "photo from Mark, Hurst St east of E Main, 2010",
+        "camera": { "year": 1910, "x": -442, "z": 308, "lx": -360, "lz": 312 },
+        "estimates": ["The lot is the estimate recorded on the tan front."],
+        "wall": "#9a4034",
+        "wallKind": "brick",
+        "trim": "#f4efe4",
+        "floors": [12, 12],
+        "cornice": "bracket",
+        "pediment": { "width": 0.34, "rise": 4 },
+        "bays": [
+          { "width": 8, "windows": ["storefront", "round"] },
+          { "width": 8, "windows": ["storefront", "round"] },
+          { "width": 8, "windows": ["storefront", "round"] },
+          { "width": 8, "windows": ["storefront", "round"] },
+          { "width": 8, "windows": ["storefront", "round"] }
+        ],
+        "storefront": { "frame": "#f4efe4", "height": 8.4 },
+        "signs": []
       },
       "notes": "photo from Mark, Hurst St east of E Main, 2010. The red brick front next to the tan one: a black pressed-metal cornice and central pediment, tall upper windows under white hoods, the openings filled white, and a white clapboard ground floor over a gray base with a black band and black pilasters. The lot is the estimate recorded on the tan front. No name is printed."
     },
@@ -262,6 +304,26 @@
         "photoMatch": true,
         "photoDate": "The photograph is dated 2010. No year-built was found. The block is first drawn on the February 1912 sheet, so the house is drawn from the 1910 stop. That start is an estimate.",
         "photoSource": "photo from Mark, 292 W Hurst St, 2010"
+      },
+      "facadeSpec": {
+        "sourcePhoto": "public/photos/hurst-292-2010.png",
+        "photoDate": "2010",
+        "citation": "photo from Mark, 292 W Hurst St, 2010",
+        "camera": { "year": 1910, "x": -400, "z": -958, "lx": -490, "lz": -958 },
+        "estimates": ["The lot and the footprint are estimates. No year-built was found. First drawn at the 1910 stop."],
+        "wall": "#9a4034",
+        "wallKind": "brick",
+        "trim": "#f4efe4",
+        "floors": [13, 11],
+        "cornice": "bracket",
+        "bays": [
+          { "width": 13, "windows": ["sash", "sash"] },
+          { "width": 14, "windows": ["door", "pair"] },
+          { "width": 13, "windows": ["sash", "bay"] }
+        ],
+        "roof": { "type": "mansard", "kind": "slate", "color": "#8b98a6" },
+        "porch": { "x": -6, "width": 16, "depth": 7, "columns": true },
+        "signs": []
       },
       "notes": "photo from Mark, 292 W Hurst St, 2010. The 1909 numbering puts 300 at Jackson on West Hurst and 304 on the Barnes side of the Jackson–Washington block, which is where the Hendee Home stands. 292 is the even number just Dean-side of Jackson, on that same Barnes side. February 1912 sheet 3 is the first sheet that draws block 70, Barnes to Hurst, Dean to Jackson, and it shows dwellings there, but no lot on that sheet was matched to the number 292, so the footprint is an estimate from the photograph, about 40 by 42 feet. The brick first story, the round brick porch with white columns and steps, the blue-gray slate mansard, the red eaves, the pedimented dormer, and the front gable with the arched window are the photograph. No family name is printed. The start year is an estimate. The house stays through 1970. survivesTo 2010 records that it was standing for the photograph. The stand-in on this corner, house-147, comes off from the 1910 stop."
     },

@@ -9,12 +9,14 @@
     "dev": "vite --host 0.0.0.0 --port 4179 --strictPort",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0 --port 4179 --strictPort",
-    "check": "node scripts/check-town.mjs"
+    "check": "node scripts/check-town.mjs",
+    "compare": "node scripts/compare-facade.mjs"
   },
   "dependencies": {
     "three": "^0.170.0"
   },
   "devDependencies": {
+    "puppeteer-core": "^25.17.0",
     "vite": "^6.0.0"
   }
 }

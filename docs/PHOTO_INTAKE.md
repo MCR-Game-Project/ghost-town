@@ -1,0 +1,64 @@
+# Photo intake
+
+Use this checklist when a photo of a Bushnell building is ready to become part of the model. The result is a facade spec on the building record. The spec is what the facade kit in `src/facade/` draws. Do not hand-build a one-off mesh for a new photo.
+
+An upload page is not part of this step. When one is added it should accept the image, the sender's name, a claimed address, and a claimed date, then store the file under `public/photos/` and open a draft spec with those four fields filled. A person still has to walk this checklist before the spec is drawn in a year that visitors can see. The page should not invent a lot, a name, or a year.
+
+## 1. Keep the file
+
+Save the photograph at `public/photos/<building-id>.png`. Record that path as `sourcePhoto`. Do not crop a texture out of the photo. Colors are sampled as hex values. Geometry comes from the kit.
+
+## 2. Identify the address and the lot
+
+Read the Sanborn sheet for that block and year, then the other sources already cited in `SOURCES.md`. Write down:
+
+- The street and the number, using the 1909 numbering already in the model (400 starts at Hurst, 500 at Hail, and the same hundreds run on the parallel streets).
+- The Sanborn block, the side of the street, and the lot if the sheet prints one.
+- Whether the footprint on the sheet was actually read. If it was not, the footprint is an estimate and the spec's `estimates` list must say so.
+
+Confidence is `sourced` only when a map or a named history puts the building on that lot. A photograph that shows the front, with the lot still unread, stays an estimate for the placement even when the front itself is sourced.
+
+## 3. Date the photograph
+
+Use a date printed on the photograph, written on it, or given by the person who sent it. If none of those exist, leave `photoDate` empty and say so in `estimates`. Do not guess a year from the style of the facade and then treat that guess as a fact.
+
+## 4. Count and measure
+
+From the photograph:
+
+- Count the floors and the bays from left to right.
+- For each bay, name the window on each floor: `flat`, `segmental`, `round`, `pair`, `pair-arch`, `bay`, `storefront`, or `door`.
+- Measure proportions against a known height. A door is about 7 feet. A storefront opening is about 9 to 10 feet. A brick course is about 2.7 inches. Write the floor heights in feet.
+- Sample wall, trim, and roof colors with an eyedropper and store them as hex on `wall`, `trim`, and `roof.color`.
+
+## 5. Separate original work from later alterations
+
+A boarded window, a filled panel, a painted brick color, a pent roof, or a modern sign is an alteration unless an earlier source shows it. Put the later look in `alterations` with `from` set to the first model year after the alteration is known. The model years are 1854, 1860, 1870, 1880, 1890, 1900, 1910, 1920, 1950, 1960, and 1970.
+
+Signs carry their own `from` and `to`. A business named only in a recent photograph is not painted on earlier years. Something Special on the East Main 400 block is the example: the sign starts at 1970.
+
+## 6. Write the spec
+
+Add `facadeSpec` to the building in the year file that first shows that front. Include:
+
+- `sourcePhoto`, `photoDate`, and `citation`.
+- `camera` with `year`, `x`, `z`, `lx`, and `lz`, standing on the street at eye height, aimed the way the photograph is aimed.
+- `floors`, `bays`, `storefront` or `storefronts`, `cornice`, `roof`, and any `porch`, `dormer`, `pediment`, `parapet`, `medallions`, `hedge`, or `chimney`.
+- `signs` with year ranges.
+- `estimates` listing every placement, date, or measurement that was not read off a source.
+
+Cite the photograph and the map in `SOURCES.md` in the same words the rest of that file uses. Do not invent a proprietor.
+
+## 7. Check it side by side
+
+With the dev server running:
+
+```
+npm run compare -- <building-id>
+```
+
+The script reads `camera` from the spec, renders that view, and writes `artifacts/compare-<building-id>.png` with the source photograph on the left and the render on the right. Look at bay count, floor heights, colors, and which details are missing. Fix the spec, not a private mesh, and run the script again.
+
+## 8. What an upload step would still need
+
+The checklist above is the part a person does. A later upload page would only collect the file, the claimed address, the claimed date, and the sender. It would not choose a lot, sample colors, or publish the spec. Those stay on this checklist until someone has compared the render with the photograph.
