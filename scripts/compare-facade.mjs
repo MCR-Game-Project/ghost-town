@@ -46,7 +46,7 @@ const camera = spec.camera;
 const fov = camera.fov ? `&fov=${camera.fov}` : "";
 const pitch = camera.pitch != null ? `&pitch=${camera.pitch}` : "";
 const eye = `&eye=${camera.eye ?? 5.25}`;
-const query = `year=${camera.year}&shot=at&x=${camera.x}&z=${camera.z}&lx=${camera.lx}&lz=${camera.lz}${fov}${pitch}${eye}`;
+const query = `year=${camera.year}&shot=at&x=${camera.x}&z=${camera.z}&lx=${camera.lx}&lz=${camera.lz}${fov}${pitch}${eye}&cb=${Date.now()}`;
 const outDir = resolve(root, "artifacts");
 mkdirSync(outDir, { recursive: true });
 const renderPath = resolve(outDir, `compare-${id}-render.png`);
@@ -58,8 +58,10 @@ const browser = await puppeteer.launch({
   args: ["--no-sandbox", "--disable-gpu", "--use-gl=angle", "--use-angle=swiftshader"],
 });
 const page = await browser.newPage();
+await page.setCacheEnabled(false);
 await page.setViewport({ width: 960, height: 720 });
-await page.goto(`http://127.0.0.1:4179/?${query}`, { waitUntil: "domcontentloaded", timeout: 90000 });
+await page.goto(`http://127.0.0.1:4179/ghost-town/?${query}`, { waitUntil: "domcontentloaded", timeout: 90000 });
+console.log("loaded", page.url());
 await page.waitForFunction(() => window.__townReady === true, { timeout: 90000 });
 await new Promise((r) => setTimeout(r, 800));
 await page.screenshot({ path: renderPath });

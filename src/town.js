@@ -2410,46 +2410,47 @@ export function buildTown(data, scene) {
         box(white, x, wallH - 1.35, z, 0.7, 0.7, 0.4);
       }
     }
-    const dormerW = 18;
-    const dormerX = -b.width * 0.16;
-    const dz = fz - 1.2;
-    box(white, dormerX, wallH + 3.2, dz, dormerW - 0.4, 5.6, 6.2);
-    clapboardTriangle(white, dormerW, 9.4, wallH + 5.6, "z", dz + 3.2, dormerX, dz);
-    gableAt(dormerW + 1.2, 7.2, 9.4, wallH + 5.6, roof, dormerX, dz);
-    const tilt = Math.atan2(9.4, dormerW / 2);
-    const rakeLen = Math.hypot(dormerW / 2, 9.4);
-    for (const [angle, x] of [[tilt, dormerX - dormerW / 4], [Math.PI - tilt, dormerX + dormerW / 4]]) {
-      const rake = new THREE.BoxGeometry(rakeLen, 0.85, 0.38);
-      rake.applyMatrix4(new THREE.Matrix4().makeRotationZ(angle));
-      rake.applyMatrix4(new THREE.Matrix4().makeTranslation(x, wallH + 5.6 + 4.7, dz + 3.5));
-      rake.applyMatrix4(buildingMatrix);
-      put(white, rake);
-    }
-    box(white, dormerX, wallH + 15.4, dz + 3.6, 0.42, 2.2, 0.42);
-    for (const x of [-2.8, 2.8]) frontSash(dormerX + x, wallH + 6.2, dz + 3.3, 2.8, 5.4, "round", false, white);
-    const widePair = (x, y, w, h) => {
-      frontSash(x - w * 0.26, y, fz + 0.22, w * 0.44, h, "flat", false, white);
-      frontSash(x + w * 0.26, y, fz + 0.22, w * 0.44, h, "flat", false, white);
+    // Front, viewer's left to right, from the 2010 photograph. Local -x is the left.
+    const front = b.facadeSpec?.front || [
+      { id: "left-gable", width: 14 },
+      { id: "center", width: 16 },
+      { id: "right", width: 16 },
+    ];
+    const span = front.reduce((sum, bay) => sum + bay.width, 0) || b.width;
+    let cursor = -b.width / 2;
+    const placed = front.map((bay) => {
+      const width = (bay.width / span) * b.width;
+      const x = cursor + width / 2;
+      cursor += width;
+      return { ...bay, x, width };
+    });
+    const pair = (x, y, z, w, h, arch = "flat") => {
+      frontSash(x - w * 0.28, y, z, w * 0.42, h, arch, false, white);
+      frontSash(x + w * 0.28, y, z, w * 0.42, h, arch, false, white);
     };
-    widePair(-b.width * 0.32, 17.2, 9.2, 6.6);
-    box(white, 0, 17.4, fz + 0.28, 11.5, 7.8, 0.35);
-    for (const x of [-2.6, 2.6]) frontSash(x, 17.3, fz + 0.48, 3.6, 6.2, "round", false, white);
-    widePair(b.width * 0.32, 17.2, 9.2, 6.6);
-    widePair(-b.width * 0.32, 6.5, 9.4, 6.4);
-    widePair(b.width * 0.3, 6.5, 8.6, 6.2);
+    for (const bay of placed) {
+      const zFace = bay.id === "left-gable" ? fz + 3.4 : fz + 0.2;
+      if (bay.id === "left-gable") {
+        box(body, bay.x, 12, fz + 1.6, bay.width - 0.4, 22, 3.2);
+        const gableRise = 11;
+        box(white, bay.x, wallH + 2.4, fz + 1.6, bay.width - 0.8, 4.2, 3.4);
+        clapboardTriangle(white, bay.width, gableRise, wallH + 4.2, "z", fz + 3.4, bay.x, fz + 1.6);
+        pair(bay.x, wallH + 6.4, fz + 3.5, 6.2, 5.2, "round");
+      }
+      pair(bay.x, 17.2, zFace, Math.min(8.4, bay.width * 0.7), 6.2);
+      pair(bay.x, 6.6, zFace, Math.min(8.4, bay.width * 0.7), 6.0);
+    }
+    const left = placed[0];
+    const right = placed[placed.length - 1];
     for (const side of [-1, 1]) {
       sideSash(side * (b.width / 2 + 0.12), 17.2, -4, side, 2.4, 5.4, "flat", false, white);
       sideSash(side * (b.width / 2 + 0.12), 6.4, 2, side, 2.3, 5.2, "flat", false, white);
     }
-    const bayX = -b.width * 0.3;
-    box(body, bayX, 12, fz + 1.8, 11, 22, 3.6);
-    widePair(bayX, 17.4, 7.2, 5.6);
-    widePair(bayX, 6.6, 7.2, 5.4);
-    const porchX = bayX;
-    const porchW = 16;
+    const porchX = left.x;
+    const porchW = left.width + 2;
     const porchD = 8;
-    box(white, porchX, 8.15, fz + porchD * 0.4, porchW + 1.4, 0.7, porchD + 0.8);
-    box(white, porchX, 8.6, fz + porchD * 0.4, porchW + 0.3, 0.22, porchD);
+    box(white, porchX, 8.05, fz + porchD * 0.45, porchW + 1.2, 0.7, porchD);
+    box(white, porchX, 8.5, fz + porchD * 0.45, porchW, 0.2, porchD - 0.4);
     const pierSpots = [
       [porchX - porchW / 2 + 1.4, fz + porchD - 0.9],
       [porchX + porchW / 2 - 1.4, fz + porchD - 0.9],
@@ -2470,11 +2471,15 @@ export function buildTown(data, scene) {
     box(white, -b.width / 2 - 3.2, 9.0, -2, 7.2, 0.2, b.depth * 0.55);
     box(body, -b.width / 2 - 5.6, 4.2, -b.depth * 0.18, 1.6, 7.6, 1.6);
     box(body, -b.width / 2 - 5.6, 4.2, b.depth * 0.12, 1.6, 7.6, 1.6);
-    const frontPorchX = b.width * 0.18;
-    box(white, frontPorchX, 8.2, fz + 3.4, 15, 0.62, 7.2);
-    box(white, frontPorchX, 7.8, fz + 3.4, 16.2, 0.28, 8);
-    for (const x of [frontPorchX - 6, frontPorchX, frontPorchX + 6]) {
-      box(white, x, 4.2, fz + 6.2, 0.38, 7.6, 0.38);
+    const frontPorchX = right.x;
+    const rightPorchW = right.width - 1;
+    box(white, frontPorchX, 8.05, fz + 3.6, rightPorchW + 1, 0.62, 7.4);
+    box(white, frontPorchX, 7.7, fz + 3.6, rightPorchW + 1.8, 0.26, 8.2);
+    for (const x of [frontPorchX - rightPorchW * 0.38, frontPorchX, frontPorchX + rightPorchW * 0.38]) {
+      box(white, x, 4.2, fz + 6.6, 0.4, 7.6, 0.4);
+    }
+    for (let i = 0; i < 4; i++) {
+      box(mats.stone, frontPorchX + rightPorchW * 0.42, 0.22 + i * 0.28, fz + 7.2 + i * 0.7, 4.2, 0.28, 0.9);
     }
     const rx = b.width / 2 + 4.6;
     box(white, rx, 7.55, 1.2, 12.2, 0.55, 16.4);
@@ -2644,11 +2649,14 @@ export function buildTown(data, scene) {
     scene.add(mesh);
   }
 
+  const pavedNames = new Set(["East Main Street", "Crafford Street"]);
+  const pavedNow = (data.meta?.shownYear || 0) >= 1970;
   for (const street of data.streets) {
     if (street.points) {
       addPolylineStreet(street, mats, scene);
       continue;
     }
+    if (pavedNow && pavedNames.has(street.name)) continue;
     const len = street.to - street.from;
     const geo =
       street.axis === "x"
@@ -2735,6 +2743,7 @@ export function buildTown(data, scene) {
   const puddleParts = [];
   for (const road of named) {
     if (!/Main|Hail|Hurst|Gridley/.test(road.name)) continue;
+    if (pavedNow && pavedNames.has(road.name)) continue;
     const span = road.to - road.from;
     const count = Math.max(3, Math.floor(Math.abs(span) / 180));
     for (let i = 0; i < count; i++) {
@@ -2905,7 +2914,7 @@ export function buildTown(data, scene) {
     if (opt.curb || opt.walk) {
       const stone = mats.stone.clone();
       stone.vertexColors = false;
-      for (const side of [-1, 1]) {
+      for (const side of opt.sides || [-1, 1]) {
         const inset = opt.inset || 0;
         const curbOff = side * (street.width / 2 - inset + 0.4);
         const walkOff = side * (street.width / 2 - inset - 2.6);
@@ -2969,9 +2978,9 @@ export function buildTown(data, scene) {
     if (crafford) dressStreet({ ...crafford, from: 0, to: 450 }, { ruts: true, curb: true, walk: true, trees: "spring" });
   }
   const eastMain = streetByName("East Main Street");
-  if (eastMain) dressStreet({ ...eastMain, from: -520, to: 560 }, { curb: true, walk: true, inset: 8 });
+  if (eastMain) dressStreet({ ...eastMain, from: -520, to: 560 }, { curb: true, walk: true, inset: 8, sides: [1] });
   const craffordNorth = streetByName("Crafford Street");
-  if (craffordNorth) dressStreet({ ...craffordNorth, from: 980, to: 1280 }, { curb: true, walk: true, inset: 6 });
+  if (craffordNorth) dressStreet({ ...craffordNorth, from: 980, to: 1280 }, { curb: true, walk: true, inset: 6, sides: [-1] });
   if ((data.meta?.shownYear || 0) >= 1970) {
     const asphalt = new THREE.MeshStandardMaterial({ color: "#6a6d70", roughness: 0.96, metalness: 0 });
     asphalt.polygonOffset = true;
@@ -3006,11 +3015,11 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
       scene.add(mesh);
     }
     const lampPost = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.22, 12, 8), mats.trimDark);
-    lampPost.position.set(278, 6, 162);
+    lampPost.position.set(330, 6, 158);
     const lampGlobe = new THREE.Mesh(new THREE.SphereGeometry(0.55, 16, 12), new THREE.MeshStandardMaterial({ color: "#f4f1e4", emissive: "#fff6dd", emissiveIntensity: 0.35, roughness: 0.4 }));
-    lampGlobe.position.set(278, 12.3, 162);
+    lampGlobe.position.set(330, 12.3, 158);
     const lampCap = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.42, 0.35, 8), mats.trimDark);
-    lampCap.position.set(278, 12.8, 162);
+    lampCap.position.set(330, 12.8, 158);
     scene.add(lampPost, lampGlobe, lampCap);
   }
   if (style.mains) {
@@ -3254,9 +3263,9 @@ function streetLabelTexture(name, ink) {
     g.strokeRect(8, 8, c.width - 16, c.height - 16);
     g.fillStyle = "#24180f";
   } else {
-    g.lineWidth = 22;
-    g.strokeStyle = "rgba(28, 18, 10, 0.92)";
-    g.fillStyle = "#f7edd4";
+    g.lineWidth = 6;
+    g.strokeStyle = "rgba(20, 16, 12, 0.9)";
+    g.fillStyle = "#2c241c";
   }
   g.font = '700 150px Georgia, "Palatino Linotype", Palatino, serif';
   g.textAlign = "center";
@@ -3276,12 +3285,11 @@ function streetLabelTexture(name, ink) {
 
 function addStreetNames(data, mats, scene) {
   const roads = data.streets.filter((street) => street.name.endsWith("Street"));
-  const pavedYear = (data.meta?.shownYear || 0) >= 1970;
   roads.forEach((street) => {
-    if (pavedYear && (street.name === "East Main Street" || street.name === "Crafford Street")) return;
     const painted = streetLabelTexture(street.name, "road");
-    const letterH = Math.min(street.width * 0.48, 32);
+    const letterH = 6;
     const letterW = letterH * painted.aspect;
+    const lane = street.width * 0.22;
     const roadMat = new THREE.MeshBasicMaterial({
       map: painted.tex,
       transparent: true,
@@ -3297,7 +3305,11 @@ function addStreetNames(data, mats, scene) {
       mesh.rotation.order = "YXZ";
       mesh.rotation.y = street.axis === "z" ? Math.PI / 2 : 0;
       mesh.rotation.x = -Math.PI / 2;
-      mesh.position.set(street.axis === "x" ? along : street.at, 0.2, street.axis === "z" ? along : street.at);
+      mesh.position.set(
+        street.axis === "x" ? along : street.at + lane,
+        0.12,
+        street.axis === "z" ? along : street.at + lane,
+      );
       mesh.renderOrder = 2;
       scene.add(mesh);
     }
