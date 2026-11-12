@@ -863,17 +863,26 @@ export function makeMaterials() {
             "#include <color_fragment>",
             `#include <color_fragment>
              float pane = clamp(vUv.y, 0.0, 1.0);
-             vec3 sky = vec3(0.52, 0.64, 0.74);
-             vec3 room = vec3(0.13, 0.16, 0.18);
-             diffuseColor.rgb = mix(room, sky, smoothstep(0.05, 0.72, pane));`,
+             float u = clamp(vUv.x, 0.0, 1.0);
+             vec3 sky = vec3(0.60, 0.72, 0.82);
+             vec3 leaf = vec3(0.34, 0.46, 0.28);
+             vec3 room = vec3(0.25, 0.29, 0.31);
+             float trees = smoothstep(0.58, 0.12, pane) * (0.58 + 0.42 * sin(u * 15.0 + 1.3) * cos(u * 6.2));
+             vec3 lower = mix(room, leaf, clamp(trees, 0.0, 1.0));
+             lower = mix(lower, sky, 0.26);
+             diffuseColor.rgb = mix(lower, sky, smoothstep(0.32, 0.84, pane));`,
           )
           .replace(
             "#include <roughnessmap_fragment>",
             `#include <roughnessmap_fragment>
-             roughnessFactor = mix(0.78, 0.045, smoothstep(0.2, 0.92, clamp(vUv.y, 0.0, 1.0)));`,
+             float paneR = clamp(vUv.y, 0.0, 1.0);
+             float uR = clamp(vUv.x, 0.0, 1.0);
+             float treesR = smoothstep(0.58, 0.12, paneR) * (0.58 + 0.42 * sin(uR * 15.0 + 1.3) * cos(uR * 6.2));
+             roughnessFactor = mix(0.58, 0.06, smoothstep(0.28, 0.9, paneR));
+             roughnessFactor = mix(roughnessFactor, 0.46, clamp(treesR, 0.0, 1.0) * 0.5);`,
           );
       };
-      mat.customProgramCacheKey = () => "glass-sky-pane3";
+      mat.customProgramCacheKey = () => "glass-sky-pane4";
       return mat;
     })(),
     glassShop: (() => {
