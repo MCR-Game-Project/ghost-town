@@ -191,7 +191,7 @@ function sidingMaps(stain) {
   });
 }
 
-function shingleMaps() {
+function shingleMaps(kind = "dark") {
   const w = 512;
   const h = 512;
   const cw = 64;
@@ -208,6 +208,11 @@ function shingleMaps() {
         let r = 92 + tone * 48;
         let g = 68 + tone * 32;
         let b = 48 + tone * 20;
+        if (kind === "tan") {
+          r = 176 + tone * 42;
+          g = 158 + tone * 30;
+          b = 104 + tone * 18;
+        }
         const gap = lx < 4 || ly > ch - 6;
         if (gap) {
           r *= 0.45;
@@ -556,6 +561,7 @@ export function makeMaterials() {
   const greenTex = brickMaps("green");
   const sidingTex = sidingMaps(0.2);
   const shingleTex = shingleMaps();
+  const tanShingleTex = shingleMaps("tan");
   const tinTex = tinMaps();
   const stoneTex = stoneMaps();
   const plankTex = plankMaps();
@@ -647,6 +653,16 @@ export function makeMaterials() {
     roof: shingle("#8a7562"),
     roofDark: shingle("#5c4a3c"),
     roofSlate: shingle("#8b98a6"),
+    roofTan: std({
+      map: tanShingleTex.map,
+      normalMap: tanShingleTex.normalMap,
+      roughnessMap: tanShingleTex.roughnessMap,
+      color: "#f3e7c4",
+      roughness: 1,
+      uvFeet: { u: 5.3, v: 4 },
+      vary: true,
+      normalScale: 0.7,
+    }),
     tin: std({
       map: tinTex.map,
       normalMap: tinTex.normalMap,
@@ -767,12 +783,12 @@ export function makeMaterials() {
     voussoir: std({ color: "#8a4036", roughness: 0.86, uvFeet: { u: 2, v: 2 } }),
     reveal: std({ color: "#1c140f", roughness: 0.95, uvFeet: { u: 4, v: 4 } }),
     glass: std({
-      color: "#9eb6c2",
-      roughness: 0.07,
-      metalness: 0.78,
-      envMapIntensity: 1.2,
-      emissive: "#3a2c1c",
-      emissiveIntensity: 0.28,
+      color: "#1c2830",
+      roughness: 0.22,
+      metalness: 0.12,
+      envMapIntensity: 0.55,
+      emissive: "#10161a",
+      emissiveIntensity: 0.12,
       uvFeet: { u: 8, v: 8 },
     }),
     stone: std({

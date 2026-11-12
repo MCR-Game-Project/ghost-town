@@ -75,17 +75,17 @@ scene.add(sky);
 const camera = new THREE.PerspectiveCamera(66, window.innerWidth / window.innerHeight, 0.25, 40000);
 camera.rotation.order = "YXZ";
 
-scene.add(new THREE.HemisphereLight(0xffe0b8, 0x7a5a3c, 0.72));
+scene.add(new THREE.HemisphereLight(0xffe6c8, 0x5a4636, 0.5));
 const fill = new THREE.DirectionalLight(0xffd8b4, 0.32);
 fill.position.set(120, 80, -40);
 scene.add(fill);
-const sun = new THREE.DirectionalLight(0xffc48a, 2.45);
+const sun = new THREE.DirectionalLight(0xffd0a4, 2.85);
 sun.castShadow = true;
 sun.shadow.mapSize.set(shot ? 4096 : 2048, shot ? 4096 : 2048);
 sun.shadow.camera.near = 8;
 sun.shadow.camera.far = 2200;
-sun.shadow.bias = -0.00035;
-sun.shadow.normalBias = 0.22;
+sun.shadow.bias = -0.00028;
+sun.shadow.normalBias = 0.12;
 scene.add(sun, sun.target);
 
 function bakeEnvironment() {
@@ -600,6 +600,8 @@ function showBuilding() {
 
 function frame() {
   requestAnimationFrame(frame);
+  const detail = townGroup.getObjectByName("building-detail");
+  if (detail) detail.visible = camera.position.y < 160;
   const dt = Math.min(clock.getDelta(), 0.05);
   if (mode === "walk" && town) {
     const speed = keys.has("ShiftLeft") || keys.has("ShiftRight") ? 34 : 16;

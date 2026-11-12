@@ -4,6 +4,36 @@
   "note": "Streets the 1918 Good Hope sheet draws beyond the 1854 plat. They are not on the February 1912 Sanborn, so the 1910 stop does not include them. No plat dates were found.",
   "add": [
     {
+      "id": "crafford-771",
+      "name": "Dwelling",
+      "kind": "house",
+      "use": "dwelling",
+      "material": "brick",
+      "stories": 2,
+      "width": 46,
+      "depth": 40,
+      "x": 1118,
+      "z": -508,
+      "facing": "-z",
+      "paint": "white",
+      "brick": "red",
+      "sign": "",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "steeple": false,
+      "rotation": 0,
+      "year": "",
+      "facade": {
+        "funeralHome": true,
+        "photoMatch": true,
+        "photoDate": "The photograph is dated 2010. No year-built was found. The house is first drawn at the 1920 stop. That start is an estimate.",
+        "photoSource": "photo from Mark, 771 N. Crafford St., 2010"
+      },
+      "sourceMap": "photo from Mark, 771 N. Crafford St., 2010",
+      "notes": "photo from Mark, 771 N. Crafford St., 2010. A brick foursquare with a hipped roof, a front gable dormer with two arched windows, white eaves and brackets, porches on brick piers, and white-trimmed windows. The address is 771 N. Crafford St. on dodsworthfh.com/location/bushnell and on legacy.com. The given coordinates, 40.554749, -90.505232, put it on the East Main side of Crafford, in the 700 block, Wells to Twyman. March 1906 sheet 5 and February 1912 sheet 7 draw blocks east of Wells, and those lots were not copied, so no Sanborn footprint was matched. The footprint is the photograph, and that is an estimate. No year-built was found, so the house is first drawn at the 1920 stop, and that start is an estimate. No family name is printed. The Martin-Hollis name is not painted on."
+    },
+    {
       "id": "presbyterian-church-1917",
       "name": "First Presbyterian Church",
       "kind": "church",

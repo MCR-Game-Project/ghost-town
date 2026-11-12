@@ -2,6 +2,15 @@
   "shownAs": 1950,
   "mapLabel": "USGS Avon, 1944",
   "note": "Streets the 1944 Avon sheet draws that the 1918 Good Hope sheet does not. Lakelawn Estate is still open ground on this sheet.",
+  "update": [
+    {
+      "id": "crafford-771",
+      "name": "Funeral home",
+      "use": "funeral home",
+      "sign": "",
+      "notes": "photo from Mark, 771 N. Crafford St., 2010. Legacy.com says this funeral home has been locally owned and operated since 1942, at 771 N. Crafford St. The 1950 stop is the first stop after 1942, so the use changes here. The Martin-Hollis name is later, and it is not painted on. The house stays as drawn."
+    }
+  ],
   "add": [
     {
       "id": "mickelberry-main",

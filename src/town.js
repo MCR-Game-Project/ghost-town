@@ -16,6 +16,8 @@ export function buildTown(data, scene) {
   mirrorPlat(data);
   const mats = makeMaterials();
   const buckets = new Map();
+  const detailBuckets = new Map();
+  let detailOn = false;
   const signs = [];
   const extraTrees = [];
   const colliders = [];
@@ -35,8 +37,9 @@ export function buildTown(data, scene) {
       colors[i * 3 + 2] = c.b;
     }
     geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-    if (!buckets.has(mat)) buckets.set(mat, []);
-    buckets.get(mat).push(geo);
+    const dest = detailOn ? detailBuckets : buckets;
+    if (!dest.has(mat)) dest.set(mat, []);
+    dest.get(mat).push(geo);
   };
 
   // Box faces are 0–1 in UV. Scale them by the material's foot-size so a brick stays a brick.
@@ -95,12 +98,15 @@ export function buildTown(data, scene) {
 
   // Glass sits back in the frame. A sill and a lintel or arch project past the wall.
   const frontSash = (x, y, z, w, h, arch, shutters = false, archMat = mats.trim, hood = false) => {
-    box(mats.reveal, x, y, z - 0.05, w + 0.06, h + 0.06, 0.16);
-    box(mats.trim, x, y, z + 0.04, w + 0.4, h + 0.46, 0.14);
-    box(mats.glass, x, y, z - 0.01, w * 0.84, h * 0.84, 0.05);
-    box(mats.trim, x, y, z + 0.09, 0.08, h * 0.8, 0.04);
-    box(mats.trim, x, y + h * 0.05, z + 0.09, w * 0.78, 0.07, 0.04);
-    box(mats.stone, x, y - h / 2 - 0.1, z + 0.12, w + 0.62, 0.18, 0.36);
+    box(mats.reveal, x, y, z - 0.1, w + 0.1, h + 0.1, 0.28);
+    box(mats.trim, x, y, z + 0.06, w + 0.5, h + 0.56, 0.18);
+    box(mats.glass, x, y, z - 0.08, w * 0.76, h * 0.74, 0.04);
+    box(mats.stone, x, y - h / 2 - 0.16, z + 0.18, w + 0.78, 0.2, 0.48);
+    box(mats.trim, x, y + h / 2 + 0.08, z + 0.14, w + 0.42, 0.16, 0.22);
+    detailOn = true;
+    box(mats.trim, x, y, z + 0.04, 0.09, h * 0.7, 0.07);
+    box(mats.trim, x, y + h * 0.04, z + 0.04, w * 0.68, 0.09, 0.07);
+    detailOn = false;
     if (arch === "segmental") archHood(archMat, x, y + h / 2 - 0.02, z + 0.08, w + 0.28, (w + 0.28) * 0.26, "z");
     else if (arch === "round") archHood(archMat, x, y + h / 2 - w * 0.16, z + 0.08, w + 0.2, (w + 0.2) * 0.5, "z");
     else box(mats.stone, x, y + h / 2 + 0.16, z + 0.1, w + 0.58, 0.24, 0.28);
@@ -2287,6 +2293,49 @@ export function buildTown(data, scene) {
     return 42;
   };
 
+  // 771 North Crafford, the 2010 photograph: brick foursquare, hipped roof, gabled dormer.
+  const addFuneralHome = (b) => {
+    const wallH = 22;
+    const body = mats.brick.red;
+    const fz = b.depth / 2;
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(mats.stone, 0, 0.7, 0, b.width + 0.4, 1.4, b.depth + 0.4);
+    box(mats.trim, 0, wallH - 0.35, 0, b.width + 1.6, 0.55, b.depth + 1.6);
+    hipRoof(b.width + 1.2, b.depth + 1.2, 8.5, wallH, mats.roofTan, 0, 0);
+    detailOn = true;
+    const n = 7;
+    for (let i = 0; i < n; i++) {
+      const x = -b.width / 2 + (b.width * i) / (n - 1);
+      box(mats.trim, x, wallH - 1.15, fz + 0.55, 0.36, 0.7, 0.7);
+    }
+    detailOn = false;
+    const dormerW = 14;
+    box(mats.trim, 0, wallH + 3.2, fz - 1.2, dormerW, 6.2, 6);
+    gableFrontAt(dormerW, 6, 4.2, wallH + 6.2, mats.roofTan, 0, fz - 1.2);
+    box(mats.trim, 0, wallH + 6.4, fz + 1.6, dormerW + 0.4, 0.35, 0.4);
+    for (const x of [-2.6, 2.6]) frontSash(x, wallH + 3.4, fz + 1.9, 2.4, 4.2, "round", false, mats.trim);
+    for (const x of [-b.width * 0.32, -b.width * 0.12, b.width * 0.18, b.width * 0.36]) {
+      frontSash(x, 15.4, fz + 0.16, 2.5, 5.2, "flat", false, mats.trim);
+    }
+    frontSash(-b.width * 0.32, 6.2, fz + 0.16, 2.6, 5.4, "flat", false, mats.trim);
+    frontSash(b.width * 0.32, 6.2, fz + 0.16, 2.6, 5.4, "flat", false, mats.trim);
+    const porchW = b.width * 0.55;
+    box(mats.trim, -b.width * 0.06, 9.4, fz + 4.2, porchW, 0.35, 8.2);
+    box(mats.roofTan, -b.width * 0.06, 9.7, fz + 4.2, porchW + 0.6, 0.16, 8.6);
+    gableFrontAt(porchW * 0.62, 7.4, 3.4, 9.8, mats.roofTan, -b.width * 0.06, fz + 6.4);
+    for (const x of [-porchW / 2, porchW / 2]) {
+      box(body, x - b.width * 0.06, 4.6, fz + 7.6, 1.15, 9, 1.15);
+      box(mats.stone, x - b.width * 0.06, 9.15, fz + 7.6, 1.45, 0.4, 1.45);
+    }
+    box(mats.stone, -b.width * 0.06, 0.35, fz + 5.2, porchW * 0.7, 0.7, 4.2);
+    const side = b.width / 2;
+    box(mats.trim, side - 6, 8.6, 0, 10, 0.28, 8);
+    for (const z of [-3.2, 3.2]) box(body, side - 1.2, 4.2, z, 1.05, 8.2, 1.05);
+    box(mats.stone, side + 1.5, 0.4, 4.5, 4.2, 0.8, 3.2);
+    chimneyStack(body, b.width * 0.22, wallH + 4, -b.depth * 0.15, 1.6, 6, 1.6);
+    return wallH + 12;
+  };
+
   if (data.streetStyle?.rile) {
     const rile = data.streets.find((s) => s.name === "Rile Street");
     if (rile) {
@@ -2315,6 +2364,7 @@ export function buildTown(data, scene) {
     else if (b.facade?.ballCream) height = addBallCream(b);
     else if (b.facade?.mcpCorner) height = addMcpCorner(b);
     else if (b.facade?.hurst292) height = addHurst292(b);
+    else if (b.facade?.funeralHome) height = addFuneralHome(b);
     else if (b.facade?.hurstBuff) height = addHurstBuff(b);
     else if (b.facade?.hurstPressed) height = addHurstPressed(b);
     else if (b.kind === "house") height = addHouse(b);
@@ -2788,17 +2838,24 @@ export function buildTown(data, scene) {
 
   addStreetNames(data, mats, scene);
 
-  // Merge static building parts.
-  for (const [mat, geos] of buckets) {
-    if (!geos.length) continue;
-    const merged = mergeGeometries(geos, false);
-    geos.forEach((g) => g.dispose());
-    if (!merged) continue;
-    const mesh = new THREE.Mesh(merged, mat);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    scene.add(mesh);
-  }
+  const mergeBucket = (map, parent) => {
+    for (const [mat, geos] of map) {
+      if (!geos.length) continue;
+      const merged = mergeGeometries(geos, false);
+      geos.forEach((g) => g.dispose());
+      if (!merged) continue;
+      const mesh = new THREE.Mesh(merged, mat);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      parent.add(mesh);
+    }
+  };
+  // Merge static building parts. Fine muntins sit in a second mesh that the view hides from the air.
+  mergeBucket(buckets, scene);
+  const detail = new THREE.Group();
+  detail.name = "building-detail";
+  mergeBucket(detailBuckets, detail);
+  scene.add(detail);
 
   for (const s of signs) {
     const tex = makeSignTexture(s.title, s.subtitle, s.style);
