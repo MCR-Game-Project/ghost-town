@@ -2105,57 +2105,119 @@ export function buildTown(data, scene) {
   // 2010 south end of the 400 block. Cream paint, filled panels, and the
   // Something Special band are the photograph. The 1900 stop keeps the red bank.
   const addSomethingSpecial = (b) => {
-    const wallH = 28;
+    const wallH = 26;
     const body = mats.trim.clone();
-    body.color.set("#e6dcc8");
-    body.roughness = 0.9;
+    body.color.set("#e4d8c4");
+    body.roughness = 0.92;
+    const paint = mats.trim.clone();
+    paint.color.set("#f1e4cc");
+    paint.roughness = 0.84;
     const russet = mats.siding.red.clone();
     russet.map = null;
     russet.normalMap = null;
     russet.roughnessMap = null;
-    russet.color.set("#a56a62");
-    const brown = mats.trimDark.clone();
-    brown.color.set("#3f2c24");
+    russet.color.set("#9a534c");
+    const louver = russet.clone();
+    louver.color.set("#7d403c");
+    const stripe = russet.clone();
+    stripe.color.set("#a33b32");
     const fz = b.depth / 2;
     box(body, 0, wallH / 2, -0.15, b.width, wallH, b.depth - 0.3);
     box(mats.stone, 0, 0.55, 0, b.width + 0.4, 1.1, b.depth + 0.3);
     const count = 6;
-    const span = b.width * 0.88;
+    const span = b.width * 0.86;
     for (let i = 0; i < count; i++) {
       const x = -span / 2 + (span * (i + 0.5)) / count;
-      const w = 2.55;
-      const h = 7.4;
-      const y = 18.4;
-      box(russet, x, y, fz - 0.05, w * 0.78, h * 0.86, 0.1);
-      box(mats.trim, x - w / 2, y, fz + 0.12, 0.16, h, 0.22);
-      box(mats.trim, x + w / 2, y, fz + 0.12, 0.16, h, 0.22);
-      box(mats.trim, x, y + h / 2, fz + 0.16, w + 0.2, 0.18, 0.28);
-      box(mats.trim, x, y + h / 2 + 0.32, fz + 0.42, w + 0.7, 0.28, 0.7);
-      box(mats.trim, x, y - h / 2 - 0.16, fz + 0.28, w + 0.5, 0.16, 0.4);
+      const w = 2.4;
+      const h = 6.6;
+      const y = 17.6;
+      box(russet, x, y, fz - 0.02, w * 0.72, h * 0.82, 0.08);
+      for (let k = 0; k < 7; k++) {
+        box(louver, x, y - h * 0.32 + k * (h * 0.09), fz + 0.05, w * 0.66, 0.06, 0.04);
+      }
+      box(paint, x - w / 2, y, fz + 0.14, 0.16, h, 0.24);
+      box(paint, x + w / 2, y, fz + 0.14, 0.16, h, 0.24);
+      box(paint, x, y - h / 2, fz + 0.16, w + 0.15, 0.14, 0.26);
+      archHood(paint, x, y + h / 2 - 0.15, fz + 0.28, w + 0.45, 1.15, "z");
+      box(paint, x, y - h / 2 - 0.18, fz + 0.32, w + 0.55, 0.16, 0.42);
     }
-    const cy = 24.8;
-    box(body, 0, cy - 0.2, fz + 0.12, b.width, 1.1, 0.8);
-    dentilCourse(cy + 0.05, fz + 0.55, b.width * 0.96, { w: 0.26, h: 0.28, d: 0.26, gap: 0.7 });
-    bracketRow(cy - 0.7, fz + 0.08, b.width * 0.94, mats.trim);
-    box(mats.trim, 0, cy + 0.42, fz + 0.72, b.width + 0.5, 0.28, 0.95);
-    const paraBottom = cy + 0.28;
-    box(body, 0, paraBottom + 1.35, fz - 0.05, b.width, 2.5, 1.5);
-    box(mats.trim, 0, paraBottom + 2.65, fz + 0.08, b.width + 0.3, 0.18, 1.55);
-    drawPediment(body, b.width * 0.46, 2.6, paraBottom + 2.55, fz + 0.12);
-    const finial = new THREE.SphereGeometry(0.32, 12, 8);
-    finial.translate(0, paraBottom + 5.5, fz + 0.35);
+    const cy = 23.4;
+    box(paint, 0, cy - 0.15, fz + 0.22, b.width + 0.2, 0.55, 0.55);
+    const pairs = 7;
+    for (let i = 0; i < pairs; i++) {
+      const x = -b.width / 2 + 1.6 + ((b.width - 3.2) * i) / (pairs - 1);
+      for (const dx of [-0.32, 0.32]) {
+        box(paint, x + dx, cy - 0.95, fz + 0.38, 0.26, 1.25, 0.48);
+      }
+    }
+    box(paint, 0, cy + 0.28, fz + 0.55, b.width + 0.6, 0.28, 0.85);
+    box(body, 0, cy + 1.15, fz - 0.02, b.width, 1.5, 1.2);
+    box(paint, 0, cy + 1.95, fz + 0.12, b.width + 0.25, 0.16, 1.25);
+    const crestW = 8.4;
+    const crestRise = 1.7;
+    const crestY = cy + 2.05;
+    {
+      const thick = 0.7;
+      const zf = fz + 0.2 + thick / 2;
+      const zb = fz + 0.2 - thick / 2;
+      const positions = [];
+      const normals = [];
+      const uvs = [];
+      const indices = [];
+      const push = (x, y, z, nx, ny, nz) => {
+        positions.push(x, y, z);
+        normals.push(nx, ny, nz);
+        uvs.push(x / 8, y / 4);
+        return positions.length / 3 - 1;
+      };
+      const tri = (a, b, c) => indices.push(a, b, c);
+      const fl = push(-crestW / 2, crestY, zf, 0, 0, 1);
+      const fr = push(crestW / 2, crestY, zf, 0, 0, 1);
+      const fp = push(0, crestY + crestRise, zf, 0, 0, 1);
+      tri(fl, fr, fp);
+      const bl = push(-crestW / 2, crestY, zb, 0, 0, -1);
+      const bp = push(0, crestY + crestRise, zb, 0, 0, -1);
+      const br = push(crestW / 2, crestY, zb, 0, 0, -1);
+      tri(bl, br, bp);
+      const face = new THREE.BufferGeometry();
+      face.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+      face.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
+      face.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+      face.setIndex(indices);
+      face.applyMatrix4(buildingMatrix);
+      put(body, face);
+    }
+    const finial = new THREE.SphereGeometry(0.28, 12, 8);
+    finial.translate(0, crestY + crestRise + 0.32, fz + 0.35);
     finial.applyMatrix4(buildingMatrix);
-    put(mats.trim, finial);
-    box(brown, -b.width * 0.08, 12.15, fz + 0.32, b.width * 0.5, 2.15, 0.32);
-    const aw = b.width * 0.3;
-    const ax = b.width * 0.3;
-    for (let i = 0; i < 9; i++) {
-      box(i % 2 ? mats.siding.white : russet, ax - aw / 2 + ((i + 0.5) * aw) / 9, 12.15, fz + 0.38, aw / 9 - 0.04, 2.05, 0.18);
+    put(paint, finial);
+    const neck = new THREE.CylinderGeometry(0.1, 0.16, 0.28, 8);
+    neck.translate(0, crestY + crestRise + 0.08, fz + 0.35);
+    neck.applyMatrix4(buildingMatrix);
+    put(paint, neck);
+    const leftW = b.width * 0.46;
+    const rightW = b.width * 0.4;
+    const leftX = -b.width * 0.24;
+    const rightX = b.width * 0.26;
+    const bandY = 12.05;
+    const doorX = -b.width * 0.02;
+    box(mats.reveal, leftX, 6.1, fz - 0.2, leftW * 0.86, 7.4, 0.12);
+    for (const k of [-0.32, 0, 0.32]) {
+      box(mats.glassShop, leftX + k * leftW * 0.7, 6.15, fz - 0.05, leftW * 0.2, 6.6, 0.05);
     }
-    box(mats.reveal, 0, 6.2, fz - 0.12, b.width * 0.9, 7.2, 0.12);
-    box(mats.glassShop, -b.width * 0.22, 6.1, fz + 0.02, b.width * 0.28, 6.4, 0.05);
-    box(mats.glassShop, b.width * 0.22, 6.1, fz + 0.02, b.width * 0.32, 6.4, 0.05);
-    box(mats.trim, 0, 6.1, fz + 0.1, 0.14, 6.6, 0.12);
+    box(paint, leftX - leftW * 0.22, 6.15, fz + 0.06, 0.12, 6.8, 0.1);
+    box(paint, leftX + leftW * 0.22, 6.15, fz + 0.06, 0.12, 6.8, 0.1);
+    box(mats.reveal, doorX, 5.2, fz - 0.55, 3.4, 8.2, 0.2);
+    box(mats.trimDark, doorX, 4.6, fz - 0.35, 2.3, 6.6, 0.12);
+    box(mats.glassShop, doorX, 7.6, fz - 0.28, 2.1, 1.3, 0.04);
+    box(mats.reveal, rightX, 6.1, fz - 0.2, rightW * 0.86, 7.4, 0.12);
+    for (const k of [-0.28, 0, 0.28]) {
+      box(mats.glassShop, rightX + k * rightW * 0.65, 6.15, fz - 0.05, rightW * 0.18, 6.6, 0.05);
+    }
+    const stripes = 10;
+    for (let i = 0; i < stripes; i++) {
+      box(i % 2 ? mats.siding.white : stripe, rightX - rightW / 2 + ((i + 0.5) * rightW) / stripes, bandY, fz + 0.42, rightW / stripes - 0.05, 1.7, 0.55);
+    }
     const rot = (FACING[b.facing] ?? 0) + THREE.MathUtils.degToRad(b.rotation || 0);
     const outward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
     const right = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
@@ -2163,11 +2225,11 @@ export function buildTown(data, scene) {
       title: "Something Special",
       subtitle: "",
       style: "band",
-      position: new THREE.Vector3(b.x, 12.15, b.z).addScaledVector(right, -b.width * 0.08).addScaledVector(outward, b.depth / 2 + 0.7),
+      position: new THREE.Vector3(b.x, bandY, b.z).addScaledVector(right, leftX).addScaledVector(outward, b.depth / 2 + 0.42),
       rotation: rot,
-      width: b.width * 0.46,
+      width: leftW * 0.92,
     });
-    return wallH + 10;
+    return wallH + 8;
   };
 
   // The green front just north of Something Special, from the same 2010 photograph.
@@ -3761,54 +3823,6 @@ function addStreetNames(data, mats, scene) {
       scene.add(mesh);
     }
   });
-
-  const crosses = roads.filter((street) => street.axis === "z");
-  const parallels = roads.filter((street) => street.axis === "x");
-  for (const cross of crosses) {
-    for (const parallel of parallels) {
-      const cw = cross.width / 2;
-      const pw = parallel.width / 2;
-      for (const corner of [
-        [cw - 8, pw - 8],
-        [-cw + 8, -pw + 8],
-      ]) {
-        scene.add(makeCornerPost(cross.name, parallel.name, cross.at + corner[0], parallel.at + corner[1]));
-      }
-    }
-  }
-}
-
-function makeCornerPost(crossName, parallelName, x, z) {
-  const group = new THREE.Group();
-  const post = new THREE.Mesh(new THREE.BoxGeometry(0.42, 8.4, 0.42), new THREE.MeshLambertMaterial({ color: "#4a3424" }));
-  post.position.y = 4.2;
-  post.castShadow = true;
-  group.add(post);
-  // The cross-street board faces traffic on the parallel street. The other board faces the cross street.
-  group.add(nameBoard(crossName, "z", 7.55));
-  group.add(nameBoard(parallelName, "x", 6.15));
-  group.position.set(x, 0, z);
-  return group;
-}
-
-function nameBoard(text, axis, y) {
-  const { tex, aspect } = streetLabelTexture(text, "board");
-  const height = 1.7;
-  const length = height * aspect;
-  const geo = new THREE.PlaneGeometry(length, height);
-  const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.8, metalness: 0 });
-  const group = new THREE.Group();
-  const front = new THREE.Mesh(geo, mat);
-  const back = new THREE.Mesh(geo, mat);
-  back.rotation.y = Math.PI;
-  if (axis === "z") {
-    front.rotation.y = Math.PI / 2;
-    back.rotation.y = Math.PI / 2 + Math.PI;
-  }
-  front.position.y = y;
-  back.position.y = y;
-  group.add(front, back);
-  return group;
 }
 
 function ensureColor(root) {
