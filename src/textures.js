@@ -585,7 +585,7 @@ export function makeMaterials() {
       roughness: 1,
       uvFeet: brickFeet,
       vary: true,
-      normalScale: 0.8,
+      normalScale: 1.5,
     });
 
   const sidingFeet = { u: 8, v: 3.2 };
@@ -783,12 +783,12 @@ export function makeMaterials() {
     voussoir: std({ color: "#8a4036", roughness: 0.86, uvFeet: { u: 2, v: 2 } }),
     reveal: std({ color: "#1c140f", roughness: 0.95, uvFeet: { u: 4, v: 4 } }),
     glass: std({
-      color: "#1c2830",
-      roughness: 0.22,
-      metalness: 0.12,
-      envMapIntensity: 0.55,
-      emissive: "#10161a",
-      emissiveIntensity: 0.12,
+      color: "#9eb4c0",
+      roughness: 0.08,
+      metalness: 0.58,
+      envMapIntensity: 1.45,
+      emissive: "#243038",
+      emissiveIntensity: 0.04,
       uvFeet: { u: 8, v: 8 },
     }),
     stone: std({
