@@ -2442,18 +2442,23 @@ export function buildTown(data, scene) {
       box(mats.trimDark, rx + 3.4, 2.6, 0.2 + i * 2.2, 0.12, 0.9, 0.12);
       box(mats.trimDark, rx - 2.2, 2.6, 0.2 + i * 2.2, 0.12, 0.9, 0.12);
     }
-    for (let i = 0; i < 16; i++) {
-      const lump = 2.1 + (i % 4) * 0.55 + (i % 3) * 0.25;
-      const x = -b.width / 2 - 6 + (i * (b.width + 14)) / 15;
-      const z = fz + 16.5 + (i % 3) * 0.7 - (i % 2) * 0.4;
-      box(i % 2 ? mats.leaf : mats.leafDark, x, lump / 2, z, 2.2 + (i % 3) * 0.7, lump, 1.8 + (i % 2) * 0.6);
+    const hedgeBall = new THREE.SphereGeometry(1, 10, 8);
+    for (let i = 0; i < 18; i++) {
+      const lump = 2.4 + (i % 4) * 0.45;
+      const x = -b.width / 2 - 4 + (i * (b.width + 10)) / 17;
+      const z = fz + 17 + (i % 3) * 0.8 - (i % 2) * 0.5;
+      const clump = hedgeBall.clone();
+      clump.scale(1.5 + (i % 3) * 0.35, lump * 0.55, 1.2);
+      clump.translate(x, lump * 0.45, z);
+      clump.applyMatrix4(buildingMatrix);
+      put(i % 2 ? mats.leaf : mats.leafDark, clump);
     }
     box(mats.stone, 0, 0.12, fz + 24, b.width + 24, 0.16, 6.5);
     box(mats.stone, 0, 0.32, fz + 20.6, b.width + 24, 0.38, 0.7);
     const yardTrees = [
-      [b.width * 1.15, fz + 22, 1.85],
-      [-b.width * 0.95, fz + 20, 1.45],
-      [4, -b.depth * 0.55, 1.2],
+      [b.width * 1.45, fz + 26, 2.5],
+      [-b.width * 1.25, fz + 22, 2.3],
+      [b.width * 0.15, -b.depth * 0.35, 1.6],
     ];
     for (const [x, z, scale] of yardTrees) {
       const spot = new THREE.Vector3(x, 0, z);
@@ -2482,7 +2487,15 @@ export function buildTown(data, scene) {
     );
     begin(b.x, b.z, b.facing, b.rotation || 0);
     let height = 20;
-    if (b.facadeSpec) {
+    const handDrawn = Boolean(
+      b.facade?.hendeeHome || b.facade?.turretHouse || b.facade?.studBarn || b.facade?.hoseTower ||
+      b.facade?.ballCream || b.facade?.mcpCorner || b.facade?.hurst292 || b.facade?.funeralHome ||
+      b.facade?.hurstBuff || b.facade?.hurstPressed || b.facade?.bays || b.facade?.norcross ||
+      b.facade?.plainPlant || b.facade?.eastSide1904 ||
+      b.id === "presbyterian-church-1917" || b.id === "junction-depot" || b.id === "hurst-crossing-shanty" ||
+      b.id === "hendee-house-26"
+    );
+    if (b.facadeSpec && !handDrawn) {
       height = drawFacadeSpec(b, {
         box, put, mats, THREE, buildingMatrix, frontSash, archHood, hipRoof, gable, gableAt,
         dentilCourse, bracketRow, drawPediment, chimneyStack, paneledDoor, localBox,
@@ -2538,7 +2551,7 @@ export function buildTown(data, scene) {
   }
 
   // Ground.
-  const prairie = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000), tiled(mats.grass, 40000 / 14, 40000 / 14));
+  const prairie = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000), mats.grass);
   prairie.rotation.x = -Math.PI / 2;
   prairie.receiveShadow = true;
   scene.add(prairie);
@@ -2547,7 +2560,7 @@ export function buildTown(data, scene) {
     if (block.use !== "park") continue;
     const w = block.x1 - block.x0;
     const d = block.z1 - block.z0;
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, d), tiled(mats.park, w / 18, d / 18));
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mats.park);
     mesh.rotation.x = -Math.PI / 2;
     mesh.position.set((block.x0 + block.x1) / 2, 0.03, (block.z0 + block.z1) / 2);
     mesh.receiveShadow = true;
@@ -2603,9 +2616,7 @@ export function buildTown(data, scene) {
         : new THREE.PlaneGeometry(street.width, len);
     const mesh = new THREE.Mesh(
       geo,
-      street.axis === "x"
-        ? tiled(mats.street, len / 18, street.width / 8)
-        : tiled(mats.streetCross, street.width / 8, len / 18),
+      street.axis === "x" ? mats.street : mats.streetCross,
     );
     mesh.rotation.x = -Math.PI / 2;
     if (street.axis === "x") mesh.position.set((street.from + street.to) / 2, 0.05, street.at);
@@ -2756,7 +2767,9 @@ export function buildTown(data, scene) {
       shader.uniforms.railViewport = railViewport;
       shader.uniforms.railMinPx = { value: minPixels };
       shader.uniforms.railHalf = { value: halfWidth };
-      shader.vertexShader = shader.vertexShader.replace(
+      shader.vertexShader = shader.vertexShader
+        .replace("#include <common>", "#include <common>\nuniform vec2 railViewport;\nuniform float railMinPx;\nuniform float railHalf;")
+        .replace(
         "#include <project_vertex>",
         `
           vec4 mvPosition = vec4(transformed, 1.0);
@@ -3099,9 +3112,7 @@ function addPolylineStreet(street, mats, scene) {
   geo.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
   geo.setIndex(indices);
   geo.computeVertexNormals();
-  const roadMat = mats.street.clone();
-  roadMat.side = THREE.DoubleSide;
-  const mesh = new THREE.Mesh(geo, roadMat);
+  const mesh = new THREE.Mesh(geo, mats.street);
   mesh.receiveShadow = true;
   scene.add(mesh);
 

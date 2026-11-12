@@ -51,13 +51,13 @@ Cite the photograph and the map in `SOURCES.md` in the same words the rest of th
 
 ## 7. Check it side by side
 
-With the dev server running:
+Put the photograph in `public/photos/` at the path named by `sourcePhoto`. With the dev server running:
 
 ```
 npm run compare -- <building-id>
 ```
 
-The script reads `camera` from the spec, renders that view, and writes `artifacts/compare-<building-id>.png` with the source photograph on the left and the render on the right. Look at bay count, floor heights, colors, and which details are missing. Fix the spec, not a private mesh, and run the script again.
+The script reads `camera` from the spec, renders that view, and writes `artifacts/compare-<building-id>.png` with the source photograph on the left and the render on the right. Change the camera, the focal length, and the spec until the render reads as the same building: the same viewpoint, bay count, window shapes, proportions, colors, and roof. Do that before the front is treated as finished.
 
 ## 8. What an upload step would still need
 

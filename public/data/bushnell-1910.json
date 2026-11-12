@@ -169,6 +169,13 @@
         "photoMatch": true,
         "photoSource": "Mark's undated photograph, labeled the Hendee Home at 304 West Hurst."
       },
+      "facadeSpec": {
+        "sourcePhoto": "public/photos/hendee-home-304-w-hurst.png",
+        "photoDate": "undated",
+        "citation": "Mark's photograph, labeled the Hendee Home at 304 West Hurst",
+        "camera": { "year": 1910, "x": -418, "z": -1088, "lx": -490, "lz": -1088, "fov": 48, "pitch": -0.06 },
+        "estimates": ["Which side of Hurst took the even numbers was not found."]
+      },
       "notes": "Mark places the Hendee Home at 304 West Hurst. The 1909 numbering puts the 300s on the block from Jackson to Washington, and this is the house already on the Hurst end of that block, Barnes side. Which side of Hurst took the even numbers was not found, so the side is an estimate. February 1912 is the first sheet that draws these lots. No year-built was found in the assessor file. The Italianate front, belvedere, and stacked porch are from the photograph. The label is Hendee Home. The 1885 history names S. A. Hendee and J. W. Hendee and does not say which of them lived here."
     }
   ],
@@ -205,7 +212,7 @@
         "sourcePhoto": "public/photos/hurst-east-of-e-main-2010.png",
         "photoDate": "2010",
         "citation": "photo from Mark, Hurst St east of E Main, 2010",
-        "camera": { "year": 1910, "x": -442, "z": 308, "lx": -360, "lz": 312 },
+        "camera": { "year": 1910, "x": -428, "z": 310, "lx": -360, "lz": 310, "fov": 52, "pitch": -0.04 },
         "estimates": ["The Hail side, the order from the corner, and the 1910 start are estimates."],
         "wall": "#cbb892",
         "wallKind": "brick",
@@ -255,7 +262,7 @@
         "sourcePhoto": "public/photos/hurst-east-of-e-main-2010.png",
         "photoDate": "2010",
         "citation": "photo from Mark, Hurst St east of E Main, 2010",
-        "camera": { "year": 1910, "x": -442, "z": 308, "lx": -360, "lz": 312 },
+        "camera": { "year": 1910, "x": -428, "z": 310, "lx": -360, "lz": 310, "fov": 52, "pitch": -0.04 },
         "estimates": ["The lot is the estimate recorded on the tan front."],
         "wall": "#9a4034",
         "wallKind": "brick",
@@ -309,7 +316,7 @@
         "sourcePhoto": "public/photos/hurst-292-2010.png",
         "photoDate": "2010",
         "citation": "photo from Mark, 292 W Hurst St, 2010",
-        "camera": { "year": 1910, "x": -400, "z": -958, "lx": -490, "lz": -958 },
+        "camera": { "year": 1910, "x": -408, "z": -910, "lx": -500, "lz": -980, "fov": 46, "pitch": -0.1 },
         "estimates": ["The lot and the footprint are estimates. No year-built was found. First drawn at the 1910 stop."],
         "wall": "#9a4034",
         "wallKind": "brick",
@@ -1031,6 +1038,13 @@
         "photoMatch": true,
         "photoSource": "Mark's photograph of the high school on Cole Street."
       },
+      "facadeSpec": {
+        "sourcePhoto": "public/photos/high-school-cole-street.png",
+        "photoDate": "undated",
+        "citation": "Mark's photograph of the high school on Cole Street",
+        "camera": { "year": 1910, "x": -300, "z": 1870, "lx": -370, "lz": 1760, "fov": 42, "pitch": -0.06 },
+        "estimates": ["The Sanborn sheets were not read for a separate school lot."]
+      },
       "sourceMap": "Centennial book, 1854–1954",
       "notes": "The 1875–76 East Side school at Cole and Hurst burned in 1896. The centennial book says the East Side school opened in the winter of 1904. This is that building, on the same corner: three stories of red brick, a hipped roof, and the corner tower with the arched entry and open belfry in Mark's photograph. It replaces the 1875 school, which comes off at the 1900 stop because the May 1898 map is after the fire. The new school appears at the 1910 stop, the first stop after the winter of 1904. Mark says it was torn down in the late 1980s, after 1970, so it stays through the last year drawn. The Sanborn sheets were not read for a separate school lot."
     },
@@ -1059,6 +1073,13 @@
         "norcross": true,
         "photoMatch": true,
         "photoSource": "Mark's photograph of the C. S. Norcross building, about 2020."
+      },
+      "facadeSpec": {
+        "sourcePhoto": "public/photos/cs-norcross-c2020.png",
+        "photoDate": "about 2020",
+        "citation": "Mark's photograph of the C. S. Norcross building, about 2020",
+        "camera": { "year": 1970, "x": -1270, "z": -640, "lx": -1190, "lz": -640, "fov": 48, "pitch": -0.04 },
+        "estimates": ["The steel bins in the photograph are not dated before 1970, so they are not drawn."]
       },
       "sourceMap": "Centennial book, 1854–1954",
       "notes": "The centennial book says C. S. Norcross and Sons let the contract for their building in May 1906, and that it is the concrete-block factory at the corner of Davis and Dean, still in use when the book was written. A later line says he moved the factory to Bushnell in 1903. The 1906 contract is the date used for this block building. It is drawn from the 1910 stop, the first stop after May 1906. The 1954 directory still lists C. S. Norcross & Sons at Dean and Davis. Mark says the building was torn down in 2026. The model stops at 1970, so that demolition is recorded and not drawn. The rock-faced walls use the stone texture, because the model has no separate concrete-block material. The steel bins and the metal building in the about-2020 photograph are not dated before 1970, so they are not drawn."

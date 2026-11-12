@@ -34,7 +34,7 @@
         "sourcePhoto": "public/photos/funeral-home-2010.png",
         "photoDate": "2010",
         "citation": "photo from Mark, 771 N. Crafford St., 2010",
-        "camera": { "year": 1970, "x": 1110, "z": 605, "lx": 1120, "lz": 500 },
+        "camera": { "year": 1970, "x": 1058, "z": 648, "lx": 1142, "lz": 505, "fov": 50, "pitch": -0.09 },
         "estimates": ["No year-built was found. The house is first drawn at the 1920 stop.", "No Sanborn footprint was matched. The footprint is the photograph."],
         "wall": "#8d3a32",
         "wallKind": "brick",
@@ -81,6 +81,13 @@
       "facade": {
         "photoMatch": true,
         "photoSource": "Postcard captioned First Presbyterian Church, Bushnell, Ill."
+      },
+      "facadeSpec": {
+        "sourcePhoto": "public/photos/first-presbyterian-hurst.png",
+        "photoDate": "postcard",
+        "citation": "Postcard captioned First Presbyterian Church, Bushnell, Ill.",
+        "camera": { "year": 1920, "x": -455, "z": -420, "lx": -540, "lz": -420, "fov": 46, "pitch": -0.08 },
+        "estimates": []
       },
       "notes": "The congregation's building was dedicated in 1869 on this ground and is the plainer church drawn through 1910. In May 1903 the old church, which faced north, was turned to face west on the corner lot, and dedicated again on 3 January 1904. The centennial book says the building was enlarged to its present size beginning in the spring of 1917, the Smith Memorial Hall work having started in the summer of 1916. The crenellated tower, pointed windows, and cross gables are that enlarged church, from Mark's postcard. The model has no 1917 stop, so the new front appears at the 1920 stop, the first one after the enlargement. The earlier building stays through 1910."
     }

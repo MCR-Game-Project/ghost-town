@@ -84,8 +84,8 @@ sun.castShadow = true;
 sun.shadow.mapSize.set(shot ? 4096 : 2048, shot ? 4096 : 2048);
 sun.shadow.camera.near = 8;
 sun.shadow.camera.far = 2200;
-sun.shadow.bias = -0.00028;
-sun.shadow.normalBias = 0.12;
+sun.shadow.bias = -0.00015;
+sun.shadow.normalBias = 0.35;
 scene.add(sun, sun.target);
 
 function bakeEnvironment() {
@@ -1190,6 +1190,14 @@ async function main() {
         look: [Number(params.get("lx")), Number(params.get("lz"))],
         blurb: params.get("blurb") || "",
       });
+      if (params.get("fov")) {
+        camera.fov = Number(params.get("fov"));
+        camera.updateProjectionMatrix();
+      }
+      if (params.get("pitch")) {
+        pitch = Number(params.get("pitch"));
+        applyWalkCamera();
+      }
     } else {
       const named = town.places.find((place) => place.id === shot);
       goToPlace(named || town.places.find((place) => place.id === "hail-main"));

@@ -6188,6 +6188,17 @@
         "photoMatch": true,
         "photo": "Hotel Alexander",
         "photoUrl": "https://www.mcdcgs.com/historic-photos/hotel-alexander-bushnell-il/"
+      },
+      "facadeSpec": {
+        "sourcePhoto": "public/photos/hotel-alexander-west-main-400.png",
+        "photoDate": "undated",
+        "citation": "Hotel Alexander photograph, the 1871 Hendee House on West Main",
+        "camera": { "year": 1910, "x": -175, "z": -140, "lx": -250, "lz": -220, "fov": 40, "pitch": -0.07 },
+        "estimates": ["The lot along West Main is inferred."],
+        "wall": "#8d3a32",
+        "trim": "#f4efe4",
+        "floors": [12, 12, 12],
+        "signs": [{ "text": "ALEXANDER", "from": 1890 }]
       }
     },
     {
@@ -7138,6 +7149,13 @@
     {
       "id": "tpw-depot",
       "name": "T. P. & W. Depot",
+      "facadeSpec": {
+        "sourcePhoto": "public/photos/tpw-depot-1914.png",
+        "photoDate": "1914",
+        "citation": "T. P. & W. depot photograph, 1914",
+        "camera": { "year": 1910, "x": -330, "z": 118, "lx": -330, "lz": 70, "fov": 50, "pitch": -0.04 },
+        "estimates": []
+      },
       "kind": "depot",
       "use": "passenger depot",
       "material": "frame",

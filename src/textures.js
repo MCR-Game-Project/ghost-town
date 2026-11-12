@@ -554,6 +554,92 @@ function awningMaps() {
   }, THREE.SRGBColorSpace);
 }
 
+const groundWhite = new THREE.DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1);
+groundWhite.colorSpace = THREE.SRGBColorSpace;
+groundWhite.wrapS = groundWhite.wrapT = THREE.RepeatWrapping;
+groundWhite.anisotropy = 1;
+groundWhite.generateMipmaps = false;
+groundWhite.minFilter = THREE.LinearFilter;
+groundWhite.magFilter = THREE.LinearFilter;
+groundWhite.needsUpdate = true;
+
+// Albedo is sampled from world position, so grass and dirt do not repeat a tile.
+function worldGround(kind, across) {
+  const mat = new THREE.MeshStandardMaterial({
+    color: "#ffffff",
+    map: groundWhite,
+    roughness: 0.94,
+    metalness: 0,
+  });
+  if (kind === "street") mat.side = THREE.DoubleSide;
+  mat.polygonOffset = true;
+  mat.polygonOffsetFactor = 1.5;
+  mat.polygonOffsetUnits = 1.5;
+  const key = `${kind}:${across}`;
+  const grass = kind === "grass" || kind === "park";
+  const ruts = kind === "street";
+  const deep = kind === "park" ? "vec3(0.24, 0.36, 0.14)" : "vec3(0.30, 0.44, 0.18)";
+  const light = kind === "park" ? "vec3(0.38, 0.50, 0.20)" : "vec3(0.46, 0.58, 0.24)";
+  const acrossExpr = across === "x" ? "uv.x" : "uv.y";
+  mat.onBeforeCompile = (shader) => {
+    shader.vertexShader = shader.vertexShader
+      .replace("#include <common>", "#include <common>\nvarying vec3 vGWorld;\nvarying vec2 vGUv;")
+      .replace("#include <uv_vertex>", "#include <uv_vertex>\nvGUv = uv;")
+      .replace("#include <begin_vertex>", "#include <begin_vertex>\nvGWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;");
+    shader.fragmentShader = shader.fragmentShader
+      .replace("#include <common>", `#include <common>
+varying vec3 vGWorld;
+varying vec2 vGUv;
+float gHash(vec2 p) {
+  p = fract(p * vec2(123.34, 345.45));
+  p += dot(p, p + 34.345);
+  return fract(p.x * p.y);
+}
+float gNoise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  float a = gHash(i);
+  float b = gHash(i + vec2(1.0, 0.0));
+  float c = gHash(i + vec2(0.0, 1.0));
+  float d = gHash(i + vec2(1.0, 1.0));
+  return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+}
+float gFbm(vec2 p) {
+  float v = 0.0;
+  float a = 0.55;
+  for (int i = 0; i < 5; i++) {
+    v += a * gNoise(p);
+    p = p * 2.03 + vec2(17.1, 9.2);
+    a *= 0.5;
+  }
+  return v;
+}
+vec3 gAlbedo(vec3 world, vec2 uv) {
+  vec2 p = world.xz;
+  float broad = gFbm(p * 0.035);
+  float mid = gFbm(p * 0.16 + 4.0);
+  float fine = gFbm(p * 0.72 + 11.0);
+  ${grass ? `vec3 col = mix(${deep}, ${light}, broad);
+  col = mix(col, col * vec3(0.92, 1.04, 0.9), (mid - 0.5) * 0.35);
+  col += (fine - 0.5) * 0.04;
+  return col;` : `vec3 soil = mix(vec3(0.40, 0.28, 0.16), vec3(0.58, 0.42, 0.26), broad);
+  soil = mix(soil, soil * vec3(1.05, 0.98, 0.9), (mid - 0.5) * 0.28);
+  soil += (fine - 0.5) * 0.035;
+  ${ruts ? `float across = ${acrossExpr};
+  float rut = exp(-pow((across - 0.36) / 0.045, 2.0)) + exp(-pow((across - 0.64) / 0.045, 2.0));
+  soil *= 1.0 - rut * 0.2;
+  float shoulder = smoothstep(0.0, 0.07, across) * smoothstep(1.0, 0.93, across);
+  soil = mix(soil * 0.78, soil, shoulder);` : ""}
+  return soil;`}
+}`)
+      .replace("#include <color_fragment>", "#include <color_fragment>\ndiffuseColor.rgb *= gAlbedo(vGWorld, vGUv);");
+  };
+  mat.customProgramCacheKey = () => `ground-${key}`;
+  mat.userData.ground = key;
+  return mat;
+}
+
 function std(opts) {
   const { uvFeet, vary, normalScale, ...rest } = opts;
   const mat = new THREE.MeshStandardMaterial({
@@ -578,11 +664,7 @@ export function makeMaterials() {
   const tinTex = tinMaps();
   const stoneTex = stoneMaps();
   const plankTex = plankMaps();
-  const streetTex = groundMaps("u");
-  const streetCrossTex = groundMaps("v");
   const dirtTex = groundMaps(false);
-  const grassTex = grassMaps(false);
-  const parkTex = grassMaps(true);
   const ballastTex = ballastMaps();
   const trackBedTex = trackBedMaps();
   const awningTex = awningMaps();
@@ -697,15 +779,7 @@ export function makeMaterials() {
       uvFeet: { u: 10, v: 1.35 },
       normalScale: 0.7,
     }),
-    dirt: std({
-      map: dirtTex.map,
-      normalMap: dirtTex.normalMap,
-      roughnessMap: dirtTex.roughnessMap,
-      color: "#ffffff",
-      roughness: 1,
-      uvFeet: { u: 18, v: 18 },
-      normalScale: 0.5,
-    }),
+    dirt: worldGround("dirt", "y"),
     mud: std({
       map: dirtTex.map,
       normalMap: dirtTex.normalMap,
@@ -716,42 +790,10 @@ export function makeMaterials() {
       uvFeet: { u: 10, v: 10 },
       normalScale: 0.35,
     }),
-    street: std({
-      map: streetTex.map,
-      normalMap: streetTex.normalMap,
-      roughnessMap: streetTex.roughnessMap,
-      color: "#ffffff",
-      roughness: 1,
-      uvFeet: { u: 22, v: 22 },
-      normalScale: 0.85,
-    }),
-    streetCross: std({
-      map: streetCrossTex.map,
-      normalMap: streetCrossTex.normalMap,
-      roughnessMap: streetCrossTex.roughnessMap,
-      color: "#ffffff",
-      roughness: 1,
-      uvFeet: { u: 22, v: 22 },
-      normalScale: 0.85,
-    }),
-    grass: std({
-      map: grassTex.map,
-      normalMap: grassTex.normalMap,
-      roughnessMap: grassTex.roughnessMap,
-      color: "#ffffff",
-      roughness: 1,
-      uvFeet: { u: 8, v: 8 },
-      normalScale: 0.22,
-    }),
-    park: std({
-      map: parkTex.map,
-      normalMap: parkTex.normalMap,
-      roughnessMap: parkTex.roughnessMap,
-      color: "#ffffff",
-      roughness: 1,
-      uvFeet: { u: 7, v: 7 },
-      normalScale: 0.22,
-    }),
+    street: worldGround("street", "y"),
+    streetCross: worldGround("street", "x"),
+    grass: worldGround("grass", "y"),
+    park: worldGround("park", "y"),
     ballast: std({
       map: ballastTex.map,
       normalMap: ballastTex.normalMap,

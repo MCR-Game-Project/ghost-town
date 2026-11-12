@@ -43,7 +43,9 @@ if (!spec?.camera) {
   process.exit(1);
 }
 const camera = spec.camera;
-const query = `year=${camera.year}&shot=at&x=${camera.x}&z=${camera.z}&lx=${camera.lx}&lz=${camera.lz}`;
+const fov = camera.fov ? `&fov=${camera.fov}` : "";
+const pitch = camera.pitch != null ? `&pitch=${camera.pitch}` : "";
+const query = `year=${camera.year}&shot=at&x=${camera.x}&z=${camera.z}&lx=${camera.lx}&lz=${camera.lz}${fov}${pitch}`;
 const outDir = resolve(root, "artifacts");
 mkdirSync(outDir, { recursive: true });
 const renderPath = resolve(outDir, `compare-${id}-render.png`);
@@ -77,7 +79,7 @@ const left = photoData
   : `<div class="missing">Source photo is not in the workspace yet.<br>${spec.sourcePhoto || "no sourcePhoto"}<br>Put the file there and run this again.</div>`;
 await sheet.setContent(`<!doctype html><style>
   body { margin: 0; display: flex; height: 720px; background: #d7d2c8; font-family: Georgia, serif; }
-  img, .missing { width: 960px; height: 720px; object-fit: cover; }
+  img, .missing { width: 960px; height: 720px; object-fit: contain; background: #111; }
   .missing { display: flex; align-items: center; justify-content: center; text-align: center; padding: 40px; background: #efe8dc; color: #3a2c22; }
 </style><body>${left}<img src="data:image/png;base64,${renderData}" alt="render"></body>`);
 await new Promise((r) => setTimeout(r, 400));
