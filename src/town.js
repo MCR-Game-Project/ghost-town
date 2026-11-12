@@ -2318,9 +2318,9 @@ export function buildTown(data, scene) {
   const addHurstBuff = (b) => {
     const wallH = 32;
     const body = mats.brick.buff.clone();
-    body.color.set("#C9B9A0");
-    const patch = mats.brick.red.clone();
-    patch.color.set("#a34d42");
+    body.color.set("#F0B4AC");
+    const headBrick = mats.brick.red.clone();
+    headBrick.color.set("#9a4538");
     const wood = mats.trimDark.clone();
     wood.color.set("#6b3028");
     const woodDark = wood.clone();
@@ -2333,9 +2333,6 @@ export function buildTown(data, scene) {
     const fz = b.depth / 2 + 0.12;
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.stone, 0, 0.35, 0, b.width + 0.2, 0.7, b.depth + 0.2);
-    for (const [px, py, pw, ph] of [[-6.2, 24.5, 2.4, 1.6], [3.4, 18.2, 1.8, 2.6], [-2.1, 16.4, 1.3, 1.5], [7.2, 26.8, 2.2, 1.3]]) {
-      box(patch, px, py, fz - 0.02, pw, ph, 0.12);
-    }
     const flatFace = (mat, x, y, z, radius, thick) => {
       const shape = new THREE.Shape();
       shape.moveTo(radius, 0);
@@ -2350,31 +2347,25 @@ export function buildTown(data, scene) {
     const gap = (b.width - 1.2) / cols;
     for (let i = 0; i < cols; i++) {
       const x = -b.width / 2 + 0.6 + gap * (i + 0.5);
-      const w = 2.35;
-      const h = 9.2;
-      const y = 21.6;
-      box(mats.reveal, x, y - 0.4, fz - 0.35, w * 0.92, h * 0.82, 0.35);
-      box(mats.glass, x, y - 0.35, fz - 0.08, w * 0.72, h * 0.7, 0.05);
-      box(body, x, y - h / 2 - 0.2, fz + 0.22, w + 0.8, 0.22, 0.4);
-      const spring = y + h * 0.28;
-      const span = w + 0.35;
-      const rise = span * 0.38;
+      const w = 2.45;
+      const h = 9.4;
+      const y = 21.4;
+      box(woodDark, x, y - 0.35, fz + 0.1, w * 0.96, h * 0.86, 0.16);
+      for (let k = 0; k < 14; k++) {
+        box(louver, x, y - h * 0.44 + k * (h * 0.058), fz + 0.2, w * 0.84, 0.045, 0.045);
+      }
+      const spring = y + h * 0.32;
+      const span = w + 0.55;
+      const rise = span * 0.36;
       const n = 7;
       for (let k = 0; k < n; k++) {
         const t = (k + 0.5) / n;
         const u = (t - 0.5) * 2;
-        const geo = new THREE.BoxGeometry(span / n + 0.06, 0.46, 0.5);
-        geo.rotateZ(-u * 0.55);
-        geo.translate(x + u * span * 0.46, spring + rise * (1 - u * u), fz + 0.32);
+        const geo = new THREE.BoxGeometry(span / n + 0.08, 0.42, 0.48);
+        geo.rotateZ(-u * 0.5);
+        geo.translate(x + u * span * 0.46, spring + rise * (1 - u * u), fz + 0.34);
         geo.applyMatrix4(buildingMatrix);
-        put(body, geo);
-      }
-      for (const side of [-1, 1]) {
-        const sx = x + side * (w * 0.78);
-        box(woodDark, sx, y - 0.3, fz + 0.18, 0.78, h * 0.78, 0.1);
-        for (let k = 0; k < 12; k++) {
-          box(louver, sx, y - h * 0.36 + k * (h * 0.062), fz + 0.26, 0.66, 0.045, 0.05);
-        }
+        put(headBrick, geo);
       }
     }
     const cy = wallH - 0.15;
@@ -2419,7 +2410,31 @@ export function buildTown(data, scene) {
   const addHurstPressed = (b) => {
     const wallH = 32;
     const body = mats.brick.red.clone();
-    body.color.set("#e7b0a0");
+    {
+      const canvas = document.createElement("canvas");
+      canvas.width = 256;
+      canvas.height = 128;
+      const g = canvas.getContext("2d");
+      g.fillStyle = "#3a342f";
+      g.fillRect(0, 0, 256, 128);
+      const bw = 64;
+      const bh = 32;
+      const mortar = 5;
+      for (let row = 0; row < 4; row++) {
+        const off = row % 2 ? bw / 2 : 0;
+        for (let col = -1; col < 5; col++) {
+          const tone = ((row * 5 + col * 3) % 4) * 10;
+          g.fillStyle = `rgb(${138 - tone}, ${62 - tone * 0.35}, ${44 - tone * 0.25})`;
+          g.fillRect(col * bw + off + mortar, row * bh + mortar, bw - mortar * 2, bh - mortar * 2);
+        }
+      }
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      body.map = tex;
+      body.color.set("#ffffff");
+      body.userData.uvFeet = { u: 2.7, v: 1.35 };
+    }
     const black = mats.coal.clone();
     black.color.set("#16181c");
     const inset = black.clone();
@@ -2475,30 +2490,38 @@ export function buildTown(data, scene) {
       const x = -b.width / 2 + 0.8 + gap * (i + 0.5);
       xs.push(x);
       const ornate = i < 3;
-      const w = 1.85;
-      const h = 8.6;
-      const y = 19.4;
-      box(mats.reveal, x, y - 0.15, fz - 0.28, w * 0.9, h * 0.78, 0.4);
-      box(mats.glass, x, y - 0.2, fz - 0.02, w * 0.62, h * 0.62, 0.04);
-      box(mats.trim, x - w / 2, y - 0.2, fz + 0.22, 0.22, h * 0.7, 0.28);
-      box(mats.trim, x + w / 2, y - 0.2, fz + 0.22, 0.22, h * 0.7, 0.28);
-      box(mats.trim, x, y - h * 0.4, fz + 0.22, w + 0.2, 0.18, 0.28);
-      const spring = y + h * 0.28;
+      const w = 1.72;
+      const h = 10.2;
+      const y = 19.6;
+      const spring = y + 1.6;
+      box(mats.trim, x, y - 0.55, fz + 0.2, w * 0.82, h * 0.7, 0.22);
+      for (let k = 0; k < 7; k++) {
+        box(inset, x, y - h * 0.32 + k * (h * 0.085), fz + 0.34, w * 0.66, 0.045, 0.04);
+      }
       const ring = (mat, rad, tube, zOff) => {
-        const n = 8;
+        const n = 9;
         for (let k = 0; k < n; k++) {
           const ang = (Math.PI * (k + 0.5)) / n;
-          const geo = new THREE.BoxGeometry(tube * 1.15, tube, 0.6);
+          const geo = new THREE.BoxGeometry(tube * 1.2, tube, 0.62);
           geo.rotateZ(ang - Math.PI / 2);
           geo.translate(x + Math.cos(ang) * rad, spring + Math.sin(ang) * rad, fz + zOff);
           geo.applyMatrix4(buildingMatrix);
           put(mat, geo);
         }
       };
-      if (ornate) ring(mats.trim, w * 1.25, 0.72, 0.85);
-      else ring(body, w * 0.58, 0.4, 0.5);
-      if (ornate) box(mats.trim, x, spring + w * 1.35, fz + 1.05, 0.7, 0.65, 0.5);
+      if (ornate) {
+        ring(mats.trim, w * 1.15, 0.78, 1.05);
+        box(mats.trim, x, spring + w * 1.25, fz + 1.15, 0.55, 0.6, 0.45);
+      } else {
+        ring(mats.trim, w * 0.5, 0.28, 0.55);
+      }
     }
+    const panelMid = (xs[3] + xs[5]) / 2;
+    const panelW = xs[5] - xs[3] + gap * 0.85;
+    box(body, panelMid, 19.8, fz - 0.22, panelW, 12.4, 0.16);
+    box(body, panelMid, 26.2, fz + 0.18, panelW + 0.5, 0.35, 0.4);
+    box(body, panelMid - panelW / 2, 19.8, fz + 0.16, 0.35, 12.6, 0.38);
+    box(body, panelMid + panelW / 2, 19.8, fz + 0.16, 0.35, 12.6, 0.38);
     const right0 = xs[3] - gap * 0.55;
     const right1 = xs[5] + gap * 0.55;
     const corbelY = 25.2;
@@ -2510,15 +2533,19 @@ export function buildTown(data, scene) {
       }
     }
     box(body, (right0 + right1) / 2, corbelY + 1.15, fz + 0.7, right1 - right0 + 0.4, 0.28, 0.55);
-    const cy = 27.4;
-    const brackets = 8;
+    const cy = 28.2;
+    const brackets = 7;
     for (let i = 0; i < brackets; i++) {
-      const x = -b.width / 2 + 1.2 + ((b.width - 2.4) * i) / (brackets - 1);
-      box(black, x, cy - 1.25, fz + 1.05, 0.7, 1.45, 1.2);
-      box(black, x, cy - 1.85, fz + 0.5, 0.38, 0.7, 0.42);
+      const x = -b.width / 2 + 1.6 + ((b.width - 3.2) * i) / (brackets - 1);
+      const curl = new THREE.TorusGeometry(0.95, 0.14, 6, 12, Math.PI);
+      curl.rotateY(Math.PI / 2);
+      curl.translate(x, cy - 1.7, fz + 0.85);
+      curl.applyMatrix4(buildingMatrix);
+      put(black, curl);
+      box(black, x, cy - 1.15, fz + 0.7, 0.36, 1.1, 0.4);
     }
-    box(black, 0, cy, fz + 0.95, b.width + 1.4, 1.35, 1.7);
-    box(black, 0, cy + 1.05, fz + 0.5, b.width + 0.6, 0.7, 0.95);
+    box(black, 0, cy, fz + 1.05, b.width + 1.6, 2.15, 1.85);
+    box(black, 0, cy + 1.35, fz + 0.55, b.width + 0.7, 0.7, 1.05);
     for (const x of [-b.width / 2 - 0.15, b.width / 2 + 0.15]) {
       box(black, x, cy + 1.7, fz + 0.7, 0.45, 1.3, 0.45);
       const fin = new THREE.SphereGeometry(0.32, 10, 8);
@@ -2530,8 +2557,16 @@ export function buildTown(data, scene) {
     box(black, 0, dormY + 1.8, fz + 0.85, 6.8, 3.4, 0.9);
     box(black, 0, dormY + 3.8, fz + 0.75, 3.6, 1.5, 0.75);
     box(black, 0, dormY + 4.8, fz + 0.7, 0.7, 0.9, 0.45);
-    box(white, 0, dormY + 1.9, fz + 1.35, 1.55, 2.35, 0.12);
-    flatArch(white, 0, dormY + 2.9, fz + 1.32, 0.85, 0.12);
+    const roundMat = new THREE.MeshStandardMaterial({ color: "#f7f4ee", roughness: 0.75 });
+    const roundWin = new THREE.CylinderGeometry(0.48, 0.48, 0.14, 18);
+    roundWin.rotateX(Math.PI / 2);
+    roundWin.translate(0, dormY + 1.85, fz + 1.35);
+    roundWin.applyMatrix4(buildingMatrix);
+    put(roundMat, roundWin);
+    const roundRim = new THREE.TorusGeometry(0.48, 0.08, 6, 18);
+    roundRim.translate(0, dormY + 1.85, fz + 1.45);
+    roundRim.applyMatrix4(buildingMatrix);
+    put(black, roundRim);
     const crest = new THREE.SphereGeometry(0.28, 10, 8);
     crest.translate(0, dormY + 5.35, fz + 0.7);
     crest.applyMatrix4(buildingMatrix);
@@ -2565,24 +2600,20 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     const fz = b.depth / 2;
     box(body, 0, brickH / 2, 0, b.width, brickH, b.depth);
     box(mats.stone, 0, 0.45, 0, b.width + 0.3, 0.9, b.depth + 0.3);
-    const slopeFace = (rotY, span, ox, oz, angle, len, y, out) => {
-      const geo = new THREE.BoxGeometry(span, 0.42, len);
-      geo.translate(0, 0, len / 2);
-      geo.rotateX(-angle);
-      geo.rotateY(rotY);
-      geo.translate(ox + Math.sin(rotY) * out, y, oz + Math.cos(rotY) * out);
+    const addSlope = (yaw, ex, ez, span) => {
+      const len = 7.6;
+      const geo = new THREE.BoxGeometry(span, 0.4, len);
+      geo.translate(0, 0, -len / 2);
+      geo.rotateX(1.02);
+      geo.rotateY(yaw);
+      geo.translate(ex, brickH + 0.35, ez);
       geo.applyMatrix4(buildingMatrix);
       put(slate, geo);
     };
-    for (const [rotY, span, ox, oz] of [
-      [0, b.width + 2, 0, b.depth / 2],
-      [Math.PI, b.width + 2, 0, -b.depth / 2],
-      [Math.PI / 2, b.depth + 2, b.width / 2, 0],
-      [-Math.PI / 2, b.depth + 2, -b.width / 2, 0],
-    ]) {
-      slopeFace(rotY, span, ox, oz, 1.05, 9.5, brickH + 0.3, 0.2);
-      slopeFace(rotY, span + 1.2, ox, oz, 0.42, 3.2, brickH + 0.15, 1.6);
-    }
+    addSlope(0, 0, b.depth / 2, b.width + 1);
+    addSlope(Math.PI, 0, -b.depth / 2, b.width + 1);
+    addSlope(Math.PI / 2, b.width / 2, 0, b.depth + 1);
+    addSlope(-Math.PI / 2, -b.width / 2, 0, b.depth + 1);
     box(slate, 0, brickH + 11.5, 0, b.width - 5, 0.45, b.depth - 5);
     box(red, 0, brickH + 0.45, fz + 2.35, b.width + 1.2, 0.5, 0.42);
     box(red, 0, brickH + 0.45, -fz - 2.35, b.width + 1.2, 0.5, 0.42);
