@@ -84,8 +84,8 @@ sun.castShadow = true;
 sun.shadow.mapSize.set(shot ? 4096 : 2048, shot ? 4096 : 2048);
 sun.shadow.camera.near = 8;
 sun.shadow.camera.far = 2200;
-sun.shadow.bias = -0.00015;
-sun.shadow.normalBias = 0.35;
+sun.shadow.bias = -0.0002;
+sun.shadow.normalBias = 0.06;
 scene.add(sun, sun.target);
 
 function bakeEnvironment() {

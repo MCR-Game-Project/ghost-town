@@ -844,44 +844,69 @@ export function makeMaterials() {
     reveal: std({ color: "#1c140f", roughness: 0.95, uvFeet: { u: 4, v: 4 } }),
     glass: (() => {
       const mat = std({
-        color: "#e7eef4",
-        roughness: 0.16,
-        metalness: 0.08,
-        envMapIntensity: 0.65,
-        emissive: "#c5d5e2",
-        emissiveIntensity: 0.12,
+        color: "#6d8290",
+        roughness: 0.4,
+        metalness: 0.22,
+        envMapIntensity: 1.15,
+        emissive: "#000000",
+        emissiveIntensity: 0,
         uvFeet: { u: 8, v: 8 },
       });
+      // vUv.y runs 0 at the bottom of each pane to 1 at the top.
       mat.onBeforeCompile = (shader) => {
-        shader.fragmentShader = shader.fragmentShader.replace(
-          "#include <color_fragment>",
-          `#include <color_fragment>
-           float sky = clamp(0.35 - vViewPosition.y * 0.028, 0.0, 1.0);
-           diffuseColor.rgb = mix(vec3(0.80, 0.86, 0.90), vec3(0.55, 0.66, 0.74), sky);`,
-        );
+        const mark = "#include <common>";
+        const withUv = "#define USE_UV\n#include <common>";
+        shader.vertexShader = shader.vertexShader.replace(mark, withUv);
+        shader.fragmentShader = shader.fragmentShader
+          .replace(mark, withUv)
+          .replace(
+            "#include <color_fragment>",
+            `#include <color_fragment>
+             float pane = clamp(vUv.y, 0.0, 1.0);
+             vec3 sky = vec3(0.52, 0.64, 0.74);
+             vec3 room = vec3(0.13, 0.16, 0.18);
+             diffuseColor.rgb = mix(room, sky, smoothstep(0.05, 0.72, pane));`,
+          )
+          .replace(
+            "#include <roughnessmap_fragment>",
+            `#include <roughnessmap_fragment>
+             roughnessFactor = mix(0.78, 0.045, smoothstep(0.2, 0.92, clamp(vUv.y, 0.0, 1.0)));`,
+          );
       };
-      mat.customProgramCacheKey = () => "glass-sky";
+      mat.customProgramCacheKey = () => "glass-sky-pane3";
       return mat;
     })(),
     glassShop: (() => {
       const mat = std({
-        color: "#243038",
-        roughness: 0.22,
-        metalness: 0.12,
-        envMapIntensity: 0.45,
-        emissive: "#1a242c",
-        emissiveIntensity: 0.08,
+        color: "#1a242c",
+        roughness: 0.45,
+        metalness: 0.16,
+        envMapIntensity: 0.85,
+        emissive: "#000000",
+        emissiveIntensity: 0,
         uvFeet: { u: 8, v: 8 },
       });
       mat.onBeforeCompile = (shader) => {
-        shader.fragmentShader = shader.fragmentShader.replace(
-          "#include <color_fragment>",
-          `#include <color_fragment>
-           float sky = clamp(0.25 - vViewPosition.y * 0.02, 0.0, 1.0);
-           diffuseColor.rgb = mix(vec3(0.16, 0.22, 0.26), vec3(0.34, 0.44, 0.50), sky);`,
-        );
+        const mark = "#include <common>";
+        const withUv = "#define USE_UV\n#include <common>";
+        shader.vertexShader = shader.vertexShader.replace(mark, withUv);
+        shader.fragmentShader = shader.fragmentShader
+          .replace(mark, withUv)
+          .replace(
+            "#include <color_fragment>",
+            `#include <color_fragment>
+             float pane = clamp(vUv.y, 0.0, 1.0);
+             vec3 sky = vec3(0.38, 0.48, 0.56);
+             vec3 room = vec3(0.09, 0.11, 0.13);
+             diffuseColor.rgb = mix(room, sky, smoothstep(0.42, 0.96, pane));`,
+          )
+          .replace(
+            "#include <roughnessmap_fragment>",
+            `#include <roughnessmap_fragment>
+             roughnessFactor = mix(0.7, 0.08, smoothstep(0.4, 0.95, clamp(vUv.y, 0.0, 1.0)));`,
+          );
       };
-      mat.customProgramCacheKey = () => "glass-shop";
+      mat.customProgramCacheKey = () => "glass-shop-pane2";
       return mat;
     })(),
     stone: std({
@@ -936,6 +961,19 @@ export function makeSignTexture(title, subtitle, style = "board") {
       g.font = `italic 600 ${size}px Georgia, "Palatino Linotype", Palatino, serif`;
     }
     g.fillText(title, c.width / 2, c.height / 2);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 16;
+    return tex;
+  }
+  if (style === "letter") {
+    c.width = 512;
+    c.height = 512;
+    g.fillStyle = "#7a2e28";
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    g.font = `700 360px Georgia, "Palatino Linotype", Palatino, serif`;
+    g.fillText(title, c.width / 2, c.height / 2 + 16);
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = 16;
