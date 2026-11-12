@@ -2707,14 +2707,14 @@ export function buildTown(data, scene) {
       canvas.width = 128;
       canvas.height = 64;
       const g = canvas.getContext("2d");
-      g.fillStyle = "#efe4d6";
+      g.fillStyle = "#9A7A68";
       g.fillRect(0, 0, 128, 64);
-      const shades = ["#7A4030", "#8b4d3a", "#6d382a", "#7A4030"];
+      const shades = ["#7A4030", "#814433", "#7A4030", "#733c2e"];
       for (let row = 0; row < 4; row++) {
         const off = row % 2 ? 32 : 0;
         for (let col = -1; col < 5; col++) {
           g.fillStyle = shades[(row + col + 4) % shades.length];
-          g.fillRect(col * 32 + off + 3, row * 16 + 3, 26, 11);
+          g.fillRect(col * 32 + off + 1, row * 16 + 1, 30, 14);
         }
       }
       const tex = new THREE.CanvasTexture(canvas);
@@ -2737,11 +2737,14 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     };
     slate.customProgramCacheKey = () => "slate-5b6878";
     const fz = b.depth / 2;
+    const base = 2;
+    buildingMatrix.premultiply(new THREE.Matrix4().makeTranslation(0, base, 0));
+    box(body, 0, -base / 2, 0, b.width + 0.35, base, b.depth + 0.35);
     box(body, 0, brickH / 2, 0, b.width, brickH, b.depth);
-    box(mats.stone, 0, 0.4, 0, b.width + 0.3, 0.8, b.depth + 0.3);
     const mansardH = 9.84;
     const band = new THREE.MeshStandardMaterial({ color: "#f6f3ec", roughness: 0.68 });
     box(band, 0, brickH + 0.32, 0, b.width + 0.9, 0.62, b.depth + 0.9);
+    box(band, 0, brickH - 0.05, fz + 0.42, b.width + 0.5, 0.32, 0.62);
     box(slate, 0, brickH + 0.7 + mansardH / 2, b.depth / 2 - 0.05, b.width - 0.2, mansardH, 0.7);
     box(slate, 0, brickH + 0.7 + mansardH / 2, -b.depth / 2 + 0.05, b.width - 0.2, mansardH, 0.7);
     box(slate, b.width / 2 - 0.05, brickH + 0.7 + mansardH / 2, 0, 0.7, mansardH, b.depth - 0.2);
@@ -2771,8 +2774,8 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     const porchRoofY = brickH;
     const archTrim = mats.stone.clone();
     archTrim.color.set("#e7dccb");
-    box(body, archX - openW / 2 - pier / 2, 5.8, fz + porchD / 2, pier, brickH, porchD);
-    box(body, archX + openW / 2 + pier / 2, 5.8, fz + porchD / 2, pier, brickH, porchD);
+    box(body, archX - openW / 2 - pier / 2, (brickH - base) / 2, fz + porchD / 2, pier, brickH + base, porchD);
+    box(body, archX + openW / 2 + pier / 2, (brickH - base) / 2, fz + porchD / 2, pier, brickH + base, porchD);
     const crown = spring + rad;
     box(body, archX, (crown + porchRoofY) / 2 + 0.15, porchFront - 0.5, openW + 0.4, Math.max(0.8, porchRoofY - crown), 1.4);
     for (let i = 0; i < 16; i++) {
@@ -2792,19 +2795,28 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     const roofMid = (leftEdge + rightEdge) / 2;
     const roofW = rightEdge - leftEdge;
     box(body, roofMid, porchRoofY - 0.15, fz + porchD / 2, roofW, 0.36, porchD + 0.3);
+    box(mats.plank, (leftEdge + archX - openW / 2) / 2, 0.28, fz + porchD * 0.55, archX - openW / 2 - leftEdge, 0.16, porchD - 0.8);
     box(mats.trim, roofMid, porchRoofY + 0.22, porchFront + 0.2, roofW + 0.4, 0.42, 0.36);
     box(mats.trim, leftEdge - 0.1, porchRoofY + 0.22, fz + porchD / 2, 0.36, 0.42, porchD + 0.5);
-    for (const x of [-16.4, -12.8]) {
-      const col = new THREE.CylinderGeometry(0.28, 0.34, 10.4, 12);
-      col.translate(x, 5.45, porchFront + 0.15);
+    const colXs = [-18.2, -15.1, -12.2];
+    for (const x of colXs) {
+      const col = new THREE.CylinderGeometry(0.28, 0.34, 10.8, 12);
+      col.translate(x, 5.7, porchFront + 0.2);
       col.applyMatrix4(buildingMatrix);
-      put(mats.siding.white, col);
+      put(band, col);
+    }
+    const railZ = porchFront + 0.35;
+    box(band, (colXs[0] + colXs[2]) / 2, 3.15, railZ, colXs[2] - colXs[0], 0.16, 0.14);
+    box(band, (colXs[0] + colXs[2]) / 2, 1.7, railZ, colXs[2] - colXs[0], 0.14, 0.12);
+    for (let i = 0; i < 9; i++) {
+      const x = colXs[0] + ((colXs[2] - colXs[0]) * i) / 8;
+      box(band, x, 2.4, railZ, 0.1, 1.5, 0.1);
     }
     const bayX = 12.2;
     const bayProj = 5.2;
     const bayFront = fz + bayProj;
     const bayW = 10.4;
-    box(body, bayX, brickH / 2, fz + bayProj / 2, bayW, brickH, bayProj);
+    box(body, bayX, (brickH - base) / 2, fz + bayProj / 2, bayW, brickH + base, bayProj);
     for (const dx of [-3.2, 0, 3.2]) frontSash(bayX + dx, 5.4, bayFront + 0.05, 2.15, 4.6, "flat", false, mats.trim);
     const pairX = -8.2;
     const pairY = brickH + 0.9 + mansardH * 0.48;
@@ -2818,10 +2830,24 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     const towerFace = bayFront + 3.1;
     box(slate, bayX, brickH + 1.6, towerFace + 0.15, bayW + 1.6, 2.8, 1.8);
     box(slate, bayX, (brickH + 2.4 + towerTop) / 2, towerFace - 1.5, bayW, towerTop - brickH - 2.4, 2.6);
-    const head = new THREE.TorusGeometry(bayW * 0.42, 1.05, 8, 18, Math.PI);
-    head.translate(bayX, towerTop - 0.7, towerFace);
-    head.applyMatrix4(buildingMatrix);
-    put(slate, head);
+    const capProfile = [
+      [0, 0],
+      [bayW * 0.46, 0],
+      [bayW * 0.62, 0.45],
+      [bayW * 0.58, 1.15],
+      [bayW * 0.4, 2.15],
+      [bayW * 0.28, 3.15],
+      [bayW * 0.12, 3.9],
+      [0, 4.45],
+    ].map(([r, y]) => new THREE.Vector2(r, y));
+    const cap = new THREE.LatheGeometry(capProfile, 28);
+    cap.translate(bayX, towerTop - 0.6, towerFace - 1.3);
+    cap.applyMatrix4(buildingMatrix);
+    put(slate, cap);
+    const finial = new THREE.SphereGeometry(0.32, 12, 10);
+    finial.translate(bayX, towerTop + 3.9, towerFace - 1.3);
+    finial.applyMatrix4(buildingMatrix);
+    put(slate, finial);
     const archCrown = brickH + mansardH + 2.2;
     const archRad = 2.55;
     const archSpring = archCrown - archRad;
@@ -2842,9 +2868,13 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     const dormZ = b.depth / 2 - 2.4;
     box(band, dormL, dormY, dormZ, 5.4, 2.6, 1.5);
     drawPediment(band, 5.6, 2.1, dormY + 1.15, dormZ + 0.4, dormL);
-    for (let i = 0; i < 4; i++) box(mats.stone, archX, 0.14 + i * 0.18, porchFront + 0.8 + i * 0.85, 8.4, 0.18, 0.9);
+    for (let i = 0; i < 4; i++) {
+      box(mats.stone, archX, -base + 0.32 + i * 0.5, porchFront + 0.7 + i * 0.95, 8.8, 0.46, 1.0);
+    }
+    const lawn = new THREE.MeshStandardMaterial({ color: "#6d9448", roughness: 0.96 });
+    box(lawn, 0, -base + 0.1, fz + 30, b.width + 40, 0.18, 74);
     const walkMat = new THREE.MeshStandardMaterial({ color: "#efeae2", roughness: 0.9 });
-    box(walkMat, archX, 0.28, porchFront + 26, 5.4, 0.22, 46);
+    box(walkMat, archX, -base + 0.24, porchFront + 28, 5.4, 0.16, 50);
     const shrub = mats.leaf.clone();
     shrub.color.set("#3d6a34");
     const clumps = [
@@ -2862,12 +2892,12 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
         [-0.45, 0.48, 0.2, 0.66],
       ]) {
         const geo = new THREE.SphereGeometry(s * sc, 12, 10);
-        geo.translate(x + dx * s, dy * s, z + dz * s);
+        geo.translate(x + dx * s, -base + dy * s, z + dz * s);
         geo.applyMatrix4(buildingMatrix);
         put(shrub, geo);
       }
     }
-    for (const spot of [new THREE.Vector3(-b.width * 0.72, 0, fz + 2.2), new THREE.Vector3(b.width * 0.72, 0, fz + 1.4)]) {
+    for (const spot of [new THREE.Vector3(-b.width * 0.72, -base, fz + 2.2), new THREE.Vector3(b.width * 0.72, -base, fz + 1.4)]) {
       spot.applyMatrix4(buildingMatrix);
       extraTrees.push({ x: spot.x, z: spot.z, kind: "maple", scale: 1.55 });
     }
