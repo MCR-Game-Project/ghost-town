@@ -2804,12 +2804,23 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     }
     const recessD = 6.6;
     const recessBack = porchFront - recessD;
-    const recessMat = new THREE.MeshStandardMaterial({ color: "#161310", roughness: 1 });
+    const recessMat = new THREE.MeshStandardMaterial({
+      color: "#7a4e3c",
+      roughness: 0.9,
+      emissive: "#4a2c20",
+      emissiveIntensity: 0.55,
+    });
     box(recessMat, archX - openW / 2 + 0.28, 4.3, recessBack + recessD / 2, 0.45, 8.4, recessD - 0.8);
     box(recessMat, archX + openW / 2 - 0.28, 4.3, recessBack + recessD / 2, 0.45, 8.4, recessD - 0.8);
     box(recessMat, archX, crown - 0.35, recessBack + recessD / 2, openW - 1.1, 0.45, recessD - 0.8);
     box(recessMat, archX, 4.3, recessBack + 0.12, openW - 0.9, 8.5, 0.28);
-    box(mats.plank, archX, 0.16, recessBack + recessD / 2, openW - 1.2, 0.12, recessD - 1.1);
+    const porchFloor = new THREE.MeshStandardMaterial({
+      color: "#8d6a48",
+      roughness: 0.86,
+      emissive: "#5a3a24",
+      emissiveIntensity: 0.4,
+    });
+    box(porchFloor, archX, 0.16, recessBack + recessD / 2, openW - 1.2, 0.12, recessD - 1.1);
     box(mats.trim, archX - 2.4, 4.2, recessBack + 0.38, 2.6, 7.0, 0.2);
     box(mats.glass, archX - 2.4, 5.8, recessBack + 0.52, 1.0, 2.4, 0.06);
     frontSash(archX + 2.6, 5.2, recessBack + 0.2, 2.6, 4.6, "flat", false, mats.trim);
@@ -2843,11 +2854,12 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     for (const dx of [-3.2, 0, 3.2]) frontSash(bayX + dx, 5.4, bayFront + 0.05, 2.15, 4.6, "flat", false, mats.trim);
     const pairX = -8.2;
     const pairY = brickH + 0.9 + mansardH * 0.48;
-    box(band, pairX, pairY, fz + 0.42, 6.2, 5.6, 0.28);
+    const pairZ = fz + 1.22;
+    box(band, pairX, pairY, pairZ, 6.2, 5.6, 0.28);
     for (const dx of [-1.45, 1.45]) {
-      box(mats.glass, pairX + dx, pairY, fz + 0.62, 1.7, 4.2, 0.06);
-      box(band, pairX + dx - 0.95, pairY, fz + 0.58, 0.16, 4.5, 0.12);
-      box(band, pairX + dx + 0.95, pairY, fz + 0.58, 0.16, 4.5, 0.12);
+      box(mats.glass, pairX + dx, pairY, pairZ + 0.2, 1.7, 4.2, 0.06);
+      box(band, pairX + dx - 0.95, pairY, pairZ + 0.16, 0.16, 4.5, 0.12);
+      box(band, pairX + dx + 0.95, pairY, pairZ + 0.16, 0.16, 4.5, 0.12);
     }
     const towerTop = brickH + mansardH + 4.2;
     const towerFace = bayFront + 3.1;
@@ -2887,8 +2899,8 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     fan.applyMatrix4(buildingMatrix);
     put(mats.glass, fan);
     const dormL = -9.2;
-    const dormY = brickH + mansardH + 2.8;
-    const dormZ = b.depth / 2 - 2.4;
+    const dormY = brickH + mansardH + 1.7;
+    const dormZ = fz + 1.45;
     box(band, dormL, dormY, dormZ, 5.4, 2.6, 1.5);
     drawPediment(band, 5.6, 2.1, dormY + 1.15, dormZ + 0.4, dormL);
     for (let i = 0; i < 4; i++) {
@@ -3496,11 +3508,10 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     const fz = b.depth / 2;
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.stone, 0, 1.15, 0, b.width + 0.6, 2.3, b.depth + 0.6);
-    box(white, 0, wallH - 0.35, 0, b.width + 10, 0.7, b.depth + 10);
-    box(white, 0, wallH + 0.15, 0, b.width + 7.2, 0.42, b.depth + 7.2);
-    hipRoof(b.width + 6, b.depth + 6, 3.2, wallH - 0.4, roof, 0, -1.5);
+    box(white, 0, wallH - 0.28, 0, b.width + 1.6, 0.55, b.depth + 1.6);
+    hipRoof(b.width + 2, b.depth + 2, 7.2, wallH - 0.2, roof, 0, 0);
     dentilCourse(wallH - 0.95, fz + 1.7, b.width + 1.2);
-    bracketRow(wallH - 1.45, fz + 1.05, b.width + 0.4);
+    bracketRow(wallH - 1.45, fz + 1.05, b.width + 0.4, white);
     for (const side of [-1, 1]) {
       const x = side * (b.width / 2 + 1.5);
       const count = 6;
@@ -3529,7 +3540,7 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     };
     for (const bay of placed) {
       const zFace = bay.id === "left-gable" ? fz + 2.8 : fz + 0.2;
-      if (bay.id === "left-gable") box(body, bay.x, 12, fz + 1.3, bay.width - 0.6, 22, 2.6);
+      if (bay.id === "left-gable") box(body, bay.x, wallH / 2, fz + 1.3, bay.width - 0.6, wallH, 2.6);
       pair(bay.x, 17.2, zFace, Math.min(8.4, bay.width * 0.7), 6.2);
       pair(bay.x, 6.6, zFace, Math.min(8.4, bay.width * 0.7), 6.0);
     }
@@ -3539,13 +3550,12 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     {
       const gx = left.x;
       const gw = Math.min(left.width, 13);
-      const rise = 6.4;
-      const y0 = wallH + 0.2;
-      const faceZ = fz + 2.7;
-      clapboardTriangle(white, gw, rise, y0, "z", faceZ, gx, faceZ);
-      frontSash(gx, y0 + rise * 0.42, faceZ + 0.15, 2.4, 4.2, "round", false, white);
-      frontSash(gx - 2.2, y0 + rise * 0.28, faceZ + 0.12, 1.5, 3.2, "flat", false, white);
-      frontSash(gx + 2.2, y0 + rise * 0.28, faceZ + 0.12, 1.5, 3.2, "flat", false, white);
+      const rise = 8.4;
+      const y0 = wallH - 0.2;
+      const faceZ = fz + 3.4;
+      clapboardTriangle(white, gw + 1.2, rise, y0, "z", faceZ, gx, faceZ);
+      frontSash(gx - 1.7, y0 + rise * 0.42, faceZ + 0.16, 2.2, 4.4, "round", false, white);
+      frontSash(gx + 1.7, y0 + rise * 0.42, faceZ + 0.16, 2.2, 4.4, "round", false, white);
       const run = gw / 2;
       const slopeLen = Math.hypot(run, rise) * 0.98;
       const angle = Math.atan2(rise, run);
@@ -3563,39 +3573,50 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
         barge.applyMatrix4(rake);
         barge.applyMatrix4(buildingMatrix);
         put(white, barge);
+        const plane = new THREE.BoxGeometry(slopeLen, 0.32, 5.2);
+        plane.translate(0, slopeLen * 0.15, -2.4);
+        plane.rotateZ(-sign * angle);
+        plane.translate(gx + sign * run * 0.35, y0 + rise * 0.2, faceZ - 0.2);
+        plane.applyMatrix4(buildingMatrix);
+        put(roof, plane);
       }
     }
     for (const side of [-1, 1]) {
       sideSash(side * (b.width / 2 + 0.12), 17.2, -4, side, 2.4, 5.4, "flat", false, white);
       sideSash(side * (b.width / 2 + 0.12), 6.4, 2, side, 2.3, 5.2, "flat", false, white);
     }
-    const addPorch = (x, w, d) => {
-      const zc = fz + d * 0.42;
-      box(mats.plank, x, 1.05, zc, w - 0.6, 0.7, d - 0.8);
-      box(white, x, 8.2, zc, w + 1, 0.7, d + 0.4);
-      box(white, x, 8.7, zc, w + 0.2, 0.22, d);
-      const n = 4;
-      for (let i = 0; i < n; i++) {
-        const cx = x - w / 2 + 1.1 + ((w - 2.2) * i) / (n - 1);
-        box(white, cx, 4.6, fz + d - 0.45, 0.7, 7.2, 0.7);
-        box(mats.stone, cx, 0.4, fz + d - 0.45, 0.95, 0.5, 0.95);
+    const addPorch = (x, w, d, cols) => {
+      const zc = fz + d * 0.48;
+      box(mats.plank, x, 1.15, zc, w - 0.4, 0.55, d - 0.4);
+      box(white, x, 9.1, zc, w + 1.4, 0.42, d + 0.6);
+      box(roof, x, 9.45, zc, w + 0.6, 0.28, d + 0.2);
+      for (let i = 0; i < cols; i++) {
+        const cx = x - w / 2 + 1.2 + ((w - 2.4) * i) / (cols - 1);
+        const post = new THREE.CylinderGeometry(0.28, 0.34, 7.6, 12);
+        post.translate(cx, 5.1, fz + d - 0.35);
+        post.applyMatrix4(buildingMatrix);
+        put(white, post);
+        box(body, cx, 0.7, fz + d - 0.35, 0.85, 1.4, 0.85);
       }
     };
-    addPorch(left.x, left.width + 1, 8);
-    addPorch(right.x, right.width - 1, 7);
+    addPorch(left.x, left.width + 2, 9, 4);
+    addPorch(right.x + 1.5, right.width + 2, 8, 3);
     paneledDoor(left.x, fz + 0.15, 3.2, 7.2);
     for (let i = 0; i < 4; i++) {
       box(mats.stone, right.x + right.width * 0.28, 0.22 + i * 0.26, fz + 7.4 + i * 0.75, 4.4, 0.26, 0.95);
     }
-    for (let i = 0; i < 16; i++) {
-      const x = -b.width / 2 - 2 + ((b.width + 4) * (i + 0.5)) / 16;
-      box(i % 2 ? mats.leaf : mats.leafDark, x, 1.6, fz + 12.5, 2.2, 2.6 + (i % 3) * 0.4, 1.8);
+    for (let i = 0; i < 18; i++) {
+      const x = -b.width / 2 - 1 + ((b.width + 2) * (i + 0.5)) / 18;
+      const bush = new THREE.SphereGeometry(1.35 + (i % 3) * 0.15, 12, 10);
+      bush.translate(x, 1.7, fz + 14);
+      bush.applyMatrix4(buildingMatrix);
+      put(i % 2 ? mats.leaf : mats.leafDark, bush);
     }
     box(mats.stone, 0, 0.12, fz + 24, b.width + 24, 0.16, 6.5);
     box(mats.stone, 0, 0.32, fz + 20.6, b.width + 24, 0.38, 0.7);
     box(white, 0, 12.3, 0, b.width + 0.8, 0.38, b.depth + 0.8);
     const yardTrees = [
-      [b.width * 0.42, fz + 6, 3.6],
+      [b.width * 0.72, fz + 16, 1.4],
     ];
     for (const [x, z, scale] of yardTrees) {
       const spot = new THREE.Vector3(x, 0, z);
