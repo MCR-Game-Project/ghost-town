@@ -960,16 +960,17 @@ export function makeSignTexture(title, subtitle, style = "board") {
   if (style === "band") {
     g.fillStyle = "#4a3424";
     g.fillRect(0, 0, c.width, c.height);
-    g.fillStyle = "#f7f1e4";
+    g.fillStyle = "#f7f4ee";
     g.textAlign = "center";
     g.textBaseline = "middle";
-    let size = 92;
-    g.font = `italic 600 ${size}px Georgia, "Palatino Linotype", Palatino, serif`;
-    while (size > 40 && g.measureText(title).width > 960) {
+    let size = 118;
+    const script = `italic 500 ${size}px "Segoe Script", "Brush Script MT", "Palatino Linotype", Georgia, serif`;
+    g.font = script;
+    while (size > 48 && g.measureText(title).width > 940) {
       size -= 4;
-      g.font = `italic 600 ${size}px Georgia, "Palatino Linotype", Palatino, serif`;
+      g.font = `italic 500 ${size}px "Segoe Script", "Brush Script MT", "Palatino Linotype", Georgia, serif`;
     }
-    g.fillText(title, c.width / 2, c.height / 2);
+    g.fillText(title, c.width / 2, c.height / 2 + 6);
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = 16;
