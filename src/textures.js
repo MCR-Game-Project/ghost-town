@@ -975,6 +975,25 @@ export function makeSignTexture(title, subtitle, style = "board") {
     tex.anisotropy = 16;
     return tex;
   }
+  if (style === "molded") {
+    c.width = 1024;
+    c.height = 280;
+    g.clearRect(0, 0, c.width, c.height);
+    g.fillStyle = "#8a2c28";
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    let size = 168;
+    g.font = `700 ${size}px Georgia, "Palatino Linotype", Palatino, serif`;
+    while (size > 72 && g.measureText(title).width > 960) {
+      size -= 6;
+      g.font = `700 ${size}px Georgia, "Palatino Linotype", Palatino, serif`;
+    }
+    g.fillText(title, c.width / 2, c.height / 2 + 8);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 16;
+    return tex;
+  }
   if (style === "letter") {
     c.width = 512;
     c.height = 512;

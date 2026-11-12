@@ -1583,20 +1583,40 @@ export function buildTown(data, scene) {
     const cx = rightX + rightSpan / 2;
     const friezeY = 22.35;
     box(body, 0, friezeY, fz - 0.15, b.width, 1.7, 1.7);
-    const markFrieze = (x0, count, span) => {
-      const slot = span / count;
-      for (let i = 0; i <= count; i++) {
-        box(red, x0 + i * slot, friezeY + 0.12, fz + 0.72, 0.95, 0.5, 0.16);
-      }
-    };
-    markFrieze(leftX, 6, leftSpan);
-    markFrieze(rightX, 2, rightSpan);
     const corniceY = 24.2;
-    box(shade, 0, corniceY - 0.15, fz + 0.28, b.width + 0.4, 0.7, 0.75);
-    bracketRow(corniceY - 0.5, fz + 0.12, b.width * 0.98, shade);
-    dentilCourse(corniceY + 0.16, fz + 0.95, b.width * 0.99, { w: 0.3, h: 0.42, d: 0.38, gap: 0.64, mat: paint });
+    box(paint, 0, corniceY - 0.15, fz + 0.28, b.width + 0.4, 0.7, 0.75);
+    const pairs = Math.max(6, Math.round(b.width / 6.2));
+    for (let i = 0; i < pairs; i++) {
+      const x = -b.width / 2 + 1.4 + ((b.width - 2.8) * i) / Math.max(1, pairs - 1);
+      for (const side of [-0.34, 0.34]) {
+        const px = x + side;
+        box(paint, px, corniceY - 0.95, fz + 0.7, 0.34, 1.45, 0.55);
+        const curl = new THREE.TorusGeometry(0.46, 0.12, 8, 14, Math.PI);
+        curl.translate(px, corniceY - 1.55, fz + 0.95);
+        curl.applyMatrix4(buildingMatrix);
+        put(paint, curl);
+      }
+    }
     box(paint, 0, corniceY + 0.48, fz + 1.05, b.width + 1.2, 0.42, 1.5);
     box(paint, 0, corniceY + 0.76, fz + 0.82, b.width + 0.55, 0.18, 1.0);
+    const bosses = Math.max(12, Math.round(b.width / 1.65));
+    for (let i = 0; i < bosses; i++) {
+      const x = -b.width / 2 + ((i + 0.5) * b.width) / bosses;
+      const disk = new THREE.CylinderGeometry(0.16, 0.16, 0.1, 12);
+      disk.rotateX(Math.PI / 2);
+      disk.translate(x, corniceY - 0.42, fz + 0.78);
+      disk.applyMatrix4(buildingMatrix);
+      put(red, disk);
+    }
+    const lozenge = (x, y) => {
+      const diamond = new THREE.BoxGeometry(0.62, 0.62, 0.16);
+      diamond.rotateZ(Math.PI / 4);
+      diamond.translate(x, y, fz + 0.92);
+      diamond.applyMatrix4(buildingMatrix);
+      put(red, diamond);
+    };
+    for (let i = 0; i < 6; i++) lozenge(leftX + (i + 0.5) * (leftSpan / 6), friezeY - 0.15);
+    for (let i = 0; i < 2; i++) lozenge(rightX + (i + 0.5) * (rightSpan / 2), friezeY - 0.15);
     // The parapet is one wall rising out of the cornice. Its back is inside the
     // facade wall and its bottom overlaps the corona, so no sky shows under it.
     const paraBottom = corniceY + 0.42;
@@ -1610,10 +1630,9 @@ export function buildTown(data, scene) {
     box(body, pedX, paraBottom + blockH / 2, paraZ + 0.04, blockW, blockH, paraD + 0.16);
     box(paint, pedX, paraBottom + blockH + 0.12, paraZ + 0.08, blockW + 0.4, 0.26, paraD + 0.28);
     const faceZ = paraZ + paraD / 2 + 0.08;
-    box(shade, pedX, paraBottom + 2.7, faceZ + 0.14, 9.6, 1.7, 0.16);
     const pedBase = paraBottom + blockH + 0.02;
-    const pedW = 11.2;
-    const pedRise = 2.15;
+    const pedW = 15.2;
+    const pedRise = 1.2;
     const tymZ = faceZ - 0.2;
     {
       const thick = 0.85;
@@ -1635,7 +1654,7 @@ export function buildTown(data, scene) {
       const fl = push(x0, pedBase, zf, 0, 0, 1);
       const fr = push(x1, pedBase, zf, 0, 0, 1);
       const fp = push(pedX, pedBase + pedRise, zf, 0, 0, 1);
-      tri(fl, fp, fr);
+      tri(fl, fr, fp);
       const bl = push(x0, pedBase, zb, 0, 0, -1);
       const bp = push(pedX, pedBase + pedRise, zb, 0, 0, -1);
       const br = push(x1, pedBase, zb, 0, 0, -1);
@@ -1668,33 +1687,34 @@ export function buildTown(data, scene) {
       put(body, face);
       const tilt = Math.atan2(pedRise, pedW / 2);
       for (const [angle, x] of [[tilt, pedX - pedW / 4], [Math.PI - tilt, pedX + pedW / 4]]) {
-        const rake = new THREE.BoxGeometry(slope + 0.15, 0.28, 0.22);
+        const rake = new THREE.BoxGeometry(slope + 0.2, 0.36, 0.42);
         rake.applyMatrix4(new THREE.Matrix4().makeRotationZ(angle));
-        rake.applyMatrix4(new THREE.Matrix4().makeTranslation(x, pedBase + pedRise / 2, zf + 0.08));
+        rake.applyMatrix4(new THREE.Matrix4().makeTranslation(x, pedBase + pedRise / 2, zf + 0.16));
         rake.applyMatrix4(buildingMatrix);
         put(paint, rake);
       }
     }
-    const urn = (x) => {
-      const y = pedBase + 0.15;
-      const z = tymZ + 0.15;
-      const parts = [
-        [0.2, 0.28, 0.18, y],
-        [0.34, 0.2, 0.36, y + 0.32],
-        [0.14, 0.18, 0.2, y + 0.58],
-        [0.22, 0.12, 0.14, y + 0.74],
-      ];
-      for (const [rTop, rBot, height, yy] of parts) {
-        const geo = new THREE.CylinderGeometry(rTop, rBot, height, 10);
-        geo.translate(x, yy, z);
-        geo.applyMatrix4(buildingMatrix);
-        put(paint, geo);
-      }
+    const finial = (x, y, z, r = 0.26) => {
+      const ball = new THREE.SphereGeometry(r, 14, 10);
+      ball.translate(x, y, z);
+      ball.applyMatrix4(buildingMatrix);
+      put(red, ball);
+      const neck = new THREE.CylinderGeometry(r * 0.45, r * 0.7, r * 0.7, 8);
+      neck.translate(x, y - r * 0.7, z);
+      neck.applyMatrix4(buildingMatrix);
+      put(red, neck);
     };
-    urn(pedX - pedW / 2);
-    urn(pedX + pedW / 2);
-    box(paint, cx, friezeY, fz + 0.62, 8.6, 1.25, 0.4);
-    box(shade, cx, friezeY, fz + 0.78, 7.4, 0.85, 0.14);
+    finial(pedX - blockW / 2 + 0.35, pedBase + 0.35, tymZ + 0.55);
+    finial(pedX + blockW / 2 - 0.35, pedBase + 0.35, tymZ + 0.55);
+    finial(pedX, pedBase + pedRise + 0.32, tymZ + 0.55, 0.22);
+    for (const side of [-1, 1]) {
+      const scroll = new THREE.TorusGeometry(0.62, 0.11, 6, 10, Math.PI);
+      scroll.rotateY(side > 0 ? Math.PI / 2 : -Math.PI / 2);
+      scroll.translate(pedX + side * (blockW / 2 + 0.15), paraBottom + paraH + 0.15, faceZ - 0.15);
+      scroll.applyMatrix4(buildingMatrix);
+      put(paint, scroll);
+    }
+    box(paint, cx, friezeY + 0.15, fz + 0.55, 9.2, 1.45, 0.42);
     box(paint, 0, 11.05, fz + 0.28, b.width + 0.2, 0.24, 0.42);
     dentilCourse(11.28, fz + 0.72, b.width * 0.98, { w: 0.22, h: 0.2, d: 0.24, gap: 0.52, mat: paint });
     box(paint, 0, 11.55, fz + 0.82, b.width + 0.8, 0.4, 1.2);
@@ -1729,11 +1749,30 @@ export function buildTown(data, scene) {
       box(paint, x, 8.85, fz + 0.02, sw * 0.78, 0.12, 0.16);
       box(mats.trimDark, x, 1.15, fz + 0.02, sw * 0.7, 0.9, 0.16);
     }
-    const vault = new THREE.CylinderGeometry(4.6, 4.6, b.depth * 0.42, 18, 1, false, 0, Math.PI);
-    vault.rotateX(Math.PI / 2);
-    vault.translate(cx, wallH + 3.6, -1.2);
-    vault.applyMatrix4(buildingMatrix);
-    put(mats.siding.white, vault);
+    const fanR = 4.8;
+    const fanY = paraBottom + paraH + 0.2;
+    const fanZ = faceZ + 0.08;
+    const fanShape = new THREE.Shape();
+    fanShape.absarc(0, 0, fanR, 0, Math.PI, false);
+    fanShape.lineTo(fanR, 0);
+    const fan = new THREE.ShapeGeometry(fanShape, 28);
+    fan.translate(cx, fanY, fanZ);
+    fan.applyMatrix4(buildingMatrix);
+    put(shade, fan);
+    const ribs = 12;
+    for (let i = 0; i <= ribs; i++) {
+      const ang = (Math.PI * i) / ribs;
+      const len = fanR * 0.98;
+      const rib = new THREE.BoxGeometry(0.12, len, 0.18);
+      rib.rotateZ(ang - Math.PI / 2);
+      rib.translate(cx + Math.cos(ang) * len * 0.5, fanY + Math.sin(ang) * len * 0.5, fanZ + 0.12);
+      rib.applyMatrix4(buildingMatrix);
+      put(paint, rib);
+    }
+    const rim = new THREE.TorusGeometry(fanR, 0.09, 6, 28, Math.PI);
+    rim.translate(cx, fanY, fanZ + 0.06);
+    rim.applyMatrix4(buildingMatrix);
+    put(paint, rim);
     const rot = (FACING[b.facing] ?? 0) + THREE.MathUtils.degToRad(b.rotation || 0);
     const outward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
     const right = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
@@ -1741,15 +1780,14 @@ export function buildTown(data, scene) {
       signs.push({
         title,
         subtitle: "",
-        style: "painted",
-        flush: true,
-        position: new THREE.Vector3(b.x, y, b.z).addScaledVector(right, localX).addScaledVector(outward, b.depth / 2 + 1.15),
+        style: "molded",
+        position: new THREE.Vector3(b.x, y, b.z).addScaledVector(right, localX).addScaledVector(outward, b.depth / 2 + 1.32),
         rotation: rot,
         width,
       });
     };
-    placeSign("BALL BROS", pedX, paraBottom + 2.7, 8.2);
-    placeSign("CARRIAGE", cx, friezeY, 6.4);
+    placeSign("BALL BROS", pedX, paraBottom + 2.55, 9.4);
+    placeSign("CARRIAGE", cx, friezeY + 0.15, 6.6);
     for (const [lx, lz, scale] of [[b.width * 0.55, fz + 8, 2.3]]) {
       const spot = new THREE.Vector3(lx, 0, lz);
       spot.applyMatrix4(buildingMatrix);
@@ -3448,10 +3486,11 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
   for (const s of signs) {
     const tex = makeSignTexture(s.title, s.subtitle, s.style);
     const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.84, metalness: 0 });
-    const h = s.style === "letter" ? s.width * 0.95 : s.subtitle ? s.width * 0.36 : s.width * 0.28;
-    if (s.style === "letter") {
+    const h = s.style === "molded" ? s.width * 0.2 : s.style === "letter" ? s.width * 0.95 : s.subtitle ? s.width * 0.36 : s.width * 0.28;
+    if (s.style === "letter" || s.style === "molded") {
       mat.transparent = true;
       mat.alphaTest = 0.35;
+      mat.roughness = 0.62;
     }
     const group = new THREE.Group();
     group.position.copy(s.position);
@@ -3460,7 +3499,7 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
     board.castShadow = true;
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(s.width, h), mat);
     mesh.position.z = 0.16;
-    if (s.style === "letter") group.add(mesh);
+    if (s.style === "letter" || s.style === "molded") group.add(mesh);
     else {
       const bracketL = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.7, 0.45), mats.trimDark);
       const bracketR = bracketL.clone();
