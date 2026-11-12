@@ -2745,25 +2745,41 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     const band = new THREE.MeshStandardMaterial({ color: "#f6f3ec", roughness: 0.68 });
     box(band, 0, brickH + 0.32, 0, b.width + 0.9, 0.62, b.depth + 0.9);
     box(band, 0, brickH - 0.05, fz + 0.42, b.width + 0.5, 0.32, 0.62);
-    box(slate, 0, brickH + 0.7 + mansardH / 2, b.depth / 2 - 0.05, b.width - 0.2, mansardH, 0.7);
-    box(slate, 0, brickH + 0.7 + mansardH / 2, -b.depth / 2 + 0.05, b.width - 0.2, mansardH, 0.7);
-    box(slate, b.width / 2 - 0.05, brickH + 0.7 + mansardH / 2, 0, 0.7, mansardH, b.depth - 0.2);
-    box(slate, -b.width / 2 + 0.05, brickH + 0.7 + mansardH / 2, 0, 0.7, mansardH, b.depth - 0.2);
-    const pyramidRise = 7.4;
+    const wallT = 1.15;
+    box(slate, 0, brickH + 0.7 + mansardH / 2, b.depth / 2 + 0.45, b.width - 0.3, mansardH, wallT);
+    box(slate, 0, brickH + 0.7 + mansardH / 2, -b.depth / 2 - 0.45, b.width - 0.3, mansardH, wallT);
+    box(slate, b.width / 2 + 0.45, brickH + 0.7 + mansardH / 2, 0, wallT, mansardH, b.depth - 0.3);
+    box(slate, -b.width / 2 - 0.45, brickH + 0.7 + mansardH / 2, 0, wallT, mansardH, b.depth - 0.3);
+    const flare = (yaw, ex, ez) => {
+      const span = Math.abs(yaw) === Math.PI / 2 ? b.depth + 1.2 : b.width + 1.2;
+      const geo = new THREE.BoxGeometry(span, 0.22, 1.7);
+      geo.translate(0, 0, 0.85);
+      geo.rotateX(0.42);
+      geo.rotateY(yaw);
+      geo.translate(ex, brickH + 1.15, ez);
+      geo.applyMatrix4(buildingMatrix);
+      put(slate, geo);
+    };
+    flare(0, 0, b.depth / 2 + 0.55);
+    flare(Math.PI, 0, -b.depth / 2 - 0.55);
+    flare(Math.PI / 2, b.width / 2 + 0.55, 0);
+    flare(-Math.PI / 2, -b.width / 2 - 0.55, 0);
+    box(band, 0, brickH + mansardH + 0.5, b.depth / 2 + 1.05, b.width + 0.3, 0.2, 0.32);
+    const pyramidRise = 3.6;
     const putPyr = (yaw, eaveX, eaveZ, span, run) => {
       const length = Math.hypot(run, pyramidRise);
       const geo = new THREE.BoxGeometry(span, 0.36, length);
       geo.translate(0, 0, -length / 2);
       geo.rotateX(Math.atan2(pyramidRise, run));
       geo.rotateY(yaw);
-      geo.translate(eaveX, brickH + 0.7 + mansardH, eaveZ);
+      geo.translate(eaveX, brickH + 0.85 + mansardH, eaveZ);
       geo.applyMatrix4(buildingMatrix);
       put(slate, geo);
     };
-    putPyr(0, 0, b.depth / 2, b.width + 0.8, b.depth / 2);
-    putPyr(Math.PI, 0, -b.depth / 2, b.width + 0.8, b.depth / 2);
-    putPyr(Math.PI / 2, b.width / 2, 0, b.depth + 0.8, b.width / 2);
-    putPyr(-Math.PI / 2, -b.width / 2, 0, b.depth + 0.8, b.width / 2);
+    putPyr(0, 0, b.depth / 2 - 0.15, b.width - 0.4, b.depth / 2 + 1.2);
+    putPyr(Math.PI, 0, -b.depth / 2 + 0.15, b.width - 0.4, b.depth / 2 + 1.2);
+    putPyr(Math.PI / 2, b.width / 2 - 0.15, 0, b.depth - 0.4, b.width / 2 + 1.2);
+    putPyr(-Math.PI / 2, -b.width / 2 + 0.15, 0, b.depth - 0.4, b.width / 2 + 1.2);
     const archX = -2;
     const openW = b.width * 0.4;
     const rad = openW / 2;
@@ -2786,10 +2802,17 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
       geo.applyMatrix4(buildingMatrix);
       put(archTrim, geo);
     }
-    box(mats.plank, archX, 0.22, fz + porchD / 2, openW - 0.4, 0.18, porchD - 0.6);
-    box(mats.trim, archX - 2.4, 4.2, fz + 0.7, 2.6, 7.0, 0.2);
-    box(mats.glass, archX - 2.4, 5.8, fz + 0.86, 1.0, 2.4, 0.06);
-    frontSash(archX + 2.6, 5.2, fz + 0.35, 2.6, 4.6, "flat", false, mats.trim);
+    const recessD = 6.6;
+    const recessBack = porchFront - recessD;
+    const recessMat = new THREE.MeshStandardMaterial({ color: "#161310", roughness: 1 });
+    box(recessMat, archX - openW / 2 + 0.28, 4.3, recessBack + recessD / 2, 0.45, 8.4, recessD - 0.8);
+    box(recessMat, archX + openW / 2 - 0.28, 4.3, recessBack + recessD / 2, 0.45, 8.4, recessD - 0.8);
+    box(recessMat, archX, crown - 0.35, recessBack + recessD / 2, openW - 1.1, 0.45, recessD - 0.8);
+    box(recessMat, archX, 4.3, recessBack + 0.12, openW - 0.9, 8.5, 0.28);
+    box(mats.plank, archX, 0.16, recessBack + recessD / 2, openW - 1.2, 0.12, recessD - 1.1);
+    box(mats.trim, archX - 2.4, 4.2, recessBack + 0.38, 2.6, 7.0, 0.2);
+    box(mats.glass, archX - 2.4, 5.8, recessBack + 0.52, 1.0, 2.4, 0.06);
+    frontSash(archX + 2.6, 5.2, recessBack + 0.2, 2.6, 4.6, "flat", false, mats.trim);
     const leftEdge = -b.width / 2 + 0.4;
     const rightEdge = archX + openW / 2 + pier;
     const roofMid = (leftEdge + rightEdge) / 2;
@@ -2869,7 +2892,7 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     box(band, dormL, dormY, dormZ, 5.4, 2.6, 1.5);
     drawPediment(band, 5.6, 2.1, dormY + 1.15, dormZ + 0.4, dormL);
     for (let i = 0; i < 4; i++) {
-      box(mats.stone, archX, -base + 0.32 + i * 0.5, porchFront + 0.7 + i * 0.95, 8.8, 0.46, 1.0);
+      box(mats.stone, archX, -base + 0.34 + i * 0.52, porchFront + 2.5 - i * 0.95, 8.8, 0.46, 1.0);
     }
     const lawn = new THREE.MeshStandardMaterial({ color: "#6d9448", roughness: 0.96 });
     box(lawn, 0, -base + 0.1, fz + 30, b.width + 40, 0.18, 74);
