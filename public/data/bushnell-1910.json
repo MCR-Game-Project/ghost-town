@@ -316,7 +316,7 @@
         "sourcePhoto": "public/photos/hurst-292-2010.png",
         "photoDate": "2010",
         "citation": "photo from Mark, 292 W Hurst St, 2010",
-        "camera": { "year": 1910, "x": -410, "z": -948, "lx": -490, "lz": -958, "fov": 48, "pitch": 0.1, "eye": 5.25 },
+        "camera": { "year": 1910, "x": -400, "z": -958, "lx": -476, "lz": -958, "fov": 42, "pitch": 0.06, "eye": 5.2 },
         "estimates": ["The lot and the footprint are estimates. No year-built was found. First drawn at the 1910 stop. The round porch arch and the slate gable are the 2010 photograph. The column count is an estimate."],
         "wall": "#9a4034",
         "wallKind": "brick",

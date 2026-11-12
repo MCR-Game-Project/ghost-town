@@ -6193,9 +6193,9 @@
         "sourcePhoto": "public/photos/hotel-alexander-west-main-400.png",
         "photoDate": "undated",
         "citation": "Hotel Alexander photograph, the 1871 Hendee House on West Main",
-        "camera": { "year": 1910, "x": -275, "z": -60, "lx": -210, "lz": -210, "fov": 40, "pitch": 0.18, "eye": 8 },
-        "estimates": ["The lot along West Main is inferred. The postcard is sepia, so the pale buff brick is an estimate. Seven bays under round arches, the iron balcony, and the striped awning at the left end are the photograph."],
-        "wall": "#f2e6d2",
+        "camera": { "year": 1910, "x": -310, "z": -145, "lx": -190, "lz": -200, "fov": 42, "pitch": 0.1, "eye": 6 },
+        "estimates": ["The lot along West Main is inferred. The postcard is sepia, so the neutral pale buff brick (#CFC3AA) is an estimate. The iron balcony and the striped awning at the left end are the photograph."],
+        "wall": "#CFC3AA",
         "trim": "#f4efe4",
         "floors": [12, 12, 12],
         "signs": [{ "text": "ALEXANDER", "from": 1890 }]

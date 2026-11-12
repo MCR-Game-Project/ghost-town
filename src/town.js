@@ -1800,8 +1800,31 @@ export function buildTown(data, scene) {
   // Round-arched upper windows, plate glass, a white canopy, and the letters M, C, and P.
   const addMcpCorner = (b) => {
     const wallH = 24;
-    const body = mats.brick.red.clone();
-    body.color.set("#f0a888");
+    const body = new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.9 });
+    {
+      const canvas = document.createElement("canvas");
+      canvas.width = 256;
+      canvas.height = 128;
+      const g = canvas.getContext("2d");
+      g.fillStyle = "#8d8882";
+      g.fillRect(0, 0, 256, 128);
+      const bw = 64;
+      const bh = 32;
+      const mortar = 5;
+      for (let row = 0; row < 4; row++) {
+        const off = row % 2 ? bw / 2 : 0;
+        for (let col = -1; col < 5; col++) {
+          const n = ((row * 5 + col * 3) % 4) * 8;
+          g.fillStyle = `rgb(${142 - n}, ${74 - n * 0.3}, ${58 - n * 0.2})`;
+          g.fillRect(col * bw + off + mortar, row * bh + mortar, bw - mortar * 2, bh - mortar * 2);
+        }
+      }
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      body.map = tex;
+      body.userData.uvFeet = { u: 2.6, v: 1.3 };
+    }
     const fz = b.depth / 2 + 0.12;
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.stone, 0, 0.55, 0, b.width + 0.2, 1.1, b.depth + 0.2);
@@ -1831,9 +1854,26 @@ export function buildTown(data, scene) {
       fanlight(x, spring + 0.04, z + 0.1, w * 0.43, w > 6 ? 5 : 3);
       voussoirArch(body, mats.stone, x, spring, z + 0.38, w * 1.06);
     };
-    const pairs = [-b.width * 0.28, b.width * 0.16];
-    for (const gx of pairs) {
-      for (const dx of [-3.1, 3.1]) archAt(gx + dx, fz, 4.6, 5.4, 15.2);
+    const pairCenters = [-16, 0, 16];
+    const frameMat = mats.trim.clone();
+    frameMat.color.set("#f4efe4");
+    for (const gx of pairCenters) {
+      for (const dx of [-2.15, 2.15]) {
+        const x = gx + dx;
+        const y = 16.4;
+        const w = 2.5;
+        const h = 6.4;
+        const spring = y + h * 0.22;
+        box(mats.reveal, x, y - 0.3, fz - 0.15, w * 0.8, h * 0.62, 0.18);
+        box(mats.glass, x, y - 0.45, fz - 0.02, w * 0.52, h * 0.48, 0.04);
+        box(frameMat, x - w * 0.38, y - 0.2, fz + 0.16, 0.12, h * 0.7, 0.16);
+        box(frameMat, x + w * 0.38, y - 0.2, fz + 0.16, 0.12, h * 0.7, 0.16);
+        box(frameMat, x, y - h * 0.42, fz + 0.16, w * 0.86, 0.1, 0.16);
+        const arch = new THREE.TorusGeometry(w * 0.4, 0.1, 8, 22, Math.PI);
+        arch.translate(x, spring, fz + 0.2);
+        arch.applyMatrix4(buildingMatrix);
+        put(frameMat, arch);
+      }
     }
     const endX = b.width * 0.16;
     const plates = [-b.width * 0.32, -b.width * 0.04, b.width * 0.28];
@@ -1912,9 +1952,9 @@ export function buildTown(data, scene) {
         width: 1.5,
       });
     };
-    medal(b.width * 0.34, 21.4, "M");
-    medal(b.width * 0.02, 21.4, "C");
-    medal(-b.width * 0.3, 21.4, "P");
+    medal(-8, 17.6, "M");
+    medal(8, 17.6, "C");
+    medal(22, 17.6, "P");
     return wallH + 8;
   };
 
@@ -2343,8 +2383,6 @@ export function buildTown(data, scene) {
       body.color.set("#ffffff");
       body.userData.uvFeet = { u: 2.4, v: 2.4 };
     }
-    const pink = body.clone();
-    pink.color.set("#f0ddd4");
     const headBrick = mats.brick.red.clone();
     headBrick.color.set("#9a4538");
     const wood = mats.trimDark.clone();
@@ -2359,9 +2397,6 @@ export function buildTown(data, scene) {
     const fz = b.depth / 2 + 0.12;
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.stone, 0, 0.35, 0, b.width + 0.2, 0.7, b.depth + 0.2);
-    for (const [px, py, pw, ph] of [[-10.4, 28.4, 3.4, 1.5], [-12.2, 24.6, 1.8, 2.4], [-5.5, 29.6, 2.6, 1.2], [-11.6, 18.8, 1.5, 1.8]]) {
-      box(pink, px, py, fz + 0.04, pw, ph, 0.08);
-    }
     const flatFace = (mat, x, y, z, radius, thick) => {
       const shape = new THREE.Shape();
       shape.moveTo(radius, 0);
@@ -2540,19 +2575,19 @@ export function buildTown(data, scene) {
         box(archMat, x + w * 0.34, (sill + spring) / 2, fz + 0.24, 0.08, openingH, 0.12);
         box(archMat, x, sill, fz + 0.24, w * 0.76, 0.08, 0.12);
       } else {
-        box(archMat, x, (sill + spring) / 2, fz + 0.16, w * 0.58, openingH * 0.96, 0.14);
+        box(archMat, x, (sill + spring) / 2, fz + 0.18, w * 0.62, openingH * 0.98, 0.2);
         for (let k = 0; k < 7; k++) {
-          box(inset, x, sill + 0.35 + k * (openingH * 0.12), fz + 0.26, w * 0.42, 0.035, 0.03);
+          box(inset, x, sill + 0.4 + k * (openingH * 0.11), fz + 0.32, w * 0.4, 0.04, 0.03);
         }
-        box(archMat, x - w * 0.38, (sill + spring) / 2, fz + 0.36, 0.16, openingH, 0.24);
-        box(archMat, x + w * 0.38, (sill + spring) / 2, fz + 0.36, 0.16, openingH, 0.24);
-        box(archMat, x, sill, fz + 0.36, w * 0.92, 0.14, 0.26);
+        box(archMat, x - w * 0.42, (sill + spring) / 2, fz + 0.48, 0.32, openingH, 0.42);
+        box(archMat, x + w * 0.42, (sill + spring) / 2, fz + 0.48, 0.32, openingH, 0.42);
+        box(archMat, x, sill, fz + 0.46, w + 0.35, 0.2, 0.4);
       }
-      const arch = new THREE.TorusGeometry(rad, glass ? 0.07 : 0.13, 8, 24, Math.PI);
-      arch.translate(x, spring, fz + (glass ? 0.26 : 0.4));
+      const arch = new THREE.TorusGeometry(rad, glass ? 0.07 : 0.2, 10, 28, Math.PI);
+      arch.translate(x, spring, fz + (glass ? 0.26 : 0.52));
       arch.applyMatrix4(buildingMatrix);
       put(archMat, arch);
-      box(archMat, x, spring + rad, fz + (glass ? 0.28 : 0.42), 0.16, glass ? 0.2 : 0.26, 0.14);
+      box(archMat, x, spring + rad * 0.92, fz + (glass ? 0.28 : 0.56), 0.18, 0.28, 0.16);
     };
     const leftXs = [-10.6, -6.7, -2.8];
     const rightXs = [2.3, 5.5, 8.7];
@@ -2949,9 +2984,31 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
   // Hotel Alexander photograph of the 1871 Hendee House: three brick stories, cornice, porch.
   const addHendeeHouse = (b) => {
     const wallH = 36;
-    const body = mats.brick.buff.clone();
-    body.color.set("#fff4e4");
-    body.roughness = 0.9;
+    const body = new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.9 });
+    {
+      const canvas = document.createElement("canvas");
+      canvas.width = 256;
+      canvas.height = 128;
+      const g = canvas.getContext("2d");
+      g.fillStyle = "#b7ad9e";
+      g.fillRect(0, 0, 256, 128);
+      const bw = 64;
+      const bh = 32;
+      const mortar = 5;
+      for (let row = 0; row < 4; row++) {
+        const off = row % 2 ? bw / 2 : 0;
+        for (let col = -1; col < 5; col++) {
+          const n = ((row * 4 + col * 3) % 5) - 2;
+          g.fillStyle = `rgb(${207 + n * 3}, ${195 + n * 2}, ${170 + n * 2})`;
+          g.fillRect(col * bw + off + mortar, row * bh + mortar, bw - mortar * 2, bh - mortar * 2);
+        }
+      }
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      body.map = tex;
+      body.userData.uvFeet = { u: 2.6, v: 1.3 };
+    }
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.stone, 0, 0.7, 0, b.width + 0.4, 1.4, b.depth + 0.4);
     const fz = b.depth / 2 + 0.16;
@@ -3907,7 +3964,17 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
       const road = Math.max(12, street.width - walk * 2 - 2);
       strip(street.axis, mid, len, street.at, road, 0.16, 0.18, asphalt);
     };
-    if (eastMain) paveRoad(eastMain, eastMain.from, eastMain.to);
+    if (eastMain) {
+      paveRoad(eastMain, eastMain.from, eastMain.to);
+      const plainRoad = new THREE.MeshStandardMaterial({ color: "#6e7174", roughness: 0.95 });
+      const approach = new THREE.Mesh(new THREE.BoxGeometry(260, 0.8, 110), plainRoad);
+      approach.position.set(-350, 0.9, 155);
+      approach.receiveShadow = true;
+      const walk400 = new THREE.Mesh(new THREE.BoxGeometry(260, 0.35, 28), concrete);
+      walk400.position.set(-350, 1.15, 188);
+      walk400.receiveShadow = true;
+      scene.add(approach, walk400);
+    }
     const hurst = streetByName("Hurst Street");
     if (hurst) {
       paveRoad(hurst, 180, 520);
