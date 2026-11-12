@@ -1854,23 +1854,23 @@ export function buildTown(data, scene) {
       fanlight(x, spring + 0.04, z + 0.1, w * 0.43, w > 6 ? 5 : 3);
       voussoirArch(body, mats.stone, x, spring, z + 0.38, w * 1.06);
     };
-    const pairCenters = [-16, 0, 16];
+    const pairCenters = [-15, 0, 15];
     const frameMat = mats.trim.clone();
     frameMat.color.set("#f4efe4");
     for (const gx of pairCenters) {
-      for (const dx of [-2.15, 2.15]) {
+      for (const dx of [-3.3, 3.3]) {
         const x = gx + dx;
-        const y = 16.4;
-        const w = 2.5;
-        const h = 6.4;
-        const spring = y + h * 0.22;
-        box(mats.reveal, x, y - 0.3, fz - 0.15, w * 0.8, h * 0.62, 0.18);
-        box(mats.glass, x, y - 0.45, fz - 0.02, w * 0.52, h * 0.48, 0.04);
-        box(frameMat, x - w * 0.38, y - 0.2, fz + 0.16, 0.12, h * 0.7, 0.16);
-        box(frameMat, x + w * 0.38, y - 0.2, fz + 0.16, 0.12, h * 0.7, 0.16);
-        box(frameMat, x, y - h * 0.42, fz + 0.16, w * 0.86, 0.1, 0.16);
-        const arch = new THREE.TorusGeometry(w * 0.4, 0.1, 8, 22, Math.PI);
-        arch.translate(x, spring, fz + 0.2);
+        const y = 16.8;
+        const w = 4.4;
+        const h = 8.2;
+        const spring = y + 1.2;
+        box(mats.reveal, x, y - 0.4, fz - 0.12, w * 0.72, h * 0.55, 0.2);
+        box(mats.glass, x, y - 0.6, fz + 0.02, w * 0.5, h * 0.42, 0.04);
+        box(frameMat, x - w * 0.34, y - 0.3, fz + 0.2, 0.16, h * 0.62, 0.2);
+        box(frameMat, x + w * 0.34, y - 0.3, fz + 0.2, 0.16, h * 0.62, 0.2);
+        box(frameMat, x, y - h * 0.38, fz + 0.2, w * 0.78, 0.14, 0.2);
+        const arch = new THREE.TorusGeometry(w * 0.36, 0.14, 8, 22, Math.PI);
+        arch.translate(x, spring, fz + 0.24);
         arch.applyMatrix4(buildingMatrix);
         put(frameMat, arch);
       }
@@ -1880,7 +1880,9 @@ export function buildTown(data, scene) {
     for (const x of plates) {
       const gw = x > 0 ? 11.2 : 7.8;
       box(mats.reveal, x, 5.5, fz - 0.28, gw * 0.94, 8.0, 0.12);
-      box(mats.glassShop, x, 5.65, fz - 0.12, gw - 0.85, 7.1, 0.05);
+      box(mats.glassShop, x, 5.65, fz - 0.12, gw - 0.85, 6.2, 0.05);
+      box(mats.trim, x, 8.9, fz + 0.06, gw - 0.7, 0.1, 0.08);
+      box(mats.glassShop, x, 9.7, fz - 0.06, gw - 1.1, 1.35, 0.04);
       box(mats.trim, x, 5.65, fz + 0.02, 0.1, 6.8, 0.08);
       box(body, x - gw / 2, 5.7, fz + 0.18, 0.36, 8.4, 0.36);
       box(body, x + gw / 2, 5.7, fz + 0.18, 0.36, 8.4, 0.36);
@@ -2238,14 +2240,15 @@ export function buildTown(data, scene) {
     neck.translate(0, crestY + crestRise + 0.08, fz + 0.35);
     neck.applyMatrix4(buildingMatrix);
     put(paint, neck);
-    const leftW = b.width * 0.48;
-    const rightW = b.width * 0.42;
-    const leftX = -b.width * 0.24;
-    const rightX = b.width * 0.26;
-    const bandY = 15.15;
-    const bandH = 3.5;
-    const glassY = 7.15;
-    const glassH = 12.2;
+    const bandY = 14.6;
+    const bandH = 5.2;
+    const glassY = 6.6;
+    const glassH = 10.4;
+    const full = b.width;
+    const leftW = full * 0.56;
+    const rightW = full * 0.44;
+    const leftX = -full / 2 + leftW / 2;
+    const rightX = full / 2 - rightW / 2;
     const doorX = -b.width * 0.02;
     const brown = mats.trimDark.clone();
     brown.color.set("#4a3428");
@@ -2313,8 +2316,27 @@ export function buildTown(data, scene) {
   // The green front just north of Something Special, from the same 2010 photograph.
   const addGreenNeighbor = (b) => {
     const wallH = 24;
-    const body = mats.brick.green.clone();
-    body.color.set("#c5c6a2");
+    const body = new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.92 });
+    {
+      const canvas = document.createElement("canvas");
+      canvas.width = 128;
+      canvas.height = 64;
+      const g = canvas.getContext("2d");
+      g.fillStyle = "#8d8a78";
+      g.fillRect(0, 0, 128, 64);
+      g.fillStyle = "#A8A878";
+      g.fillRect(3, 3, 58, 26);
+      g.fillRect(67, 3, 58, 26);
+      g.fillRect(3, 35, 58, 26);
+      g.fillRect(67, 35, 26, 26);
+      g.fillStyle = "#b3b48a";
+      g.fillRect(35, 35, 26, 26);
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      body.map = tex;
+      body.userData.uvFeet = { u: 4, v: 2 };
+    }
     const fz = b.depth / 2;
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.brick.red, 0, 1.3, fz + 0.05, b.width, 2.6, 0.8);
@@ -2322,7 +2344,11 @@ export function buildTown(data, scene) {
     const gap = b.width / n;
     for (let i = 0; i < n; i++) {
       const x = -b.width / 2 + gap * (i + 0.5);
-      frontSash(x, 16.2, fz, Math.min(3.2, gap - 1.4), 6.4, "segmental", false, mats.trim);
+      frontSash(x, 16.2, fz, Math.min(3.2, gap - 1.4), 6.4, "round", false, mats.trim);
+      const hood = new THREE.TorusGeometry(1.55, 0.16, 8, 18, Math.PI);
+      hood.translate(x, 18.6, fz + 0.35);
+      hood.applyMatrix4(buildingMatrix);
+      put(mats.trim, hood);
     }
     box(body, 0, wallH + 0.4, fz + 0.05, b.width, 1.1, 0.7);
     const corbels = Math.max(8, Math.round(b.width / 1.5));
@@ -2575,19 +2601,22 @@ export function buildTown(data, scene) {
         box(archMat, x + w * 0.34, (sill + spring) / 2, fz + 0.24, 0.08, openingH, 0.12);
         box(archMat, x, sill, fz + 0.24, w * 0.76, 0.08, 0.12);
       } else {
-        box(archMat, x, (sill + spring) / 2, fz + 0.18, w * 0.62, openingH * 0.98, 0.2);
-        for (let k = 0; k < 7; k++) {
-          box(inset, x, sill + 0.4 + k * (openingH * 0.11), fz + 0.32, w * 0.4, 0.04, 0.03);
+        const fillW = w * 0.5;
+        box(archMat, x, (sill + spring) / 2, fz + 0.22, fillW, openingH * 0.98, 0.22);
+        for (let k = 0; k < 6; k++) {
+          box(inset, x, sill + 0.45 + k * (openingH * 0.13), fz + 0.36, fillW * 0.72, 0.045, 0.03);
         }
-        box(archMat, x - w * 0.42, (sill + spring) / 2, fz + 0.48, 0.32, openingH, 0.42);
-        box(archMat, x + w * 0.42, (sill + spring) / 2, fz + 0.48, 0.32, openingH, 0.42);
-        box(archMat, x, sill, fz + 0.46, w + 0.35, 0.2, 0.4);
+        const pil = 0.62;
+        box(archMat, x - fillW * 0.5 - pil * 0.35, (sill + spring) / 2, fz + 0.55, pil, openingH, 0.7);
+        box(archMat, x + fillW * 0.5 + pil * 0.35, (sill + spring) / 2, fz + 0.55, pil, openingH, 0.7);
+        box(archMat, x, sill, fz + 0.55, fillW + pil * 2.1, 0.28, 0.7);
       }
-      const arch = new THREE.TorusGeometry(rad, glass ? 0.07 : 0.2, 10, 28, Math.PI);
-      arch.translate(x, spring, fz + (glass ? 0.26 : 0.52));
+      const archRad = glass ? rad : w * 0.5;
+      const arch = new THREE.TorusGeometry(archRad, glass ? 0.07 : 0.34, 12, 32, Math.PI);
+      arch.translate(x, spring, fz + (glass ? 0.26 : 0.58));
       arch.applyMatrix4(buildingMatrix);
       put(archMat, arch);
-      box(archMat, x, spring + rad * 0.92, fz + (glass ? 0.28 : 0.56), 0.18, 0.28, 0.16);
+      if (!glass) box(archMat, x, spring + archRad * 0.82, fz + 0.64, 0.28, 0.42, 0.22);
     };
     const leftXs = [-10.6, -6.7, -2.8];
     const rightXs = [2.3, 5.5, 8.7];
@@ -2679,20 +2708,26 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     const fz = b.depth / 2;
     box(body, 0, brickH / 2, 0, b.width, brickH, b.depth);
     box(mats.stone, 0, 0.45, 0, b.width + 0.3, 0.9, b.depth + 0.3);
-    const addSlope = (yaw, ex, ez, span) => {
-      const len = 7.6;
-      const geo = new THREE.BoxGeometry(span, 0.4, len);
+    const addSlope = (yaw, ex, ez, span, angle, len, lift) => {
+      const geo = new THREE.BoxGeometry(span, 0.38, len);
       geo.translate(0, 0, -len / 2);
-      geo.rotateX(1.02);
+      geo.rotateX(angle);
       geo.rotateY(yaw);
-      geo.translate(ex, brickH + 0.35, ez);
+      geo.translate(ex, brickH + lift, ez);
       geo.applyMatrix4(buildingMatrix);
       put(slate, geo);
     };
-    addSlope(0, 0, b.depth / 2, b.width + 1);
-    addSlope(Math.PI, 0, -b.depth / 2, b.width + 1);
-    addSlope(Math.PI / 2, b.width / 2, 0, b.depth + 1);
-    addSlope(-Math.PI / 2, -b.width / 2, 0, b.depth + 1);
+    for (const [yaw, ex, ez] of [
+      [0, 0, b.depth / 2],
+      [Math.PI, 0, -b.depth / 2],
+      [Math.PI / 2, b.width / 2, 0],
+      [-Math.PI / 2, -b.width / 2, 0],
+    ]) {
+      const out = yaw === 0 ? 1 : yaw === Math.PI ? -1 : 0;
+      const outX = yaw === Math.PI / 2 ? 1 : yaw < 0 ? -1 : 0;
+      addSlope(yaw, ex + outX * 0.4, ez + out * 0.4, (Math.abs(yaw) === Math.PI / 2 ? b.depth : b.width) + 0.4, 0.55, 2.2, 0.05);
+      addSlope(yaw, ex, ez, (Math.abs(yaw) === Math.PI / 2 ? b.depth : b.width) + 0.2, 1.05, 7.2, 0.35);
+    }
     box(slate, 0, brickH + 11.5, 0, b.width - 5, 0.45, b.depth - 5);
     box(red, 0, brickH + 0.45, fz + 2.35, b.width + 1.2, 0.5, 0.42);
     box(red, 0, brickH + 0.45, -fz - 2.35, b.width + 1.2, 0.5, 0.42);
@@ -2700,26 +2735,28 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     cap.translate(0, brickH + 12.4, 0);
     cap.applyMatrix4(buildingMatrix);
     put(red, cap);
-    const archX = b.width * 0.02;
-    const archW = 13.5;
-    box(mats.reveal, archX, 5.0, fz - 3.4, archW * 0.72, 8.2, 0.35);
-    box(mats.trim, archX, 4.6, fz - 3.15, 2.7, 7.4, 0.16);
-    box(body, archX - archW * 0.46, 5.6, fz + 0.15, 2.1, 11.2, 1.6);
-    box(body, archX + archW * 0.46, 5.6, fz + 0.15, 2.1, 11.2, 1.6);
-    voussoirArch(body, mats.stone, archX, 1.35, fz + 0.85, archW - 0.6);
-    box(body, archX, 10.4, fz + 0.2, archW + 2.2, 3.4, 1.5);
-    for (let i = 0; i < 4; i++) box(mats.stone, archX, 0.2 + i * 0.24, fz + 2.4 + i * 0.75, 5.4, 0.24, 0.9);
-    const porchL = -b.width * 0.32;
-    box(mats.plank, porchL, 0.4, fz + 2.6, 11.5, 0.28, 5.2);
-    box(mats.trim, porchL, 9.4, fz + 2.4, 12, 0.26, 5.6);
-    for (const dx of [-4.0, -0.2, 3.6]) {
-      box(mats.siding.white, porchL + dx, 4.9, fz + 4.6, 0.46, 8.8, 0.46);
-      box(mats.stone, porchL + dx, 0.35, fz + 4.6, 0.7, 0.4, 0.7);
+    const archX = -b.width * 0.08;
+    const archW = 12;
+    const porchD = 6.2;
+    const porchFront = fz + porchD;
+    box(body, archX - archW / 2, 5.6, fz + porchD / 2, 1.8, 11.2, porchD);
+    box(body, archX + archW / 2, 5.6, fz + porchD / 2, 1.8, 11.2, porchD);
+    box(body, archX, 11.2, fz + porchD / 2, archW + 2.2, 1.6, porchD + 0.4);
+    voussoirArch(body, mats.stone, archX, 1.2, porchFront + 0.2, archW - 1.2);
+    box(mats.reveal, archX, 4.6, fz - 1.2, archW * 0.62, 7.6, 0.3);
+    box(mats.trim, archX, 4.4, fz - 0.9, 2.6, 7.2, 0.16);
+    for (let i = 0; i < 4; i++) box(mats.stone, archX, 0.22 + i * 0.22, porchFront + 0.6 + i * 0.65, 5.2, 0.22, 0.8);
+    const walkMat = new THREE.MeshStandardMaterial({ color: "#d9d4cc", roughness: 0.92 });
+    box(walkMat, archX, 0.1, fz + 16, 4.8, 0.14, 16);
+    const porchL = -b.width * 0.34;
+    box(mats.plank, porchL, 0.45, fz + 3.2, 10, 0.28, 6.4);
+    box(mats.trim, porchL, 9.6, fz + 3.1, 10.4, 0.28, 6.8);
+    for (const dx of [-3.6, 0, 3.4]) {
+      box(mats.siding.white, porchL + dx, 5.0, fz + 5.8, 0.5, 9.2, 0.5);
     }
-    const bay = b.width * 0.3;
-    box(body, bay, 5.5, fz + 2.5, 13.2, 10.6, 4.8);
-    box(mats.stone, bay, 10.6, fz + 4.6, 13.6, 0.35, 0.55);
-    for (const dx of [-3.7, 0, 3.7]) frontSash(bay + dx, 5.4, fz + 5.0, 2.35, 5.8, "flat", false, mats.trim);
+    const bay = b.width * 0.32;
+    box(body, bay, 5.6, fz + 5.2, 12.4, 10.8, 6.2);
+    for (const dx of [-3.4, 0, 3.4]) frontSash(bay + dx, 5.5, fz + 8.4, 2.2, 5.6, "flat", false, mats.trim);
     const dormR = bay;
     box(slate, dormR, brickH + 6.4, fz + 2.2, 8.2, 7.2, 3.4);
     box(mats.trim, dormR, brickH + 6.6, fz + 4.0, 5.6, 6.4, 0.45);
@@ -3813,7 +3850,7 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
 
   // One wire along the telegraph line so the poles read as a line, not sticks.
   const wire = new THREE.Mesh(new THREE.BoxGeometry(3100, 0.08, 0.08), mats.trimDark);
-  wire.position.set(-480, 22.6, -18);
+  wire.position.set(420, 8, 80);
   scene.add(wire);
 
   // Props.
@@ -4055,10 +4092,10 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
         scene.add(post);
       }
       const span = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, street.width * 0.7), mats.trimDark);
-      span.position.set(-280, 22, street.at);
+      span.position.set(80, 22, street.at);
       scene.add(span);
       const lamp = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.7, 1.4), mats.lamp);
-      lamp.position.set(-280, 21.2, street.at);
+      lamp.position.set(80, 21.2, street.at);
       scene.add(lamp);
     }
   }
