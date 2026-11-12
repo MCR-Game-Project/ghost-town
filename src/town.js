@@ -1899,8 +1899,10 @@ export function buildTown(data, scene) {
       const gw = 14.2;
       box(mats.reveal, x, 5.2, fz - 0.28, gw * 0.96, 8.4, 0.12);
       box(mats.glassShop, x, 4.7, fz - 0.1, gw - 1.1, 6.6, 0.05);
-      box(mats.trim, x, 8.15, fz + 0.08, gw - 0.8, 0.12, 0.1);
-      box(mats.glassShop, x, 9.05, fz - 0.04, gw - 1.4, 1.45, 0.05);
+      box(mats.glassShop, x, 9.15, fz - 0.04, gw - 1.4, 1.55, 0.05);
+      const transom = new THREE.MeshStandardMaterial({ color: "#f7f4ee", roughness: 0.62 });
+      box(transom, x, 8.25, fz + 0.14, gw - 0.85, 0.34, 0.18);
+      for (const k of [-0.28, 0, 0.28]) box(transom, x + k * (gw * 0.7), 9.15, fz + 0.14, 0.14, 1.45, 0.12);
       box(body, x - gw / 2, 5.4, fz + 0.2, 0.42, 9.2, 0.4);
       box(body, x + gw / 2, 5.4, fz + 0.2, 0.42, 9.2, 0.4);
       box(mats.stone, x, 1.15, fz + 0.28, gw + 0.5, 0.28, 0.5);
@@ -1915,23 +1917,19 @@ export function buildTown(data, scene) {
     box(mats.glassShop, doorX + 0.7, 5.3, fz - 0.08, 1.15, 6.0, 0.05);
     box(mats.trim, doorX, 5.3, fz + 0.02, 0.1, 6.0, 0.08);
     box(mats.glassShop, doorX, 8.65, fz - 0.02, 2.6, 0.7, 0.04);
-    const canopyZ = fz + 3.2;
-    const canopyMat = mats.siding.white.clone();
-    canopyMat.color.set("#f7f4ee");
-    box(canopyMat, doorX, 10.15, canopyZ, 12.4, 0.26, 5.8);
-    box(canopyMat, doorX, 10.42, canopyZ, 12.8, 0.16, 6.2);
-    for (const dx of [-5.4, 5.4]) {
-      const bracket = new THREE.TorusGeometry(2.6, 0.18, 8, 18, Math.PI * 0.85);
-      bracket.rotateY(Math.PI / 2);
-      bracket.translate(doorX + dx, 7.55, canopyZ - 0.15);
-      bracket.applyMatrix4(buildingMatrix);
-      put(canopyMat, bracket);
-      const curl = new THREE.TorusGeometry(0.72, 0.18, 8, 16, Math.PI * 1.85);
-      curl.rotateZ(0.4);
-      curl.rotateY(Math.PI / 2);
-      curl.translate(doorX + dx, 6.85, fz + 1.35);
-      curl.applyMatrix4(buildingMatrix);
-      put(canopyMat, curl);
+    const canopyZ = fz + 3.4;
+    const canopyMat = new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.7, metalness: 0 });
+    box(canopyMat, doorX, 10.25, canopyZ, 13.6, 0.55, 6.6);
+    const globeMat = new THREE.MeshStandardMaterial({ color: "#c42828", roughness: 0.42 });
+    for (const dx of [-6.1, 6.1]) {
+      const arm = new THREE.BoxGeometry(0.36, 1.15, 0.36);
+      arm.translate(doorX + dx, 9.45, canopyZ);
+      arm.applyMatrix4(buildingMatrix);
+      put(canopyMat, arm);
+      const globe = new THREE.SphereGeometry(0.58, 16, 12);
+      globe.translate(doorX + dx, 8.75, canopyZ);
+      globe.applyMatrix4(buildingMatrix);
+      put(globeMat, globe);
     }
     const along = Math.max(7, Math.round(b.depth / 9));
     for (const side of [-1, 1]) {
@@ -2703,8 +2701,28 @@ export function buildTown(data, scene) {
   // 292 West Hurst, the 2010 photograph: brick first story, slate mansard, arched porch.
   const addHurst292 = (b) => {
     const brickH = 11.4;
-    const body = mats.brick.soft.clone();
-    body.color.set("#7d4e3a");
+    const body = new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.92 });
+    {
+      const canvas = document.createElement("canvas");
+      canvas.width = 128;
+      canvas.height = 64;
+      const g = canvas.getContext("2d");
+      g.fillStyle = "#efe4d6";
+      g.fillRect(0, 0, 128, 64);
+      const shades = ["#7A4030", "#8b4d3a", "#6d382a", "#7A4030"];
+      for (let row = 0; row < 4; row++) {
+        const off = row % 2 ? 32 : 0;
+        for (let col = -1; col < 5; col++) {
+          g.fillStyle = shades[(row + col + 4) % shades.length];
+          g.fillRect(col * 32 + off + 3, row * 16 + 3, 26, 11);
+        }
+      }
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      body.map = tex;
+      body.userData.uvFeet = { u: 4, v: 2 };
+    }
     const slate = new THREE.MeshStandardMaterial({ color: "#5B6878", roughness: 0.8, metalness: 0.06 });
     slate.onBeforeCompile = (shader) => {
       shader.vertexShader = shader.vertexShader
@@ -2718,22 +2736,31 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
           diffuseColor.rgb *= mix(0.84, 1.1, sHash(floor(vSlateW.xz * 1.8 + vSlateW.y)));`);
     };
     slate.customProgramCacheKey = () => "slate-5b6878";
-    const red = mats.siding.red.clone();
-    red.map = null;
-    red.normalMap = null;
-    red.roughnessMap = null;
-    red.color.set("#8d3030");
     const fz = b.depth / 2;
     box(body, 0, brickH / 2, 0, b.width, brickH, b.depth);
     box(mats.stone, 0, 0.4, 0, b.width + 0.3, 0.8, b.depth + 0.3);
-    const mansardH = 7.4;
-    box(slate, 0, brickH + mansardH / 2, b.depth / 2 - 0.15, b.width - 0.3, mansardH, 0.55);
-    box(slate, 0, brickH + mansardH / 2, -b.depth / 2 + 0.15, b.width - 0.3, mansardH, 0.55);
-    box(slate, b.width / 2 - 0.15, brickH + mansardH / 2, 0, 0.55, mansardH, b.depth - 0.3);
-    box(slate, -b.width / 2 + 0.15, brickH + mansardH / 2, 0, 0.55, mansardH, b.depth - 0.3);
-    box(slate, -8.5, brickH + 0.4, b.depth / 2 + 0.4, b.width * 0.52, 0.55, 1.05);
-    box(slate, 0, brickH + mansardH + 0.12, 0, b.width - 0.9, 0.28, b.depth - 0.9);
-    box(red, -8.2, brickH + 0.22, b.depth / 2 + 0.15, b.width * 0.55, 0.32, 0.4);
+    const mansardH = 9.84;
+    const band = new THREE.MeshStandardMaterial({ color: "#f6f3ec", roughness: 0.68 });
+    box(band, 0, brickH + 0.32, 0, b.width + 0.9, 0.62, b.depth + 0.9);
+    box(slate, 0, brickH + 0.7 + mansardH / 2, b.depth / 2 - 0.05, b.width - 0.2, mansardH, 0.7);
+    box(slate, 0, brickH + 0.7 + mansardH / 2, -b.depth / 2 + 0.05, b.width - 0.2, mansardH, 0.7);
+    box(slate, b.width / 2 - 0.05, brickH + 0.7 + mansardH / 2, 0, 0.7, mansardH, b.depth - 0.2);
+    box(slate, -b.width / 2 + 0.05, brickH + 0.7 + mansardH / 2, 0, 0.7, mansardH, b.depth - 0.2);
+    const pyramidRise = 7.4;
+    const putPyr = (yaw, eaveX, eaveZ, span, run) => {
+      const length = Math.hypot(run, pyramidRise);
+      const geo = new THREE.BoxGeometry(span, 0.36, length);
+      geo.translate(0, 0, -length / 2);
+      geo.rotateX(Math.atan2(pyramidRise, run));
+      geo.rotateY(yaw);
+      geo.translate(eaveX, brickH + 0.7 + mansardH, eaveZ);
+      geo.applyMatrix4(buildingMatrix);
+      put(slate, geo);
+    };
+    putPyr(0, 0, b.depth / 2, b.width + 0.8, b.depth / 2);
+    putPyr(Math.PI, 0, -b.depth / 2, b.width + 0.8, b.depth / 2);
+    putPyr(Math.PI / 2, b.width / 2, 0, b.depth + 0.8, b.width / 2);
+    putPyr(-Math.PI / 2, -b.width / 2, 0, b.depth + 0.8, b.width / 2);
     const archX = -2;
     const openW = b.width * 0.4;
     const rad = openW / 2;
@@ -2779,22 +2806,42 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     const bayW = 10.4;
     box(body, bayX, brickH / 2, fz + bayProj / 2, bayW, brickH, bayProj);
     for (const dx of [-3.2, 0, 3.2]) frontSash(bayX + dx, 5.4, bayFront + 0.05, 2.15, 4.6, "flat", false, mats.trim);
-    const dormR = bayX;
-    box(slate, dormR, brickH + 2.8, fz + bayProj / 2, bayW, 6.2, bayProj);
-    box(mats.reveal, dormR, brickH + 2.6, bayFront - 0.02, 4.8, 4.4, 0.12);
-    box(mats.glass, dormR, brickH + 2.5, bayFront + 0.18, 3.8, 3.8, 0.06);
-    box(mats.trim, dormR - 2.2, brickH + 2.5, bayFront + 0.26, 0.26, 4.6, 0.2);
-    box(mats.trim, dormR + 2.2, brickH + 2.5, bayFront + 0.26, 0.26, 4.6, 0.2);
-    box(mats.trim, dormR, brickH + 0.35, bayFront + 0.26, 4.8, 0.22, 0.2);
-    const dormArch = new THREE.TorusGeometry(2.15, 0.2, 10, 22, Math.PI);
-    dormArch.translate(dormR, brickH + 4.45, bayFront + 0.3);
+    const pairX = -8.2;
+    const pairY = brickH + 0.9 + mansardH * 0.48;
+    box(band, pairX, pairY, fz + 0.42, 6.2, 5.6, 0.28);
+    for (const dx of [-1.45, 1.45]) {
+      box(mats.glass, pairX + dx, pairY, fz + 0.62, 1.7, 4.2, 0.06);
+      box(band, pairX + dx - 0.95, pairY, fz + 0.58, 0.16, 4.5, 0.12);
+      box(band, pairX + dx + 0.95, pairY, fz + 0.58, 0.16, 4.5, 0.12);
+    }
+    const towerTop = brickH + mansardH + 4.2;
+    const towerFace = bayFront + 3.1;
+    box(slate, bayX, brickH + 1.6, towerFace + 0.15, bayW + 1.6, 2.8, 1.8);
+    box(slate, bayX, (brickH + 2.4 + towerTop) / 2, towerFace - 1.5, bayW, towerTop - brickH - 2.4, 2.6);
+    const head = new THREE.TorusGeometry(bayW * 0.42, 1.05, 8, 18, Math.PI);
+    head.translate(bayX, towerTop - 0.7, towerFace);
+    head.applyMatrix4(buildingMatrix);
+    put(slate, head);
+    const archCrown = brickH + mansardH + 2.2;
+    const archRad = 2.55;
+    const archSpring = archCrown - archRad;
+    const glassH = archSpring - (brickH + 2.4);
+    box(mats.glass, bayX, brickH + 2.4 + glassH / 2, towerFace + 0.08, 4.5, glassH, 0.06);
+    box(band, bayX - 2.5, brickH + 2.4 + glassH / 2, towerFace + 0.16, 0.3, glassH, 0.16);
+    box(band, bayX + 2.5, brickH + 2.4 + glassH / 2, towerFace + 0.16, 0.3, glassH, 0.16);
+    const dormArch = new THREE.TorusGeometry(archRad, 0.26, 10, 24, Math.PI);
+    dormArch.translate(bayX, archSpring, towerFace + 0.18);
     dormArch.applyMatrix4(buildingMatrix);
-    put(mats.trim, dormArch);
-    const dormL = -9;
-    box(mats.trim, dormL, brickH + 4.6, fz + 0.55, 6.2, 3.2, 0.9);
-    drawPediment(mats.trim, 6.2, 1.8, brickH + 6.0, fz + 0.85, dormL);
-    frontSash(dormL - 1.1, brickH + 4.5, fz + 0.85, 1.5, 2.3, "flat", false, mats.trim, false, false);
-    frontSash(dormL + 1.1, brickH + 4.5, fz + 0.85, 1.5, 2.3, "flat", false, mats.trim, false, false);
+    put(band, dormArch);
+    const fan = new THREE.CircleGeometry(archRad * 0.84, 18, 0, Math.PI);
+    fan.translate(bayX, archSpring, towerFace + 0.1);
+    fan.applyMatrix4(buildingMatrix);
+    put(mats.glass, fan);
+    const dormL = -9.2;
+    const dormY = brickH + mansardH + 2.8;
+    const dormZ = b.depth / 2 - 2.4;
+    box(band, dormL, dormY, dormZ, 5.4, 2.6, 1.5);
+    drawPediment(band, 5.6, 2.1, dormY + 1.15, dormZ + 0.4, dormL);
     for (let i = 0; i < 4; i++) box(mats.stone, archX, 0.14 + i * 0.18, porchFront + 0.8 + i * 0.85, 8.4, 0.18, 0.9);
     const walkMat = new THREE.MeshStandardMaterial({ color: "#efeae2", roughness: 0.9 });
     box(walkMat, archX, 0.28, porchFront + 26, 5.4, 0.22, 46);
@@ -2824,7 +2871,7 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
       spot.applyMatrix4(buildingMatrix);
       extraTrees.push({ x: spot.x, z: spot.z, kind: "maple", scale: 1.55 });
     }
-    return brickH + 16;
+    return brickH + mansardH + pyramidRise + 2;
   };
 
   // 304 West Hurst, the Hendee Home photograph: Italianate, belvedere, stacked porch.
