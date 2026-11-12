@@ -842,15 +842,27 @@ export function makeMaterials() {
     trimDark: std({ color: "#4a3424", roughness: 0.7, uvFeet: { u: 4, v: 4 } }),
     voussoir: std({ color: "#8a4036", roughness: 0.86, uvFeet: { u: 2, v: 2 } }),
     reveal: std({ color: "#1c140f", roughness: 0.95, uvFeet: { u: 4, v: 4 } }),
-    glass: std({
-      color: "#4d6270",
-      roughness: 0.1,
-      metalness: 0.74,
-      envMapIntensity: 1.7,
-      emissive: "#1c2830",
-      emissiveIntensity: 0.03,
-      uvFeet: { u: 8, v: 8 },
-    }),
+    glass: (() => {
+      const mat = std({
+        color: "#e7eef4",
+        roughness: 0.16,
+        metalness: 0.08,
+        envMapIntensity: 0.65,
+        emissive: "#c5d5e2",
+        emissiveIntensity: 0.12,
+        uvFeet: { u: 8, v: 8 },
+      });
+      mat.onBeforeCompile = (shader) => {
+        shader.fragmentShader = shader.fragmentShader.replace(
+          "#include <color_fragment>",
+          `#include <color_fragment>
+           float sky = clamp(0.35 - vViewPosition.y * 0.028, 0.0, 1.0);
+           diffuseColor.rgb = mix(vec3(0.80, 0.86, 0.90), vec3(0.55, 0.66, 0.74), sky);`,
+        );
+      };
+      mat.customProgramCacheKey = () => "glass-sky";
+      return mat;
+    })(),
     stone: std({
       map: stoneTex.map,
       normalMap: stoneTex.normalMap,

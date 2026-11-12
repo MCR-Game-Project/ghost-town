@@ -290,7 +290,7 @@
         "sourcePhoto": "public/photos/ball-bros-590-e-main-2010.png",
         "photoDate": "2010",
         "citation": "photo from Mark, 590 E Main St, 2010",
-        "camera": { "year": 1910, "x": 304, "z": 148, "lx": 300, "lz": 205, "fov": 50, "pitch": 0.14, "eye": 5.25 },
+        "camera": { "year": 1910, "x": 296, "z": 114, "lx": 318, "lz": 200, "fov": 50, "pitch": 0.04, "eye": 5.25 },
         "estimates": ["Showing the cream front from the 1900 stop is an estimate. A 1907 biography dates the Main Street building then standing to 1895. The photograph does not date the front."],
         "wall": "#f3ead8",
         "wallKind": "clapboard",

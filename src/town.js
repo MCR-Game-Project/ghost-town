@@ -1370,8 +1370,11 @@ export function buildTown(data, scene) {
   // pilasters, and the carriage bay are that picture. The curved roof sits behind the right bay.
   const addBallCream = (b) => {
     const wallH = 26;
-    const body = mats.siding.cream;
+    const body = mats.brick.buff.clone();
+    body.color.set("#f4f1ea");
+    if (body.normalScale) body.normalScale.set(0.22, 0.22);
     const red = mats.siding.red;
+    const cream = mats.trim;
     const fz = b.depth / 2;
     box(body, 0, wallH / 2, -0.35, b.width, wallH, b.depth - 0.5);
     box(mats.stone, 0, 0.7, 0, b.width + 0.8, 1.4, b.depth + 0.5);
@@ -1400,12 +1403,13 @@ export function buildTown(data, scene) {
       const slot = span / count;
       for (let i = 0; i <= count; i++) {
         const x = x0 + i * slot;
-        box(red, x, wallH * 0.64, fz + 0.46, 0.48, 13.2, 0.58);
-        box(red, x, wallH * 0.64 + 6.8, fz + 0.58, 0.78, 0.42, 0.78);
+        box(cream, x, wallH * 0.64, fz + 0.42, 0.42, 12.6, 0.5);
+        box(cream, x, wallH * 0.64 + 6.5, fz + 0.55, 0.7, 0.36, 0.7);
+        if (i % 3 === 0) box(red, x, wallH * 0.64 + 6.2, fz + 0.62, 0.28, 0.22, 0.22);
       }
       for (let i = 0; i < count; i++) {
         const x = x0 + (i + 0.5) * slot;
-        frontSash(x, wallH * 0.62, fz + 0.16, slot * 0.55, 9.6, "flat", false, body);
+        frontSash(x, wallH * 0.62, fz + 0.16, slot * 0.52, 9.4, "flat", false, cream);
       }
     };
     const leftSpan = b.width * 0.62;
@@ -1417,18 +1421,33 @@ export function buildTown(data, scene) {
     const rightX = b.width / 2 - rightSpan - 0.5;
     narrow(rightX, 2, rightSpan);
     box(body, 0, 11.55, fz + 0.28, b.width + 0.2, 0.55, 0.42);
+    box(cream, 0, 12.15, fz + 0.36, b.width + 0.4, 0.7, 0.55);
     const shopSpan = b.width * 0.94;
     const shops = 4;
     const sw = shopSpan / shops;
     for (let i = 0; i <= shops; i++) {
-      box(red, -shopSpan / 2 + i * sw, 6.3, fz + 0.42, 0.62, 12.4, 0.7);
+      box(cream, -shopSpan / 2 + i * sw, 6.1, fz + 0.4, 0.7, 11.6, 0.62);
     }
     for (let i = 0; i < shops; i++) {
       const x = -shopSpan / 2 + (i + 0.5) * sw;
-      box(mats.glass, x, 5.7, fz + 0.1, sw - 1.05, 8.6, 0.06);
-      box(mats.glass, x, 10.55, fz + 0.14, sw - 1.05, 1.7, 0.05);
-      box(body, x, 9.6, fz + 0.2, sw - 0.55, 0.16, 0.14);
-      box(mats.trimDark, x, 1.15, fz + 0.14, sw - 1.1, 1.05, 0.12);
+      const door = i === 1;
+      if (door) {
+        box(cream, x - sw * 0.22, 5.2, fz + 0.22, 0.16, 8.2, 0.16);
+        box(cream, x + sw * 0.22, 5.2, fz + 0.22, 0.16, 8.2, 0.16);
+        box(mats.glass, x - sw * 0.12, 5.4, fz + 0.12, sw * 0.16, 7.2, 0.05);
+        box(mats.glass, x + sw * 0.12, 5.4, fz + 0.12, sw * 0.16, 7.2, 0.05);
+      } else {
+        for (const k of [-0.28, 0, 0.28]) {
+          box(mats.glass, x + k * sw, 5.3, fz + 0.1, sw * 0.22, 7.4, 0.05);
+        }
+        box(cream, x - sw * 0.14, 5.3, fz + 0.2, 0.12, 7.6, 0.12);
+        box(cream, x + sw * 0.14, 5.3, fz + 0.2, 0.12, 7.6, 0.12);
+      }
+      for (const k of [-0.3, -0.1, 0.1, 0.3]) {
+        box(mats.glass, x + k * sw, 10.35, fz + 0.14, sw * 0.16, 1.35, 0.05);
+      }
+      box(cream, x, 9.45, fz + 0.22, sw - 0.5, 0.16, 0.14);
+      box(mats.trimDark, x, 1.2, fz + 0.16, sw - 0.9, 1.05, 0.12);
     }
     const cx = rightX + rightSpan / 2;
     box(red, cx - b.width * 0.14, wallH * 0.7, fz + 0.35, 0.45, 9.4, 0.5);
@@ -1454,6 +1473,11 @@ export function buildTown(data, scene) {
     };
     placeSign("BALL BROS", pedX, wallH + 3.6, 9.2);
     placeSign("CARRIAGE", cx, wallH * 0.74, 7.4);
+    for (const [lx, lz, scale] of [[b.width * 0.55, fz + 8, 2.3]]) {
+      const spot = new THREE.Vector3(lx, 0, lz);
+      spot.applyMatrix4(buildingMatrix);
+      extraTrees.push({ x: spot.x, z: spot.z, kind: "maple", scale });
+    }
     return wallH + 12;
   };
 
@@ -2416,12 +2440,16 @@ export function buildTown(data, scene) {
       sideSash(side * (b.width / 2 + 0.12), 17.2, -4, side, 2.4, 5.4, "flat", false, white);
       sideSash(side * (b.width / 2 + 0.12), 6.4, 2, side, 2.3, 5.2, "flat", false, white);
     }
-    const porchX = -b.width * 0.12;
-    const porchW = b.width * 0.62;
-    const porchD = 13;
-    box(white, porchX, 9.05, fz + porchD * 0.42, porchW, 0.45, porchD);
-    hipRoof(porchW + 1.6, porchD + 1.2, 2.2, 9.25, roof, porchX, fz + porchD * 0.42);
-    drawPediment(white, porchW * 0.55, 4.2, 9.05, fz + porchD - 0.4, porchX - 2);
+    const bayX = -b.width * 0.3;
+    box(body, bayX, 12, fz + 1.8, 11, 22, 3.6);
+    widePair(bayX, 17.4, 7.2, 5.6);
+    widePair(bayX, 6.6, 7.2, 5.4);
+    const porchX = bayX;
+    const porchW = 16;
+    const porchD = 8;
+    box(white, porchX, 8.7, fz + porchD * 0.4, porchW, 0.28, porchD);
+    hipRoof(porchW + 0.8, porchD + 0.6, 2.4, 8.85, mats.roofSlate, porchX, fz + porchD * 0.4);
+    drawPediment(mats.roofSlate, 8.5, 2.8, 8.7, fz + porchD - 0.2, porchX);
     const pierSpots = [
       [porchX - porchW / 2 + 1.4, fz + porchD - 0.9],
       [porchX + porchW / 2 - 1.4, fz + porchD - 0.9],
@@ -2429,21 +2457,22 @@ export function buildTown(data, scene) {
       [porchX - porchW / 2 + 1.4, fz + 1.4],
     ];
     for (const [x, z] of pierSpots) {
-      box(body, x, 4.2, z, 2.35, 7.6, 2.35);
-      box(white, x, 8.2, z, 2.8, 0.45, 2.8);
-      box(mats.stone, x, 0.5, z, 2.7, 0.8, 2.7);
+      box(body, x, 4.1, z, 1.25, 7.2, 1.25);
+      box(white, x, 7.9, z, 1.6, 0.28, 1.6);
+      box(mats.stone, x, 0.35, z, 1.5, 0.55, 1.5);
+      box(white, x, 4.2, z - 1.35, 0.36, 7.6, 0.36);
     }
     paneledDoor(porchX - 1.2, fz + 0.15, 3.4, 7.4);
     for (let i = 0; i < 4; i++) {
       box(mats.stone, porchX - 1.2, 0.22 + i * 0.28, fz + 3.2 + i * 0.85, 5.2, 0.28, 1.05);
     }
     box(white, -b.width / 2 - 3.2, 9.1, -2, 7.2, 0.38, b.depth * 0.62);
-    hipRoof(7.6, b.depth * 0.62, 2.3, 9.3, roof, -b.width / 2 - 3.2, -2);
+    hipRoof(7.6, b.depth * 0.62, 2.3, 9.3, mats.roofSlate, -b.width / 2 - 3.2, -2);
     box(body, -b.width / 2 - 5.6, 4.2, -b.depth * 0.18, 1.6, 7.6, 1.6);
     box(body, -b.width / 2 - 5.6, 4.2, b.depth * 0.12, 1.6, 7.6, 1.6);
     const rx = b.width / 2 + 4.6;
     box(white, rx, 7.15, 1.2, 11, 0.32, 16);
-    hipRoof(11.4, 16.6, 1.15, 7.3, roof, rx, 1.2);
+    hipRoof(11.4, 16.6, 1.15, 7.3, mats.roofSlate, rx, 1.2);
     box(body, rx + 2.6, 4.1, 6.2, 1.55, 7.4, 1.55);
     box(body, rx - 1.4, 4.1, 6.2, 1.55, 7.4, 1.55);
     box(white, rx + 2.6, 7.9, 6.2, 1.9, 0.35, 1.9);
@@ -2470,9 +2499,9 @@ export function buildTown(data, scene) {
     }
     box(mats.stone, 0, 0.12, fz + 24, b.width + 24, 0.16, 6.5);
     box(mats.stone, 0, 0.32, fz + 20.6, b.width + 24, 0.38, 0.7);
+    box(white, 0, 12.3, 0, b.width + 0.8, 0.38, b.depth + 0.8);
     const yardTrees = [
-      [b.width * 0.95, fz + 8, 4.2],
-      [-b.width * 0.55, fz + 6, 2.4],
+      [b.width * 0.42, fz + 4, 1.55],
     ];
     for (const [x, z, scale] of yardTrees) {
       const spot = new THREE.Vector3(x, 0, z);
@@ -2940,7 +2969,7 @@ export function buildTown(data, scene) {
   }
   if (style.crafford) {
     const crafford = streetByName("Crafford Street");
-    if (crafford) dressStreet({ ...crafford, from: 0, to: 450 }, { ruts: true, curb: true, walk: true, poles: true, trees: "spring" });
+    if (crafford) dressStreet({ ...crafford, from: 0, to: 450 }, { ruts: true, curb: true, walk: true, trees: "spring" });
   }
   const eastMain = streetByName("East Main Street");
   if (eastMain) dressStreet({ ...eastMain, from: -520, to: 560 }, { curb: true, walk: true, inset: 8 });
