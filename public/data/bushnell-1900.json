@@ -262,6 +262,35 @@
   ],
   "update": [
     {
+      "id": "ball-bros",
+      "paint": "white",
+      "sign": "",
+      "year": "1895",
+      "facade": {
+        "ballCream": true,
+        "photoMatch": true,
+        "photoDate": "The photograph is dated 2010. No date was found for when this front was built. 1895 is the year a 1907 biography gives for the Main Street building then standing, and this front is drawn from the 1900 stop, the first stop after that year. That match is an estimate.",
+        "photoSource": "photo from Mark, 590 E Main St, 2010",
+        "signBall": "BALL BROS",
+        "signCarriage": "CARRIAGE"
+      },
+      "sourceMap": "photo from Mark, 590 E Main St, 2010",
+      "notes": "photo from Mark, 590 E Main St, 2010. The East Main front is the cream facade in that photograph: red pilasters between the upper windows, red trim, BALL BROS in the pediment, and CARRIAGE on the right bay. The letters after CARRIAGE were not read. The pale curved roof behind that bay is the arch in the photograph. The 1907 biography says the main building then standing, 60 by 100 feet on Main Street, was erected in 1895. That is the date used. The photograph does not date the front, so showing it from the 1900 stop is an estimate. The 1880 and 1890 stops keep the 1880s false front. The footprint stays the 28-by-48-foot repository at East Main and Gridley. The hose tower stays south of these buildings on the 500 block."
+    },
+    {
+      "id": "ball-bros-gridley",
+      "sign": "",
+      "year": "1895",
+      "facade": {
+        "archedNeighbor": true,
+        "photoMatch": true,
+        "photoDate": "The photograph is dated 2010. No date was found for this brick front. It is drawn from the 1900 stop with the East Main front. That year is an estimate.",
+        "photoSource": "photo from Mark, 590 E Main St, 2010"
+      },
+      "sourceMap": "photo from Mark, 590 E Main St, 2010",
+      "notes": "photo from Mark, 590 E Main St, 2010. At the corner, this Gridley face is the older red-brick building on the viewer's left of the cream East Main front: two stories and one large arched upper window. The photograph gives that face no name, so the BALL BROS sign comes off here from the 1900 stop. No construction date was found for the arch. It is drawn from the 1900 stop, and that year is an estimate. The 1880 and 1890 stops keep the earlier brick front. The building is not moved."
+    },
+    {
       "id": "excelsior-mill",
       "name": "H. H. Obenhauer & Co.",
       "sign": "OBENHAUER",

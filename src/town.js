@@ -339,7 +339,7 @@ export function buildTown(data, scene) {
   // One smooth clapboard triangle, a horizontal cornice with returns, and
   // raking boards that lie on the two slopes. The old courses were a ziggurat,
   // and a rake rotated by side * tilt ran up the wrong diagonal.
-  const drawPediment = (mat, width, rise, yBase, z) => {
+  const drawPediment = (mat, width, rise, yBase, z, xShift = 0) => {
     const thick = 0.7;
     const feet = mat?.userData?.uvFeet || { u: 8, v: 3.2 };
     const zf = z + thick / 2;
@@ -353,7 +353,7 @@ export function buildTown(data, scene) {
     const uvs = [];
     const indices = [];
     const push = (x, y, zz, nx, ny, nz) => {
-      positions.push(x, y, zz);
+      positions.push(x + xShift, y, zz);
       normals.push(nx, ny, nz);
       uvs.push((x - x0) / feet.u, (y - y0) / feet.v);
       return positions.length / 3 - 1;
@@ -1298,6 +1298,82 @@ export function buildTown(data, scene) {
     return top + 4;
   };
 
+  // 590 East Main, the front in Mark's 2010 photograph. The pediment, red
+  // pilasters, and the carriage bay are that picture. The curved roof sits behind the right bay.
+  const addBallCream = (b) => {
+    const wallH = 24;
+    const body = paintOf(b);
+    const red = mats.siding.red;
+    const fz = b.depth / 2 + 0.16;
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(mats.stone, 0, 0.45, 0, b.width + 0.4, 0.9, b.depth + 0.4);
+    box(mats.trim, 0, wallH + 0.35, fz, b.width + 0.5, 0.7, 0.55);
+    dentilCourse(wallH - 0.15, fz + 0.12, b.width * 0.96);
+    const left = -b.width * 0.16;
+    drawPediment(body, b.width * 0.62, 6.4, wallH + 0.55, fz + 0.08, left);
+    const bays = 3;
+    const span = b.width * 0.58;
+    const gap = span / bays;
+    const x0 = -b.width / 2 + 0.8;
+    for (let i = 0; i <= bays; i++) {
+      const x = x0 + i * gap;
+      box(red, x, wallH * 0.64, fz, 0.55, 9.2, 0.32);
+    }
+    for (let col = 0; col < bays; col++) {
+      const x = x0 + gap * (col + 0.5);
+      box(red, x, wallH * 0.66, fz, gap - 1.15, 7.4, 0.18);
+      box(mats.glass, x, wallH * 0.66, fz + 0.08, gap - 1.7, 6.3, 0.06);
+      box(mats.trim, x, wallH * 0.66, fz + 0.14, 0.08, 6.1, 0.04);
+    }
+    const shop = [-b.width * 0.3, b.width * 0.02];
+    for (const x of shop) {
+      box(red, x, 5.4, fz, 6.2, 7.6, 0.18);
+      box(mats.glass, x, 5.4, fz + 0.08, 5.4, 6.6, 0.06);
+    }
+    box(red, b.width * 0.3, 5.2, fz, 3.4, 8.2, 0.2);
+    box(mats.trimDark, b.width * 0.3, 4.6, fz + 0.1, 2.4, 6.6, 0.08);
+    box(red, b.width * 0.3, wallH * 0.72, fz, b.width * 0.32, 6.4, 0.22);
+    box(body, b.width * 0.3, wallH * 0.72, fz + 0.08, b.width * 0.26, 4.6, 0.08);
+    box(mats.siding.white, b.width * 0.22, wallH + 3.6, -1.5, 11, 5.4, b.depth * 0.58);
+    archHood(mats.siding.white, b.width * 0.22, wallH + 5.8, fz + 0.4, 11.4, 4.2, "z");
+    const rot = (FACING[b.facing] ?? 0) + THREE.MathUtils.degToRad(b.rotation || 0);
+    const outward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
+    const right = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
+    const placeSign = (title, localX, y, width) => {
+      signs.push({
+        title,
+        subtitle: "",
+        style: "painted",
+        position: new THREE.Vector3(b.x, y, b.z).addScaledVector(right, localX).addScaledVector(outward, b.depth / 2 + 0.85),
+        rotation: rot,
+        width,
+      });
+    };
+    placeSign("BALL BROS", left, wallH + 3.3, 9.5);
+    placeSign("CARRIAGE", b.width * 0.28, wallH * 0.74, 8.2);
+    return wallH + 10;
+  };
+
+  // The older red-brick neighbor on the viewer's left in the same 2010 photograph.
+  const addArchedNeighbor = (b) => {
+    const wallH = b.stories * 12;
+    const body = mats.brick.red;
+    const fz = b.depth / 2 + 0.14;
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(mats.stone, 0, 0.45, 0, b.width + 0.3, 0.9, b.depth + 0.3);
+    box(mats.stone, 0, wallH + 0.45, 0, b.width + 0.4, 0.9, b.depth + 0.3);
+    box(mats.reveal, 0, wallH * 0.6, fz - 0.02, 8.4, 9.6, 0.16);
+    box(mats.glass, 0, wallH * 0.56, fz + 0.05, 6.6, 7.4, 0.06);
+    box(mats.stone, 0, wallH * 0.56 - 4.2, fz + 0.1, 8.8, 0.28, 0.3);
+    archHood(mats.stone, 0, wallH * 0.56 + 3.4, fz + 0.16, 9.4, 5.4, "z");
+    const med = new THREE.CylinderGeometry(1.15, 1.15, 0.22, 16);
+    med.rotateX(Math.PI / 2);
+    med.translate(-b.width * 0.3, wallH * 0.84, fz + 0.05);
+    med.applyMatrix4(buildingMatrix);
+    put(mats.trim, med);
+    return wallH + 4;
+  };
+
   const addStore = (b, frame) => {
     const floorH = 12;
     const wallH = b.stories * floorH;
@@ -2030,6 +2106,8 @@ export function buildTown(data, scene) {
     else if (b.id === "hurst-crossing-shanty") height = addCrossingShanty(b);
     else if (b.facade?.studBarn) height = addStudBarn(b);
     else if (b.facade?.hoseTower) height = addHoseTower(b);
+    else if (b.facade?.ballCream) height = addBallCream(b);
+    else if (b.facade?.archedNeighbor) height = addArchedNeighbor(b);
     else if (b.kind === "house") height = addHouse(b);
     else if (b.id === "hendee-house-26") height = addHendeeHouse(b);
     else if (b.kind === "frame-store") height = addStore(b, true);
