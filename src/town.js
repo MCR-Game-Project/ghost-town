@@ -3496,135 +3496,117 @@ float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return 
     return 42;
   };
 
-  // 771 North Crafford, the 2010 photograph: brick foursquare, hipped roof, gabled dormer.
+  // 771 North Crafford, the 2010 photograph: left front gable, two porches, hedge.
   const addFuneralHome = (b) => {
     const wallH = 24;
-    const body = mats.brick.red.clone();
-    body.color.set("#6e3228");
-    const white = mats.trim.clone();
-    white.color.set("#f3ead8");
-    const roof = mats.roof.clone();
-    roof.color.set("#5c6558");
-    const fz = b.depth / 2;
-    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
-    box(mats.stone, 0, 1.15, 0, b.width + 0.6, 2.3, b.depth + 0.6);
-    box(white, 0, wallH - 0.28, 0, b.width + 1.6, 0.55, b.depth + 1.6);
-    hipRoof(b.width + 2, b.depth + 2, 7.2, wallH - 0.2, roof, 0, 0);
-    dentilCourse(wallH - 0.95, fz + 1.7, b.width + 1.2);
-    bracketRow(wallH - 1.45, fz + 1.05, b.width + 0.4, white);
-    for (const side of [-1, 1]) {
-      const x = side * (b.width / 2 + 1.5);
-      const count = 6;
-      for (let i = 0; i < count; i++) {
-        const z = -b.depth / 2 + ((i + 0.5) * b.depth) / count;
-        box(white, x, wallH - 1.35, z, 0.7, 0.7, 0.4);
-      }
-    }
-    // Front, viewer's left to right, from the 2010 photograph. Local -x is the left.
-    const front = b.facadeSpec?.front || [
-      { id: "left-gable", width: 14 },
-      { id: "center", width: 16 },
-      { id: "right", width: 16 },
-    ];
-    const span = front.reduce((sum, bay) => sum + bay.width, 0) || b.width;
-    let cursor = -b.width / 2;
-    const placed = front.map((bay) => {
-      const width = (bay.width / span) * b.width;
-      const x = cursor + width / 2;
-      cursor += width;
-      return { ...bay, x, width };
-    });
-    const pair = (x, y, z, w, h, arch = "flat") => {
-      frontSash(x - w * 0.28, y, z, w * 0.42, h, arch, false, white);
-      frontSash(x + w * 0.28, y, z, w * 0.42, h, arch, false, white);
-    };
-    for (const bay of placed) {
-      const zFace = bay.id === "left-gable" ? fz + 2.8 : fz + 0.2;
-      if (bay.id === "left-gable") box(body, bay.x, wallH / 2, fz + 1.3, bay.width - 0.6, wallH, 2.6);
-      pair(bay.x, 17.2, zFace, Math.min(8.4, bay.width * 0.7), 6.2);
-      pair(bay.x, 6.6, zFace, Math.min(8.4, bay.width * 0.7), 6.0);
-    }
-    const left = placed[0];
-    const right = placed[placed.length - 1];
-    // One front gable over the left bay. Its ridge runs back from the street.
+    const body = new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.9 });
     {
-      const gx = left.x;
-      const gw = Math.min(left.width, 13);
-      const rise = 8.4;
-      const y0 = wallH - 0.2;
-      const faceZ = fz + 3.4;
-      clapboardTriangle(white, gw + 1.2, rise, y0, "z", faceZ, gx, faceZ);
-      frontSash(gx - 1.7, y0 + rise * 0.42, faceZ + 0.16, 2.2, 4.4, "round", false, white);
-      frontSash(gx + 1.7, y0 + rise * 0.42, faceZ + 0.16, 2.2, 4.4, "round", false, white);
-      const run = gw / 2;
-      const slopeLen = Math.hypot(run, rise) * 0.98;
-      const angle = Math.atan2(rise, run);
-      for (const sign of [-1, 1]) {
-        const barge = new THREE.BoxGeometry(slopeLen, 0.42, 0.22);
-        for (let k = 0; k < 6; k++) {
-          const tooth = new THREE.BoxGeometry(0.35, 0.45, 0.16);
-          tooth.applyMatrix4(new THREE.Matrix4().makeRotationZ(-sign * angle));
-          tooth.applyMatrix4(new THREE.Matrix4().makeTranslation(gx + sign * (0.6 + k * 0.85), y0 + 0.5 + k * 0.7, faceZ + 0.28));
-          tooth.applyMatrix4(buildingMatrix);
-          put(white, tooth);
+      const canvas = document.createElement("canvas");
+      canvas.width = 128;
+      canvas.height = 64;
+      const g = canvas.getContext("2d");
+      g.fillStyle = "#d8c0b0";
+      g.fillRect(0, 0, 128, 64);
+      const shades = ["#9A4A32", "#a35238", "#8f442e", "#9A4A32"];
+      for (let row = 0; row < 4; row++) {
+        const off = row % 2 ? 32 : 0;
+        for (let col = -1; col < 5; col++) {
+          g.fillStyle = shades[(row + col + 3) % shades.length];
+          g.fillRect(col * 32 + off + 1, row * 16 + 1, 30, 14);
         }
-        const rake = new THREE.Matrix4().makeRotationZ(-sign * angle);
-        rake.premultiply(new THREE.Matrix4().makeTranslation(gx + sign * run * 0.48, y0 + rise * 0.48, faceZ + 0.16));
-        barge.applyMatrix4(rake);
-        barge.applyMatrix4(buildingMatrix);
-        put(white, barge);
-        const plane = new THREE.BoxGeometry(slopeLen, 0.32, 5.2);
-        plane.translate(0, slopeLen * 0.15, -2.4);
-        plane.rotateZ(-sign * angle);
-        plane.translate(gx + sign * run * 0.35, y0 + rise * 0.2, faceZ - 0.2);
-        plane.applyMatrix4(buildingMatrix);
-        put(roof, plane);
       }
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      body.map = tex;
+      body.userData.uvFeet = { u: 4, v: 2 };
     }
-    for (const side of [-1, 1]) {
-      sideSash(side * (b.width / 2 + 0.12), 17.2, -4, side, 2.4, 5.4, "flat", false, white);
-      sideSash(side * (b.width / 2 + 0.12), 6.4, 2, side, 2.3, 5.2, "flat", false, white);
+    const white = new THREE.MeshStandardMaterial({ color: "#f7f4ee", roughness: 0.68 });
+    const roof = new THREE.MeshStandardMaterial({ color: "#A8A090", roughness: 0.92 });
+    const fz = b.depth / 2;
+    const gx = -b.width * 0.26;
+    const gw = 17;
+    const proj = 7;
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(mats.stone, 0, 1.05, 0, b.width + 0.5, 2.1, b.depth + 0.5);
+    box(body, gx, wallH / 2, fz + proj / 2, gw, wallH, proj);
+    box(white, 0, wallH + 0.45, 0, b.width + 3.4, 1.25, b.depth + 3.4);
+    box(white, gx, wallH + 0.45, fz + proj / 2, gw + 2.2, 1.25, proj + 1.4);
+    hipRoof(b.width + 0.6, b.depth + 0.6, 6.2, wallH + 0.9, roof, 2, -2);
+    const rise = 8.8;
+    const y0 = wallH + 0.55;
+    const faceZ = fz + proj + 0.25;
+    clapboardTriangle(white, gw + 1.6, rise, y0, "z", faceZ, gx, faceZ);
+    frontSash(gx - 1.65, y0 + rise * 0.4, faceZ + 0.18, 2.35, 4.8, "round", false, white);
+    frontSash(gx + 1.65, y0 + rise * 0.4, faceZ + 0.18, 2.35, 4.8, "round", false, white);
+    const run = (gw + 1.2) / 2;
+    const slopeLen = Math.hypot(run, rise);
+    const angle = Math.atan2(rise, run);
+    for (const sign of [-1, 1]) {
+      const plane = new THREE.BoxGeometry(slopeLen, 0.28, proj + 2);
+      plane.translate(0, 0, -(proj + 2) / 2);
+      plane.rotateZ(-sign * angle);
+      plane.translate(gx + sign * run * 0.45, y0 + rise * 0.22, faceZ - 0.4);
+      plane.applyMatrix4(buildingMatrix);
+      put(roof, plane);
+      const rake = new THREE.BoxGeometry(slopeLen, 0.28, 0.28);
+      rake.translate(0, 0, 0);
+      rake.rotateZ(-sign * angle);
+      rake.translate(gx + sign * run * 0.42, y0 + rise * 0.28, faceZ + 0.12);
+      rake.applyMatrix4(buildingMatrix);
+      put(white, rake);
     }
-    const addPorch = (x, w, d, cols) => {
-      const zc = fz + d * 0.48;
-      box(mats.plank, x, 1.15, zc, w - 0.4, 0.55, d - 0.4);
-      box(white, x, 9.1, zc, w + 1.4, 0.42, d + 0.6);
-      box(roof, x, 9.45, zc, w + 0.6, 0.28, d + 0.2);
-      for (let i = 0; i < cols; i++) {
-        const cx = x - w / 2 + 1.2 + ((w - 2.4) * i) / (cols - 1);
-        const post = new THREE.CylinderGeometry(0.28, 0.34, 7.6, 12);
-        post.translate(cx, 5.1, fz + d - 0.35);
-        post.applyMatrix4(buildingMatrix);
-        put(white, post);
-        box(body, cx, 0.7, fz + d - 0.35, 0.85, 1.4, 0.85);
-      }
+    const pair = (x, y, z, w, h) => {
+      frontSash(x - w * 0.28, y, z, w * 0.42, h, "flat", false, white);
+      frontSash(x + w * 0.28, y, z, w * 0.42, h, "flat", false, white);
     };
-    addPorch(left.x, left.width + 2, 9, 4);
-    addPorch(right.x + 1.5, right.width + 2, 8, 3);
-    paneledDoor(left.x, fz + 0.15, 3.2, 7.2);
+    pair(gx, 17.2, faceZ - 0.15, 7.2, 5.6);
+    pair(gx, 7.1, faceZ - 0.15, 7.2, 5.4);
+    pair(4, 17.3, fz + 0.15, 7.4, 5.6);
+    pair(b.width * 0.32, 17.3, fz + 0.15, 6.6, 5.6);
+    pair(4, 7.2, fz + 0.15, 7.4, 5.4);
+    frontSash(b.width * 0.32, 7.2, fz + 0.15, 2.6, 5.4, "flat", false, white);
+    for (let i = 0; i < 7; i++) {
+      const x = -b.width / 2 + 3.5 + i * ((b.width - 6) / 6);
+      for (const dx of [-0.42, 0.42]) {
+        box(white, x + dx, wallH - 1.15, fz + 1.15, 0.26, 0.85, 0.7);
+      }
+    }
+    const porchD = 8.2;
+    const porchW = 20;
+    const porchZ = fz + proj + porchD / 2;
+    box(mats.plank, gx, 1.05, porchZ, porchW - 0.4, 0.4, porchD);
+    box(white, gx, 9.35, porchZ, porchW + 1.2, 0.36, porchD + 0.5);
+    clapboardTriangle(white, porchW + 0.4, 2.6, 9.5, "z", fz + proj + porchD + 0.15, gx, fz + proj + porchD + 0.15);
     for (let i = 0; i < 4; i++) {
-      box(mats.stone, right.x + right.width * 0.28, 0.22 + i * 0.26, fz + 7.4 + i * 0.75, 4.4, 0.26, 0.95);
+      const cx = gx - porchW / 2 + 1.6 + ((porchW - 3.2) * i) / 3;
+      const post = new THREE.CylinderGeometry(0.26, 0.32, 7.8, 12);
+      post.translate(cx, 5.2, fz + proj + porchD - 0.4);
+      post.applyMatrix4(buildingMatrix);
+      put(white, post);
     }
-    for (let i = 0; i < 18; i++) {
-      const x = -b.width / 2 - 1 + ((b.width + 2) * (i + 0.5)) / 18;
-      const bush = new THREE.SphereGeometry(1.35 + (i % 3) * 0.15, 12, 10);
-      bush.translate(x, 1.7, fz + 14);
-      bush.applyMatrix4(buildingMatrix);
-      put(i % 2 ? mats.leaf : mats.leafDark, bush);
+    const rx = b.width * 0.3;
+    const rw = 15;
+    const rd = 7.2;
+    box(mats.plank, rx, 1.0, fz + rd / 2, rw, 0.35, rd);
+    box(white, rx, 8.7, fz + rd / 2, rw + 0.8, 0.32, rd + 0.4);
+    for (let i = 0; i < 3; i++) {
+      const cx = rx - rw / 2 + 1.4 + ((rw - 2.8) * i) / 2;
+      const post = new THREE.CylinderGeometry(0.24, 0.3, 7.2, 12);
+      post.translate(cx, 4.9, fz + rd - 0.35);
+      post.applyMatrix4(buildingMatrix);
+      put(white, post);
     }
-    box(mats.stone, 0, 0.12, fz + 24, b.width + 24, 0.16, 6.5);
-    box(mats.stone, 0, 0.32, fz + 20.6, b.width + 24, 0.38, 0.7);
-    box(white, 0, 12.3, 0, b.width + 0.8, 0.38, b.depth + 0.8);
-    const yardTrees = [
-      [b.width * 0.72, fz + 16, 1.4],
-    ];
-    for (const [x, z, scale] of yardTrees) {
-      const spot = new THREE.Vector3(x, 0, z);
-      spot.applyMatrix4(buildingMatrix);
-      extraTrees.push({ x: spot.x, z: spot.z, kind: "maple", scale });
-    }
-    chimneyStack(body, b.width * 0.18, wallH + 6, -b.depth * 0.12, 1.7, 7, 1.7);
-    return wallH + 18;
+    const hedge = mats.leaf.clone();
+    hedge.color.set("#3a6832");
+    const lawn = new THREE.MeshStandardMaterial({ color: "#6d9448", roughness: 0.96 });
+    box(lawn, 4, 0.16, fz + 28, b.width + 50, 0.2, 48);
+    box(hedge, -4, 2.15, fz + 27, b.width + 36, 4.3, 4.2);
+    const spot = new THREE.Vector3(b.width * 0.22, 0, fz + 6);
+    spot.applyMatrix4(buildingMatrix);
+    extraTrees.push({ x: spot.x, z: spot.z, kind: "maple", scale: 3.6 });
+    chimneyStack(body, b.width * 0.12, wallH + 7, -b.depth * 0.08, 1.8, 6.5, 1.8);
+    return wallH + 16;
   };
 
   if (data.streetStyle?.rile) {

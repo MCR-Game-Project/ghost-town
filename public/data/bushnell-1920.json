@@ -34,7 +34,7 @@
         "sourcePhoto": "public/photos/funeral-home-2010.png",
         "photoDate": "2010",
         "citation": "photo from Mark, 771 N. Crafford St., 2010",
-        "camera": { "year": 1970, "x": 1056, "z": 570, "lx": 1142, "lz": 516, "fov": 46, "pitch": 0.08, "eye": 5.25 },
+        "camera": { "year": 1970, "x": 1096, "z": 566, "lx": 1144, "lz": 506, "fov": 54, "pitch": 0.28, "eye": 4.5 },
         "front": [
           { "id": "left-gable", "width": 14, "note": "Projecting gable bay. Two arched windows in the gable. About 14 feet." },
           { "id": "center", "width": 16, "note": "Paired windows on both floors. About 16 feet." },
