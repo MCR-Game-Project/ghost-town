@@ -1612,6 +1612,43 @@ export function buildTown(data, scene) {
     return plate + 16;
   };
 
+  // 292 West Hurst, the 2010 photograph: brick first story, slate mansard, arched porch.
+  const addHurst292 = (b) => {
+    const brickH = 13;
+    const body = mats.brick.red;
+    const slate = mats.roofSlate;
+    const red = mats.siding.red;
+    const fz = b.depth / 2 + 0.14;
+    box(body, 0, brickH / 2, 0, b.width, brickH, b.depth);
+    box(mats.stone, 0, 0.55, 0, b.width + 0.5, 1.1, b.depth + 0.5);
+    box(red, 0, brickH + 0.2, 0, b.width + 0.7, 0.45, b.depth + 0.7);
+    box(slate, 0, brickH + 5.5, 0, b.width - 0.8, 9, b.depth - 0.6);
+    gable(b.width - 0.4, b.depth - 0.2, 8, brickH + 10, slate);
+    const porchX = -b.width * 0.22;
+    box(body, porchX, 6.6, fz + 2.4, 14, 12.6, 5.2);
+    archHood(mats.stone, porchX, 4.6, fz + 5.5, 10.4, 6.4, "z");
+    for (const dx of [-3.2, 3.2]) box(mats.trim, porchX + dx, 5.6, fz + 4.8, 0.7, 9.2, 0.7);
+    box(mats.trim, porchX, 5.4, fz + 2.2, 3.6, 7.8, 0.2);
+    box(mats.glass, porchX, 6.8, fz + 2.4, 1.5, 3, 0.05);
+    for (let i = 0; i < 4; i++) {
+      box(mats.stone, porchX, 0.28 + i * 0.32, fz + 9.2 - i * 1.15, 8.2, 0.32, 1.35);
+    }
+    const bay = b.width * 0.24;
+    box(body, bay, 6.2, fz + 1.5, 11, 9.2, 3);
+    frontSash(bay - 2.4, 6.4, fz + 3.1, 2.3, 5.4, "flat");
+    frontSash(bay + 2.4, 6.4, fz + 3.1, 2.3, 5.4, "flat");
+    const dormer = -b.width * 0.05;
+    box(slate, dormer, brickH + 7.4, fz + 0.6, 8, 5.2, 1.6);
+    drawPediment(red, 8.4, 2.8, brickH + 9.6, fz + 1.15, dormer);
+    frontSash(dormer, brickH + 7.4, fz + 1.45, 2.8, 3.6, "flat", false, mats.trim);
+    const gableX = b.width * 0.26;
+    box(slate, gableX, brickH + 9.5, fz - 0.1, 12, 11, 2.6);
+    drawPediment(slate, 12.2, 6.2, brickH + 14.6, fz + 1.1, gableX);
+    box(red, gableX, brickH + 14.5, fz + 1.2, 12.4, 0.24, 0.32);
+    frontSash(gableX, brickH + 10.2, fz + 1.35, 3.1, 5.2, "round", false, red);
+    return brickH + 24;
+  };
+
   // 304 West Hurst, the Hendee Home photograph: Italianate, belvedere, stacked porch.
   const addHendeeHome = (b) => {
     const body = mats.siding.darkred;
@@ -2164,6 +2201,7 @@ export function buildTown(data, scene) {
     else if (b.facade?.hoseTower) height = addHoseTower(b);
     else if (b.facade?.ballCream) height = addBallCream(b);
     else if (b.facade?.mcpCorner) height = addMcpCorner(b);
+    else if (b.facade?.hurst292) height = addHurst292(b);
     else if (b.kind === "house") height = addHouse(b);
     else if (b.id === "hendee-house-26") height = addHendeeHouse(b);
     else if (b.kind === "frame-store") height = addStore(b, true);

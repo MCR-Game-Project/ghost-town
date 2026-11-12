@@ -615,6 +615,7 @@ export function makeMaterials() {
     },
     roof: shingle("#8a7562"),
     roofDark: shingle("#5c4a3c"),
+    roofSlate: shingle("#8b98a6"),
     tin: std({
       map: tinTex.map,
       normalMap: tinTex.normalMap,
