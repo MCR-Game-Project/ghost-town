@@ -2318,7 +2318,32 @@ export function buildTown(data, scene) {
   const addHurstBuff = (b) => {
     const wallH = 32;
     const body = mats.brick.buff.clone();
-    body.color.set("#F0B4AC");
+    {
+      const canvas = document.createElement("canvas");
+      canvas.width = 256;
+      canvas.height = 128;
+      const g = canvas.getContext("2d");
+      g.fillStyle = "#c9c0b2";
+      g.fillRect(0, 0, 256, 128);
+      const bw = 64;
+      const bh = 32;
+      const mortar = 4;
+      for (let row = 0; row < 4; row++) {
+        const off = row % 2 ? bw / 2 : 0;
+        for (let col = -1; col < 5; col++) {
+          const n = ((row * 3 + col * 5) % 5) - 2;
+          const pink = (row + col) % 7 === 0 ? 8 : 0;
+          g.fillStyle = `rgb(${216 + n + pink}, ${205 + n}, ${187 + n - pink * 0.4})`;
+          g.fillRect(col * bw + off + mortar, row * bh + mortar, bw - mortar * 2, bh - mortar * 2);
+        }
+      }
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      body.map = tex;
+      body.color.set("#D8CDBB");
+      body.userData.uvFeet = { u: 2.7, v: 1.35 };
+    }
     const headBrick = mats.brick.red.clone();
     headBrick.color.set("#9a4538");
     const wood = mats.trimDark.clone();
@@ -2368,16 +2393,17 @@ export function buildTown(data, scene) {
         put(headBrick, geo);
       }
     }
-    const cy = wallH - 0.15;
-    const corbels = Math.max(16, Math.round(b.width / 0.85));
-    for (let row = 0; row < 4; row++) {
-      for (let i = 0; i < corbels; i++) {
-        if ((i + row) % 2 === 0) continue;
-        const x = -b.width / 2 + ((i + 0.5) * b.width) / corbels;
-        box(body, x, cy - 1.45 + row * 0.4, fz + 0.28 + row * 0.14, 0.48, 0.36, 0.36 + row * 0.12);
-      }
+    const cy = wallH - 0.2;
+    const shadow = body.clone();
+    shadow.color.set("#b7ad9e");
+    box(shadow, 0, cy - 1.15, fz + 0.16, b.width, 0.16, 0.22);
+    const corbels = Math.max(14, Math.round(b.width / 1.7));
+    for (let i = 0; i < corbels; i++) {
+      const x = -b.width / 2 + ((i + 0.5) * b.width) / corbels;
+      box(body, x, cy - 0.7, fz + 0.22, 0.55, 0.42, 0.28);
+      box(body, x, cy - 0.28, fz + 0.3, 0.42, 0.32, 0.22);
     }
-    box(body, 0, cy + 0.35, fz + 0.62, b.width + 0.5, 0.36, 0.7);
+    box(body, 0, cy + 0.15, fz + 0.28, b.width + 0.3, 0.28, 0.36);
     const beamY = 12.7;
     const openCenters = [-b.width * 0.24, b.width * 0.24];
     const openHalf = b.width * 0.34 * 0.46;
@@ -2453,17 +2479,31 @@ export function buildTown(data, scene) {
       box(lapShadow, 0, y, fz + 0.24, b.width - 0.5, 0.045, 0.05);
     }
     const friezeY = 10.85;
-    box(black, 0, friezeY, fz + 0.32, b.width + 0.15, 3.1, 0.48);
+    box(black, 0, friezeY, fz + 0.22, b.width + 0.15, 3.2, 0.36);
     const bays = 4;
     for (let i = 0; i < bays; i++) {
       const x = -b.width / 2 + ((i + 0.5) * b.width) / bays;
-      box(inset, x, friezeY, fz + 0.12, b.width / bays - 1.35, 1.85, 0.16);
+      const pw = b.width / bays - 1.45;
+      box(inset, x, friezeY, fz + 0.02, pw, 2.05, 0.14);
+      box(black, x, friezeY + 1.12, fz + 0.32, pw + 0.28, 0.12, 0.18);
+      box(black, x, friezeY - 1.12, fz + 0.32, pw + 0.28, 0.12, 0.18);
+      box(black, x - pw / 2, friezeY, fz + 0.32, 0.12, 2.2, 0.18);
+      box(black, x + pw / 2, friezeY, fz + 0.32, 0.12, 2.2, 0.18);
     }
     const pilasters = 5;
     for (let i = 0; i < pilasters; i++) {
       const x = -b.width / 2 + (b.width * i) / (pilasters - 1);
-      box(black, x, 6.5, fz + 0.46, 0.62, 12.4, 0.5);
-      box(black, x, friezeY + 1.35, fz + 0.62, 0.95, 0.55, 0.62);
+      const end = i === 0 || i === pilasters - 1;
+      box(black, x, 6.5, fz + 0.46, end ? 0.78 : 0.58, 12.4, end ? 0.58 : 0.46);
+      box(black, x, friezeY + 1.55, fz + 0.7, end ? 1.45 : 0.9, end ? 0.85 : 0.45, end ? 0.85 : 0.55);
+      if (end) {
+        box(black, x, friezeY + 1.05, fz + 0.62, 1.1, 0.35, 0.55);
+        const cap = new THREE.TorusGeometry(0.42, 0.1, 6, 10, Math.PI);
+        cap.rotateY(Math.PI / 2);
+        cap.translate(x, friezeY + 0.85, fz + 0.85);
+        cap.applyMatrix4(buildingMatrix);
+        put(black, cap);
+      }
     }
     for (const x of [-b.width * 0.3, -b.width * 0.02]) {
       box(inset, x, 6.35, fz + 0.28, 1.45, 2.35, 0.14);
@@ -2483,47 +2523,42 @@ export function buildTown(data, scene) {
       geo.applyMatrix4(buildingMatrix);
       put(mat, geo);
     };
-    const cols = 6;
-    const gap = (b.width - 1.6) / cols;
-    const xs = [];
-    for (let i = 0; i < cols; i++) {
-      const x = -b.width / 2 + 0.8 + gap * (i + 0.5);
-      xs.push(x);
-      const ornate = i < 3;
-      const w = 1.72;
-      const h = 10.2;
-      const y = 19.6;
-      const spring = y + 1.6;
-      box(mats.trim, x, y - 0.55, fz + 0.2, w * 0.82, h * 0.7, 0.22);
-      for (let k = 0; k < 7; k++) {
-        box(inset, x, y - h * 0.32 + k * (h * 0.085), fz + 0.34, w * 0.66, 0.045, 0.04);
+    const surround = (x, y, w, h) => {
+      const sill = y - h * 0.46;
+      const spring = y + h * 0.12;
+      const rad = w * 0.4;
+      box(mats.trim, x, y - 0.2, fz + 0.16, w * 0.7, h * 0.86, 0.16);
+      for (let k = 0; k < 8; k++) {
+        box(inset, x, sill + 0.4 + k * (h * 0.09), fz + 0.28, w * 0.52, 0.04, 0.03);
       }
-      const ring = (mat, rad, tube, zOff) => {
-        const n = 9;
-        for (let k = 0; k < n; k++) {
-          const ang = (Math.PI * (k + 0.5)) / n;
-          const geo = new THREE.BoxGeometry(tube * 1.2, tube, 0.62);
-          geo.rotateZ(ang - Math.PI / 2);
-          geo.translate(x + Math.cos(ang) * rad, spring + Math.sin(ang) * rad, fz + zOff);
-          geo.applyMatrix4(buildingMatrix);
-          put(mat, geo);
-        }
-      };
-      if (ornate) {
-        ring(mats.trim, w * 1.15, 0.78, 1.05);
-        box(mats.trim, x, spring + w * 1.25, fz + 1.15, 0.55, 0.6, 0.45);
-      } else {
-        ring(mats.trim, w * 0.5, 0.28, 0.55);
+      box(mats.trim, x, sill, fz + 0.4, w + 0.2, 0.16, 0.34);
+      box(mats.trim, x - w * 0.42, (sill + spring) / 2, fz + 0.42, 0.2, spring - sill, 0.3);
+      box(mats.trim, x + w * 0.42, (sill + spring) / 2, fz + 0.42, 0.2, spring - sill, 0.3);
+      const n = 7;
+      for (let k = 0; k < n; k++) {
+        const ang = (Math.PI * (k + 0.5)) / n;
+        const geo = new THREE.BoxGeometry(0.4, 0.28, 0.32);
+        geo.rotateZ(ang - Math.PI / 2);
+        geo.translate(x + Math.cos(ang) * rad, spring + Math.sin(ang) * rad, fz + 0.46);
+        geo.applyMatrix4(buildingMatrix);
+        put(mats.trim, geo);
       }
-    }
-    const panelMid = (xs[3] + xs[5]) / 2;
-    const panelW = xs[5] - xs[3] + gap * 0.85;
+      box(mats.trim, x, spring + rad + 0.1, fz + 0.52, 0.34, 0.4, 0.3);
+    };
+    const leftXs = [-10.6, -6.7, -2.8];
+    const rightXs = [2.3, 5.5, 8.7];
+    for (const x of leftXs) surround(x, 21.2, 2.7, 12.4);
+    for (const x of rightXs) surround(x, 18.8, 2.15, 10.8);
+    const xs = rightXs;
+    const gap = rightXs[1] - rightXs[0];
+    const panelMid = (xs[0] + xs[2]) / 2;
+    const panelW = xs[2] - xs[0] + gap * 0.85;
     box(body, panelMid, 19.8, fz - 0.22, panelW, 12.4, 0.16);
     box(body, panelMid, 26.2, fz + 0.18, panelW + 0.5, 0.35, 0.4);
     box(body, panelMid - panelW / 2, 19.8, fz + 0.16, 0.35, 12.6, 0.38);
     box(body, panelMid + panelW / 2, 19.8, fz + 0.16, 0.35, 12.6, 0.38);
-    const right0 = xs[3] - gap * 0.55;
-    const right1 = xs[5] + gap * 0.55;
+    const right0 = rightXs[0] - 1.5;
+    const right1 = rightXs[2] + 1.5;
     const corbelY = 25.2;
     for (let row = 0; row < 3; row++) {
       for (let i = 0; i < 7; i++) {
