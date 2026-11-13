@@ -1,0 +1,15 @@
+{
+  // Local and future Pages config for the photo submission feature.
+  // Do not deploy this until the R2 bucket exists and GT_ADMIN_PASSWORD is set
+  // as a Pages secret. Deploying with a missing bucket can provision one.
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "ghost-town",
+  "compatibility_date": "2026-11-13",
+  "pages_build_output_dir": "./dist",
+  "r2_buckets": [
+    {
+      "binding": "PHOTOS",
+      "bucket_name": "ghost-town-photos"
+    }
+  ]
+}

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Review photos — Bushnell, Illinois</title>
+    <style>
+:root {
+  color-scheme: light;
+  --ink: #24180f;
+  --paper: #f6ecd8;
+  --line: #6d4b32;
+  --brick: #7c342c;
+  --cream: #f6ecd8;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: #1b140e;
+  font-family: Georgia, "Iowan Old Style", Palatino, "Palatino Linotype", serif;
+  color: var(--ink);
+}
+body {
+  display: grid;
+  place-items: start center;
+  padding: 32px 16px 48px;
+}
+.sheet {
+  width: min(880px, 100%);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 30px rgba(30, 16, 6, 0.28);
+  padding: 22px 24px 24px;
+}
+.eyebrow {
+  margin: 0 0 2px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brick);
+}
+h1 { font-weight: 600; margin: 0 0 8px; font-size: 28px; }
+h2 { font-weight: 600; margin: 24px 0 10px; font-size: 22px; }
+p { line-height: 1.45; margin: 0 0 14px; }
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 0 14px;
+  font-size: 15px;
+}
+input[type="password"] {
+  font: inherit;
+  color: var(--ink);
+  background: #fffdf8;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 10px 12px;
+  width: min(320px, 100%);
+}
+button {
+  font: inherit;
+  color: var(--cream);
+  background: var(--brick);
+  border: 1px solid #4e221c;
+  border-radius: 4px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+button.ghost {
+  color: var(--ink);
+  background: transparent;
+  border-color: var(--line);
+}
+button:hover { filter: brightness(1.08); }
+button:disabled { opacity: 0.6; cursor: default; filter: none; }
+.error { color: #7c342c; margin: 0 0 12px; }
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+  flex-wrap: wrap;
+}
+.list { display: flex; flex-direction: column; gap: 16px; }
+.card {
+  display: grid;
+  grid-template-columns: minmax(160px, 260px) 1fr;
+  gap: 16px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: #fffdf8;
+}
+.card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 260px;
+  object-fit: contain;
+  background: #1b140e;
+}
+.meta { margin: 0 0 8px; font-size: 15px; }
+.meta b { font-weight: 600; }
+.notes { margin: 0 0 12px; white-space: pre-wrap; }
+.status {
+  display: inline-block;
+  margin: 0 0 8px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brick);
+}
+.empty { margin: 0; font-style: italic; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+@media (max-width: 640px) {
+  .card { grid-template-columns: 1fr; }
+}
+    </style>
+  </head>
+  <body>
+    <main class="sheet">
+      <div id="login">
+        <p class="eyebrow">Ghost Town</p>
+        <h1>Review photos</h1>
+        <p>Enter the review password to see submitted photos.</p>
+        <form id="login-form">
+          <label>
+            Password
+            <input id="password" name="password" type="password" required autocomplete="current-password" />
+          </label>
+          <p id="login-error" class="error" hidden></p>
+          <button type="submit">Sign in</button>
+        </form>
+      </div>
+
+      <div id="review" hidden>
+        <div class="top">
+          <div>
+            <p class="eyebrow">Ghost Town</p>
+            <h1>Review photos</h1>
+            <p>Approved photos are marked accepted. They are not added to the town walk automatically.</p>
+          </div>
+          <form id="logout-form">
+            <button class="ghost" type="submit">Sign out</button>
+          </form>
+        </div>
+        <p id="list-error" class="error" hidden></p>
+
+        <h2>Pending</h2>
+        <div id="pending" class="list"></div>
+        <p id="pending-empty" class="empty" hidden>There are no photos waiting for review.</p>
+
+        <h2>Approved</h2>
+        <div id="approved" class="list"></div>
+        <p id="approved-empty" class="empty" hidden>No photos have been accepted yet.</p>
+
+        <h2>Rejected</h2>
+        <div id="rejected" class="list"></div>
+        <p id="rejected-empty" class="empty" hidden>No photos have been rejected.</p>
+      </div>
+    </main>
+    <script>
+      const login = document.getElementById("login");
+      const review = document.getElementById("review");
+      const loginForm = document.getElementById("login-form");
+      const logoutForm = document.getElementById("logout-form");
+      const loginError = document.getElementById("login-error");
+      const listError = document.getElementById("list-error");
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function formatTime(iso) {
+        if (!iso) return "";
+        const date = new Date(iso);
+        if (Number.isNaN(date.getTime())) return escapeHtml(iso);
+        return date.toLocaleString("en-US", {
+          timeZone: "America/Chicago",
+          dateStyle: "medium",
+          timeStyle: "short",
+        }) + " CT";
+      }
+
+      function card(item, actions) {
+        const notes = item.notes
+          ? `<p class="notes">${escapeHtml(item.notes)}</p>`
+          : `<p class="notes empty">No notes were included.</p>`;
+        const buttons = actions
+          ? `<div class="row">
+              <button type="button" data-act="approved" data-id="${escapeHtml(item.id)}">Approve</button>
+              <button type="button" class="ghost" data-act="rejected" data-id="${escapeHtml(item.id)}">Reject</button>
+            </div>`
+          : "";
+        return `<article class="card" data-id="${escapeHtml(item.id)}">
+          <img src="/api/admin/photo?id=${encodeURIComponent(item.id)}" alt="Submitted photo of ${escapeHtml(item.address)}" />
+          <div>
+            <p class="status">${escapeHtml(item.status)}</p>
+            <p class="meta"><b>Year:</b> ${escapeHtml(item.year)}</p>
+            <p class="meta"><b>Address:</b> ${escapeHtml(item.address)}</p>
+            <p class="meta"><b>Sent:</b> ${formatTime(item.submittedAt)}</p>
+            ${notes}
+            ${buttons}
+          </div>
+        </article>`;
+      }
+
+      function fill(listId, emptyId, items, actions) {
+        const list = document.getElementById(listId);
+        const empty = document.getElementById(emptyId);
+        list.innerHTML = items.map((item) => card(item, actions)).join("");
+        empty.hidden = items.length > 0;
+      }
+
+      async function loadList() {
+        listError.hidden = true;
+        const response = await fetch("/api/admin/submissions", { credentials: "same-origin" });
+        if (response.status === 401) {
+          showLogin();
+          return;
+        }
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.ok) {
+          listError.textContent = data.error || "The photo list could not be loaded just now.";
+          listError.hidden = false;
+          return;
+        }
+        const items = data.submissions || [];
+        fill("pending", "pending-empty", items.filter((i) => i.status === "pending"), true);
+        fill("approved", "approved-empty", items.filter((i) => i.status === "approved"), false);
+        fill("rejected", "rejected-empty", items.filter((i) => i.status === "rejected"), false);
+      }
+
+      function showLogin() {
+        review.hidden = true;
+        login.hidden = false;
+      }
+
+      function showReview() {
+        login.hidden = true;
+        review.hidden = false;
+      }
+
+      loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        loginError.hidden = true;
+        const password = document.getElementById("password").value;
+        try {
+          const response = await fetch("/api/admin/login", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password }),
+          });
+          if (!response.ok) {
+            loginError.textContent = "That password did not work.";
+            loginError.hidden = false;
+            return;
+          }
+          document.getElementById("password").value = "";
+          showReview();
+          await loadList();
+        } catch (err) {
+          loginError.textContent = "Sign-in could not be completed just now.";
+          loginError.hidden = false;
+        }
+      });
+
+      logoutForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" });
+        showLogin();
+      });
+
+      document.getElementById("pending").addEventListener("click", async (event) => {
+        const button = event.target.closest("button[data-act]");
+        if (!button) return;
+        button.disabled = true;
+        const response = await fetch("/api/admin/review", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: button.dataset.id, status: button.dataset.act }),
+        });
+        if (response.status === 401) {
+          showLogin();
+          return;
+        }
+        if (!response.ok) {
+          button.disabled = false;
+          listError.textContent = "That decision could not be saved just now.";
+          listError.hidden = false;
+          return;
+        }
+        await loadList();
+      });
+
+      (async () => {
+        const response = await fetch("/api/admin/login", { credentials: "same-origin" });
+        if (response.ok) {
+          showReview();
+          await loadList();
+        }
+      })();
+    </script>
+  </body>
+</html>

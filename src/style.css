@@ -426,3 +426,11 @@ body.clean #stats { display: none !important; }
   #touch { display: block; }
   #card { bottom: 118px; }
 }
+
+#help .submit-photo {
+  margin: 16px 0 0;
+  font-size: 15px;
+}
+#help .submit-photo a {
+  color: var(--brick);
+}

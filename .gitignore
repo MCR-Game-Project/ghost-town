@@ -3,3 +3,7 @@ dist
 .DS_Store
 agent-tools
 *.log
+.dev.vars
+.dev.vars.*
+.wrangler
+.mf

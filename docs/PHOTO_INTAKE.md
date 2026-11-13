@@ -2,7 +2,7 @@
 
 Use this checklist when a photo of a Bushnell building is ready to become part of the model. The result is a facade spec on the building record. The spec is what the facade kit in `src/facade/` draws. Do not hand-build a one-off mesh for a new photo.
 
-An upload page is not part of this step. When one is added it should accept the image, the sender's name, a claimed address, and a claimed date, then store the file under `public/photos/` and open a draft spec with those four fields filled. A person still has to walk this checklist before the spec is drawn in a year that visitors can see. The page should not invent a lot, a name, or a year.
+The public upload page is at `/submit`. It accepts the year, the address, the photograph, and optional notes. Submissions stay pending until they are approved on `/admin`. Approved photos are marked accepted only. They are not copied into `public/photos/` or drawn in the town automatically. A person still has to walk this checklist before the spec is drawn in a year that visitors can see. The page should not invent a lot, a name, or a year. See `docs/photo-submit.md` for how the form and review page work.
 
 ## 1. Keep the file
 
@@ -59,6 +59,6 @@ npm run compare -- <building-id>
 
 The script reads `camera` from the spec, renders that view, and writes `artifacts/compare-<building-id>.png` with the source photograph on the left and the render on the right. Change the camera, the focal length, and the spec until the render reads as the same building: the same viewpoint, bay count, window shapes, proportions, colors, and roof. Do that before the front is treated as finished.
 
-## 8. What an upload step would still need
+## 8. What the upload page does not do
 
-The checklist above is the part a person does. A later upload page would only collect the file, the claimed address, the claimed date, and the sender. It would not choose a lot, sample colors, or publish the spec. Those stay on this checklist until someone has compared the render with the photograph.
+The checklist above is still the part a person does. The upload page only collects the file, the claimed address, the claimed year, and optional notes. Approving a photo marks it accepted. It does not choose a lot, sample colors, or publish the spec. Those stay on this checklist until someone has compared the render with the photograph.
