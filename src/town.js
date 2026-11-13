@@ -2492,7 +2492,7 @@ export function buildTown(data, scene) {
       canvas.width = 256;
       canvas.height = 256;
       const g = canvas.getContext("2d");
-      g.fillStyle = "#8490A0";
+      g.fillStyle = "#9AA6B6";
       g.fillRect(0, 0, 256, 256);
       const rows = 14;
       const cols = 12;
@@ -2503,8 +2503,8 @@ export function buildTown(data, scene) {
         for (let c = -1; c < cols + 1; c++) {
           const x = c * cw + off;
           const y = r * rh;
-          const shade = 118 + ((r * 17 + c * 13) % 28);
-          const blue = 138 + ((r * 11 + c * 7) % 22);
+          const shade = 132 + ((r * 17 + c * 13) % 26);
+          const blue = 158 + ((r * 11 + c * 7) % 20);
           g.fillStyle = `rgb(${shade},${shade + 4},${blue})`;
           g.beginPath();
           g.moveTo(x, y);
@@ -2521,7 +2521,7 @@ export function buildTown(data, scene) {
       // A few slightly lighter slates in a loose diamond, as in the photograph — no hard grid.
       for (let y = 20; y < 256; y += 56) {
         for (let x = 28; x < 256; x += 56) {
-          g.fillStyle = "rgba(150,158,172,0.28)";
+          g.fillStyle = "rgba(188,198,214,0.32)";
           g.beginPath();
           const cw2 = 256 / 12;
           const rh2 = 256 / 14;
@@ -2539,7 +2539,7 @@ export function buildTown(data, scene) {
       return tex;
     })();
     const slate = new THREE.MeshStandardMaterial({
-      color: "#B0B8C4",
+      color: "#C4CCD8",
       roughness: 0.78,
       metalness: 0.05,
       map: slateTex,
@@ -2988,19 +2988,21 @@ export function buildTown(data, scene) {
       seed = (seed * 16807 + 17) % 2147483647;
       return seed / 2147483647;
     };
-    for (let i = 0; i < 55; i++) {
+    for (let i = 0; i < 44; i++) {
       const a = rnd() * Math.PI * 2;
-      const r = 1.6 + rnd() * 8.5;
-      leftSpreads.push([Math.cos(a) * r * 0.95 + 1.4, 6 + rnd() * 16, Math.sin(a) * r * 0.85 + 3.5, 1.45 + rnd() * 1.35, i % 3]);
+      const r = 1.2 + rnd() * 5.2;
+      leftSpreads.push([Math.cos(a) * r * 0.7 - 1.0, 8 + rnd() * 14, Math.sin(a) * r * 0.75 + 4.0, 1.7 + rnd() * 1.3, i % 3]);
     }
     seed = 708;
-    for (let i = 0; i < 64; i++) {
+    for (let i = 0; i < 48; i++) {
       const a = rnd() * Math.PI * 2;
-      const r = 1.4 + rnd() * 9.5;
-      rightSpreads.push([Math.cos(a) * r * 1.05 - 0.4, 5 + rnd() * 18, Math.sin(a) * r * 0.95 + 4.5, 1.55 + rnd() * 1.45, i % 3]);
+      const r = 1.2 + rnd() * 4.8;
+      // Outward from the right wall, at the facade depth, so the tree sits in-frame at the right edge.
+      const dx = Math.abs(Math.cos(a) * r * 0.7) + 0.3;
+      rightSpreads.push([dx, 7 + rnd() * 15, Math.sin(a) * r * 0.5 + 1.2, 1.7 + rnd() * 1.35, i % 3]);
     }
-    plantTree(-b.width * 0.60, fz + 9, 11, leftSpreads);
-    plantTree(b.width * 0.52, fz + 7, 10, rightSpreads);
+    plantTree(-b.width * 0.55, fz + 16, 9, leftSpreads);
+    plantTree(b.width * 0.50, fz + 7, 10, rightSpreads);
     return brickH + mansardH + pyramidRise + gableH * 0.25;
   };
 
@@ -3677,61 +3679,71 @@ export function buildTown(data, scene) {
     box(white, -b.width / 2 - leftExt / 2, wallH + 0.45, 0, leftExt + 3.2, 0.85, b.depth + 3.2);
     box(white, -b.width / 2 - leftExt / 2, wallH + 0.95, 0, leftExt + 2.4, 0.28, b.depth + 2.4);
     corniceBrackets(-b.width / 2 - leftExt / 2, fz + 1.55, leftExt + 0.8, 0, true);
-    // Left porch: a front-facing white pediment on square brick piers with large white caps.
-    const porchD = 9.2;
-    const porchW = 16.5;
+    // Left porch: a wide, shallow white pediment on white columns, as asked from the photograph.
+    const porchD = 9.0;
+    const porchW = 20.5;
     const porchFrontZ = fz + proj + porchD;
     const porchZ = fz + proj + porchD / 2;
-    const porchCx = gx - 3.0;
+    const porchCx = gx - 2.4;
     box(mats.plank, porchCx, 1.0, porchZ, porchW - 0.4, 0.32, porchD - 0.3);
-    // One-story white clapboard sunroom under the porch, visible between and left of the piers.
-    box(siding, porchCx - 1.2, 5.15, fz + proj + 0.8, porchW + 2.4, 8.5, 3.2);
+    // One-story white clapboard sunroom under the porch, set back so the columns stand in front.
+    box(siding, porchCx - 0.6, 5.15, fz + proj + 0.8, porchW - 1.0, 8.5, 3.0);
     const blinds = new THREE.MeshStandardMaterial({ color: "#6a6860", roughness: 0.8 });
-    box(white, porchCx - 4.6, 5.5, fz + proj + 2.35, 3.0, 4.4, 0.18);
-    box(blinds, porchCx - 4.6, 5.5, fz + proj + 2.48, 2.5, 3.9, 0.06);
+    box(white, porchCx - 5.2, 5.5, fz + proj + 2.25, 3.0, 4.4, 0.18);
+    box(blinds, porchCx - 5.2, 5.5, fz + proj + 2.38, 2.5, 3.9, 0.06);
     for (let k = 0; k < 9; k++) {
-      box(white, porchCx - 4.6, 3.9 + k * 0.38, fz + proj + 2.52, 2.5, 0.05, 0.04);
+      box(white, porchCx - 5.2, 3.9 + k * 0.38, fz + proj + 2.42, 2.5, 0.05, 0.04);
     }
-    const pRise = 5.4;
-    const pY0 = 9.85;
-    const porchRoofMat = new THREE.MeshStandardMaterial({ color: "#c8c4b6", roughness: 0.88 });
-    const soffitDark = new THREE.MeshStandardMaterial({ color: "#b0aa98", roughness: 0.84 });
-    // Entablature: a strong horizontal base so the triangle reads as a pediment.
-    box(white, porchCx, pY0 + 0.22, porchZ, porchW + 2.8, 0.48, porchD + 1.8);
-    box(white, porchCx, pY0 + 0.55, porchFrontZ + 0.15, porchW + 2.2, 0.28, 1.1);
-    clapboardTriangle(white, porchW + 2.8, pRise, pY0 + 0.4, "z", porchFrontZ + 0.7, porchCx, porchFrontZ + 0.7);
-    const pRun = (porchW + 2.2) / 2;
+    const pRise = 3.05;
+    const pY0 = 9.95;
+    const porchRoofMat = new THREE.MeshStandardMaterial({ color: "#d0ccc0", roughness: 0.88 });
+    const soffitDark = new THREE.MeshStandardMaterial({ color: "#b4ae9e", roughness: 0.84 });
+    // Wide, shallow entablature and a flat triangular pediment facing the street.
+    box(white, porchCx, pY0 + 0.18, porchZ, porchW + 3.6, 0.5, porchD + 2.0);
+    box(white, porchCx, pY0 + 0.52, porchFrontZ + 0.2, porchW + 3.0, 0.32, 1.2);
+    clapboardTriangle(white, porchW + 3.8, pRise, pY0 + 0.35, "z", porchFrontZ + 0.75, porchCx, porchFrontZ + 0.75);
+    const pRun = (porchW + 3.2) / 2;
     const pLen = Math.hypot(pRun, pRise);
     const pAng = Math.atan2(pRise, pRun);
     for (const sign of [-1, 1]) {
-      const plane = new THREE.BoxGeometry(pLen, 0.3, porchD + 1.1);
-      plane.translate(0, 0, -(porchD + 1.1) / 2);
+      const plane = new THREE.BoxGeometry(pLen, 0.3, porchD + 1.2);
+      plane.translate(0, 0, -(porchD + 1.2) / 2);
       plane.rotateZ(-sign * pAng);
-      plane.translate(porchCx + sign * pRun * 0.48, pY0 + 0.4 + pRise * 0.28, porchFrontZ);
+      plane.translate(porchCx + sign * pRun * 0.48, pY0 + 0.35 + pRise * 0.28, porchFrontZ);
       plane.applyMatrix4(buildingMatrix);
       put(porchRoofMat, plane);
-      // Underside, slightly darker, so the triangular eave reads from a 3/4 view.
-      const under = new THREE.BoxGeometry(pLen, 0.08, porchD + 1.0);
-      under.translate(0, -0.16, -(porchD + 1.0) / 2);
+      const under = new THREE.BoxGeometry(pLen, 0.08, porchD + 1.1);
+      under.translate(0, -0.16, -(porchD + 1.1) / 2);
       under.rotateZ(-sign * pAng);
-      under.translate(porchCx + sign * pRun * 0.48, pY0 + 0.4 + pRise * 0.28, porchFrontZ);
+      under.translate(porchCx + sign * pRun * 0.48, pY0 + 0.35 + pRise * 0.28, porchFrontZ);
       under.applyMatrix4(buildingMatrix);
       put(soffitDark, under);
-      const rake = new THREE.BoxGeometry(pLen + 0.4, 0.46, 0.46);
+      const rake = new THREE.BoxGeometry(pLen + 0.4, 0.42, 0.44);
       rake.rotateZ(-sign * pAng);
-      rake.translate(porchCx + sign * pRun * 0.48, pY0 + 0.4 + pRise * 0.32, porchFrontZ + 0.78);
+      rake.translate(porchCx + sign * pRun * 0.48, pY0 + 0.35 + pRise * 0.32, porchFrontZ + 0.82);
       rake.applyMatrix4(buildingMatrix);
       put(white, rake);
     }
-    // Square brick piers with large white capitals, tall enough to show above the hedge.
+    // White columns with molded bases and capitals, on their own material so they merge cleanly.
+    const colWhite = white.clone();
+    const colAt = (x, z) => {
+      const shaft = new THREE.CylinderGeometry(0.52, 0.6, 8.05, 16);
+      shaft.translate(x, 5.15, z);
+      shaft.applyMatrix4(buildingMatrix);
+      put(colWhite, shaft);
+      box(white, x, 9.35, z, 1.85, 0.48, 1.85);
+      box(white, x, 9.72, z, 1.55, 0.28, 1.55);
+      box(white, x, 1.15, z, 1.75, 0.42, 1.75);
+    };
+    colAt(porchCx - porchW / 2 + 2.15, porchFrontZ - 0.3);
+    colAt(porchCx + porchW / 2 - 2.15, porchFrontZ - 0.3);
+    // Right porch still uses square brick piers; keep a brick pier helper for it.
     const pierAt = (x, z) => {
       box(body, x, 5.05, z, 2.05, 7.8, 2.05);
       box(white, x, 9.05, z, 2.75, 0.62, 2.75);
       box(white, x, 9.48, z, 2.35, 0.32, 2.35);
       box(white, x, 1.15, z, 2.4, 0.42, 2.4);
     };
-    pierAt(porchCx - porchW / 2 + 2.05, porchFrontZ - 0.35);
-    pierAt(porchCx + porchW / 2 - 2.05, porchFrontZ - 0.35);
 
     // Right porch: square brick piers, a wide white roof, steps with a black iron rail.
     const rx = b.width * 0.32;
@@ -3766,26 +3778,30 @@ export function buildTown(data, scene) {
     hedgeLit.color.set("#4a7a38");
     const hedgeDark = mats.leafDark.clone();
     hedgeDark.color.set("#2e5428");
-    // Leafy foreground hedge covering the lower left, low enough that the porch piers show above it.
-    const hedgeZ = porchFrontZ + 7.0;
-    const hedgeLen = 30;
-    const hedgeX0 = porchCx - 10;
+    // Long continuous foreground hedge across the whole lower-left, as in the photograph.
+    // Ends before the red shrub and the right porch. Low enough that the white columns show.
+    const hedgeZ = porchFrontZ + 7.2;
+    const hedgeLen = 54;
+    const hedgeX0 = porchCx - 22;
     const hedgeMats = [hedgeMat, hedgeLit, hedgeDark];
-    for (let i = 0; i < 64; i++) {
-      const u = i / 63;
-      const x = hedgeX0 + u * hedgeLen;
-      const z = hedgeZ + ((i % 5) - 2) * 0.5;
-      const y = 1.7 + ((i * 11) % 7) * 0.16;
-      const r = 1.35 + (i % 5) * 0.14;
-      const top = new THREE.SphereGeometry(r, 10, 8);
-      top.translate(x, y + r * 0.3, z);
-      top.applyMatrix4(buildingMatrix);
-      put(hedgeMats[i % 3], top);
+    for (let row = 0; row < 3; row++) {
+      const n = 78 - row * 8;
+      for (let i = 0; i < n; i++) {
+        const u = i / (n - 1);
+        const x = hedgeX0 + u * hedgeLen;
+        const z = hedgeZ + (row - 1) * 1.15 + ((i % 3) - 1) * 0.28;
+        const y = 1.55 + ((i * 11 + row * 5) % 7) * 0.14;
+        const r = 1.4 + (i % 5) * 0.12 + row * 0.06;
+        const top = new THREE.SphereGeometry(r, 10, 8);
+        top.translate(x, y + r * 0.28, z);
+        top.applyMatrix4(buildingMatrix);
+        put(hedgeMats[(i + row) % 3], top);
+      }
     }
-    for (let i = 0; i < 36; i++) {
-      const x = hedgeX0 + 0.5 + (i / 35) * (hedgeLen - 1.0);
-      const ball = new THREE.SphereGeometry(1.2 + (i % 3) * 0.12, 10, 8);
-      ball.translate(x, 1.25, hedgeZ + ((i % 3) - 1) * 0.35);
+    for (let i = 0; i < 50; i++) {
+      const x = hedgeX0 + 0.4 + (i / 49) * (hedgeLen - 0.8);
+      const ball = new THREE.SphereGeometry(1.25 + (i % 3) * 0.1, 10, 8);
+      ball.translate(x, 1.2, hedgeZ + ((i % 3) - 1) * 0.4);
       ball.applyMatrix4(buildingMatrix);
       put(hedgeMats[(i + 1) % 3], ball);
     }
@@ -3813,33 +3829,37 @@ export function buildTown(data, scene) {
       ball.applyMatrix4(buildingMatrix);
       put(leafMats[k % leafMats.length], ball);
     };
-    // Main canopy over and to the right of the house, starting low enough to hide any trunk.
-    for (let i = 0; i < 100; i++) {
+    // Bigger main canopy over and to the right of the house.
+    for (let i = 0; i < 120; i++) {
       const a = rnd() * Math.PI * 2;
-      const b = (rnd() - 0.05) * Math.PI * 0.55;
-      const rad = 0.2 + rnd() * 0.85;
-      const x = 16 + Math.cos(a) * Math.cos(b) * 20 * rad;
-      const y = 20 + Math.sin(b) * 14 * rad;
-      const z = fz + 16 + Math.sin(a) * Math.cos(b) * 14 * rad;
-      putLeaf(x, y, z, 1.6 + rnd() * 1.7, i);
+      const b = (rnd() - 0.05) * Math.PI * 0.6;
+      const rad = 0.2 + rnd() * 0.9;
+      const x = 18 + Math.cos(a) * Math.cos(b) * 24 * rad;
+      const y = 22 + Math.sin(b) * 16 * rad;
+      const z = fz + 16 + Math.sin(a) * Math.cos(b) * 16 * rad;
+      putLeaf(x, y, z, 1.8 + rnd() * 2.0, i);
     }
     // Branches reaching left, over the right roof and toward the gable.
-    for (let i = 0; i < 36; i++) {
-      const x = 2 + rnd() * 16;
-      const y = 20 + rnd() * 12;
-      const z = fz + 4 + rnd() * 14;
-      putLeaf(x, y, z, 1.5 + rnd() * 1.5, i);
+    for (let i = 0; i < 48; i++) {
+      const x = 2 + rnd() * 18;
+      const y = 22 + rnd() * 14;
+      const z = fz + 4 + rnd() * 16;
+      putLeaf(x, y, z, 1.7 + rnd() * 1.7, i);
     }
-    // Foreground overhead clumps that fill the upper-right corner of the frame.
-    for (let i = 0; i < 55; i++) {
-      const x = 18 + rnd() * 22;
-      const y = 20 + rnd() * 18;
-      const z = porchFrontZ + 6 + rnd() * 20;
-      putLeaf(x, y, z, 1.9 + rnd() * 1.9, i);
+    // Large foreground overhead mass that fills the upper-right of the frame, as in the photograph.
+    for (let i = 0; i < 90; i++) {
+      const x = 16 + rnd() * 28;
+      const y = 18 + rnd() * 22;
+      const z = porchFrontZ + 4 + rnd() * 24;
+      putLeaf(x, y, z, 2.1 + rnd() * 2.2, i);
     }
     // Mid-height clumps on the right hide the trunk, leaving a gap in front of the right porch.
-    for (let i = 0; i < 12; i++) {
-      putLeaf(22 + rnd() * 8, 10 + rnd() * 10, fz + 8 + rnd() * 6, 2.0 + rnd() * 1.1, i);
+    for (let i = 0; i < 14; i++) {
+      putLeaf(24 + rnd() * 10, 10 + rnd() * 12, fz + 8 + rnd() * 6, 2.2 + rnd() * 1.3, i);
+    }
+    // Extra mass in the very top-right corner of the frame.
+    for (let i = 0; i < 28; i++) {
+      putLeaf(22 + rnd() * 20, 28 + rnd() * 14, porchFrontZ + 10 + rnd() * 18, 2.2 + rnd() * 2.0, i);
     }
     // Reddish ornamental shrub in front of the right porch, from the photograph.
     const redLeaf = mats.leaf.clone();
