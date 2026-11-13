@@ -2485,14 +2485,14 @@ export function buildTown(data, scene) {
       mat.userData.uvFeet = { u: 4, v: 2 };
       return mat;
     };
-    const body = makeBrick("#c4b49a", ["#A48A70", "#9A8068", "#A88E74", "#967A62", "#A2846C"]);
+    const body = makeBrick("#C2B6A8", ["#7A5344", "#6E4A3C", "#825848", "#654338", "#745040", "#6B473A"]);
     const water = makeBrick("#6a4a4a", ["#5A3A3E", "#624044", "#54363A", "#5E3C40"]);
     const slateTex = (() => {
       const canvas = document.createElement("canvas");
       canvas.width = 256;
       canvas.height = 256;
       const g = canvas.getContext("2d");
-      g.fillStyle = "#6A7584";
+      g.fillStyle = "#8490A0";
       g.fillRect(0, 0, 256, 256);
       const rows = 14;
       const cols = 12;
@@ -2503,8 +2503,8 @@ export function buildTown(data, scene) {
         for (let c = -1; c < cols + 1; c++) {
           const x = c * cw + off;
           const y = r * rh;
-          const shade = 95 + ((r * 17 + c * 13) % 32);
-          const blue = 115 + ((r * 11 + c * 7) % 24);
+          const shade = 118 + ((r * 17 + c * 13) % 28);
+          const blue = 138 + ((r * 11 + c * 7) % 22);
           g.fillStyle = `rgb(${shade},${shade + 4},${blue})`;
           g.beginPath();
           g.moveTo(x, y);
@@ -2539,7 +2539,7 @@ export function buildTown(data, scene) {
       return tex;
     })();
     const slate = new THREE.MeshStandardMaterial({
-      color: "#9AA6B2",
+      color: "#B0B8C4",
       roughness: 0.78,
       metalness: 0.05,
       map: slateTex,
@@ -2632,44 +2632,53 @@ export function buildTown(data, scene) {
     box(body, archX + openW / 2 + pier / 2, (brickH - base) / 2, fz + porchD / 2, pier, brickH + base, porchD);
     const crown = spring + rad;
     box(body, archX, (crown + porchRoofY) / 2 + 0.2, porchFront - 0.55, openW + 0.5, Math.max(0.9, porchRoofY - crown + 0.4), 1.5);
-    // Stone arch ring with a keystone, matching the limestone ring in the photograph.
-    const nVous = 19;
-    const outerR = rad + 0.62;
+    // Deep limestone arch ring with a keystone, as in the 2010 photograph.
+    const nVous = 21;
+    const ringT = 0.95;
+    const ringD = 2.4;
+    const outerR = rad + ringT;
     for (let i = 0; i < nVous; i++) {
       const ang = (Math.PI * (i + 0.5)) / nVous;
       const arc = (Math.PI * outerR) / nVous;
       const isKey = i === Math.floor(nVous / 2);
-      const geo = new THREE.BoxGeometry(arc * (isKey ? 1.15 : 0.92), isKey ? 1.15 : 0.82, 1.25);
+      const geo = new THREE.BoxGeometry(arc * (isKey ? 1.18 : 0.94), isKey ? 1.25 : ringT, ringD);
       geo.rotateZ(ang - Math.PI / 2);
-      geo.translate(archX + Math.cos(ang) * (rad + 0.28), spring + Math.sin(ang) * (rad + 0.28), porchFront - 0.15);
+      geo.translate(archX + Math.cos(ang) * (rad + ringT * 0.48), spring + Math.sin(ang) * (rad + ringT * 0.48), porchFront - ringD / 2 + 0.2);
       geo.applyMatrix4(buildingMatrix);
       put(stone, geo);
     }
-    box(stone, archX - rad - 0.05, spring - 0.1, porchFront - 0.15, 1.55, 0.9, 1.35);
-    box(stone, archX + rad + 0.05, spring - 0.1, porchFront - 0.15, 1.55, 0.9, 1.35);
-    const recessD = 6.8;
+    box(stone, archX - rad - 0.15, spring - 0.15, porchFront - ringD / 2 + 0.2, 1.85, 1.15, ringD + 0.15);
+    box(stone, archX + rad + 0.15, spring - 0.15, porchFront - ringD / 2 + 0.2, 1.85, 1.15, ringD + 0.15);
+    // Dark shadowed recess: the same reddish-brown brick, in shade. No pink fill.
+    const recessD = 7.2;
     const recessBack = porchFront - recessD;
-    const recessMat = new THREE.MeshStandardMaterial({
-      color: "#9a8070",
-      roughness: 0.9,
-      emissive: "#5a4034",
-      emissiveIntensity: 0.28,
-    });
-    box(recessMat, archX - openW / 2 + 0.3, 4.4, recessBack + recessD / 2, 0.45, 8.5, recessD - 0.8);
-    box(recessMat, archX + openW / 2 - 0.3, 4.4, recessBack + recessD / 2, 0.45, 8.5, recessD - 0.8);
-    box(recessMat, archX, crown - 0.3, recessBack + recessD / 2, openW - 1.1, 0.45, recessD - 0.8);
-    box(recessMat, archX, 4.4, recessBack + 0.12, openW - 0.9, 8.6, 0.28);
-    const porchFloor = new THREE.MeshStandardMaterial({ color: "#8a6e52", roughness: 0.88 });
-    box(porchFloor, archX, 0.14, recessBack + recessD / 2, openW - 1.2, 0.12, recessD - 1.1);
-    // Door sits to the viewer's right inside the arch, with a narrow sidelight to its left.
-    const doorX = archX + 2.55;
-    box(cream, doorX, 5.05, recessBack + 0.22, 2.7, 8.3, 0.2);
-    box(mats.trim, doorX, 4.6, recessBack + 0.36, 2.15, 6.8, 0.14);
-    box(cream, doorX, 4.35, recessBack + 0.46, 1.55, 2.4, 0.06);
-    box(cream, doorX, 6.7, recessBack + 0.46, 1.55, 2.1, 0.06);
-    box(mats.glass, doorX, 8.85, recessBack + 0.4, 1.5, 1.15, 0.05);
-    box(mats.glass, archX - 1.55, 6.4, recessBack + 0.4, 1.05, 3.6, 0.06);
-    box(cream, archX - 1.55, 6.4, recessBack + 0.5, 0.12, 3.6, 0.05);
+    const recessBrick = makeBrick("#3a322c", ["#3A2A22", "#32241E", "#2A201A", "#403028", "#2E221C"]);
+    box(recessBrick, archX, brickH / 2 - 0.2, recessBack + 0.22, openW - 0.5, brickH - 0.4, 0.5);
+    box(recessBrick, archX - openW / 2 + 0.28, brickH / 2 - 0.2, recessBack + recessD / 2, 0.55, brickH - 0.4, recessD - 0.6);
+    box(recessBrick, archX + openW / 2 - 0.28, brickH / 2 - 0.2, recessBack + recessD / 2, 0.55, brickH - 0.4, recessD - 0.6);
+    box(recessBrick, archX, crown - 0.2, recessBack + recessD / 2, openW - 0.8, 0.4, recessD - 0.6);
+    const porchFloor = new THREE.MeshStandardMaterial({ color: "#3A3228", roughness: 0.92 });
+    box(porchFloor, archX, 0.1, recessBack + recessD / 2, openW - 1.0, 0.12, recessD - 1.0);
+    // Door on the viewer's right, tall leaded window to its left, both readable in the shadow.
+    const doorLite = new THREE.MeshStandardMaterial({ color: "#d8d2c6", roughness: 0.62, emissive: "#3a3830", emissiveIntensity: 0.22 });
+    const doorX = archX + 2.65;
+    box(stone, doorX, 5.15, recessBack + 0.38, 3.15, 9.0, 0.22);
+    box(doorLite, doorX, 4.7, recessBack + 0.52, 2.25, 7.2, 0.14);
+    box(cream, doorX, 4.4, recessBack + 0.62, 1.55, 2.5, 0.06);
+    box(cream, doorX, 6.85, recessBack + 0.62, 1.55, 2.15, 0.06);
+    box(mats.glass, doorX, 8.95, recessBack + 0.58, 1.55, 1.25, 0.05);
+    // Tall narrow leaded window with a stone surround.
+    const winX = archX - 0.85;
+    box(stone, winX, 6.55, recessBack + 0.4, 1.7, 7.6, 0.2);
+    box(mats.glass, winX, 6.55, recessBack + 0.54, 1.15, 6.6, 0.06);
+    box(doorLite, winX, 6.55, recessBack + 0.62, 0.1, 6.5, 0.05);
+    box(doorLite, winX, 6.55, recessBack + 0.62, 1.05, 0.1, 0.05);
+    for (const dy of [-2.0, 0, 2.0]) {
+      box(doorLite, winX, 6.55 + dy, recessBack + 0.62, 1.05, 0.07, 0.04);
+    }
+    // Gold mailbox on the left back wall, from the photograph.
+    const mail = new THREE.MeshStandardMaterial({ color: "#c4a44a", roughness: 0.45, metalness: 0.35 });
+    box(mail, archX - 4.4, 4.55, recessBack + 0.55, 0.85, 0.7, 0.12);
     for (let i = 0; i < 4; i++) {
       box(stone, archX, -base + 0.32 + i * 0.5, porchFront + 2.55 - i * 0.95, 8.6, 0.42, 1.05);
     }
@@ -2906,30 +2915,40 @@ export function buildTown(data, scene) {
     redFace.applyMatrix4(buildingMatrix);
     putOwn(maroon, redFace);
 
-    // Lawn, walk, foundation shrubs, and foreground trees that frame the house.
-    box(lawn, 0, -base + 0.08, fz + 32, b.width + 48, 0.16, 78);
-    box(walkMat, archX, -base + 0.22, porchFront + 28, 5.2, 0.14, 52);
+    // Lawn, walk, foundation shrubs, hostas, and the yellow-green shrub along the walk, from the photograph.
+    box(lawn, 0, -base + 0.08, fz + 18, b.width + 28, 0.16, 42);
+    box(walkMat, archX, -base + 0.22, porchFront + 16, 5.0, 0.14, 32);
     const shrub = mats.leaf.clone();
     shrub.color.set("#3a6a32");
     const shrubLime = mats.leaf.clone();
-    shrubLime.color.set("#6a8a3a");
+    shrubLime.color.set("#7a9a3c");
+    const hosta = mats.leaf.clone();
+    hosta.color.set("#4a6e38");
     const shrubSpots = [
-      [-18.4, fz + 2.6, 1.05, shrub],
-      [-15.0, fz + 2.2, 0.88, shrub],
-      [-11.4, fz + 2.5, 0.9, shrub],
-      [-8.0, fz + 3.2, 0.55, shrub],
-      [4.6, fz + 4.2, 0.7, shrub],
-      [6.4, fz + 3.6, 1.05, shrubLime],
-      [8.8, fz + 2.8, 1.15, shrubLime],
-      [11.4, fz + 2.8, 0.95, shrub],
-      [14.2, fz + 2.6, 1.0, shrub],
-      [17.2, fz + 2.5, 0.95, shrub],
-      [19.6, fz + 2.2, 0.8, shrub],
-      [-5.4, fz + 10.0, 0.5, shrub],
-      [3.0, fz + 10.2, 0.48, shrubLime],
-      [5.2, fz + 8.4, 0.42, shrub],
+      [-18.4, fz + 2.6, 1.15, shrub],
+      [-15.0, fz + 2.2, 0.98, shrub],
+      [-11.4, fz + 2.5, 1.0, shrub],
+      [-8.0, fz + 3.0, 0.7, shrub],
+      [4.8, fz + 3.8, 0.95, shrub],
+      [6.8, fz + 3.6, 1.55, shrubLime],
+      [8.8, fz + 3.4, 1.7, shrubLime],
+      [10.6, fz + 3.0, 1.25, shrubLime],
+      [13.0, fz + 2.6, 1.15, shrub],
+      [16.0, fz + 2.5, 1.1, shrub],
+      [19.2, fz + 2.2, 0.95, shrub],
+      [-6.2, fz + 8.5, 0.7, hosta],
+      [-4.6, fz + 11.8, 0.68, hosta],
+      [-3.4, fz + 15.2, 0.65, hosta],
+      [-4.0, fz + 18.0, 0.58, hosta],
+      [3.8, fz + 8.2, 0.7, hosta],
+      [5.4, fz + 11.2, 1.05, shrubLime],
+      [3.4, fz + 14.2, 0.65, hosta],
+      [6.4, fz + 15.5, 0.72, shrubLime],
+      [4.6, fz + 18.0, 0.6, hosta],
+      [5.8, fz + 20.5, 0.85, shrubLime],
     ];
     for (const [x, z, s, mat] of shrubSpots) {
+      const flat = mat === hosta ? 0.55 : 1;
       for (const [dx, dy, dz, sc] of [
         [0, 0.9, 0, 1],
         [0.58, 0.52, 0.28, 0.7],
@@ -2937,7 +2956,8 @@ export function buildTown(data, scene) {
         [0.15, 0.7, -0.3, 0.58],
       ]) {
         const geo = new THREE.SphereGeometry(s * sc, 12, 10);
-        geo.translate(x + dx * s, -base + dy * s, z + dz * s);
+        geo.scale(1.15, flat, 1.15);
+        geo.translate(x + dx * s, -base + dy * s * flat, z + dz * s);
         geo.applyMatrix4(buildingMatrix);
         put(mat, geo);
       }
@@ -2968,21 +2988,19 @@ export function buildTown(data, scene) {
       seed = (seed * 16807 + 17) % 2147483647;
       return seed / 2147483647;
     };
-    for (let i = 0; i < 36; i++) {
+    for (let i = 0; i < 55; i++) {
       const a = rnd() * Math.PI * 2;
-      const r = 2.2 + rnd() * 6.5;
-      const y = 11 + rnd() * 10;
-      leftSpreads.push([Math.cos(a) * r * 0.85 + 2.2, 8 + rnd() * 11, Math.sin(a) * r * 0.7 + 1.2, 1.15 + rnd() * 0.95, i % 3]);
+      const r = 1.6 + rnd() * 8.5;
+      leftSpreads.push([Math.cos(a) * r * 0.95 + 1.4, 6 + rnd() * 16, Math.sin(a) * r * 0.85 + 3.5, 1.45 + rnd() * 1.35, i % 3]);
     }
     seed = 708;
-    for (let i = 0; i < 34; i++) {
+    for (let i = 0; i < 64; i++) {
       const a = rnd() * Math.PI * 2;
-      const r = 2.0 + rnd() * 6.2;
-      const y = 11 + rnd() * 9.5;
-      rightSpreads.push([Math.cos(a) * r * 0.85 - 2.2, 8 + rnd() * 11, Math.sin(a) * r * 0.7 + 1.2, 1.1 + rnd() * 0.9, i % 3]);
+      const r = 1.4 + rnd() * 9.5;
+      rightSpreads.push([Math.cos(a) * r * 1.05 - 0.4, 5 + rnd() * 18, Math.sin(a) * r * 0.95 + 4.5, 1.55 + rnd() * 1.45, i % 3]);
     }
-    plantTree(-b.width * 0.68, fz + 16, 13, leftSpreads);
-    plantTree(b.width * 0.7, fz + 15, 12.5, rightSpreads);
+    plantTree(-b.width * 0.60, fz + 9, 11, leftSpreads);
+    plantTree(b.width * 0.52, fz + 7, 10, rightSpreads);
     return brickH + mansardH + pyramidRise + gableH * 0.25;
   };
 
@@ -3652,43 +3670,68 @@ export function buildTown(data, scene) {
     pair(4.2, 7.2, fz + 0.18, 7.8, 5.6);
     frontSash(b.width * 0.34, 7.2, fz + 0.18, 2.8, 5.6, "flat", false, white);
 
-    // Left sunroom: white clapboard under a pedimented porch with square brick piers.
-    const porchD = 9.0;
-    const porchW = 16;
+    // Left side of the house extends a little past the gable, so the building reads wider.
+    const leftExt = 5.5;
+    box(body, -b.width / 2 - leftExt / 2, wallH / 2, 0, leftExt, wallH, b.depth);
+    box(mats.stone, -b.width / 2 - leftExt / 2, 1.0, 0, leftExt + 0.55, 2.0, b.depth + 0.55);
+    box(white, -b.width / 2 - leftExt / 2, wallH + 0.45, 0, leftExt + 3.2, 0.85, b.depth + 3.2);
+    box(white, -b.width / 2 - leftExt / 2, wallH + 0.95, 0, leftExt + 2.4, 0.28, b.depth + 2.4);
+    corniceBrackets(-b.width / 2 - leftExt / 2, fz + 1.55, leftExt + 0.8, 0, true);
+    // Left porch: a front-facing white pediment on square brick piers with large white caps.
+    const porchD = 9.2;
+    const porchW = 16.5;
     const porchFrontZ = fz + proj + porchD;
     const porchZ = fz + proj + porchD / 2;
-    box(siding, gx - 3.4, 5.0, fz + proj + 1.4, 6.4, 8.4, 3.0);
-    box(mats.plank, gx, 1.0, porchZ, porchW - 0.4, 0.32, porchD - 0.3);
-    // Pedimented canopy: a clear triangular front, wide white soffit.
-    box(white, gx, 9.85, porchZ, porchW + 2.0, 0.28, porchD + 1.6);
-    box(white, gx, 10.15, porchZ - 0.2, porchW + 1.0, 0.22, porchD + 0.2);
-    const pRise = 3.2;
-    clapboardTriangle(white, porchW + 2.2, pRise, 10.0, "z", porchFrontZ + 0.35, gx, porchFrontZ + 0.35);
-    const pRun = (porchW + 1.8) / 2;
+    const porchCx = gx - 3.0;
+    box(mats.plank, porchCx, 1.0, porchZ, porchW - 0.4, 0.32, porchD - 0.3);
+    // One-story white clapboard sunroom under the porch, visible between and left of the piers.
+    box(siding, porchCx - 1.2, 5.15, fz + proj + 0.8, porchW + 2.4, 8.5, 3.2);
+    const blinds = new THREE.MeshStandardMaterial({ color: "#6a6860", roughness: 0.8 });
+    box(white, porchCx - 4.6, 5.5, fz + proj + 2.35, 3.0, 4.4, 0.18);
+    box(blinds, porchCx - 4.6, 5.5, fz + proj + 2.48, 2.5, 3.9, 0.06);
+    for (let k = 0; k < 9; k++) {
+      box(white, porchCx - 4.6, 3.9 + k * 0.38, fz + proj + 2.52, 2.5, 0.05, 0.04);
+    }
+    const pRise = 5.4;
+    const pY0 = 9.85;
+    const porchRoofMat = new THREE.MeshStandardMaterial({ color: "#c8c4b6", roughness: 0.88 });
+    const soffitDark = new THREE.MeshStandardMaterial({ color: "#b0aa98", roughness: 0.84 });
+    // Entablature: a strong horizontal base so the triangle reads as a pediment.
+    box(white, porchCx, pY0 + 0.22, porchZ, porchW + 2.8, 0.48, porchD + 1.8);
+    box(white, porchCx, pY0 + 0.55, porchFrontZ + 0.15, porchW + 2.2, 0.28, 1.1);
+    clapboardTriangle(white, porchW + 2.8, pRise, pY0 + 0.4, "z", porchFrontZ + 0.7, porchCx, porchFrontZ + 0.7);
+    const pRun = (porchW + 2.2) / 2;
     const pLen = Math.hypot(pRun, pRise);
     const pAng = Math.atan2(pRise, pRun);
     for (const sign of [-1, 1]) {
-      const trim = new THREE.BoxGeometry(pLen, 0.32, 0.36);
-      trim.rotateZ(-sign * pAng);
-      trim.translate(gx + sign * pRun * 0.5, 10.0 + pRise * 0.48, porchFrontZ + 0.48);
-      trim.applyMatrix4(buildingMatrix);
-      put(white, trim);
+      const plane = new THREE.BoxGeometry(pLen, 0.3, porchD + 1.1);
+      plane.translate(0, 0, -(porchD + 1.1) / 2);
+      plane.rotateZ(-sign * pAng);
+      plane.translate(porchCx + sign * pRun * 0.48, pY0 + 0.4 + pRise * 0.28, porchFrontZ);
+      plane.applyMatrix4(buildingMatrix);
+      put(porchRoofMat, plane);
+      // Underside, slightly darker, so the triangular eave reads from a 3/4 view.
+      const under = new THREE.BoxGeometry(pLen, 0.08, porchD + 1.0);
+      under.translate(0, -0.16, -(porchD + 1.0) / 2);
+      under.rotateZ(-sign * pAng);
+      under.translate(porchCx + sign * pRun * 0.48, pY0 + 0.4 + pRise * 0.28, porchFrontZ);
+      under.applyMatrix4(buildingMatrix);
+      put(soffitDark, under);
+      const rake = new THREE.BoxGeometry(pLen + 0.4, 0.46, 0.46);
+      rake.rotateZ(-sign * pAng);
+      rake.translate(porchCx + sign * pRun * 0.48, pY0 + 0.4 + pRise * 0.32, porchFrontZ + 0.78);
+      rake.applyMatrix4(buildingMatrix);
+      put(white, rake);
     }
+    // Square brick piers with large white capitals, tall enough to show above the hedge.
     const pierAt = (x, z) => {
-      box(body, x, 5.2, z, 1.7, 8.1, 1.7);
-      box(white, x, 9.45, z, 2.15, 0.48, 2.15);
-      box(white, x, 9.78, z, 1.85, 0.22, 1.85);
-      box(white, x, 1.2, z, 2.0, 0.38, 2.0);
+      box(body, x, 5.05, z, 2.05, 7.8, 2.05);
+      box(white, x, 9.05, z, 2.75, 0.62, 2.75);
+      box(white, x, 9.48, z, 2.35, 0.32, 2.35);
+      box(white, x, 1.15, z, 2.4, 0.42, 2.4);
     };
-    pierAt(gx - porchW / 2 + 1.8, porchFrontZ - 0.4);
-    pierAt(gx + porchW / 2 - 1.8, porchFrontZ - 0.4);
-    // Sunroom window with closed blinds, as in the 2010 photograph.
-    const blinds = new THREE.MeshStandardMaterial({ color: "#6a6860", roughness: 0.8 });
-    box(white, gx - 3.4, 6.0, fz + proj + 2.85, 3.0, 4.4, 0.2);
-    box(blinds, gx - 3.4, 6.0, fz + proj + 2.98, 2.5, 3.9, 0.06);
-    for (let k = 0; k < 9; k++) {
-      box(white, gx - 3.4, 4.35 + k * 0.38, fz + proj + 3.02, 2.5, 0.05, 0.04);
-    }
+    pierAt(porchCx - porchW / 2 + 2.05, porchFrontZ - 0.35);
+    pierAt(porchCx + porchW / 2 - 2.05, porchFrontZ - 0.35);
 
     // Right porch: square brick piers, a wide white roof, steps with a black iron rail.
     const rx = b.width * 0.32;
@@ -3716,74 +3759,109 @@ export function buildTown(data, scene) {
     }
 
     const lawn = new THREE.MeshStandardMaterial({ color: "#6a8f48", roughness: 0.96 });
-    box(lawn, 0, 0.1, fz + 70, 130, 0.16, 155);
-    // One continuous hedge across the front, with a slightly irregular leafy top.
+    box(lawn, 0, 0.1, fz + 16, 80, 0.16, 32);
     const hedgeMat = mats.leaf.clone();
     hedgeMat.color.set("#3d6a32");
     const hedgeLit = mats.leaf.clone();
     hedgeLit.color.set("#4a7a38");
     const hedgeDark = mats.leafDark.clone();
     hedgeDark.color.set("#2e5428");
-    const hedgeZ = fz + 24;
-    const hedgeLen = 96;
-    const hedgeX0 = -36;
-    box(hedgeMat, hedgeX0 + hedgeLen / 2, 1.95, hedgeZ, hedgeLen, 3.5, 2.4);
-    for (let i = 0; i < 70; i++) {
-      const x = hedgeX0 + (i / 69) * hedgeLen;
-      const h = 3.7 + ((i * 7) % 5) * 0.18;
-      const r = 1.25 + (i % 4) * 0.08;
-      const top = new THREE.SphereGeometry(r, 12, 10);
-      top.translate(x, h, hedgeZ + ((i % 3) - 1) * 0.25);
+    // Leafy foreground hedge covering the lower left, low enough that the porch piers show above it.
+    const hedgeZ = porchFrontZ + 7.0;
+    const hedgeLen = 30;
+    const hedgeX0 = porchCx - 10;
+    const hedgeMats = [hedgeMat, hedgeLit, hedgeDark];
+    for (let i = 0; i < 64; i++) {
+      const u = i / 63;
+      const x = hedgeX0 + u * hedgeLen;
+      const z = hedgeZ + ((i % 5) - 2) * 0.5;
+      const y = 1.7 + ((i * 11) % 7) * 0.16;
+      const r = 1.35 + (i % 5) * 0.14;
+      const top = new THREE.SphereGeometry(r, 10, 8);
+      top.translate(x, y + r * 0.3, z);
       top.applyMatrix4(buildingMatrix);
-      put(i % 3 === 0 ? hedgeLit : i % 3 === 1 ? hedgeMat : hedgeDark, top);
+      put(hedgeMats[i % 3], top);
     }
-    // Fuller tree on the right, 45 leaf clumps, hanging over the upper right as in the photograph.
-    const trunk = new THREE.CylinderGeometry(0.7, 1.05, 24, 12);
-    trunk.translate(22, 14, fz + 18);
-    trunk.applyMatrix4(buildingMatrix);
-    put(mats.trunk, trunk);
+    for (let i = 0; i < 36; i++) {
+      const x = hedgeX0 + 0.5 + (i / 35) * (hedgeLen - 1.0);
+      const ball = new THREE.SphereGeometry(1.2 + (i % 3) * 0.12, 10, 8);
+      ball.translate(x, 1.25, hedgeZ + ((i % 3) - 1) * 0.35);
+      ball.applyMatrix4(buildingMatrix);
+      put(hedgeMats[(i + 1) % 3], ball);
+    }
+    // Overhead draping canopy: fills the upper right of the frame and hangs over the right roof.
+    // No exposed trunk — the tree sits to the right, and we are under its edge.
     const leaf = mats.leaf.clone();
-    leaf.color.set("#4a8a36");
+    leaf.color.set("#4a8a32");
     const leafMid = mats.leaf.clone();
-    leafMid.color.set("#5a9a42");
+    leafMid.color.set("#6a9a3c");
+    const leafLit = mats.leaf.clone();
+    leafLit.color.set("#8aaa48");
     const leafDk = mats.leafDark.clone();
-    leafDk.color.set("#2f6228");
+    leafDk.color.set("#2e5e28");
+    const leafSpr = mats.leaf.clone();
+    leafSpr.color.set("#5a8a30");
+    const leafMats = [leaf, leafMid, leafLit, leafDk, leafSpr];
     let seed = 771;
     const rnd = () => {
       seed = (seed * 16807 + 31) % 2147483647;
       return seed / 2147483647;
     };
-    for (let i = 0; i < 50; i++) {
-      const a = rnd() * Math.PI * 2;
-      const elev = (rnd() - 0.2) * 0.9;
-      const rad = 2.8 + rnd() * 11;
-      const dx = Math.cos(a) * rad * 0.7 - 14;
-      const dy = 20 + Math.sin(elev) * 9 + rnd() * 8;
-      const dz = Math.sin(a) * rad * 0.4 + 4;
-      const r = 1.25 + rnd() * 1.55;
-      const ball = new THREE.SphereGeometry(r, 12, 10);
-      ball.translate(20 + dx, dy, fz + 20 + dz);
+    const putLeaf = (x, y, z, r, k) => {
+      const ball = new THREE.SphereGeometry(r, 10, 8);
+      ball.translate(x, y, z);
       ball.applyMatrix4(buildingMatrix);
-      put(i % 3 === 0 ? leafMid : i % 3 === 1 ? leaf : leafDk, ball);
+      put(leafMats[k % leafMats.length], ball);
+    };
+    // Main canopy over and to the right of the house, starting low enough to hide any trunk.
+    for (let i = 0; i < 100; i++) {
+      const a = rnd() * Math.PI * 2;
+      const b = (rnd() - 0.05) * Math.PI * 0.55;
+      const rad = 0.2 + rnd() * 0.85;
+      const x = 16 + Math.cos(a) * Math.cos(b) * 20 * rad;
+      const y = 20 + Math.sin(b) * 14 * rad;
+      const z = fz + 16 + Math.sin(a) * Math.cos(b) * 14 * rad;
+      putLeaf(x, y, z, 1.6 + rnd() * 1.7, i);
     }
-    // Small reddish ornamental tree in front of the right porch, from the photograph.
+    // Branches reaching left, over the right roof and toward the gable.
+    for (let i = 0; i < 36; i++) {
+      const x = 2 + rnd() * 16;
+      const y = 20 + rnd() * 12;
+      const z = fz + 4 + rnd() * 14;
+      putLeaf(x, y, z, 1.5 + rnd() * 1.5, i);
+    }
+    // Foreground overhead clumps that fill the upper-right corner of the frame.
+    for (let i = 0; i < 55; i++) {
+      const x = 18 + rnd() * 22;
+      const y = 20 + rnd() * 18;
+      const z = porchFrontZ + 6 + rnd() * 20;
+      putLeaf(x, y, z, 1.9 + rnd() * 1.9, i);
+    }
+    // Mid-height clumps on the right hide the trunk, leaving a gap in front of the right porch.
+    for (let i = 0; i < 12; i++) {
+      putLeaf(22 + rnd() * 8, 10 + rnd() * 10, fz + 8 + rnd() * 6, 2.0 + rnd() * 1.1, i);
+    }
+    // Reddish ornamental shrub in front of the right porch, from the photograph.
     const redLeaf = mats.leaf.clone();
-    redLeaf.color.set("#6a4a32");
-    const redTrunk = new THREE.CylinderGeometry(0.22, 0.32, 6.5, 8);
-    redTrunk.translate(rx + 2, 4.0, fz + 14);
-    redTrunk.applyMatrix4(buildingMatrix);
-    put(mats.trunk, redTrunk);
-    for (const [dx, dy, dz, r] of [
-      [0, 8.2, 0, 2.4],
-      [-1.4, 7.4, 0.6, 1.7],
-      [1.3, 7.6, 0.5, 1.6],
-      [0.3, 9.4, -0.5, 1.5],
-      [-0.8, 8.6, -0.7, 1.4],
+    redLeaf.color.set("#9a3020");
+    const redLeaf2 = mats.leaf.clone();
+    redLeaf2.color.set("#7a2418");
+    const redLeaf3 = mats.leaf.clone();
+    redLeaf3.color.set("#b04028");
+    const redZ = fz + rd + 6.8;
+    for (const [dx, dy, dz, r, mat] of [
+      [0, 4.2, 0.4, 2.55, redLeaf],
+      [-1.7, 3.6, 1.0, 1.9, redLeaf2],
+      [1.6, 3.7, 0.9, 1.85, redLeaf3],
+      [0.2, 5.8, 0.0, 1.7, redLeaf],
+      [-1.1, 5.0, -0.3, 1.55, redLeaf3],
+      [1.0, 2.8, 1.3, 1.5, redLeaf2],
+      [-0.5, 3.2, 1.6, 1.45, redLeaf],
     ]) {
       const ball = new THREE.SphereGeometry(r, 12, 10);
-      ball.translate(rx + 2 + dx, dy, fz + 14 + dz);
+      ball.translate(rx - 0.6 + dx, dy, redZ + dz);
       ball.applyMatrix4(buildingMatrix);
-      put(redLeaf, ball);
+      put(mat, ball);
     }
     chimneyStack(body, b.width * 0.12, wallH + 7.2, -b.depth * 0.08, 1.8, 6.5, 1.8);
     return wallH + 18;
