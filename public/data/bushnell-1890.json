@@ -17,7 +17,9 @@
     "block72-bowling",
     "block72-meat",
     "block71-dean-1886-1",
-    "house-190"
+    "house-190",
+    "house-102",
+    "house-103"
   ],
   "update": [
     {
@@ -360,9 +362,9 @@
       "use": "electric light works",
       "width": 36,
       "depth": 28,
-      "x": -1700,
-      "z": 40,
-      "notes": "August 1893 Sanborn, sheet 4, labels Vanderveer & Logsdon Electric Light Works in the same north works district as the Bushnell Pump Company. The lot is that district, not a measured downtown corner."
+      "x": -1742,
+      "z": 130,
+      "notes": "August 1893 Sanborn, sheet 4, labels Vanderveer & Logsdon Electric Light Works in the same north works district as the Bushnell Pump Company. The lot is that district, not a measured downtown corner. The August 1893 sheet 4 draws it beside the T. P. & W. west of Davis; it was moved off the track in the November 2026 audit, and the footing is an estimate."
     },
     {
       "kind": "factory",
@@ -406,11 +408,11 @@
       "id": "nef-mfg-1893",
       "name": "N.E.F. Manufacturing Co.",
       "use": "manufacturing",
-      "width": 80,
-      "depth": 50,
-      "x": -1480,
-      "z": -420,
-      "notes": "August 1893 Sanborn, sheet 4, a large brick plant in the southwest works ground. The sheet prints N.E.F. Manufacturing Co. The lot is that sheet's industrial block, west of Davis."
+      "width": 150,
+      "depth": 80,
+      "x": -1821,
+      "z": -128,
+      "notes": "August 1893 Sanborn, sheet 4, a large brick plant west of the T. P. & W., in the ground southwest of Davis. The sheet prints N.E.F. Manufacturing Co. In the November 2026 audit it was moved from the east side of the tracks to the side the sheet shows, and given the sheet's approximate 150 by 80 foot outline; position and size are estimates read from the sheet."
     },
     {
       "kind": "shed",
@@ -432,9 +434,9 @@
       "use": "lumber yard",
       "width": 90,
       "depth": 22,
-      "x": -180,
-      "z": 36,
-      "notes": "August 1893 Sanborn, sheet 3, lumber sheds along the railroad ground labeled Mack & M. Pinckley's lumber yard. The shed follows that trackside yard, not a store lot."
+      "x": 200,
+      "z": 98,
+      "notes": "August 1893 Sanborn, sheet 3, lumber sheds in the railroad ground on the West Main side between Hail and Gridley, labeled Mack & M. Pinckley's lumber yard. It was moved there in the November 2026 audit; before that it overlapped the C. B. & Q. depot. The shed size is unchanged and its exact footing is an estimate."
     },
     {
       "kind": "frame-store",
@@ -480,10 +482,10 @@
       "use": "dwelling",
       "width": 24,
       "depth": 32,
-      "x": -1615,
-      "z": -200,
+      "x": -2050,
+      "z": -204,
       "plan": "gable-front",
-      "notes": "A frame dwelling beside Ludwig Street. The August 1893 sheet 4 and the March 1906 sheet 2 show houses on this side of Ludwig. No family name is printed. The lot is the ordinary house size on that front."
+      "notes": "A frame dwelling beside Ludwig Street. The August 1893 sheet 4 and the March 1906 sheet 2 show houses on this side of Ludwig. No family name is printed. The lot is the ordinary house size on that front. Moved in the November 2026 audit from the T. P. & W. track to the east side of Ludwig as drawn on the 1893 sheet; the exact lot is an estimate."
     },
     {
       "kind": "house",
@@ -505,15 +507,15 @@
       "use": "dwelling",
       "width": 24,
       "depth": 32,
-      "x": -1615,
-      "z": -40,
+      "x": -2050,
+      "z": -319,
       "plan": "gable-ell",
-      "notes": "A frame dwelling beside Ludwig Street. The August 1893 sheet 4 and the March 1906 sheet 2 show houses on this side of Ludwig. No family name is printed. The lot is the ordinary house size on that front."
+      "notes": "A frame dwelling beside Ludwig Street. The August 1893 sheet 4 and the March 1906 sheet 2 show houses on this side of Ludwig. No family name is printed. The lot is the ordinary house size on that front. Moved in the November 2026 audit from the T. P. & W. track to the east side of Ludwig as drawn on the 1893 sheet; the exact lot is an estimate."
     },
     {
       "kind": "house",
       "material": "frame",
-      "stories": 1,
+      "stories": 1.5,
       "paint": "yellow",
       "brick": "red",
       "porch": true,
@@ -530,10 +532,10 @@
       "use": "dwelling",
       "width": 24,
       "depth": 32,
-      "x": -1615,
-      "z": 120,
+      "x": -1848,
+      "z": 150,
       "plan": "cottage",
-      "notes": "A frame dwelling beside Ludwig Street. The August 1893 sheet 4 and the March 1906 sheet 2 show houses on this side of Ludwig. No family name is printed. The lot is the ordinary house size on that front."
+      "notes": "A 1½-story frame dwelling on block 98, between Ludwig Street and the T. P. & W., as drawn on the August 1893 Sanborn sheet 4. No family name is printed. It was moved off the T. P. & W. track in the November 2026 audit; the exact footing is an estimate."
     },
     {
       "kind": "house",
@@ -663,10 +665,10 @@
     {
       "name": "Ludwig Street",
       "axis": "z",
-      "at": -1680,
+      "at": -2100,
       "width": 60,
       "from": -900,
-      "to": 200,
+      "to": 0,
       "sourceMap": "August 1893 Sanborn"
     }
   ]

@@ -40,7 +40,10 @@
     "house-144",
     "house-140",
     "gridley-east-wells-13",
-    "gridley-east-wells-14"
+    "gridley-east-wells-14",
+    "offices-16",
+    "tailor-46",
+    "house-105"
   ],
   "streets": [
     {
@@ -48,7 +51,7 @@
       "axis": "z",
       "at": -2100,
       "width": 60,
-      "from": -200,
+      "from": 0,
       "to": 800,
       "sourceMap": "March 1906 Sanborn"
     }
@@ -126,7 +129,9 @@
       "sign": "LUMBER",
       "use": "lumber yard",
       "sourceMap": "March 1906 Sanborn",
-      "notes": "March 1906 Sanborn, sheet 3, lumber sheds along the railroad labeled J. C. Simpson & Co. The 1893 name on this yard was Mack & M. Pinckley."
+      "notes": "March 1906 Sanborn, sheet 3, lumber sheds along the railroad labeled J. C. Simpson & Co. The 1893 name on this yard was Mack & M. Pinckley. The 1906 sheet 3 draws this yard in the railroad ground on the West Main side between Davis and Barnes, so from 1906 it is placed there; the shed is drawn at its earlier size, and the footing is an estimate.",
+      "x": -915,
+      "z": 63
     },
     {
       "id": "roach-livery",
@@ -429,7 +434,7 @@
       "id": "block72-lodgings-1906",
       "name": "Lodgings",
       "x": -545,
-      "z": -575,
+      "z": -512,
       "sourceMap": "March 1906 Sanborn",
       "notes": "March 1906 Sanborn, sheet 3, block 72, lot 2, on the Crawford side. The sheet labels a two-story lodgings and leaves the middle of the lot open. The May 1898 dwelling on this lot is taken off. The February 1912 sheet still shows dwellings on this side of the block. No family name is printed."
     },
