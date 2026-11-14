@@ -7,7 +7,9 @@
     "excelsior-mill",
     "high-school",
     "grocery-20",
-    "boots-19"
+    "boots-19",
+    "house-100",
+    "house-101"
   ],
   "streets": [],
   "add": [
@@ -57,7 +59,7 @@
       "id": "block72-lot2-1898",
       "name": "Dwelling",
       "x": -545,
-      "z": -575,
+      "z": -514,
       "sourceMap": "May 1898 Sanborn",
       "notes": "A frame dwelling on lot 2 of block 72, the Crawford side, second lot from Hurst. The May 1898 Sanborn, sheet 2, shows a dwelling here. The August 1893 sheet shows the cigar factory and carpenter shop on this lot and does not show this house. No family name is printed."
     },
