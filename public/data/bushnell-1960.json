@@ -2,7 +2,67 @@
   "shownAs": 1960,
   "mapLabel": "Hiel Drive, from the 1974 sheet and a 1951 house",
   "note": "Hiel Drive is added from the 1974 Bushnell West quadrangle. The assessor dates 10 Hiel Drive to 1951, the earliest structure year in Hiel Subdivision, so the street is on this stop. Lakelawn Estate's earliest structure year is 1963, so those streets stay off until 1970.",
-  "add": [],
+  "add": [
+    {
+      "id": "fire-house-1953",
+      "name": "Fire House",
+      "kind": "brick-store",
+      "use": "fire station",
+      "material": "brick",
+      "stories": 1,
+      "width": 70,
+      "depth": 50,
+      "x": -352,
+      "z": 487,
+      "facing": "+z",
+      "paint": "white",
+      "brick": "buff",
+      "sign": "",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1953",
+      "steeple": false,
+      "rotation": 0,
+      "facade": {
+        "fireHouse1953": true,
+        "doors": 5,
+        "photoMatch": true,
+        "photoSource": "Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.124."
+      },
+      "sourceMap": "Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.20, p.124, p.125",
+      "notes": "Centennial book PDF p.125: the new fire house was built within the two years before the 1954 book; PDF p.124 shows it as a one-story flat-roofed building with a row of overhead doors, and PDF p.20 / p.124 place it at Hurst and Dean on the site of the old Christian Church. Year 1953 is an estimate inside that two-year window. The 70 by 50 foot footprint, the five doors, and facing Dean are estimates. The Christian Church is taken off at this stop; the year it came down is not printed (estimate). The photograph shows no lettering, so no sign is drawn."
+    },
+    {
+      "id": "st-bernard-1953",
+      "name": "St. Bernard's Catholic Church",
+      "kind": "church",
+      "use": "church",
+      "material": "brick",
+      "stories": 1,
+      "width": 46,
+      "depth": 70,
+      "x": -90,
+      "z": 1320,
+      "facing": "+z",
+      "paint": "cream",
+      "brick": "buff",
+      "sign": "",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "steeple": false,
+      "rotation": 0,
+      "year": "1953",
+      "facade": {
+        "stBernard1953": true,
+        "photoMatch": true,
+        "photoSource": "Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.61."
+      },
+      "sourceMap": "Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.59\u201361",
+      "notes": "Centennial book PDF p.59\u201361: after the December 1951 fire the church was rebuilt and completed in 1953 on the same corner; the photograph shows a brick gable front with a cross, a tall round-arched window over the door, and no tower. Footprint and brick colour are estimates."
+    }
+  ],
   "streets": [
     {
       "name": "Hiel Drive",
@@ -100,5 +160,17 @@
       "sourceMap": "USGS 1974 quadrangle",
       "notes": "Hiel Drive, the loop at the north end of West Main. Spelled Hiel, not Heil. The 1974 Bushnell West quadrangle draws the loop. The 1918 Good Hope sheet does not. County year-built records list a house at 10 Hiel Drive in 1951, so the street is shown from the 1960 stop. Individual house symbols along the loop were not separated from the built-up tint, so no houses were copied from that sheet. Centerline from OpenStreetMap. The width is not printed."
     }
+  ],
+  "update": [
+    {
+      "id": "bushnell-engine-house",
+      "sign": "",
+      "notes": "Centennial book PDF p.125: a frame, gable-front engine house with large double doors, the painted name BUSHNELL FIRE DEPARTMENT, and an open belfry with a bell on the ridge, beside the brick City Hall (to its left in the photograph, on the Ball Bros. side). Replaces the one-story brick hose tower that was drawn from the 1910 stop as an estimate. Drawn from the 1900 stop (estimate; p.125 says the department became a city department in 1891). The book says the new fire house at Hurst and Dean was built in the past two years (p.125, printed 1954), so the fire sign comes off at the 1960 stop (estimate). Dimensions are estimates from the photograph. At the 1960 stop the department has moved to the 1953 fire house at Hurst and Dean, so the sign is not drawn (estimate)."
+    }
+  ],
+  "remove": [
+    "christian-church",
+    "cole-building-10",
+    "st-bernards-church-1912"
   ]
 }

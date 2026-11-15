@@ -158,6 +158,31 @@ export function buildTown(data, scene) {
     }
   };
 
+  // Pointed (Gothic) head: two straight raking blocks meeting at an apex, with a
+  // glazed triangle under them. Used for the upper windows of the Hendee building
+  // engraving (centennial book, PDF p.25).
+  const pointedHood = (mat, x, yBase, z, span) => {
+    const rise = span * 0.72;
+    const len = Math.hypot(span / 2, rise) + 0.2;
+    const angle = Math.atan2(rise, span / 2);
+    for (const side of [-1, 1]) {
+      const geo = new THREE.BoxGeometry(len, 0.36, 0.42);
+      geo.rotateZ(-side * angle);
+      geo.translate(x + side * (span / 4), yBase + rise / 2, z);
+      geo.applyMatrix4(buildingMatrix);
+      put(mat, geo);
+    }
+    const tri = new THREE.Shape();
+    tri.moveTo(-span / 2 + 0.35, 0);
+    tri.lineTo(span / 2 - 0.35, 0);
+    tri.lineTo(0, rise - 0.45);
+    tri.lineTo(-span / 2 + 0.35, 0);
+    const glass = new THREE.ShapeGeometry(tri);
+    glass.translate(x, yBase, z - 0.36);
+    glass.applyMatrix4(buildingMatrix);
+    put(mats.glass, glass);
+  };
+
   // One-over-one sash. Glass sits several inches behind the outer frame so the
   // reveal and the projecting sill cast a shadow. arch "open" leaves the head clear.
   const frontSash = (x, y, z, w, h, arch, shutters = false, archMat = mats.trim, hood = false, cap = true) => {
@@ -214,6 +239,7 @@ export function buildTown(data, scene) {
     box(mats.trimDark, x, y - h / 2 - 0.46, outerZ + 0.28, w + 0.7, 0.1, 0.34);
     if (arch === "segmental") archHood(archMat, x, y + h / 2 + 0.04, outerZ, w + 0.35, (w + 0.35) * 0.28, "z");
     else if (arch === "round") archHood(archMat, x, y + h / 2 - w * 0.1, outerZ, w + 0.25, (w + 0.25) * 0.5, "z");
+    else if (arch === "pointed") pointedHood(archMat, x, y + h / 2, outerZ, w + 0.3);
     else if (arch !== "open" && cap) box(mats.stone, x, y + h / 2 + 0.24, outerZ + 0.02, w + 0.75, 0.24, 0.55);
     if (shutters) {
       const sw = Math.min(0.48, w * 0.32);
@@ -257,6 +283,7 @@ export function buildTown(data, scene) {
     box(sillMat, x + side * (outer + 0.06), y - h / 2 - 0.14, z, 0.55, 0.16, w + 0.8);
     if (arch === "segmental") archHood(archMat, x + side * outer, y + h / 2, z, w + 0.24, (w + 0.24) * 0.26, "x");
     else if (arch === "round") archHood(archMat, x + side * outer, y + h / 2 - w * 0.12, z, w + 0.18, (w + 0.18) * 0.5, "x");
+    else if (arch === "pointed") archHood(archMat, x + side * outer, y + h / 2, z, w + 0.2, (w + 0.2) * 0.72, "x");
     else box(mats.stone, x + side * outer, y + h / 2 + 0.16, z, 0.4, 0.2, w + 0.5);
     if (shutters) {
       const sw = Math.min(0.42, w * 0.3);
@@ -435,10 +462,39 @@ export function buildTown(data, scene) {
         }
       }
     }
+    // Round-headed ground-floor openings, as in the Hendee building engraving (PDF p.25).
+    if (f.groundArch === "round" && f.ground !== "keep") {
+      const spring = 7.6;
+      const rise = Math.max(1.6, Math.min(gap * 0.45, wallH * 0.5 - spring - 0.4));
+      for (let col = 0; col < bays; col++) {
+        const x = -b.width / 2 + gap * (col + 0.5);
+        archHood(mats.stone, x, spring, fz + 0.3, gap - 0.6, rise, "z");
+        box(mats.glass, x, spring + rise * 0.36, fz + 0.03, (gap - 1.4) * 0.84, rise * 0.7, 0.05);
+      }
+      for (let col = 0; col <= bays; col++) {
+        const x = -b.width / 2 + gap * col;
+        box(mats.stone, x, 5.4, fz + 0.2, 0.9, 10.8, 0.5);
+      }
+    }
+    // Upper windows set in groups with a pier between them (Hendee engraving: two groups of three).
+    const groups = Math.max(1, f.upperGroups || 1);
+    const upperX = (col) => {
+      if (groups === 1) return -b.width / 2 + upperGap * (col + 0.5);
+      const per = Math.ceil(upperBays / groups);
+      const g = Math.floor(col / per);
+      const i = col % per;
+      const groupW = b.width / groups;
+      return -b.width / 2 + g * groupW + groupW * 0.12 + ((i + 0.5) * groupW * 0.76) / per;
+    };
+    if (groups > 1) {
+      for (let g = 1; g < groups; g++) {
+        box(mats.trim, -b.width / 2 + (b.width * g) / groups, wallH * 0.74, fz + 0.18, 1.0, wallH * 0.46, 0.3);
+      }
+    }
     if (b.stories > 1) {
       const fill = f.upperFill === "russet" ? mats.siding.darkred : null;
       for (let col = 0; col < upperBays; col++) {
-        const x = -b.width / 2 + upperGap * (col + 0.5);
+        const x = upperX(col);
         frontSash(x, wallH * 0.72, fz, winW, winH, arch, false, archMat);
         if (fill) box(fill, x, wallH * 0.72, fz + 0.1, winW * 0.7, winH * 0.72, 0.08);
         if (b.stories > 2) frontSash(x, wallH * 0.45, fz, winW * 0.92, winH * 0.86, arch, false, archMat);
@@ -491,6 +547,21 @@ export function buildTown(data, scene) {
       for (let i = 0; i <= bays; i++) {
         const x = -b.width / 2 + (b.width * i) / bays;
         box(mats.trimDark, x, 4.7, z + 2.5, 0.38, 8.2, 0.38);
+      }
+    }
+    // Porch roof carried around onto the street side (Cole building engraving, PDF p.13).
+    if (f.shedPorch && f.shedPorchSide) {
+      const sx = f.shedPorchSide * (b.width / 2 + 3.3);
+      box(mats.plank, sx, 0.55, 0, 6.2, 0.28, b.depth * 0.96);
+      const roof = new THREE.BoxGeometry(6.6, 0.16, b.depth + 0.4);
+      roof.rotateZ(f.shedPorchSide * 0.2);
+      roof.translate(sx + f.shedPorchSide * 0.2, 9.3, 0);
+      roof.applyMatrix4(buildingMatrix);
+      put(mats.roofDark, roof);
+      const n = Math.max(2, Math.round(b.depth / 12));
+      for (let i = 0; i <= n; i++) {
+        const z = -b.depth / 2 + (b.depth * i) / n;
+        box(mats.trimDark, sx + f.shedPorchSide * 2.5, 4.7, z, 0.38, 8.2, 0.38);
       }
     }
     const party = b.party || [];
@@ -2043,6 +2114,54 @@ export function buildTown(data, scene) {
         box(mats.trimDark, x, 6, z + 3.6, 0.5, 10, 0.5);
       }
     }
+    // Outside stair up the side wall, chimneys, and a sign on the side wall, as in the
+    // "Bank of Bushnell corner in the 90's" photograph (centennial book, PDF p.41).
+    if (b.facade?.sideStair) {
+      const side = b.facade.sideStair;
+      const sx = side * (b.width / 2 + 1.9);
+      const z0 = b.depth / 2 - 12;
+      const z1 = z0 - 15;
+      const rise = floorH + 0.4;
+      const run = Math.abs(z0 - z1);
+      const len = Math.hypot(run, rise);
+      const stringer = new THREE.BoxGeometry(3.0, 0.4, len);
+      stringer.rotateX(Math.atan2(rise, run));
+      stringer.translate(sx, rise / 2, (z0 + z1) / 2);
+      stringer.applyMatrix4(buildingMatrix);
+      put(mats.trimDark, stringer);
+      for (const rail of [-1.4, 1.4]) {
+        const r = new THREE.BoxGeometry(0.14, 0.14, len);
+        r.rotateX(Math.atan2(rise, run));
+        r.translate(sx + rail, rise / 2 + 3.0, (z0 + z1) / 2);
+        r.applyMatrix4(buildingMatrix);
+        put(mats.trimDark, r);
+      }
+      box(mats.trimDark, sx, rise - 0.1, z1 - 2.2, 3.2, 0.32, 4.6);
+      box(mats.trimDark, sx + 1.4, rise + 1.5, z1 - 2.2, 0.14, 3.0, 4.6);
+      box(mats.trimDark, sx + side * 1.45, rise / 2, z1 - 4.3, 0.3, rise, 0.3);
+      box(mats.trimDark, side * (b.width / 2 + 0.1), rise + 3.9, z1 - 2.2, 0.2, 7.2, 3.2);
+    }
+    for (let i = 0; i < (b.facade?.chimneys || 0); i++) {
+      const n = b.facade.chimneys;
+      const z = -b.depth / 2 + (b.depth * (i + 0.6)) / (n + 0.2);
+      chimneyStack(brickOf(b), (i % 2 ? -1 : 1) * (b.width / 2 - 2.2), wallH + 3.4, z, 2.4, 5.6, 2.4);
+    }
+    if (b.facade?.sideSign) {
+      const side = b.facade.sideSign.side || 1;
+      const rot = (FACING[b.facing] ?? 0) + THREE.MathUtils.degToRad(b.rotation || 0);
+      const outward = new THREE.Vector3(side, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
+      const along = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
+      signs.push({
+        title: b.facade.sideSign.text,
+        subtitle: "",
+        style: "board",
+        position: new THREE.Vector3(b.x, b.facade.sideSign.y ?? 12.6, b.z)
+          .addScaledVector(outward, b.width / 2 + 0.55)
+          .addScaledVector(along, b.depth / 2 - (b.facade.sideSign.from ?? 9)),
+        rotation: rot + side * (Math.PI / 2),
+        width: b.facade.sideSign.width ?? 14,
+      });
+    }
     downspouts(b.width, b.depth, wallH);
     signFor(b, frame ? wallH + 4 : wallH);
     return wallH + (frame ? 8 : 4);
@@ -3542,6 +3661,311 @@ export function buildTown(data, scene) {
     return h + 2;
   };
 
+  // ---- Centennial book (Bushnell, Illinois, centennial, 1854-1954) builders. ----
+  // All hand-built and parametric; no photo textures. Page numbers are PDF pages.
+
+  // Frame engine house, "The City Hall and Fire Department, for many years" (PDF p.125):
+  // two clapboard stories, gable to the street, large double doors, a painted
+  // BUSHNELL FIRE DEPARTMENT band, and an open belfry with a bell on the ridge.
+  // Proportions are read from the photograph; no dimensions are printed (estimate).
+  const addEngineHouse = (b) => {
+    const body = paintOf(b);
+    const wallH = 22;
+    const rise = Math.max(8, b.width * 0.36);
+    const fz = b.depth / 2 + 0.14;
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(mats.stone, 0, 0.35, 0, b.width + 0.3, 0.7, b.depth + 0.3);
+    gableFrontAt(b.width, b.depth, rise, wallH, mats.roofDark, 0, 0);
+    clapboardTriangle(body, b.width, rise * 0.95, wallH, "z", b.depth / 2 + 0.02, 0, 0);
+    clapboardTriangle(body, b.width, rise * 0.95, wallH, "z", -b.depth / 2 - 0.02, 0, 0);
+    for (const x of [-b.width / 2, b.width / 2]) box(mats.trim, x, wallH / 2, fz, 0.42, wallH, 0.3);
+    box(mats.trim, 0, wallH + 0.1, fz + 0.1, b.width + 0.6, 0.45, 0.5);
+    // Two pairs of tall doors and a single door at the left, as in the photograph.
+    const pair = (x, w, h) => {
+      box(mats.trim, x, h / 2 + 0.2, fz, w + 0.6, h + 0.5, 0.18);
+      for (const s2 of [-1, 1]) {
+        box(mats.plank, x + s2 * (w / 4), h / 2 + 0.2, fz + 0.08, w / 2 - 0.15, h, 0.12);
+        box(mats.trimDark, x + s2 * (w / 4), h / 2 + 0.2, fz + 0.16, 0.16, h * 0.96, 0.04);
+        box(mats.trimDark, x + s2 * (w / 4), h * 0.5, fz + 0.16, w / 2 - 0.4, 0.16, 0.04);
+      }
+    };
+    pair(-b.width * 0.18, Math.min(8, b.width * 0.3), 10.5);
+    pair(b.width * 0.24, Math.min(8, b.width * 0.3), 10.5);
+    paneledDoor(-b.width * 0.42, fz, 2.8, 7.2, false);
+    frontSash(b.width * 0.04, 6.6, fz, 2.2, 5.4, "flat");
+    frontSash(-b.width * 0.22, 16.4, fz, 2.6, 5.2, "flat");
+    frontSash(b.width * 0.22, 16.4, fz, 2.6, 5.2, "flat");
+    for (const side of [-1, 1]) {
+      for (let i = 0; i < 3; i++) {
+        const z = -b.depth / 2 + ((i + 0.6) * b.depth) / 3.2;
+        sideSash(side * (b.width / 2 + 0.08), 16, z, side, 2.4, 5, "flat");
+      }
+    }
+    // Open belfry on the ridge, toward the street end; square posts, bell, pyramid cap.
+    const by = wallH + rise - 0.6;
+    const bz = b.depth / 2 - 6;
+    const bw = 5.4;
+    box(body, 0, by + 1.1, bz, bw + 0.8, 2.2, bw + 0.8);
+    box(mats.trim, 0, by + 2.3, bz, bw + 1.2, 0.35, bw + 1.2);
+    for (const px of [-bw / 2, bw / 2]) {
+      for (const pz of [-bw / 2, bw / 2]) box(mats.trim, px, by + 5.6, bz + pz, 0.55, 6.4, 0.55);
+    }
+    box(mats.trim, 0, by + 8.9, bz, bw + 1.4, 0.5, bw + 1.4);
+    const bell = new THREE.CylinderGeometry(0.7, 1.35, 1.9, 12);
+    bell.translate(0, by + 6.2, bz);
+    bell.applyMatrix4(buildingMatrix);
+    put(mats.metal, bell);
+    box(mats.trimDark, 0, by + 7.6, bz, 0.25, 1.4, 0.25);
+    const cap = new THREE.ConeGeometry(bw * 0.85, 4.2, 4);
+    cap.rotateY(Math.PI / 4);
+    cap.translate(0, by + 11.2, bz);
+    cap.applyMatrix4(buildingMatrix);
+    put(mats.roofDark, cap);
+    box(mats.trimDark, 0, by + 14, bz, 0.18, 1.8, 0.18);
+    signFor(b, 13);
+    return by + 15;
+  };
+
+  // Two-story brick City Hall beside the engine house (PDF p.125): round-arched windows
+  // under light hoods, a bracketed cornice, an arched center door, a hipped roof with a
+  // gabled dormer. The dormer is lettered CITY ... 18__ in the photograph; it is not
+  // lettered here because the rest is unreadable.
+  const addCityHall = (b) => {
+    const body = brickOf(b);
+    const wallH = 26;
+    const fz = b.depth / 2 + 0.14;
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(mats.stone, 0, 0.5, 0, b.width + 0.4, 1.0, b.depth + 0.4);
+    const cols = [-b.width * 0.3, 0, b.width * 0.3];
+    for (const x of cols) frontSash(x, 18.4, fz, 3.4, 7.2, "round", false, mats.stone);
+    frontSash(cols[0], 6.4, fz, 3.4, 7.0, "round", false, mats.stone);
+    frontSash(cols[2], 6.4, fz, 3.4, 7.0, "round", false, mats.stone);
+    paneledDoor(0, fz, 4.4, 8.0, false);
+    archHood(mats.stone, 0, 8.6, fz + 0.3, 6.2, 3.0, "z");
+    box(mats.glass, 0, 9.6, fz + 0.06, 3.8, 1.6, 0.05);
+    box(mats.trim, 0, wallH + 0.35, fz + 0.5, b.width + 1.2, 0.9, 1.3);
+    dentilCourse(wallH - 0.2, fz + 0.8, b.width);
+    bracketRow(wallH - 0.8, fz + 0.2, b.width);
+    for (const x of [-b.width / 2 + 0.4, b.width / 2 - 0.4]) box(mats.trim, x, wallH * 0.5, fz + 0.3, 0.8, wallH, 0.6);
+    hipRoof(b.width, b.depth, 7, wallH + 0.8, mats.roofDark, 0, 0);
+    // Gabled dormer above the cornice, toward the street.
+    const dz = b.depth / 2 - 5;
+    box(body, 0, wallH + 4.2, dz, 8, 6.4, 4.5);
+    clapboardTriangle(body, 9, 3.6, wallH + 7.4, "z", dz + 2.3, 0, 0);
+    box(mats.trimDark, b.width / 2 - 1, wallH + 2.6, fz - 0.4, 0.5, 2.6, 0.5);
+    chimneyStack(body, -b.width * 0.3, wallH + 5.5, -b.depth * 0.2, 2.4, 6, 2.4);
+    downspouts(b.width, b.depth, wallH);
+    signFor(b, wallH);
+    return wallH + 14;
+  };
+
+  // West Side School, built 1896-97 and burned in 1936 (PDF p.70-71): buff brick on a
+  // raised basement, two stories, a central entrance tower with a pyramid spire and an
+  // arched doorway, gabled wings to each side, hipped roof. Footprint is an estimate.
+  const addWestSide1897 = (b) => {
+    const body = brickOf(b);
+    const base = 6;
+    const floor = 12.5;
+    const wall = base + 2 * floor;
+    const fz = b.depth / 2 + 0.12;
+    box(mats.stone, 0, base / 2, 0, b.width + 1.2, base, b.depth + 1.2);
+    box(body, 0, base + floor, 0, b.width, 2 * floor, b.depth);
+    box(mats.stone, 0, base + floor, 0, b.width + 0.4, 0.5, b.depth + 0.4);
+    hipRoof(b.width, b.depth, 14, wall, mats.roofDark, 0, 0);
+    const wingW = Math.min(26, b.width * 0.3);
+    for (const side of [-1, 1]) {
+      const wx = side * (b.width / 2 - wingW / 2);
+      box(body, wx, (wall + base) / 2, fz + 1.6, wingW, wall - base, 3.2);
+      box(mats.stone, wx, base / 2, fz + 1.9, wingW + 0.6, base, 3.8);
+      clapboardTriangle(body, wingW + 0.4, 11, wall, "z", fz + 3.0, wx, 0);
+      box(mats.trim, wx, wall + 0.2, fz + 3.4, wingW + 1.0, 0.5, 0.6);
+      for (const row of [base + floor * 0.55, base + floor * 1.55]) {
+        for (const dx of [-wingW * 0.3, -wingW * 0.1, wingW * 0.1, wingW * 0.3]) {
+          frontSash(wx + dx, row, fz + 3.2, 2.0, 6.6, "flat", false, mats.stone);
+        }
+      }
+      frontSash(wx, wall + 4.2, fz + 3.3, 2.4, 3.2, "round", false, mats.stone);
+    }
+    for (const side of [-1, 1]) {
+      for (let i = 0; i < 5; i++) {
+        const z = -b.depth / 2 + ((i + 0.6) * b.depth) / 5.2;
+        sideSash(side * (b.width / 2 + 0.08), base + floor * 0.55, z, side, 2.2, 6.4, "flat", false, mats.stone);
+        sideSash(side * (b.width / 2 + 0.08), base + floor * 1.55, z, side, 2.2, 6.4, "flat", false, mats.stone);
+      }
+    }
+    // Entrance tower.
+    const tw = 16;
+    const tz = fz - 4;
+    const th = wall + 14;
+    box(body, 0, th / 2, tz, tw, th, tw);
+    box(mats.stone, 0, base / 2, tz, tw + 0.8, base, tw + 0.8);
+    box(mats.trimDark, 0, 5.6, tz + tw / 2 + 0.08, 6, 9.2, 0.2);
+    archHood(mats.stone, 0, 10.2, tz + tw / 2 + 0.3, 8.4, 4.2, "z");
+    for (const dx of [-3.2, 0, 3.2]) frontSash(dx, base + floor * 1.5, tz + tw / 2 + 0.05, 2.0, 5.6, "round", false, mats.stone);
+    for (const face of [0, 1, 2, 3]) {
+      const ang = (face * Math.PI) / 2;
+      box(mats.trimDark, Math.sin(ang) * (tw / 2 + 0.05), th - 5, tz + Math.cos(ang) * (tw / 2 + 0.05), face % 2 ? 0.2 : 4.6, 5.6, face % 2 ? 4.6 : 0.2);
+    }
+    box(mats.trim, 0, th + 0.3, tz, tw + 1.2, 0.6, tw + 1.2);
+    const spire = new THREE.ConeGeometry(tw * 0.74, 20, 4);
+    spire.rotateY(Math.PI / 4);
+    spire.translate(0, th + 10.4, tz);
+    spire.applyMatrix4(buildingMatrix);
+    put(mats.roofDark, spire);
+    box(mats.trimDark, 0, th + 21.5, tz, 0.2, 2.6, 0.2);
+    chimneyStack(mats.brick.red, -b.width * 0.22, wall + 9, -b.depth * 0.15, 2.4, 8, 2.4);
+    chimneyStack(mats.brick.red, b.width * 0.22, wall + 9, -b.depth * 0.15, 2.4, 8, 2.4);
+    signFor(b, wall - 1);
+    return th + 24;
+  };
+
+  // Flat-roofed brick school of the 1920s-30s: the 1922 high school addition (PDF p.72)
+  // and the 1937 West Side School (PDF p.73). Window rows and a stone entrance surround;
+  // the footprints are estimates.
+  const addFlatSchool = (b) => {
+    const body = brickOf(b);
+    const floors = Math.max(1, Number(b.stories) || 2);
+    const floor = 13;
+    const wall = 3 + floors * floor;
+    const fz = b.depth / 2 + 0.12;
+    box(body, 0, wall / 2, 0, b.width, wall, b.depth);
+    box(mats.stone, 0, 1.5, 0, b.width + 0.4, 3, b.depth + 0.4);
+    box(mats.stone, 0, wall + 0.35, 0, b.width + 0.6, 0.7, b.depth + 0.6);
+    box(mats.roofDark, 0, wall - 0.2, 0, b.width - 0.6, 0.3, b.depth - 0.6);
+    const cols = Math.max(4, Math.round(b.width / 7));
+    const gap = b.width / cols;
+    const mid = Math.floor(cols / 2);
+    for (let c = 0; c < cols; c++) {
+      if (c === mid) continue;
+      const x = -b.width / 2 + gap * (c + 0.5);
+      for (let f2 = 0; f2 < floors; f2++) frontSash(x, 3 + f2 * floor + floor * 0.52, fz, Math.min(4.2, gap * 0.6), 7.2, "flat", false, mats.stone);
+    }
+    const ex = -b.width / 2 + gap * (mid + 0.5);
+    box(mats.stone, ex, wall / 2, fz + 0.4, Math.max(8, gap), wall, 0.8);
+    box(mats.stone, ex, wall + 1.4, fz + 0.4, Math.max(9, gap + 1), 2.2, 0.9);
+    paneledDoor(ex, fz + 0.85, 4.6, 8.2, true);
+    frontSash(ex, 3 + floor * 1.52, fz + 0.85, 3.2, 6.8, "flat", false, mats.stone);
+    for (const side of [-1, 1]) {
+      const n = Math.max(2, Math.round(b.depth / 12));
+      for (let i = 0; i < n; i++) {
+        const z = -b.depth / 2 + ((i + 0.5) * b.depth) / n;
+        for (let f2 = 0; f2 < floors; f2++) sideSash(side * (b.width / 2 + 0.08), 3 + f2 * floor + floor * 0.52, z, side, 3, 7, "flat", false, mats.stone);
+      }
+    }
+    signFor(b, wall - 1);
+    return wall + 3;
+  };
+
+  // St. Bernard Catholic Church, brick, built 1906 and dedicated 15 May 1907; burned
+  // 20 December 1951 (PDF p.59-60, photograph p.59): gable to the street, a square
+  // corner tower with a louvered belfry and a tall spire, round-arched windows.
+  const addStBernard1907 = (b) => {
+    const body = brickOf(b);
+    const wallH = 20;
+    const rise = b.width * 0.42;
+    const fz = b.depth / 2 + 0.12;
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(mats.stone, 0, 0.7, 0, b.width + 0.6, 1.4, b.depth + 0.6);
+    gableFrontAt(b.width, b.depth, rise, wallH, mats.roofDark, 0, 0);
+    clapboardTriangle(body, b.width, rise * 0.96, wallH, "z", b.depth / 2 + 0.02, 0, 0);
+    clapboardTriangle(body, b.width, rise * 0.96, wallH, "z", -b.depth / 2 - 0.02, 0, 0);
+    frontSash(b.width * 0.12, 10, fz, 3.0, 9, "round", false, mats.stone);
+    frontSash(b.width * 0.36, 10, fz, 3.0, 9, "round", false, mats.stone);
+    frontSash(b.width * 0.22, wallH + rise * 0.35, fz, 2.2, 4, "round", false, mats.stone);
+    for (const side of [-1, 1]) {
+      for (let i = 0; i < 4; i++) {
+        const z = -b.depth * 0.36 + i * (b.depth * 0.22);
+        sideSash(side * (b.width / 2 + 0.08), 10.5, z, side, 2.8, 9, "round", false, mats.stone);
+      }
+    }
+    const tw = 12;
+    const tx = -b.width / 2 + tw / 2 - 1;
+    const tz = fz - tw / 2 + 2;
+    const th = 50;
+    box(body, tx, th / 2, tz, tw, th, tw);
+    box(mats.stone, tx, 0.8, tz, tw + 0.6, 1.6, tw + 0.6);
+    box(mats.trimDark, tx, 4.8, tz + tw / 2 + 0.06, 4.2, 8.6, 0.2);
+    archHood(mats.stone, tx, 9.1, tz + tw / 2 + 0.25, 4.8, 2.4, "z");
+    frontSash(tx, 22, tz + tw / 2 + 0.02, 1.8, 5.2, "round", false, mats.stone);
+    for (const face of [0, 1, 2, 3]) {
+      const ang = (face * Math.PI) / 2;
+      const ox = Math.sin(ang) * (tw / 2 + 0.06);
+      const oz = Math.cos(ang) * (tw / 2 + 0.06);
+      box(mats.trim, tx + ox, th - 7, tz + oz, face % 2 ? 0.2 : 5, 8, face % 2 ? 5 : 0.2);
+      for (let k = 0; k < 5; k++) box(mats.trimDark, tx + ox * 1.01, th - 10 + k * 1.5, tz + oz * 1.01, face % 2 ? 0.12 : 4.4, 0.3, face % 2 ? 4.4 : 0.12);
+    }
+    box(mats.trim, tx, th + 0.3, tz, tw + 1, 0.6, tw + 1);
+    const spire = new THREE.ConeGeometry(tw * 0.62, 28, 4);
+    spire.rotateY(Math.PI / 4);
+    spire.translate(tx, th + 14.4, tz);
+    spire.applyMatrix4(buildingMatrix);
+    put(mats.roofDark, spire);
+    box(mats.trimDark, tx, th + 30, tz, 0.24, 3.4, 0.24);
+    box(mats.trimDark, tx, th + 30.6, tz, 1.6, 0.24, 0.24);
+    signFor(b, 15);
+    return th + 32;
+  };
+
+  // St. Bernard Church completed in 1953 after the 1951 fire (PDF p.59; photograph p.61):
+  // brick, gable to the street, a cross on the peak, a tall round-arched window over the
+  // door, no tower.
+  const addStBernard1953 = (b) => {
+    const body = brickOf(b);
+    const wallH = 18;
+    const rise = b.width * 0.4;
+    const fz = b.depth / 2 + 0.12;
+    box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
+    box(mats.stone, 0, 0.6, 0, b.width + 0.5, 1.2, b.depth + 0.5);
+    gableFrontAt(b.width, b.depth, rise, wallH, mats.roofDark, 0, 0);
+    clapboardTriangle(body, b.width, rise * 0.96, wallH, "z", b.depth / 2 + 0.02, 0, 0);
+    clapboardTriangle(body, b.width, rise * 0.96, wallH, "z", -b.depth / 2 - 0.02, 0, 0);
+    box(mats.stone, 0, wallH + rise * 0.3, fz + 0.05, 7.4, rise * 0.5 + wallH * 0.5, 0.25);
+    frontSash(0, wallH * 0.85, fz + 0.2, 4.2, 9.5, "round", false, mats.stone);
+    paneledDoor(0, fz + 0.2, 5.2, 8.0, false);
+    box(mats.stone, 0, 9.0, fz + 0.9, 7.2, 0.4, 1.6);
+    frontSash(-b.width * 0.32, 8.5, fz, 2.2, 5, "round", false, mats.stone);
+    frontSash(b.width * 0.32, 8.5, fz, 2.2, 5, "round", false, mats.stone);
+    for (const side of [-1, 1]) {
+      for (let i = 0; i < 5; i++) {
+        const z = -b.depth * 0.38 + i * (b.depth * 0.18);
+        sideSash(side * (b.width / 2 + 0.08), 9.5, z, side, 2.6, 7.6, "round", false, mats.stone);
+      }
+    }
+    box(mats.stone, 0, wallH + rise + 2.4, fz - 0.6, 0.45, 4.4, 0.45);
+    box(mats.stone, 0, wallH + rise + 3.2, fz - 0.6, 2.4, 0.45, 0.45);
+    signFor(b, 14);
+    return wallH + rise + 6;
+  };
+
+  // New fire house at Hurst and Dean, built in the two years before the 1954 book
+  // (PDF p.124-125, photograph p.124; corner from p.20): one story, flat roof, a row of
+  // overhead doors with a band of lights, brick end wall. Footprint is an estimate.
+  const addFireHouse1953 = (b) => {
+    const body = brickOf(b);
+    const wall = 16;
+    const fz = b.depth / 2 + 0.12;
+    box(body, 0, wall / 2, 0, b.width, wall, b.depth);
+    box(mats.siding.white, -b.width * 0.12, wall / 2, fz - 0.02, b.width * 0.76, wall, 0.2);
+    box(mats.stone, 0, wall + 0.3, 0, b.width + 0.5, 0.6, b.depth + 0.5);
+    const doors = Math.max(3, b.facade?.doors || 5);
+    const span = b.width * 0.72;
+    for (let i = 0; i < doors; i++) {
+      const x = -b.width * 0.12 - span / 2 + (span * (i + 0.5)) / doors;
+      const dw = span / doors - 1.4;
+      box(mats.trim, x, 5.6, fz + 0.08, dw + 0.4, 11.2, 0.12);
+      box(mats.siding.white, x, 5.6, fz + 0.14, dw, 10.8, 0.08);
+      // Two rows of six lights in each door, as in the p.124 photograph.
+      for (let r = 0; r < 2; r++) {
+        for (let k = 0; k < 6; k++) box(mats.glass, x - dw / 2 + ((k + 0.5) * dw) / 6, 7.1 + r * 1.5, fz + 0.2, dw / 6 - 0.3, 1.15, 0.05);
+      }
+      for (let k = 1; k < 5; k++) box(mats.trimDark, x, 0.4 + k * 2.2, fz + 0.2, dw, 0.07, 0.04);
+    }
+    // White fascia band over the doors.
+    box(mats.siding.white, -b.width * 0.12, wall - 1.6, fz + 0.5, b.width * 0.78, 3.2, 1.0);
+    signFor(b, wall);
+    return wall + 2;
+  };
+
   const addShed = (b) => {
     const wallH = 12;
     const body = paintOf(b);
@@ -3912,6 +4336,8 @@ export function buildTown(data, scene) {
       (b.id === "millinery-2" && b.facade?.storefront === "plate") ||
       b.facade?.bays || b.facade?.norcross ||
       b.facade?.plainPlant || b.facade?.eastSide1904 ||
+      b.facade?.engineHouse || b.facade?.cityHall || b.facade?.westSide1897 || b.facade?.flatSchool ||
+      b.facade?.stBernard1907 || b.facade?.stBernard1953 || b.facade?.fireHouse1953 ||
       b.id === "presbyterian-church-1917" || b.id === "junction-depot" || b.id === "hurst-crossing-shanty" ||
       b.id === "hendee-house-26"
     );
@@ -3938,6 +4364,13 @@ export function buildTown(data, scene) {
     else if (b.id === "millinery-2" && b.facade?.storefront === "plate") height = addGrayHoods(b);
     else if (b.facade?.hurstBuff) height = addHurstBuff(b);
     else if (b.facade?.hurstPressed) height = addHurstPressed(b);
+    else if (b.facade?.engineHouse) height = addEngineHouse(b);
+    else if (b.facade?.cityHall) height = addCityHall(b);
+    else if (b.facade?.westSide1897) height = addWestSide1897(b);
+    else if (b.facade?.flatSchool) height = addFlatSchool(b);
+    else if (b.facade?.stBernard1907) height = addStBernard1907(b);
+    else if (b.facade?.stBernard1953) height = addStBernard1953(b);
+    else if (b.facade?.fireHouse1953) height = addFireHouse1953(b);
     else if (b.kind === "house") height = addHouse(b);
     else if (b.id === "hendee-house-26") height = addHendeeHouse(b);
     else if (b.kind === "frame-store") height = addStore(b, true);

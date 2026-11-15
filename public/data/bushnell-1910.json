@@ -182,6 +182,22 @@
         "estimates": ["Which side of Hurst took the even numbers was not found."]
       },
       "notes": "Mark places the Hendee Home at 304 West Hurst. The 1909 numbering puts the 300s on the block from Jackson to Washington, and this is the house already on the Hurst end of that block, Barnes side. Which side of Hurst took the even numbers was not found, so the side is an estimate. February 1912 is the first sheet that draws these lots. No year-built was found in the assessor file. The Italianate front, belvedere, and stacked porch are from the photograph. The label is Hendee Home. The 1885 history names S. A. Hendee and J. W. Hendee and does not say which of them lived here."
+    },
+    {
+      "id": "st-bernards-church-1912",
+      "name": "St. Bernard's Catholic Church",
+      "material": "brick",
+      "brick": "red",
+      "year": "1906",
+      "width": 46,
+      "depth": 64,
+      "facade": {
+        "stBernard1907": true,
+        "photoMatch": true,
+        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.59."
+      },
+      "sourceMap": "February 1912 Sanborn; Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.59–60",
+      "notes": "Centennial book PDF p.59–60: the brick church was built in 1906 and dedicated in 1907; photograph on p.59: gable to the street, a corner tower with a louvered belfry and tall spire, round-arched windows. The February 1912 Sanborn labels St. Bernard's R.C. Church with a tower. Burned in December 1951. Depth is an estimate."
     }
   ],
   "add": [
@@ -1047,11 +1063,21 @@
         "sourcePhoto": "public/photos/high-school-cole-street.png",
         "photoDate": "undated",
         "citation": "Mark's photograph of the high school on Cole Street",
-        "camera": { "year": 1910, "x": -300, "z": 1870, "lx": -370, "lz": 1760, "fov": 42, "pitch": -0.06 },
-        "estimates": ["The Sanborn sheets were not read for a separate school lot."]
+        "camera": {
+          "year": 1910,
+          "x": -300,
+          "z": 1870,
+          "lx": -370,
+          "lz": 1760,
+          "fov": 42,
+          "pitch": -0.06
+        },
+        "estimates": [
+          "The Sanborn sheets were not read for a separate school lot."
+        ]
       },
       "sourceMap": "Centennial book, 1854–1954",
-      "notes": "The 1875–76 East Side school at Cole and Hurst burned in 1896. The centennial book says the East Side school opened in the winter of 1904. This is that building, on the same corner: three stories of red brick, a hipped roof, and the corner tower with the arched entry and open belfry in Mark's photograph. It replaces the 1875 school, which comes off at the 1900 stop because the May 1898 map is after the fire. The new school appears at the 1910 stop, the first stop after the winter of 1904. Mark says it was torn down in the late 1980s, after 1970, so it stays through the last year drawn. The Sanborn sheets were not read for a separate school lot."
+      "notes": "Centennial book PDF p.70–72: the East Side school at Cole and Hurst opened in the winter of 1904, with an addition in 1922. Three stories of red brick, a hipped roof, and the corner tower with the arched entry and open belfry in Mark's photograph. The 1875 school was on the West Side site, not here (PDF p.70). Mark says it was torn down in the late 1980s, after 1970, so it stays through the last year drawn."
     },
     {
       "id": "norcross-factory",
@@ -1112,35 +1138,6 @@
       "rotation": 0,
       "sourceMap": "Mark's undated postcard, Bushnell Ill., looking west on Hurst",
       "notes": "A small gabled watchman's shanty and a crossing-gate arm beside the Hurst Street crossing of the Burlington. No Sanborn label for a watchman's house was read. The postcard, estimated about 1905 to 1915, shows both. The side of the street is an estimate. Drawn from the 1910 stop."
-    },
-    {
-      "id": "east-main-hose-tower",
-      "name": "Hose tower",
-      "kind": "shed",
-      "use": "fire station",
-      "material": "brick",
-      "stories": 1,
-      "width": 22,
-      "depth": 18,
-      "x": 214,
-      "z": -230,
-      "facing": "+z",
-      "paint": "red",
-      "brick": "red",
-      "sign": "",
-      "porch": false,
-      "party": [],
-      "confidence": "inferred",
-      "year": "1910",
-      "steeple": false,
-      "rotation": 0,
-      "facade": {
-        "hoseTower": true,
-        "photoMatch": true,
-        "photoSource": "Mark's postcard from the 300 block of East Main, the tower in the distance."
-      },
-      "sourceMap": "Mark Rauschert, Nov 2026",
-      "notes": "Location per Mark Rauschert, Nov 2026: the 500 block of East Main, south of the 60-foot Ball Bros. front, not against that facade. No Sanborn engine-house or hose-house label was read on this block, so the year is an estimate and the tower is drawn from the 1910 stop, the postcard's era. The station at the base and the open belfry follow that postcard. Ball Bros. is the name already on the corner from the centennial photograph."
     }
   ],
   "streetStyle": {

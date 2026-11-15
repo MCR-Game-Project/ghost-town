@@ -5475,29 +5475,45 @@
   ],
   "buildings": [
     {
-      "name": "Grocery",
-      "kind": "frame-store",
+      "name": "Brick corner building (later the Bank of Bushnell)",
+      "kind": "brick-store",
       "use": "grocery",
-      "material": "frame",
+      "material": "brick",
       "stories": 2,
       "width": 28,
       "depth": 52,
-      "confidence": "inferred",
-      "notes": "The January 1886 Sanborn map shows a continuous row of brick and frame stores along this part of Main Street. This shop stands in for one of those storefronts. Its name is a typical trade, not a documented proprietor.",
-      "sign": "Grocery",
+      "confidence": "sourced",
+      "notes": "The Hurst corner of the 400 block of East Main. Centennial book PDF p.15 puts the Davey cigar works upstairs in this corner building about 1880, so it is drawn as the brick two-story corner from the 1880 stop. Its form follows the 1890s photograph on PDF p.41: two stories of brick, a front pediment, an outside stair up the Hurst side, and chimneys. The Bank of Bushnell signs are added at the 1900 stop. It stays 28 feet wide at the 1880 and 1890 stops (estimate) so it does not run into the neighbouring stand-in; the 1900 update widens it to 36 feet as before. Party wall on the dry-goods side; the Hurst side has windows and the stair. Earlier stand-in: a frame Grocery.",
+      "sign": "",
       "porch": false,
       "paint": "cream",
       "x": -376.0,
       "z": -217.0,
       "facing": "+z",
       "party": [
-        "right"
+        "left"
       ],
       "brick": "red",
       "year": "",
       "id": "grocery-0",
       "steeple": false,
-      "rotation": 0
+      "rotation": 0,
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "bracket",
+        "cornerPediment": true,
+        "door": "right",
+        "tall": true,
+        "storefront": "iron",
+        "upperBays": 5,
+        "sideBays": 8,
+        "hood": "cream",
+        "chimneys": 3,
+        "sideStair": 1,
+        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.41 (Bank of Bushnell building, 1890s) and p.15."
+      }
     },
     {
       "name": "Dry Goods",
@@ -5738,11 +5754,11 @@
       "kind": "brick-store",
       "use": "bank and general store",
       "material": "brick",
-      "stories": 2,
+      "stories": 3,
       "width": 48,
       "depth": 74,
       "confidence": "sourced",
-      "notes": "James Cole's brick corner at East Main and Hail. He made the bricks himself in the 1860s. He added banking in 1878. Sourced from the centennial photograph of the original building: two stories, four upstairs windows under segmental arches, a bracketed cornice, pilasters, and a cast-iron storefront with the door at the Hail corner. The early-1900s taller round-arched Cole Block is not drawn. The 48-foot street front is the four-bay width of that photograph; the depth is the ordinary store depth, inferred.",
+      "notes": "James Cole's brick corner at East Main and Hail. He made the bricks himself in the 1860s and added banking in 1878. Centennial book PDF p.13 (engraving) and PDF p.35 (photograph) show it as three stories, about seven windows across, round-arched, with a bracketed cornice; the engraving shows a porch roof over the sidewalk, drawn here before the 1900 stop. The window count is read from the pictures (about seven; estimate). The 48-foot front and the depth are estimates. PDF p.57 says the Cole Block was recently torn down by 1954, so it comes off at the 1960 stop. Open question: PDF p.55 starts its walk along this side at the Hail corner with a wooden building, which does not match a brick block on the Hail corner.",
       "sign": "COLE",
       "porch": false,
       "year": "1860s",
@@ -5751,7 +5767,7 @@
       "z": -228.0,
       "facing": "+z",
       "party": [
-        "left"
+        "right"
       ],
       "paint": "cream",
       "id": "cole-building-10",
@@ -5759,16 +5775,19 @@
       "rotation": 0,
       "facade": {
         "photoMatch": true,
-        "photoDate": "1860s building. The photograph is undated and was printed in 1954. An early-1900s view of a taller round-arched Cole Block was not used.",
-        "photoSource": "Bushnell, Illinois, centennial, 1854\u20131954. The photograph is captioned as the original Cole building at East Main and Hail.",
-        "arches": "segmental",
-        "bays": 4,
-        "sideBays": 5,
+        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.13 (engraving of the Cole building) and PDF p.35 (photograph of the Cole Block).",
+        "photoDate": "Engraving undated (PDF p.13); photograph early 1900s (PDF p.35).",
+        "arches": "round",
+        "bays": 7,
+        "upperBays": 7,
+        "sideBays": 11,
         "door": "left",
         "cornice": "bracket",
         "storefront": "iron",
         "roof": "flat",
-        "pilasters": true
+        "pilasters": true,
+        "shedPorch": true,
+        "shedPorchSide": -1
       }
     },
     {
@@ -6026,7 +6045,7 @@
       "width": 54,
       "depth": 72,
       "confidence": "sourced",
-      "notes": "The brick block at Hurst and West Main. Sourced from the centennial photograph of the original Hendee building: two stories, three bays of segmental-arched upstairs windows, a bracketed cornice, and a cast-iron storefront with the entrance at the Hurst corner. The 1885 history says S. A. Hendee started on the east side of the railroad in 1860, so the first counter may have been across the tracks. The photograph is undated. The depth behind the three-bay front is inferred. Location: the January 1886 sheet 2, August 1893 sheet 2 and March 1906 sheet 3 Sanborn maps draw the Hendee general store and bank on the Hurst corner of the Barnes-Hurst block (block 71) of West Main, so it was moved there from the Hurst-Hail block in the November 2026 audit.",
+      "notes": "The brick block at Hurst and West Main. Sourced from the centennial photograph of the original Hendee building: two stories, six pointed-arch upstairs windows in two groups of three, round-arched openings on the ground floor, and a bracketed cornice (PDF p.25). The 1885 history says S. A. Hendee started on the east side of the railroad in 1860, so the first counter may have been across the tracks. The photograph is undated. The depth behind the three-bay front is inferred. Location: the January 1886 sheet 2, August 1893 sheet 2 and March 1906 sheet 3 Sanborn maps draw the Hendee general store and bank on the Hurst corner of the Barnes-Hurst block (block 71) of West Main, so it was moved there from the Hurst-Hail block in the November 2026 audit.",
       "sign": "HENDEE",
       "porch": false,
       "year": "1860",
@@ -6044,15 +6063,18 @@
       "facade": {
         "photoMatch": true,
         "photoDate": "The store began in 1860. The photograph is undated and is printed in the 1954 centennial next to the 1903 notes.",
-        "photoSource": "Bushnell centennial. The photograph is captioned as the original Hendee building at Hurst and West Main, housing the Chandler bank and Hendee's store.",
-        "arches": "segmental",
-        "bays": 3,
+        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.25, captioned as the original Hendee building at Hurst and West Main, housing the Chandler bank and Hendee's store.",
+        "arches": "pointed",
+        "bays": 6,
         "sideBays": 4,
         "door": "left",
         "cornice": "bracket",
         "storefront": "iron",
         "roof": "flat",
-        "pilasters": true
+        "pilasters": true,
+        "upperBays": 6,
+        "upperGroups": 2,
+        "groundArch": "round"
       }
     },
     {
@@ -10109,31 +10131,6 @@
       "kind": "house",
       "use": "dwelling",
       "material": "frame",
-      "stories": 1.5,
-      "width": 24,
-      "depth": 36,
-      "x": -62.25,
-      "z": 1355.0,
-      "facing": "+z",
-      "paint": "white",
-      "porch": true,
-      "sign": "",
-      "confidence": "inferred",
-      "notes": "The January 1886 Sanborn map shows the dwellings off the business streets as frame houses (yellow on the sheet), marked 1, 1\u00bd, or 2 stories, often an L or a T, with a small outbuilding behind. Brick dwellings are scarce on those sheets. This house is a stand-in of that kind, not a documented home, and it stays on the lot it already occupied. Drawn as a gable-ell, with a taller front-gabled upright and a one-story wing, one and a half stories.",
-      "party": [],
-      "brick": "red",
-      "year": "",
-      "steeple": false,
-      "rotation": 0,
-      "id": "house-190",
-      "plan": "gable-ell",
-      "wingStories": 1
-    },
-    {
-      "name": "Gable-ell house",
-      "kind": "house",
-      "use": "dwelling",
-      "material": "frame",
       "stories": 2,
       "width": 26,
       "depth": 40,
@@ -12160,16 +12157,16 @@
     },
     {
       "id": "high-school",
-      "name": "High School",
+      "name": "West Side School",
       "kind": "school",
       "use": "graded school and high school",
       "material": "brick",
       "stories": 2,
       "width": 78,
       "depth": 56,
-      "x": -347,
-      "z": -1783,
-      "facing": "-z",
+      "x": 1150,
+      "z": 791,
+      "facing": "+x",
       "paint": "cream",
       "brick": "red",
       "sign": "SCHOOL",
@@ -12182,7 +12179,8 @@
       "facade": {
         "cupola": true
       },
-      "notes": "Mark places the 1875 high school at Jackson and Cole, not Twyman, and says it had a cupola. It was the high school into the 1930s and the junior high in the 1970s. Jackson and Cole both run parallel to the tracks and do not meet. Cole Street is the next street east of Sperry. The school whose dates match his memory is the East Side School at Cole and Hurst, and an East Side High School postcard shows a two-story brick school with a central door and a cupola. The model stands on that corner, with the stone base and eight classrooms from the 1885 description, and with that cupola. Twyman Street stays. A 2026 school history puts an 1875 building at Jackson and Twyman and says it burned in 1896. That account is recorded. This corner is the one that fits what Mark described."
+      "notes": "The 1875–76 brick school. Centennial book PDF p.70: it stood on the West Side school site, burned in 1896, and was rebuilt in 1896–97. A 2026 school history puts the 1875 building at Jackson and Twyman; PDF p.29 (Jackson paved north to the school building) and p.31 (Dean paved three blocks from Hail to the schoolhouse) fit that block. The exact spot on the block and the facing toward Twyman are estimates. The cupola and the eight classrooms follow the 1885 description and Mark's memory of a cupola. Earlier drafts put this school at Cole and Hurst; the book gives Cole and Hurst a school only from 1904. Comes off at the 1900 stop, after the 1896 fire.",
+      "sourceMap": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.70"
     },
     {
       "id": "reformed-church",
@@ -13701,11 +13699,11 @@
       "porch": false,
       "party": [],
       "confidence": "sourced",
-      "year": "1886",
+      "year": "1866",
       "steeple": true,
       "rotation": 0,
-      "sourceMap": "January 1886 Sanborn",
-      "notes": "January 1886 Sanborn, sheet 2, block 80, on the Crawford side between Davis and Barnes. The sheet labels Baptist Church. The May 1898, March 1906, and February 1912 sheets still show it. No earlier date was found, so it is not drawn before 1880. An unnamed house that sat on this ground was removed."
+      "sourceMap": "January 1886 Sanborn; Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.66",
+      "notes": "Centennial book PDF p.66: the Baptist church on Crafford was built in 1866, so it is drawn from the 1870 stop. January 1886 Sanborn, sheet 2, block 80, on the Crafford side between Davis and Barnes, labels Baptist Church; the May 1898, March 1906, and February 1912 sheets still show it. That the 1866 church stood on the 1886 Sanborn site is an assumption (estimate). An unnamed house that sat on this ground was removed."
     },
     {
       "kind": "house",
@@ -13981,6 +13979,30 @@
       "year": "1886",
       "sourceMap": "January 1886 Sanborn",
       "notes": "January 1886 Sanborn, sheet 3, block 40, the Gridley end between West Main and Dean. The sheet labels Boarding. The front is brick and the wings are frame, one and a half stories. The August 1893 sheet still shows it. The rest of the drawn lots are sheds. The sheet notes frame dwellings beyond the edge, so those footprints were not copied."
+    },
+    {
+      "id": "st-bernards-church-1912",
+      "name": "St. Bernard's R.C. Church",
+      "kind": "church",
+      "use": "church",
+      "material": "frame",
+      "stories": 1,
+      "width": 46,
+      "depth": 58,
+      "x": -90,
+      "z": 1320,
+      "facing": "+z",
+      "paint": "cream",
+      "brick": "red",
+      "sign": "ST. BERNARD'S",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "steeple": true,
+      "rotation": 0,
+      "year": "1877",
+      "sourceMap": "August 1893 Sanborn; Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.60",
+      "notes": "Centennial book PDF p.60: in 1877 the parish bought the frame third-ward schoolhouse on this corner for a church, so the frame church is drawn from the 1880 stop. August 1893 Sanborn, sheet 1, block 62, the Washington side, labels R.C. Church. Replaced by the brick church of 1906–07 at the 1910 stop (PDF p.59–60). The form of the 1877 frame building is not pictured; the steeple is the Sanborn-era stand-in (estimate)."
     }
   ],
   "boardwalks": [

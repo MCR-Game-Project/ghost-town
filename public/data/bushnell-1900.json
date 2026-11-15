@@ -9,7 +9,9 @@
     "grocery-20",
     "boots-19",
     "house-100",
-    "house-101"
+    "house-101",
+    "offices-16",
+    "variety-17"
   ],
   "streets": [],
   "add": [
@@ -269,6 +271,94 @@
       "survivesTo": 2026,
       "sourceMap": "Mark Rauschert, Nov 2026",
       "notes": "Location per Mark Rauschert, Nov 2026. The 1918 Good Hope sheet shows this wedge, between the CB&Q Quincy main and the St. Louis branch, open of the farmhouses copied from that sheet. The footprint is an estimate from the illustrated postcard. The painted sign is the postcard, shown from 1900 through 1940. From 1941 the shed stays and the sign comes off. Post-1940 appearance unknown; buildings kept per Mark (some still standing in 2026); signs removed as unverified. survivesTo 2026 records that some of the buildings still stand. Which buildings is not recorded, so the group stays when later years are added. No year after 1970 is in the model. The postcard spelling is Trumans' Pioneer Stud Farm."
+    },
+    {
+      "id": "bushnell-city-hall",
+      "name": "City Hall",
+      "kind": "brick-store",
+      "use": "city hall",
+      "material": "brick",
+      "stories": 2,
+      "width": 36,
+      "depth": 50,
+      "x": 216,
+      "z": -216,
+      "facing": "+z",
+      "paint": "cream",
+      "brick": "red",
+      "sign": "",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1890s",
+      "steeple": false,
+      "rotation": 0,
+      "facade": {
+        "cityHall": true,
+        "photoMatch": true,
+        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.125, captioned The City Hall and Fire Department, for many years."
+      },
+      "sourceMap": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.125, p.20, p.124",
+      "notes": "Centennial book PDF p.125: the photograph captioned The City Hall and Fire Department, for many years, shows a two-story brick City Hall with round-arched windows, an arched center door, a bracketed cornice, and a gabled dormer lettered CITY ... 18__, standing beside the frame engine house. The dormer year cannot be read, so the lettering is not drawn. Location per Mark Rauschert, Nov 2026: the 500 block of East Main, south of the Ball Bros. front. The book (p.125) says the volunteer company became a city department in 1891, so the building is drawn from the 1900 stop (estimate: the true building year is not printed). The Offices and Variety stand-ins on this frontage come off at 1900. Width, depth, and the lot are estimates from the photograph. The model keeps it through 1970; the book does not say when it was torn down."
+    },
+    {
+      "id": "bushnell-engine-house",
+      "name": "Fire Department engine house",
+      "kind": "frame-store",
+      "use": "fire station",
+      "material": "frame",
+      "stories": 2,
+      "width": 26,
+      "depth": 44,
+      "x": 249,
+      "z": -213,
+      "facing": "+z",
+      "paint": "white",
+      "brick": "red",
+      "sign": "BUSHNELL FIRE DEPARTMENT",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1890s",
+      "steeple": false,
+      "rotation": 0,
+      "facade": {
+        "engineHouse": true,
+        "photoMatch": true,
+        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.125.",
+        "sign2": " "
+      },
+      "sourceMap": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.125",
+      "notes": "Centennial book PDF p.125: a frame, gable-front engine house with large double doors, the painted name BUSHNELL FIRE DEPARTMENT, and an open belfry with a bell on the ridge, beside the brick City Hall (to its left in the photograph, on the Ball Bros. side). Replaces the one-story brick hose tower that was drawn from the 1910 stop as an estimate. Drawn from the 1900 stop (estimate; p.125 says the department became a city department in 1891). The book says the new fire house at Hurst and Dean was built in the past two years (p.125, printed 1954), so the fire sign comes off at the 1960 stop (estimate). Dimensions are estimates from the photograph."
+    },
+    {
+      "id": "west-side-school-1897",
+      "name": "West Side School",
+      "kind": "school",
+      "use": "graded school",
+      "material": "brick",
+      "stories": 2,
+      "width": 96,
+      "depth": 66,
+      "x": 1150,
+      "z": 791,
+      "facing": "+x",
+      "paint": "cream",
+      "brick": "buff",
+      "sign": "",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1897",
+      "steeple": false,
+      "rotation": 0,
+      "facade": {
+        "westSide1897": true,
+        "photoMatch": true,
+        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.71."
+      },
+      "sourceMap": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.70–71",
+      "notes": "Centennial book PDF p.70–71: rebuilt on the West Side site in 1896–97 after the fire, photograph on p.71: two stories of light brick on a raised basement, a central entrance tower with a pyramid spire, gabled wings, hipped roof. Burned in 1936. The footprint, the spot on the block, and facing Twyman are estimates."
     }
   ],
   "update": [
@@ -463,10 +553,13 @@
         "storefront": "iron",
         "door": "right",
         "photoDate": "1907",
-        "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907."
+        "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907.",
+        "upperSign": "OPERA HOUSE"
       },
-      "notes": "Facade matched to Mark's 1907 photograph of the 400 block of East Main, Hurst to Hail, the Crafford side. Round arches, a corbelled and bracketed cornice, an awning, and sidewalk posts are from that picture. The lot within the block is an estimate. The January 1886 Sanborn already shows storefronts along this side. A center pediment was tried on this bay as an estimate of the 1907 photograph. photo from Mark, E Main 400 block south end, 2010, shows that pediment on the Hurst-corner front, so it is not drawn here.",
-      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row"
+      "notes": "Facade matched to Mark's 1907 photograph of the 400 block of East Main, Hurst to Hail, the Crafford side. Round arches, a corbelled and bracketed cornice, an awning, and sidewalk posts are from that picture. The lot within the block is an estimate. The January 1886 Sanborn already shows storefronts along this side. A center pediment was tried on this bay as an estimate of the 1907 photograph. photo from Mark, E Main 400 block south end, 2010, shows that pediment on the Hurst-corner front, so it is not drawn here. Centennial book PDF p.55 (about 1900): Sperling's drug store with the Opera House upstairs, fifth front from the Hurst corner; the choice of this bay is an estimate. Opera House built 1882 (PDF p.16–17).",
+      "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row",
+      "name": "Sperling's Drug Store, Opera House upstairs",
+      "sign": "DRUGS"
     },
     {
       "id": "boots---shoes-4",
@@ -813,41 +906,126 @@
         "upperSign": "DENTIST",
         "upperBays": 6,
         "hood": "cream",
-        "photoSource": "Mark's undated photograph of the 400 block of East Main, looking north, and the postcard from the 300 block."
+        "photoSource": "Mark's undated photograph of the 400 block of East Main, looking north, and the postcard from the 300 block. Side stair, chimneys, and the BANK OF BUSHNELL band: Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.41.",
+        "chimneys": 3,
+        "sideStair": 1,
+        "sideBays": 8,
+        "sideSign": {
+          "text": "BANK OF BUSHNELL",
+          "side": 1
+        }
       },
       "facadeSpec": {
         "sourcePhoto": "public/photos/e-main-400-south-end-2010.png",
         "photoDate": "2010",
         "citation": "photo from Mark, E Main 400 block south end, 2010",
-        "camera": { "year": 1970, "x": -352, "z": 148, "lx": -352, "lz": 215, "fov": 64, "pitch": 0.14, "eye": 5.2 },
-        "estimates": ["The six-window count was not read on a Sanborn sheet. The cream paint and the Something Special band are the 2010 photograph. The russet of the filled panels is an estimate from that photograph."],
+        "camera": {
+          "year": 1970,
+          "x": -352,
+          "z": 148,
+          "lx": -352,
+          "lz": 215,
+          "fov": 64,
+          "pitch": 0.14,
+          "eye": 5.2
+        },
+        "estimates": [
+          "The six-window count was not read on a Sanborn sheet. The cream paint and the Something Special band are the 2010 photograph. The russet of the filled panels is an estimate from that photograph."
+        ],
         "wall": "#9a4034",
         "wallKind": "brick",
         "trim": "#f4efe4",
-        "floors": [12, 12],
+        "floors": [
+          12,
+          12
+        ],
         "cornice": "bracket",
-        "pediment": { "width": 0.55, "rise": 5 },
+        "pediment": {
+          "width": 0.55,
+          "rise": 5
+        },
         "bays": [
-          { "width": 6, "windows": ["storefront", "round"] },
-          { "width": 6, "windows": ["storefront", "round"] },
-          { "width": 6, "windows": ["storefront", "round"] },
-          { "width": 6, "windows": ["storefront", "round"] },
-          { "width": 6, "windows": ["storefront", "round"] },
-          { "width": 6, "windows": ["storefront", "round"] }
+          {
+            "width": 6,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          },
+          {
+            "width": 6,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          },
+          {
+            "width": 6,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          },
+          {
+            "width": 6,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          },
+          {
+            "width": 6,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          },
+          {
+            "width": 6,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          }
         ],
         "storefronts": [
-          { "to": 1969, "frame": "#f4efe4", "height": 9 },
-          { "from": 1970, "frame": "#f4efe4", "height": 9 }
+          {
+            "to": 1969,
+            "frame": "#f4efe4",
+            "height": 9
+          },
+          {
+            "from": 1970,
+            "frame": "#f4efe4",
+            "height": 9
+          }
         ],
         "alterations": [
-          { "from": 1970, "wall": "#cbb892" }
+          {
+            "from": 1970,
+            "wall": "#cbb892"
+          }
         ],
         "signs": [
-          { "text": "BANK OF BUSHNELL", "y": 20, "width": 12, "from": 1900, "to": 1969 },
-          { "text": "Something Special", "y": 11, "width": 14, "from": 1970 }
+          {
+            "text": "BANK OF BUSHNELL",
+            "y": 20,
+            "width": 12,
+            "from": 1900,
+            "to": 1969
+          },
+          {
+            "text": "Something Special",
+            "y": 11,
+            "width": 14,
+            "from": 1970
+          }
         ]
       },
-      "notes": "The Hurst corner of the 400 block of East Main, Crafford side, block 59. Mark's view looking north, and the postcard taken from the 300 block, both show this corner as a two-story red brick bank. The signs read BANK OF BUSHNELL and DENTIST. A 1900 paving petition names the Bank of Bushnell as the end of an East Main stretch, and does not give the lot. No Sanborn label for this bank was read. The corner is the one across Hurst from the 300 block. The partial grocery word farther down the block is not copied as a firm name. photo from Mark, E Main 400 block south end, 2010, shows six tall upstairs windows under cream hoods, and a cornice with dentils, brackets, and a central pediment and finial. Those upper details are drawn here. The brick stays red, which is what the earlier photograph shows. The cream paint, the filled panels, and the ground-floor sign are the 2010 photograph and are not drawn in this year."
+      "notes": "Centennial book PDF p.43: the Bank of Bushnell was organized 1 March 1892 in the Opera House block and was sold to the Farmers & Merchants bank in March 1932. PDF p.41 shows the bank's own corner building in the 1890s: two stories of brick, a front pediment, BANK OF BUSHNELL along the band, DENTIST upstairs, an outside stair on the side, and chimneys. The year it moved into this corner is not printed, so the bank signs start at the 1900 stop (estimate; PDF p.22 and p.55 mention it here about 1900). Kept through the 1920 stop. The Hurst corner of the 400 block of East Main, Crafford side, block 59. Mark's view looking north, and the postcard taken from the 300 block, both show this corner as a two-story red brick bank. The signs read BANK OF BUSHNELL and DENTIST. A 1900 paving petition names the Bank of Bushnell as the end of an East Main stretch, and does not give the lot. No Sanborn label for this bank was read. The corner is the one across Hurst from the 300 block. The partial grocery word farther down the block is not copied as a firm name. photo from Mark, E Main 400 block south end, 2010, shows six tall upstairs windows under cream hoods, and a cornice with dentils, brackets, and a central pediment and finial. Those upper details are drawn here. The brick stays red, which is what the earlier photograph shows. The cream paint, the filled panels, and the ground-floor sign are the 2010 photograph and are not drawn in this year.",
+      "party": [
+        "left"
+      ]
     },
     {
       "id": "block72-1893-meat",
@@ -874,6 +1052,24 @@
       "sign": "GROCERY",
       "name": "Grocery",
       "notes": "Mark's view north on the 400 block of East Main shows a sign ending in GROCERY. The letters before it were not legible, so they are not used. This is the generic word only, on an existing stand-in past the pediment."
+    },
+    {
+      "id": "cole-building-10",
+      "facade": {
+        "photoMatch": true,
+        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.13 (engraving of the Cole building) and PDF p.35 (photograph of the Cole Block).",
+        "photoDate": "Engraving undated (PDF p.13); photograph early 1900s (PDF p.35).",
+        "arches": "round",
+        "bays": 7,
+        "upperBays": 7,
+        "sideBays": 11,
+        "door": "left",
+        "cornice": "bracket",
+        "storefront": "iron",
+        "roof": "flat",
+        "pilasters": true
+      },
+      "notes": "Centennial book PDF p.35: the early-1900s photograph shows no porch roof over the sidewalk, so it is not drawn from the 1900 stop."
     }
   ],
   "streetStyle": {

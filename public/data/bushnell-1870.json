@@ -11,7 +11,8 @@
     "excelsior-mill",
     "vail-house-1870",
     "west-house-1870",
-    "wyckoff-house-1870"
+    "wyckoff-house-1870",
+    "baptist-church-1886"
   ],
   "removeStreetNames": [
     "Cole Street"
@@ -30,7 +31,7 @@
       "id": "cole-building-10",
       "year": "1860s",
       "sourceMap": "Centennial book, 1854\u20131954",
-      "notes": "James Cole's brick corner at East Main and Hail. The centennial book says he made the bricks in the 1860s. The exact year inside that decade was not found, so the building is shown in 1870 and not in 1860. He had been a merchant here since December 1855, in an earlier frame store that was later moved to New Philadelphia. That first store's lot was not named."
+      "notes": "James Cole's brick corner at East Main and Hail. The centennial book says he made the bricks in the 1860s. The exact year inside that decade was not found, so the building is shown in 1870 and not in 1860. He had been a merchant here since December 1855, in an earlier frame store that was later moved to New Philadelphia. That first store's lot was not named. Form per centennial book PDF p.13 and p.35: three stories and about seven bays (see the base record)."
     },
     {
       "id": "excelsior-mill",

@@ -9,6 +9,49 @@
       "use": "funeral home",
       "sign": "",
       "notes": "photo from Mark, 771 N. Crafford St., 2010. Legacy.com says this funeral home has been locally owned and operated since 1942, at 771 N. Crafford St. The 1950 stop is the first stop after 1942, so the use changes here. The Martin-Hollis name is later, and it is not painted on. The house stays as drawn."
+    },
+    {
+      "id": "grocery-0",
+      "name": "Former Bank of Bushnell building",
+      "use": "store",
+      "sign": "",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 3,
+        "cornice": "bracket",
+        "cornerPediment": true,
+        "awning": true,
+        "door": "right",
+        "tall": true,
+        "storefront": "iron",
+        "upperBays": 6,
+        "hood": "cream",
+        "photoSource": "Mark's undated photograph of the 400 block of East Main, looking north, and the postcard from the 300 block. Side stair, chimneys, and the BANK OF BUSHNELL band: Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.41.",
+        "chimneys": 3,
+        "sideStair": 1,
+        "sideBays": 8
+      },
+      "notes": "Centennial book PDF p.43: the Bank of Bushnell was sold to Farmers & Merchants in March 1932, and Farmers & Merchants was at 484 East Main, so the bank and dentist signs are not drawn from the 1950 stop. The later tenant was not found."
+    },
+    {
+      "id": "hardware-3",
+      "name": "Former Opera House block",
+      "sign": "",
+      "facade": {
+        "photoMatch": true,
+        "arches": "round",
+        "bays": 4,
+        "cornice": "corbel",
+        "awning": true,
+        "posts": true,
+        "tall": true,
+        "storefront": "iron",
+        "door": "right",
+        "photoDate": "1907",
+        "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907."
+      },
+      "notes": "Centennial book PDF p.124 speaks of the old Opera House as a thing of the past (it was open in 1917), so the OPERA HOUSE and drug store signs are not drawn from the 1950 stop. When it closed is not printed (estimate)."
     }
   ],
   "add": [
@@ -136,6 +179,62 @@
       "facade": { "plainPlant": true },
       "sourceMap": "Cheryl Douglas, Community News Brief, 24 March 2026",
       "notes": "Small shed just west of the Mickelberry plant. It escaped the 26 February 1965 fire. Kept for 1965 through 1969 only. Its footing is an estimate."
+    },
+    {
+      "id": "west-side-school-1937",
+      "name": "West Side School",
+      "kind": "school",
+      "use": "grade school",
+      "material": "brick",
+      "stories": 2,
+      "width": 130,
+      "depth": 62,
+      "x": 1150,
+      "z": 791,
+      "facing": "+x",
+      "paint": "cream",
+      "brick": "red",
+      "sign": "",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1937",
+      "steeple": false,
+      "rotation": 0,
+      "facade": {
+        "flatSchool": true,
+        "photoSource": "Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.45 and p.73."
+      },
+      "sourceMap": "Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.70, p.73",
+      "notes": "Centennial book PDF p.70 and p.73: the West Side School burned in 1936 and was rebuilt in 1937. Drawn as a two-story flat-roofed brick school. The footprint, the spot on the block, and the facing are estimates."
+    },
+    {
+      "id": "east-side-addition-1922",
+      "name": "East Side School addition",
+      "kind": "school",
+      "use": "high school",
+      "material": "brick",
+      "stories": 2,
+      "width": 70,
+      "depth": 50,
+      "x": -271,
+      "z": -1786,
+      "facing": "-z",
+      "paint": "cream",
+      "brick": "red",
+      "sign": "",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1922",
+      "steeple": false,
+      "rotation": 0,
+      "facade": {
+        "flatSchool": true,
+        "photoSource": "Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.37 and p.72."
+      },
+      "sourceMap": "Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.72",
+      "notes": "Centennial book PDF p.72: an addition was built to the East Side school in 1922. Shown from the 1950 stop, the first stop after 1922. Placement on the Hurst-to-Barnes side of the 1904 building, the flat roof, and the footprint are estimates."
     }
   ],
   "streets": [
@@ -743,5 +842,8 @@
       "sourceMap": "USGS Avon 1944",
       "notes": "Centerline from OpenStreetMap. The 1944 Avon 15-minute sheet draws this line. The 1918 Good Hope sheet does not. No plat date was found. The ribbon width is not a surveyed right-of-way."
     }
+  ],
+  "remove": [
+    "west-side-school-1897"
   ]
 }
