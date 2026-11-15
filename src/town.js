@@ -938,7 +938,9 @@ export function buildTown(data, scene) {
         title: b.facade.upperSign,
         subtitle: "",
         style: "board",
-        position: new THREE.Vector3(b.x, y + 4.2, b.z).addScaledVector(outward, reach),
+        // upperSignAbove: letter the board above the cornice line, where a tall front would
+        // otherwise hide it (the Opera House over Sperling's, PDF p.55).
+        position: new THREE.Vector3(b.x, b.facade.upperSignAbove ? wallH + 2.4 : y + 4.2, b.z).addScaledVector(outward, reach),
         rotation: rot,
         width: Math.min(b.width * 0.46, 14),
       });
