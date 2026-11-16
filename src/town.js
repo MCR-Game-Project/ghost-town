@@ -176,6 +176,33 @@ export function buildTown(data, scene) {
     }
   };
 
+  // Raking coping or trim along both slopes of a front gable, with kneeler blocks at the
+  // feet and an apex block, so a church or school gable reads against the sky.
+  const gableCoping = (mat, span, rise, yBase, z, x = 0, thick = 0.6) => {
+    const half = span / 2;
+    const len = Math.hypot(half, rise) + 0.3;
+    const ang = Math.atan2(rise, half);
+    for (const sd of [-1, 1]) {
+      const rk = new THREE.BoxGeometry(len, thick, thick * 1.4);
+      rk.rotateZ(-sd * ang);
+      rk.translate(x + (sd * half) / 2, yBase + rise / 2 + thick * 0.4, z);
+      rk.applyMatrix4(buildingMatrix);
+      put(mat, rk);
+      box(mat, x + sd * (half - 0.2), yBase + 0.2, z, 1.4, 1.2, thick * 1.8);
+    }
+    box(mat, x, yBase + rise + thick * 0.6, z, 1.1, 1.0, thick * 1.6);
+  };
+
+  // Small four-sided pinnacle (tower corners, St. Bernard's p.59).
+  const pinnacle = (mat, x, y, z, w = 1.0, h = 4.0) => {
+    box(mat, x, y + 0.6, z, w, 1.2, w);
+    const c = new THREE.ConeGeometry(w * 0.6, h, 4);
+    c.rotateY(Math.PI / 4);
+    c.translate(x, y + 1.2 + h / 2, z);
+    c.applyMatrix4(buildingMatrix);
+    put(mat, c);
+  };
+
   const pointedHood = (mat, x, yBase, z, span) => {
     const rise = span * 0.58;
     const len = Math.hypot(span / 2, rise) + 0.2;
@@ -1213,6 +1240,36 @@ export function buildTown(data, scene) {
       geo.applyMatrix4(buildingMatrix);
       put(mat, geo);
     }
+  };
+
+  // True hipped roof: two trapezoid slopes and two triangular hips meeting a ridge, so the
+  // ends do not stand up as flat boards. Both windings are emitted so the faces show from
+  // outside whatever the mirror does to the winding.
+  const trueHip = (width, depth, rise, yBase, mat, ox = 0, oz = 0, overhang = 1.2) => {
+    const W = width / 2 + overhang;
+    const D = depth / 2 + overhang;
+    const alongX = W >= D;
+    const r = alongX ? W - D : D - W;
+    const top = yBase + rise;
+    const P = (x, y, z) => [x + ox, y, z + oz];
+    const a = P(-W, yBase, -D), b2 = P(W, yBase, -D), c = P(W, yBase, D), d = P(-W, yBase, D);
+    const e = alongX ? P(-r, top, 0) : P(0, top, -r);
+    const f = alongX ? P(r, top, 0) : P(0, top, r);
+    const tris = alongX
+      ? [[d, c, f], [d, f, e], [b2, a, e], [b2, e, f], [a, d, e], [c, b2, f]]
+      : [[d, c, f], [a, e, b2], [c, b2, e], [c, e, f], [a, d, f], [a, f, e]];
+    const pos = [];
+    for (const [p1, p2, p3] of tris) pos.push(...p1, ...p2, ...p3, ...p1, ...p3, ...p2);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    const uv = [];
+    for (let i = 0; i < pos.length / 3; i++) uv.push(pos[i * 3] / 8, (pos[i * 3 + 1] + pos[i * 3 + 2]) / 8);
+    geo.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
+    // Indexed like every other piece, so it merges into the same material batch.
+    geo.setIndex([...Array(pos.length / 3).keys()]);
+    geo.computeVertexNormals();
+    geo.applyMatrix4(buildingMatrix);
+    put(mat, geo);
   };
 
   const hipRoof = (width, depth, rise, yBase, mat, ox, oz) => {
@@ -3960,7 +4017,7 @@ export function buildTown(data, scene) {
     // Heavy dark bracketed cornice with corner urns (PDF p.125).
     deepCrown(b, wallH, { proj: 2.4, frieze: 2.4, mat: "dark", spacing: 2.6, finials: true });
     for (const x of [-b.width / 2 + 0.4, b.width / 2 - 0.4]) box(mats.trim, x, wallH * 0.45, fz + 0.3, 0.8, wallH * 0.9, 0.6);
-    hipRoof(b.width, b.depth, 7, wallH + 0.8, mats.roofDark, 0, 0);
+    trueHip(b.width, b.depth, 7, wallH + 1.2, mats.roofDark, 0, 0, 0.4);
     // Gabled dormer above the cornice, toward the street.
     const dz = b.depth / 2 - 5;
     box(body, 0, wallH + 4.2, dz, 8, 6.4, 4.5);
@@ -3999,7 +4056,10 @@ export function buildTown(data, scene) {
     box(mats.stone, 0, base / 2, 0, b.width + 1.2, base, b.depth + 1.2);
     box(body, 0, base + floor, 0, b.width, 2 * floor, b.depth);
     box(mats.stone, 0, base + floor, 0, b.width + 0.4, 0.5, b.depth + 0.4);
-    hipRoof(b.width, b.depth, 14, wall, mats.roofDark, 0, 0);
+    trueHip(b.width, b.depth, 14, wall + 0.3, mats.roofDark, 0, 0, 1.2);
+    // Eave frieze and soffit around the main block.
+    box(mats.stone, 0, wall - 0.9, 0, b.width + 0.3, 1.0, b.depth + 0.3);
+    box(mats.trim, 0, wall + 0.1, 0, b.width + 2.2, 0.5, b.depth + 2.2);
     const wingW = Math.min(26, b.width * 0.3);
     for (const side of [-1, 1]) {
       const wx = side * (b.width / 2 - wingW / 2);
@@ -4007,6 +4067,12 @@ export function buildTown(data, scene) {
       box(mats.stone, wx, base / 2, fz + 1.9, wingW + 0.6, base, 3.8);
       clapboardTriangle(body, wingW + 0.4, 11, wall, "z", fz + 3.0, wx, 0);
       box(mats.trim, wx, wall + 0.2, fz + 3.4, wingW + 1.0, 0.5, 0.6);
+      // Steep wing gables with stone coping and a stone frieze (PDF p.71).
+      gableCoping(mats.stone, wingW + 1.0, 11.4, wall, fz + 3.3, wx, 0.65);
+      // Roof behind each wing gable, running back into the main hip.
+      const wd = b.depth * 0.55;
+      gableFrontAt(wingW + 0.8, wd, 11, wall, mats.roofDark, wx, fz + 3.2 - wd / 2);
+      box(mats.stone, wx, wall - 1.0, fz + 3.25, wingW + 0.2, 1.1, 0.25);
       for (const row of [base + floor * 0.55, base + floor * 1.55]) {
         for (const dx of [-wingW * 0.3, -wingW * 0.1, wingW * 0.1, wingW * 0.3]) {
           frontSash(wx + dx, row, fz + 3.2, 2.0, 6.6, "flat", false, mats.stone);
@@ -4030,17 +4096,35 @@ export function buildTown(data, scene) {
     box(mats.trimDark, 0, 5.6, tz + tw / 2 + 0.08, 6, 9.2, 0.2);
     archHood(mats.stone, 0, 10.2, tz + tw / 2 + 0.3, 8.4, 4.2, "z");
     for (const dx of [-3.2, 0, 3.2]) frontSash(dx, base + floor * 1.5, tz + tw / 2 + 0.05, 2.0, 5.6, "round", false, mats.stone);
+    // Belfry stage: three arched openings on each face under a stone cornice, then a
+    // flared eave and a steep pyramid spire with a finial (PDF p.71 photograph).
+    box(mats.stone, 0, th - 9.2, tz, tw + 0.5, 0.6, tw + 0.5);
     for (const face of [0, 1, 2, 3]) {
       const ang = (face * Math.PI) / 2;
-      box(mats.trimDark, Math.sin(ang) * (tw / 2 + 0.05), th - 5, tz + Math.cos(ang) * (tw / 2 + 0.05), face % 2 ? 0.2 : 4.6, 5.6, face % 2 ? 4.6 : 0.2);
+      const ox = Math.sin(ang) * (tw / 2 + 0.05);
+      const oz = Math.cos(ang) * (tw / 2 + 0.05);
+      for (const k of [-1, 0, 1]) {
+        const ax = face % 2 ? 0 : k * 4.2;
+        const az = face % 2 ? k * 4.2 : 0;
+        box(mats.trimDark, ox + ax, th - 5.6, tz + oz + az, face % 2 ? 0.2 : 2.8, 5.2, face % 2 ? 2.8 : 0.2);
+        if (face % 2 === 0) ringArch(mats.stone, ox + ax, th - 3.0, tz + oz * 1.02, 1.5, 0.3);
+      }
     }
-    box(mats.trim, 0, th + 0.3, tz, tw + 1.2, 0.6, tw + 1.2);
-    const spire = new THREE.ConeGeometry(tw * 0.74, 20, 4);
+    box(mats.stone, 0, th - 0.6, tz, tw + 1.0, 1.0, tw + 1.0);
+    box(mats.trim, 0, th + 0.3, tz, tw + 2.6, 0.5, tw + 2.6);
+    box(mats.roofDark, 0, th + 0.75, tz, tw + 3.6, 0.3, tw + 3.6);
+    const spire = new THREE.ConeGeometry(tw * 0.7, 22, 4);
     spire.rotateY(Math.PI / 4);
-    spire.translate(0, th + 10.4, tz);
+    spire.translate(0, th + 11.6, tz);
     spire.applyMatrix4(buildingMatrix);
     put(mats.roofDark, spire);
-    box(mats.trimDark, 0, th + 21.5, tz, 0.2, 2.6, 0.2);
+    box(mats.trimDark, 0, th + 23.5, tz, 0.2, 3.0, 0.2);
+    {
+      const ball = new THREE.SphereGeometry(0.4, 8, 6);
+      ball.translate(0, th + 22.9, tz);
+      ball.applyMatrix4(buildingMatrix);
+      put(mats.trimDark, ball);
+    }
     chimneyStack(mats.brick.red, -b.width * 0.22, wall + 9, -b.depth * 0.15, 2.4, 8, 2.4);
     chimneyStack(mats.brick.red, b.width * 0.22, wall + 9, -b.depth * 0.15, 2.4, 8, 2.4);
     signFor(b, wall - 1);
@@ -4058,8 +4142,11 @@ export function buildTown(data, scene) {
     const fz = b.depth / 2 + 0.12;
     box(body, 0, wall / 2, 0, b.width, wall, b.depth);
     box(mats.stone, 0, 1.5, 0, b.width + 0.4, 3, b.depth + 0.4);
-    box(mats.stone, 0, wall + 0.35, 0, b.width + 0.6, 0.7, b.depth + 0.6);
-    box(mats.roofDark, 0, wall - 0.2, 0, b.width - 0.6, 0.3, b.depth - 0.6);
+    // Brick parapet with stone coping and a stone band below it (PDF p.72-73).
+    box(body, 0, wall + 1.3, 0, b.width, 2.6, b.depth);
+    box(mats.stone, 0, wall + 2.75, 0, b.width + 0.6, 0.5, b.depth + 0.6);
+    box(mats.stone, 0, wall - 0.6, 0, b.width + 0.3, 0.9, b.depth + 0.3);
+    box(mats.roofDark, 0, wall + 2.3, 0, b.width - 1.4, 0.3, b.depth - 1.4);
     const cols = Math.max(4, Math.round(b.width / 7));
     const gap = b.width / cols;
     const mid = Math.floor(cols / 2);
@@ -4070,7 +4157,8 @@ export function buildTown(data, scene) {
     }
     const ex = -b.width / 2 + gap * (mid + 0.5);
     box(mats.stone, ex, wall / 2, fz + 0.4, Math.max(8, gap), wall, 0.8);
-    box(mats.stone, ex, wall + 1.4, fz + 0.4, Math.max(9, gap + 1), 2.2, 0.9);
+    box(mats.stone, ex, wall + 2.6, fz + 0.4, Math.max(9, gap + 1), 4.6, 0.9);
+    box(mats.stone, ex, wall + 5.1, fz + 0.5, Math.max(9.6, gap + 1.6), 0.5, 1.2);
     paneledDoor(ex, fz + 0.85, 4.6, 8.2, true);
     frontSash(ex, 3 + floor * 1.52, fz + 0.85, 3.2, 6.8, "flat", false, mats.stone);
     for (const side of [-1, 1]) {
@@ -4081,7 +4169,7 @@ export function buildTown(data, scene) {
       }
     }
     signFor(b, wall - 1);
-    return wall + 3;
+    return wall + 6;
   };
 
   // St. Bernard Catholic Church, brick, built 1906 and dedicated 15 May 1907; burned
@@ -4097,6 +4185,11 @@ export function buildTown(data, scene) {
     gableFrontAt(b.width, b.depth, rise, wallH, mats.roofDark, 0, 0);
     clapboardTriangle(body, b.width, rise * 0.96, wallH, "z", b.depth / 2 + 0.02, 0, 0);
     clapboardTriangle(body, b.width, rise * 0.96, wallH, "z", -b.depth / 2 - 0.02, 0, 0);
+    gableCoping(mats.stone, b.width + 0.8, rise * 0.96 + 0.3, wallH, fz + 0.25, 0, 0.55);
+    box(mats.stone, 0, wallH - 0.2, fz + 0.15, b.width + 0.4, 0.5, 0.4);
+    // Brick buttresses at the corners of the nave front (p.59 photograph).
+    box(body, b.width / 2 - 0.6, wallH * 0.45, fz + 0.6, 1.6, wallH * 0.9, 1.4);
+    box(mats.stone, b.width / 2 - 0.6, wallH * 0.9, fz + 0.75, 1.8, 0.4, 1.7);
     frontSash(b.width * 0.12, 10, fz, 3.0, 9, "round", false, mats.stone);
     frontSash(b.width * 0.36, 10, fz, 3.0, 9, "round", false, mats.stone);
     frontSash(b.width * 0.22, wallH + rise * 0.35, fz, 2.2, 4, "round", false, mats.stone);
@@ -4123,6 +4216,13 @@ export function buildTown(data, scene) {
       for (let k = 0; k < 5; k++) box(mats.trimDark, tx + ox * 1.01, th - 10 + k * 1.5, tz + oz * 1.01, face % 2 ? 0.12 : 4.4, 0.3, face % 2 ? 4.4 : 0.12);
     }
     box(mats.trim, tx, th + 0.3, tz, tw + 1, 0.6, tw + 1);
+    // Tower crown: corbel band under the belfry cornice and corner pinnacles (p.59).
+    box(mats.stone, tx, th - 12.2, tz, tw + 0.5, 0.5, tw + 0.5);
+    box(body, tx, th - 0.9, tz, tw + 0.6, 1.0, tw + 0.6);
+    for (const px of [-1, 1]) for (const pz of [-1, 1]) {
+      pinnacle(mats.stone, tx + px * (tw / 2 - 0.3), th + 0.5, tz + pz * (tw / 2 - 0.3), 1.1, 4.2);
+      box(body, tx + px * (tw / 2 + 0.2), (th - 12) / 2, tz + pz * (tw / 2 + 0.2), 1.3, th - 12, 1.3);
+    }
     const spire = new THREE.ConeGeometry(tw * 0.62, 28, 4);
     spire.rotateY(Math.PI / 4);
     spire.translate(tx, th + 14.4, tz);
@@ -4148,7 +4248,10 @@ export function buildTown(data, scene) {
     clapboardTriangle(body, b.width, rise * 0.96, wallH, "z", b.depth / 2 + 0.02, 0, 0);
     clapboardTriangle(body, b.width, rise * 0.96, wallH, "z", -b.depth / 2 - 0.02, 0, 0);
     box(mats.stone, 0, wallH + rise * 0.3, fz + 0.05, 7.4, rise * 0.5 + wallH * 0.5, 0.25);
-    frontSash(0, wallH * 0.85, fz + 0.2, 4.2, 9.5, "round", false, mats.stone);
+    // Tall pointed window with stone tracery (p.61), and stone coping on the gable.
+    frontSash(0, wallH * 0.85, fz + 0.2, 4.2, 9.5, "pointed", false, mats.stone);
+    box(mats.stone, 0, wallH * 0.85, fz + 0.75, 0.25, 9.0, 0.12);
+    gableCoping(mats.stone, b.width + 0.8, rise * 0.96 + 0.3, wallH, fz + 0.25, 0, 0.6);
     paneledDoor(0, fz + 0.2, 5.2, 8.0, false);
     box(mats.stone, 0, 9.0, fz + 0.9, 7.2, 0.4, 1.6);
     frontSash(-b.width * 0.32, 8.5, fz, 2.2, 5, "round", false, mats.stone);
