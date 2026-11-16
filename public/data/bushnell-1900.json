@@ -555,9 +555,15 @@
         "photoDate": "1907",
         "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907.",
         "upperSign": "OPERA HOUSE",
-        "upperSignAbove": true
+        "upperSignAbove": true,
+        "crown": {
+          "proj": 1.6,
+          "frieze": 2.0,
+          "friezeMat": "body",
+          "spacing": 2.6
+        }
       },
-      "notes": "Facade matched to Mark's 1907 photograph of the 400 block of East Main, Hurst to Hail, the Crafford side. Round arches, a corbelled and bracketed cornice, an awning, and sidewalk posts are from that picture. The lot within the block is an estimate. The January 1886 Sanborn already shows storefronts along this side. A center pediment was tried on this bay as an estimate of the 1907 photograph. photo from Mark, E Main 400 block south end, 2010, shows that pediment on the Hurst-corner front, so it is not drawn here. Centennial book PDF p.55 (about 1900): Sperling's drug store with the Opera House upstairs, fifth front from the Hurst corner; the choice of this bay is an estimate. Opera House built 1882 (PDF p.16–17).",
+      "notes": "Facade matched to Mark's 1907 photograph of the 400 block of East Main, Hurst to Hail, the Crafford side. Round arches, a corbelled and bracketed cornice, an awning, and sidewalk posts are from that picture. The lot within the block is an estimate. The January 1886 Sanborn already shows storefronts along this side. A center pediment was tried on this bay as an estimate of the 1907 photograph. photo from Mark, E Main 400 block south end, 2010, shows that pediment on the Hurst-corner front, so it is not drawn here. Centennial book PDF p.55 (about 1900): Sperling's drug store with the Opera House upstairs, fifth front from the Hurst corner; the choice of this bay is an estimate. Opera House built 1882 (PDF p.16–17). Round 2: the corbelled and bracketed cornice is drawn deeper, with a frieze band; its depth is an estimate (no close photograph of this front is in the centennial book).",
       "sourceMap": "Mark's street photograph, with the 1886–1912 Sanborn row",
       "name": "Sperling's Drug Store, Opera House upstairs",
       "sign": "DRUGS"
@@ -914,7 +920,14 @@
         "sideSign": {
           "text": "BANK OF BUSHNELL",
           "side": 1
-        }
+        },
+        "crown": {
+          "proj": 1.6,
+          "frieze": 2.0,
+          "friezeMat": "body",
+          "spacing": 2.4
+        },
+        "chimneySide": 1
       },
       "facadeSpec": {
         "sourcePhoto": "public/photos/e-main-400-south-end-2010.png",
@@ -1068,7 +1081,13 @@
         "cornice": "bracket",
         "storefront": "iron",
         "roof": "flat",
-        "pilasters": true
+        "pilasters": true,
+        "crown": {
+          "proj": 2.8,
+          "frieze": 2.2,
+          "mat": "dark",
+          "spacing": 3.0
+        }
       },
       "notes": "Centennial book PDF p.35: the early-1900s photograph shows no porch roof over the sidewalk, so it is not drawn from the 1900 stop."
     }

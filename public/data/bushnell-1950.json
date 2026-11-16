@@ -30,7 +30,14 @@
         "photoSource": "Mark's undated photograph of the 400 block of East Main, looking north, and the postcard from the 300 block. Side stair, chimneys, and the BANK OF BUSHNELL band: Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.41.",
         "chimneys": 3,
         "sideStair": 1,
-        "sideBays": 8
+        "sideBays": 8,
+        "crown": {
+          "proj": 1.6,
+          "frieze": 2.0,
+          "friezeMat": "body",
+          "spacing": 2.4
+        },
+        "chimneySide": 1
       },
       "notes": "Centennial book PDF p.43: the Bank of Bushnell was sold to Farmers & Merchants in March 1932, and Farmers & Merchants was at 484 East Main, so the bank and dentist signs are not drawn from the 1950 stop. The later tenant was not found."
     },
@@ -49,7 +56,13 @@
         "storefront": "iron",
         "door": "right",
         "photoDate": "1907",
-        "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907."
+        "photoSource": "Mark's photograph of the 400 block of East Main, dated 1907.",
+        "crown": {
+          "proj": 1.6,
+          "frieze": 2.0,
+          "friezeMat": "body",
+          "spacing": 2.6
+        }
       },
       "notes": "Centennial book PDF p.124 speaks of the old Opera House as a thing of the past (it was open in 1917), so the OPERA HOUSE and drug store signs are not drawn from the 1950 stop. When it closed is not printed (estimate)."
     }

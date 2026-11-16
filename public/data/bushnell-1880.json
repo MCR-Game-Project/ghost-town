@@ -5483,7 +5483,7 @@
       "width": 28,
       "depth": 52,
       "confidence": "sourced",
-      "notes": "The Hurst corner of the 400 block of East Main. Centennial book PDF p.15 puts the Davey cigar works upstairs in this corner building about 1880, so it is drawn as the brick two-story corner from the 1880 stop. Its form follows the 1890s photograph on PDF p.41: two stories of brick, a front pediment, an outside stair up the Hurst side, and chimneys. The Bank of Bushnell signs are added at the 1900 stop. It stays 28 feet wide at the 1880 and 1890 stops (estimate) so it does not run into the neighbouring stand-in; the 1900 update widens it to 36 feet as before. Party wall on the dry-goods side; the Hurst side has windows and the stair. Earlier stand-in: a frame Grocery.",
+      "notes": "The Hurst corner of the 400 block of East Main. Centennial book PDF p.15 puts the Davey cigar works upstairs in this corner building about 1880, so it is drawn as the brick two-story corner from the 1880 stop. Its form follows the 1890s photograph on PDF p.41: two stories of brick, a front pediment, an outside stair up the Hurst side, and chimneys. The Bank of Bushnell signs are added at the 1900 stop. It stays 28 feet wide at the 1880 and 1890 stops (estimate) so it does not run into the neighbouring stand-in; the 1900 update widens it to 36 feet as before. Party wall on the dry-goods side; the Hurst side has windows and the stair. Earlier stand-in: a frame Grocery. Round 2 (PDF p.41): a corbelled brick frieze under a bracketed cornice carried along the Hurst side, a solid front pediment with a finial, and the chimneys along the Hurst side wall. Cornice depth is an estimate.",
       "sign": "",
       "porch": false,
       "paint": "cream",
@@ -5512,7 +5512,14 @@
         "hood": "cream",
         "chimneys": 3,
         "sideStair": 1,
-        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.41 (Bank of Bushnell building, 1890s) and p.15."
+        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.41 (Bank of Bushnell building, 1890s) and p.15.",
+        "crown": {
+          "proj": 1.6,
+          "frieze": 2.0,
+          "friezeMat": "body",
+          "spacing": 2.4
+        },
+        "chimneySide": 1
       }
     },
     {
@@ -5758,11 +5765,11 @@
       "width": 48,
       "depth": 74,
       "confidence": "sourced",
-      "notes": "James Cole's brick corner at East Main and Hail. He made the bricks himself in the 1860s and added banking in 1878. Centennial book PDF p.13 (engraving) and PDF p.35 (photograph) show it as three stories, about seven windows across, round-arched, with a bracketed cornice; the engraving shows a porch roof over the sidewalk, drawn here before the 1900 stop. The window count is read from the pictures (about seven; estimate). The 48-foot front and the depth are estimates. PDF p.57 says the Cole Block was recently torn down by 1954, so it comes off at the 1960 stop. Open question: PDF p.55 starts its walk along this side at the Hail corner with a wooden building, which does not match a brick block on the Hail corner.",
+      "notes": "James Cole's brick corner at East Main and Hail. He made the bricks himself in the 1860s and added banking in 1878. Centennial book PDF p.13 (engraving) and PDF p.35 (photograph) show it as three stories, about seven windows across, round-arched, with a bracketed cornice; the engraving shows a porch roof over the sidewalk, drawn here before the 1900 stop. The window count is read from the pictures (about seven; estimate). The 48-foot front and the depth are estimates. PDF p.57 says the Cole Block was recently torn down by 1954, so it comes off at the 1960 stop. Open question: PDF p.55 starts its walk along this side at the Hail corner with a wooden building, which does not match a brick block on the Hail corner. Round 2 (PDF p.35): light cream brick and a deep overhanging bracketed cornice carried around the Hail side; the cornice colour (dark, as it reads in the photograph) and its depth are estimates.",
       "sign": "COLE",
       "porch": false,
       "year": "1860s",
-      "brick": "soft",
+      "brick": "buff",
       "x": -54.0,
       "z": -228.0,
       "facing": "+z",
@@ -5787,7 +5794,13 @@
         "roof": "flat",
         "pilasters": true,
         "shedPorch": true,
-        "shedPorchSide": -1
+        "shedPorchSide": -1,
+        "crown": {
+          "proj": 2.8,
+          "frieze": 2.2,
+          "mat": "dark",
+          "spacing": 3.0
+        }
       }
     },
     {
