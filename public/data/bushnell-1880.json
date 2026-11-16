@@ -6045,11 +6045,11 @@
       "width": 54,
       "depth": 72,
       "confidence": "sourced",
-      "notes": "The brick block at Hurst and West Main. Sourced from the centennial photograph of the original Hendee building: two stories, six pointed-arch upstairs windows in two groups of three, round-arched openings on the ground floor, and a bracketed cornice (PDF p.25). The 1885 history says S. A. Hendee started on the east side of the railroad in 1860, so the first counter may have been across the tracks. The photograph is undated. The depth behind the three-bay front is inferred. Location: the January 1886 sheet 2, August 1893 sheet 2 and March 1906 sheet 3 Sanborn maps draw the Hendee general store and bank on the Hurst corner of the Barnes-Hurst block (block 71) of West Main, so it was moved there from the Hurst-Hail block in the November 2026 audit.",
+      "notes": "The brick block at Hurst and West Main. Sourced from the centennial photograph of the original Hendee building: two stories, six pointed-arch upstairs windows in two groups of three, round-arched openings on the ground floor, and a bracketed cornice (PDF p.25). The 1885 history says S. A. Hendee started on the east side of the railroad in 1860, so the first counter may have been across the tracks. The photograph is undated. The depth behind the three-bay front is inferred. Location: the January 1886 sheet 2, August 1893 sheet 2 and March 1906 sheet 3 Sanborn maps draw the Hendee general store and bank on the Hurst corner of the Barnes-Hurst block (block 71) of West Main, so it was moved there from the Hurst-Hail block in the November 2026 audit. Round 2 (PDF p.25 engraving): light walls (drawn as buff brick; the engraving does not say whether it is painted brick or stone), a deep bracketed cornice with a frieze band carried around the Hurst side, three chimneys on the side wall, and a full-width columned porch with the small HENDEE sign at the end of the porch roof. Porch depth, column count, and the wall colour are estimates read from the engraving.",
       "sign": "HENDEE",
       "porch": false,
       "year": "1860",
-      "brick": "red",
+      "brick": "buff",
       "x": -477.0,
       "z": 227.0,
       "facing": "-z",
@@ -6074,7 +6074,29 @@
         "pilasters": true,
         "upperBays": 6,
         "upperGroups": 2,
-        "groundArch": "round"
+        "groundArch": "round",
+        "hood": "white",
+        "crown": {
+          "proj": 2.2,
+          "frieze": 1.3,
+          "mat": "white",
+          "spacing": 2.6
+        },
+        "veranda": {
+          "depth": 8,
+          "height": 13,
+          "cols": 7
+        },
+        "signAt": {
+          "y": 14.6,
+          "reach": 8.7,
+          "along": -19,
+          "width": 11
+        },
+        "chimneys": 3,
+        "chimneySide": 1,
+        "upperY": 0.68,
+        "upperH": 8.0
       }
     },
     {

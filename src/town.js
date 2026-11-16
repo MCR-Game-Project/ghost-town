@@ -162,11 +162,11 @@ export function buildTown(data, scene) {
   // glazed triangle under them. Used for the upper windows of the Hendee building
   // engraving (centennial book, PDF p.25).
   const pointedHood = (mat, x, yBase, z, span) => {
-    const rise = span * 0.72;
+    const rise = span * 0.58;
     const len = Math.hypot(span / 2, rise) + 0.2;
     const angle = Math.atan2(rise, span / 2);
     for (const side of [-1, 1]) {
-      const geo = new THREE.BoxGeometry(len, 0.36, 0.42);
+      const geo = new THREE.BoxGeometry(len, 0.3, 0.34);
       geo.rotateZ(-side * angle);
       geo.translate(x + side * (span / 4), yBase + rise / 2, z);
       geo.applyMatrix4(buildingMatrix);
@@ -181,6 +181,9 @@ export function buildTown(data, scene) {
     glass.translate(x, yBase, z - 0.36);
     glass.applyMatrix4(buildingMatrix);
     put(mats.glass, glass);
+    // Small keystone and label stops at the springing (hood moldings in the p.25 engraving).
+    box(mat, x, yBase + rise - 0.05, z + 0.08, 0.42, 0.6, 0.42);
+    for (const side of [-1, 1]) box(mat, x + side * (span / 2 + 0.05), yBase - 0.15, z + 0.05, 0.42, 0.42, 0.4);
   };
 
   // One-over-one sash. Glass sits several inches behind the outer frame so the
@@ -415,6 +418,125 @@ export function buildTown(data, scene) {
     }
   };
 
+  // Deep projecting crown for the centennial-book buildings: a frieze band, large scroll
+  // brackets under a projecting eave, dentils, and a crown molding, carried around every
+  // side that is not a party wall. Book photographs: Hendee p.25, Cole p.13 and p.35,
+  // City Hall p.125, Bank of Bushnell p.41. Sizes are read from the pictures (estimates).
+  const deepCrown = (b, wallH, opt = {}) => {
+    const o = typeof opt === "object" ? opt : {};
+    const proj = o.proj ?? 2.2;
+    const fh = o.frieze ?? 2.4;
+    const mat = o.mat === "dark" ? mats.trimDark : o.mat === "white" ? mats.siding.white : mats.trim;
+    const friezeMat = o.friezeMat === "body" ? brickOf(b) : o.friezeMat === "dark" ? mats.trimDark : mat;
+    const spacing = o.spacing ?? 2.8;
+    const fz = b.depth / 2 + 0.14;
+    const party = b.party || [];
+    const sides = [-1, 1].filter((sd) => !party.includes(sd === -1 ? "left" : "right"));
+    const leftOut = sides.includes(-1) ? proj : 0;
+    const rightOut = sides.includes(1) ? proj : 0;
+    const slabW = b.width + leftOut + rightOut;
+    const slabX = (rightOut - leftOut) / 2;
+    // Front run.
+    box(friezeMat, 0, wallH - fh / 2, fz + 0.12, b.width + 0.1, fh, 0.34);
+    box(mat, 0, wallH - fh - 0.15, fz + 0.3, b.width + 0.3, 0.32, 0.6);
+    box(mat, slabX, wallH + 0.25, fz + proj / 2, slabW + 0.2, 0.55, proj + 0.4);
+    box(mat, slabX, wallH + 0.75, fz + proj / 2 + 0.12, slabW + 0.5, 0.45, proj + 0.75);
+    box(mat, slabX, wallH + 1.1, fz + proj / 2 + 0.2, slabW + 0.7, 0.26, proj + 0.95);
+    dentilCourse(wallH - 0.18, fz + 0.5, b.width - 0.4, { w: 0.32, h: 0.34, d: 0.4, gap: 0.75, mat });
+    const n = Math.max(3, Math.round(b.width / spacing));
+    const bracket = (x, z, alongX) => {
+      // Scroll bracket: a tall drop on the frieze, a knee, and an arm under the eave.
+      const w = alongX ? 0.5 : proj * 0.92;
+      const d = alongX ? proj * 0.92 : 0.5;
+      box(mat, x, wallH - fh * 0.5, alongX ? z + 0.32 : z, alongX ? 0.5 : 0.62, fh * 0.9, alongX ? 0.62 : 0.5);
+      box(mat, alongX ? x : x, wallH - fh * 0.92, alongX ? z + 0.55 : z, alongX ? 0.4 : 1.0, 0.4, alongX ? 1.0 : 0.4);
+      box(mat, x, wallH - 0.15, alongX ? z + proj * 0.46 : z, w, 0.42, d);
+    };
+    for (let i = 0; i < n; i++) {
+      const x = -b.width / 2 + 0.55 + ((b.width - 1.1) * i) / (n - 1);
+      bracket(x, fz, true);
+    }
+    // Side runs.
+    for (const sd of sides) {
+      const sx = sd * (b.width / 2 + 0.14);
+      box(friezeMat, sx + sd * 0.12, wallH - fh / 2, 0, 0.34, fh, b.depth + 0.1);
+      box(mat, sx + sd * 0.3, wallH - fh - 0.15, 0, 0.6, 0.32, b.depth + 0.3);
+      box(mat, sx + sd * (proj / 2), wallH + 0.25, -0.2, proj + 0.4, 0.55, b.depth + 0.2);
+      box(mat, sx + sd * (proj / 2 + 0.12), wallH + 0.75, -0.2, proj + 0.75, 0.45, b.depth + 0.4);
+      const m = Math.max(3, Math.round(b.depth / (spacing * 1.25)));
+      for (let i = 0; i < m; i++) {
+        const z = -b.depth / 2 + 0.8 + ((b.depth - 1.6) * i) / (m - 1);
+        box(mat, sx + sd * 0.32, wallH - fh * 0.5, z, 0.62, fh * 0.9, 0.5);
+        box(mat, sx + sd * (proj * 0.46), wallH - 0.15, z, proj * 0.92, 0.42, 0.5);
+      }
+    }
+    // Corner urn finials on the crown (City Hall, p.125).
+    if (o.finials) {
+      for (const x of [-b.width / 2 - leftOut * 0.6, b.width / 2 + rightOut * 0.6]) {
+        box(mat, x, wallH + 1.6, fz + proj * 0.4, 0.9, 0.7, 0.9);
+        const urn = new THREE.SphereGeometry(0.55, 10, 8);
+        urn.translate(x, wallH + 2.4, fz + proj * 0.4);
+        urn.applyMatrix4(buildingMatrix);
+        put(mat, urn);
+        box(mat, x, wallH + 3.1, fz + proj * 0.4, 0.18, 0.7, 0.18);
+      }
+    }
+    // Raised name panel above the crown, where a photograph shows one.
+    if (o.panel) {
+      const pw = Math.min(b.width * 0.5, o.panel.width ?? 16);
+      const ph = o.panel.height ?? 3.2;
+      box(brickOf(b), 0, wallH + 1.25 + ph / 2, fz - 0.1, pw, ph, 0.8);
+      box(mat, 0, wallH + 1.25 + ph + 0.2, fz + 0.1, pw + 0.8, 0.4, 1.2);
+      box(mat, 0, wallH + 1.25 + ph / 2, fz + 0.32, pw - 1.2, ph - 1.0, 0.1);
+    }
+    return wallH + 1.3 + (o.panel ? (o.panel.height ?? 3.2) + 0.6 : 0);
+  };
+
+  // Full-width columned porch across the ground floor (Hendee engraving, PDF p.25):
+  // turned columns with caps and bases, arched spandrels between them, a fascia that
+  // carries the HENDEE sign, a low roof, and a raised deck. Depth is an estimate.
+  const drawVeranda = (b, v) => {
+    const o = typeof v === "object" ? v : {};
+    const depth = o.depth ?? 8;
+    const h = o.height ?? 11;
+    const fz = b.depth / 2 + 0.14;
+    const zc = fz + depth;
+    const cols = Math.max(2, o.cols ?? 7);
+    const w = b.width + 0.6;
+    box(mats.stone, 0, 0.45, fz + depth / 2, w, 0.9, depth);
+    box(mats.plank, 0, 0.95, fz + depth / 2, w - 0.3, 0.12, depth - 0.3);
+    for (let i = 0; i < cols; i++) {
+      const x = -w / 2 + 0.5 + ((w - 1) * i) / (cols - 1);
+      const col = new THREE.CylinderGeometry(0.46, 0.56, h - 2.2, 14);
+      col.translate(x, 1.0 + (h - 2.2) / 2, zc - 0.5);
+      col.applyMatrix4(buildingMatrix);
+      put(mats.siding.white, col);
+      box(mats.siding.white, x, 1.25, zc - 0.5, 1.0, 0.5, 1.0);
+      box(mats.siding.white, x, h - 1.05, zc - 0.5, 1.1, 0.4, 1.1);
+      if (i < cols - 1) {
+        const nx = -w / 2 + 0.5 + ((w - 1) * (i + 1)) / (cols - 1);
+        archHood(mats.siding.white, (x + nx) / 2, h - 2.9, zc - 0.5, nx - x - 0.9, 1.6, "z");
+      }
+    }
+    // Fascia and cornice of the porch.
+    box(mats.siding.white, 0, h - 0.5, zc - 0.5, w + 0.3, 1.8, 0.5);
+    box(mats.trimDark, 0, h - 1.45, zc - 0.25, w + 0.3, 0.14, 0.1);
+    box(mats.trim, 0, h + 0.45, zc - 0.35, w + 0.6, 0.35, 0.9);
+    dentilCourse(h - 1.0, zc - 0.2, w - 0.5, { gap: 0.8 });
+    // Low roof falling to the street.
+    const roof = new THREE.BoxGeometry(w + 0.4, 0.2, depth + 0.6);
+    roof.rotateX(0.08);
+    roof.translate(0, h + 0.65, fz + depth / 2);
+    roof.applyMatrix4(buildingMatrix);
+    put(mats.roofDark, roof);
+    // Railing at the open ends.
+    for (const sd of [-1, 1]) {
+      box(mats.siding.white, sd * (w / 2 - 0.1), 3.3, fz + depth / 2, 0.2, 0.25, depth - 1);
+      for (let k = 0; k < 6; k++) box(mats.siding.white, sd * (w / 2 - 0.1), 2.2, fz + 0.8 + (k * (depth - 1.6)) / 5, 0.14, 2.2, 0.14);
+    }
+    return { y: h + 2.2, z: zc };
+  };
+
   // A front taken from a photograph: bay count, arch shape, cornice, storefront, porch.
   const drawFacade = (b, wallH) => {
     const f = b.facade;
@@ -495,12 +617,15 @@ export function buildTown(data, scene) {
       const fill = f.upperFill === "russet" ? mats.siding.darkred : null;
       for (let col = 0; col < upperBays; col++) {
         const x = upperX(col);
-        frontSash(x, wallH * 0.72, fz, winW, winH, arch, false, archMat);
-        if (fill) box(fill, x, wallH * 0.72, fz + 0.1, winW * 0.7, winH * 0.72, 0.08);
+        // upperY lowers the upper row so a tall arched head clears a deep frieze (Hendee, p.25).
+        const uy = wallH * (f.upperY ?? 0.72);
+        frontSash(x, uy, fz, winW, f.upperH ?? winH, arch, false, archMat);
+        if (fill) box(fill, x, uy, fz + 0.1, winW * 0.7, winH * 0.72, 0.08);
         if (b.stories > 2) frontSash(x, wallH * 0.45, fz, winW * 0.92, winH * 0.86, arch, false, archMat);
       }
     }
-    if (f.cornice === "bracket" || f.cornice === "plain" || f.cornice === "corbel") {
+    if (f.crown) deepCrown(b, wallH, f.crown);
+    else if (f.cornice === "bracket" || f.cornice === "plain" || f.cornice === "corbel") {
       box(mats.trim, 0, wallH + 0.35, fz + 0.55, b.width + 1.3, 0.95, 1.35);
       box(mats.trim, 0, wallH - 0.35, fz + 0.28, b.width + 0.4, 0.42, 0.7);
       dentilCourse(wallH - 0.15, fz + 0.85, b.width);
@@ -517,6 +642,7 @@ export function buildTown(data, scene) {
         box(mats.trim, x, wallH * 0.92, fz + 0.48, 1.2, 0.55, 0.95);
       }
     }
+    if (f.veranda) drawVeranda(b, f.veranda);
     if (f.pentRoof) {
       localBox(mats.roofSlate, 0, 10.5, fz + 2.3, b.width * 0.98, 0.2, 5.4, -0.38);
       box(mats.trimDark, 0, 9.55, fz + 0.2, b.width, 0.28, 0.35);
@@ -603,7 +729,9 @@ export function buildTown(data, scene) {
     const fl = push(x0, y0, zf, 0, 0, 1);
     const fr = push(x1, y0, zf, 0, 0, 1);
     const fp = push(0, y1, zf, 0, 0, 1);
-    tri(fl, fp, fr);
+    // Counter-clockwise from the street, so the front face is not culled (it used to show
+    // only the rakes and the cornice as an outline).
+    tri(fl, fr, fp);
     const bl = push(x0, y0, zb, 0, 0, -1);
     const bp = push(0, y1, zb, 0, 0, -1);
     const br = push(x1, y0, zb, 0, 0, -1);
@@ -909,6 +1037,23 @@ export function buildTown(data, scene) {
           ? 13.2
           : Math.min(wallH - 1.2, b.stories * 8 + 4);
     const reach = peaked ? b.depth / 2 + 0.55 : depot ? b.depth / 2 + 5.5 : b.depth / 2 + 0.55;
+    // signAt: a small board at a chosen spot, e.g. on the Hendee porch roof edge (PDF p.25),
+    // so it does not cover the upper windows.
+    if (b.facade?.signAt) {
+      const at = b.facade.signAt;
+      const right = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
+      signs.push({
+        title: b.sign,
+        subtitle: "",
+        style: "board",
+        position: new THREE.Vector3(b.x, at.y ?? 12.5, b.z)
+          .addScaledVector(outward, b.depth / 2 + (at.reach ?? 0.55))
+          .addScaledVector(right, at.along ?? 0),
+        rotation: rot,
+        width: at.width ?? 12,
+      });
+      return;
+    }
     signs.push({
       title: b.sign,
       subtitle: b.facade?.sign2 || (peaked || depot || hendee ? "" : b.confidence === "sourced" ? b.use : ""),
@@ -2099,8 +2244,10 @@ export function buildTown(data, scene) {
       }
     }
     if (!frame && b.facade?.cornerPediment) {
-      const rise = 6.4;
-      const yBase = wallH + 2.7;
+      // With the deep crown the pediment sits on the crown molding (PDF p.41), not in the air.
+      const rise = b.facade?.crown ? 5.8 : 6.4;
+      const yBase = b.facade?.crown ? wallH + 1.3 : wallH + 2.7;
+      if (b.facade?.crown) box(brickOf(b), 0, yBase + 1.0, b.depth / 2 - 0.2, Math.min(18, b.width + 1.2) - 1, 2.0, 1.2);
       drawPediment(brickOf(b), Math.min(18, b.width + 1.2), rise, yBase, b.depth / 2 + 0.55);
       const peak = yBase + rise;
       box(mats.trim, 0, peak + 1.3, b.depth / 2 + 0.7, 0.38, 2.6, 0.38);
@@ -2146,7 +2293,9 @@ export function buildTown(data, scene) {
     for (let i = 0; i < (b.facade?.chimneys || 0); i++) {
       const n = b.facade.chimneys;
       const z = -b.depth / 2 + (b.depth * (i + 0.6)) / (n + 0.2);
-      chimneyStack(brickOf(b), (i % 2 ? -1 : 1) * (b.width / 2 - 2.2), wallH + 3.4, z, 2.4, 5.6, 2.4);
+      // chimneySide puts every stack on one side wall (Hendee engraving p.25, bank photo p.41).
+      const cx = b.facade.chimneySide ? b.facade.chimneySide * (b.width / 2 - 1.4) : (i % 2 ? -1 : 1) * (b.width / 2 - 2.2);
+      chimneyStack(brickOf(b), cx, wallH + 3.4, z, 2.4, 5.6, 2.4);
     }
     if (b.facade?.sideSign) {
       const side = b.facade.sideSign.side || 1;
