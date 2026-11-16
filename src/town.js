@@ -161,6 +161,21 @@ export function buildTown(data, scene) {
   // Pointed (Gothic) head: two straight raking blocks meeting at an apex, with a
   // glazed triangle under them. Used for the upper windows of the Hendee building
   // engraving (centennial book, PDF p.25).
+  // Smooth semicircular hood molding (a half torus) with an optional glazed head.
+  const ringArch = (mat, x, y, z, radius, tube = 0.32, glass = false) => {
+    const ring = new THREE.TorusGeometry(radius, tube, 6, 20, Math.PI);
+    ring.scale(1, 1, 1.4);
+    ring.translate(x, y, z);
+    ring.applyMatrix4(buildingMatrix);
+    put(mat, ring);
+    if (glass) {
+      const head = new THREE.CircleGeometry(radius - tube * 0.6, 20, 0, Math.PI);
+      head.translate(x, y, z - 0.25);
+      head.applyMatrix4(buildingMatrix);
+      put(mats.glass, head);
+    }
+  };
+
   const pointedHood = (mat, x, yBase, z, span) => {
     const rise = span * 0.58;
     const len = Math.hypot(span / 2, rise) + 0.2;
@@ -515,7 +530,14 @@ export function buildTown(data, scene) {
       box(mats.siding.white, x, h - 1.05, zc - 0.5, 1.1, 0.4, 1.1);
       if (i < cols - 1) {
         const nx = -w / 2 + 0.5 + ((w - 1) * (i + 1)) / (cols - 1);
-        archHood(mats.siding.white, (x + nx) / 2, h - 2.9, zc - 0.5, nx - x - 0.9, 1.6, "z");
+        // Shallow segmental spandrel between columns.
+        const span = nx - x - 0.9;
+        const rr = (span * span) / (8 * 1.4) + 0.7;
+        const arc = new THREE.TorusGeometry(rr, 0.22, 5, 18, 2 * Math.asin(Math.min(1, span / 2 / rr)));
+        arc.rotateZ(Math.PI / 2 - Math.asin(Math.min(1, span / 2 / rr)));
+        arc.translate((x + nx) / 2, h - 1.4 - rr, zc - 0.5);
+        arc.applyMatrix4(buildingMatrix);
+        put(mats.siding.white, arc);
       }
     }
     // Fascia and cornice of the porch.
@@ -3831,6 +3853,24 @@ export function buildTown(data, scene) {
     clapboardTriangle(body, b.width, rise * 0.95, wallH, "z", -b.depth / 2 - 0.02, 0, 0);
     for (const x of [-b.width / 2, b.width / 2]) box(mats.trim, x, wallH / 2, fz, 0.42, wallH, 0.3);
     box(mats.trim, 0, wallH + 0.1, fz + 0.1, b.width + 0.6, 0.45, 0.5);
+    // Gable crown (PDF p.125): wide raking boards, a frieze board under the eaves on both
+    // sides, and short cornice returns at the front corners.
+    {
+      const half = b.width / 2 + 0.6;
+      const r = rise * 0.95 + 0.4;
+      const len = Math.hypot(half, r) + 0.3;
+      const ang = Math.atan2(r, half);
+      for (const sd of [-1, 1]) {
+        const rake = new THREE.BoxGeometry(len, 0.75, 0.5);
+        rake.rotateZ(-sd * ang);
+        rake.translate(sd * half / 2, wallH + r / 2 + 0.1, fz + 0.3);
+        rake.applyMatrix4(buildingMatrix);
+        put(mats.trim, rake);
+        box(mats.trim, sd * (b.width / 2 + 0.6), wallH + 0.25, fz - 0.4, 1.4, 0.6, 1.6);
+        box(mats.trim, sd * (b.width / 2 + 0.12), wallH - 0.7, 0, 0.3, 1.4, b.depth);
+        box(mats.trim, sd * (b.width / 2 + 0.55), wallH + 0.05, 0, 1.1, 0.35, b.depth + 0.6);
+      }
+    }
     // Two pairs of tall doors and a single door at the left, as in the photograph.
     const pair = (x, w, h) => {
       box(mats.trim, x, h / 2 + 0.2, fz, w + 0.6, h + 0.5, 0.18);
@@ -3859,20 +3899,34 @@ export function buildTown(data, scene) {
     box(body, 0, by + 1.1, bz, bw + 0.8, 2.2, bw + 0.8);
     box(mats.trim, 0, by + 2.3, bz, bw + 1.2, 0.35, bw + 1.2);
     for (const px of [-bw / 2, bw / 2]) {
-      for (const pz of [-bw / 2, bw / 2]) box(mats.trim, px, by + 5.6, bz + pz, 0.55, 6.4, 0.55);
+      for (const pz of [-bw / 2, bw / 2]) box(mats.trim, px, by + 5.6, bz + pz, 0.7, 6.4, 0.7);
     }
-    box(mats.trim, 0, by + 8.9, bz, bw + 1.4, 0.5, bw + 1.4);
+    // Arched openings on all four faces and a low rail (the p.125 belfry).
+    archHood(mats.trim, 0, by + 7.0, bz + bw / 2, bw - 0.5, 1.4, "z");
+    archHood(mats.trim, 0, by + 7.0, bz - bw / 2, bw - 0.5, 1.4, "z");
+    archHood(mats.trim, bw / 2, by + 7.0, bz, bw - 0.5, 1.4, "x");
+    archHood(mats.trim, -bw / 2, by + 7.0, bz, bw - 0.5, 1.4, "x");
+    for (const pz of [-bw / 2, bw / 2]) box(mats.trim, 0, by + 3.4, bz + pz, bw, 0.25, 0.2);
+    for (const px of [-bw / 2, bw / 2]) box(mats.trim, px, by + 3.4, bz, 0.2, 0.25, bw);
+    box(mats.trim, 0, by + 8.75, bz, bw + 1.0, 0.7, bw + 1.0);
+    // Flared eave: a wide thin skirt under the pyramid cap, on small brackets.
+    box(mats.roofDark, 0, by + 9.25, bz, bw + 3.0, 0.25, bw + 3.0);
+    for (const px of [-1, 1]) for (const pz of [-1, 1]) box(mats.trim, px * (bw / 2 + 0.7), by + 8.85, bz + pz * (bw / 2 + 0.7), 0.3, 0.6, 0.3);
     const bell = new THREE.CylinderGeometry(0.7, 1.35, 1.9, 12);
     bell.translate(0, by + 6.2, bz);
     bell.applyMatrix4(buildingMatrix);
     put(mats.metal, bell);
     box(mats.trimDark, 0, by + 7.6, bz, 0.25, 1.4, 0.25);
-    const cap = new THREE.ConeGeometry(bw * 0.85, 4.2, 4);
+    const cap = new THREE.ConeGeometry(bw * 0.92, 4.0, 4);
     cap.rotateY(Math.PI / 4);
-    cap.translate(0, by + 11.2, bz);
+    cap.translate(0, by + 11.35, bz);
     cap.applyMatrix4(buildingMatrix);
     put(mats.roofDark, cap);
     box(mats.trimDark, 0, by + 14, bz, 0.18, 1.8, 0.18);
+    const ball = new THREE.SphereGeometry(0.3, 8, 6);
+    ball.translate(0, by + 13.5, bz);
+    ball.applyMatrix4(buildingMatrix);
+    put(mats.trimDark, ball);
     signFor(b, 13);
     return by + 15;
   };
@@ -3888,21 +3942,44 @@ export function buildTown(data, scene) {
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
     box(mats.stone, 0, 0.5, 0, b.width + 0.4, 1.0, b.depth + 0.4);
     const cols = [-b.width * 0.3, 0, b.width * 0.3];
-    for (const x of cols) frontSash(x, 18.4, fz, 3.4, 7.2, "round", false, mats.stone);
-    frontSash(cols[0], 6.4, fz, 3.4, 7.0, "round", false, mats.stone);
-    frontSash(cols[2], 6.4, fz, 3.4, 7.0, "round", false, mats.stone);
+    for (const x of cols) frontSash(x, 18.4, fz, 3.4, 7.2, "flat", false, mats.stone);
+    frontSash(cols[0], 6.4, fz, 3.4, 7.0, "flat", false, mats.stone);
+    frontSash(cols[2], 6.4, fz, 3.4, 7.0, "flat", false, mats.stone);
+    // Full semicircular light hoods over each opening, the strongest feature of the p.125
+    // front, with a glazed head inside the arch.
+    const semi = (x, ySpring, span) => {
+      ringArch(mats.stone, x, ySpring, fz + 0.5, span / 2, 0.42, true);
+      for (const sd of [-1, 1]) box(mats.stone, x + sd * (span / 2), ySpring - 0.2, fz + 0.45, 0.85, 0.5, 0.6);
+    };
+    for (const x of cols) semi(x, 18.4 + 3.7, 4.2);
+    semi(cols[0], 6.4 + 3.6, 4.2);
+    semi(cols[2], 6.4 + 3.6, 4.2);
+    ringArch(mats.stone, 0, 8.4, fz + 0.5, 3.0, 0.45, true);
     paneledDoor(0, fz, 4.4, 8.0, false);
-    archHood(mats.stone, 0, 8.6, fz + 0.3, 6.2, 3.0, "z");
-    box(mats.glass, 0, 9.6, fz + 0.06, 3.8, 1.6, 0.05);
-    box(mats.trim, 0, wallH + 0.35, fz + 0.5, b.width + 1.2, 0.9, 1.3);
-    dentilCourse(wallH - 0.2, fz + 0.8, b.width);
-    bracketRow(wallH - 0.8, fz + 0.2, b.width);
-    for (const x of [-b.width / 2 + 0.4, b.width / 2 - 0.4]) box(mats.trim, x, wallH * 0.5, fz + 0.3, 0.8, wallH, 0.6);
+
+    // Heavy dark bracketed cornice with corner urns (PDF p.125).
+    deepCrown(b, wallH, { proj: 2.4, frieze: 2.4, mat: "dark", spacing: 2.6, finials: true });
+    for (const x of [-b.width / 2 + 0.4, b.width / 2 - 0.4]) box(mats.trim, x, wallH * 0.45, fz + 0.3, 0.8, wallH * 0.9, 0.6);
     hipRoof(b.width, b.depth, 7, wallH + 0.8, mats.roofDark, 0, 0);
     // Gabled dormer above the cornice, toward the street.
     const dz = b.depth / 2 - 5;
     box(body, 0, wallH + 4.2, dz, 8, 6.4, 4.5);
     clapboardTriangle(body, 9, 3.6, wallH + 7.4, "z", dz + 2.3, 0, 0);
+    // Dormer crown: a cornice band, raking trim, and a blank name panel (the lettering
+    // CITY ... 18__ cannot be read, so it is left blank).
+    box(mats.trimDark, 0, wallH + 7.45, dz + 2.4, 9.6, 0.4, 0.8);
+    box(mats.trim, 0, wallH + 4.6, dz + 2.3, 5.6, 2.2, 0.12);
+    {
+      const len = Math.hypot(4.8, 3.8) + 0.2;
+      const ang = Math.atan2(3.8, 4.8);
+      for (const sd of [-1, 1]) {
+        const rk = new THREE.BoxGeometry(len, 0.4, 0.4);
+        rk.rotateZ(-sd * ang);
+        rk.translate(sd * 2.4, wallH + 7.4 + 1.9, dz + 2.55);
+        rk.applyMatrix4(buildingMatrix);
+        put(mats.trimDark, rk);
+      }
+    }
     box(mats.trimDark, b.width / 2 - 1, wallH + 2.6, fz - 0.4, 0.5, 2.6, 0.5);
     chimneyStack(body, -b.width * 0.3, wallH + 5.5, -b.depth * 0.2, 2.4, 6, 2.4);
     downspouts(b.width, b.depth, wallH);
