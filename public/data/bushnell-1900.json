@@ -1136,10 +1136,10 @@
         "photoMatch": true,
         "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.13 (engraving of the Cole building) and PDF p.35 (photograph of the Cole Block).",
         "photoDate": "Engraving undated (PDF p.13); photograph early 1900s (PDF p.35).",
-        "arches": "round",
+        "arches": "segmental",
         "bays": 7,
         "upperBays": 7,
-        "sideBays": 11,
+        "sideBays": 13,
         "door": "left",
         "cornice": "bracket",
         "storefront": "iron",
@@ -1150,7 +1150,73 @@
           "frieze": 2.2,
           "mat": "dark",
           "spacing": 3.0
-        }
+        },
+        "palette": {
+          "trim": "trimCream",
+          "stone": "trimCream",
+          "voussoir": "trimCream",
+          "trimDark": "trimIron"
+        },
+        "winW": 2.5,
+        "upperH": 6.6,
+        "sideArch": "segmental",
+        "sideWinW": 2.4,
+        "sideWinH": 6.4,
+        "sideY": 0.8,
+        "sideRows": 2,
+        "sideLowY": 5.4,
+        "sideLowH": 6.0,
+        "sideSkip": [
+          0,
+          1,
+          3,
+          5,
+          7,
+          9,
+          11
+        ],
+        "sideStair": -1,
+        "stairAt": -16,
+        "awning": true,
+        "signs": [
+          {
+            "text": "BANK",
+            "face": "front",
+            "y": 24.2,
+            "along": -13,
+            "width": 11,
+            "height": 1.9,
+            "style": "painted"
+          },
+          {
+            "text": "FIRST NATIONAL BANK",
+            "face": "side",
+            "side": -1,
+            "y": 11.4,
+            "along": 22,
+            "width": 21,
+            "height": 2.4,
+            "style": "wallDark"
+          },
+          {
+            "text": "BANK",
+            "face": "front",
+            "y": 4.6,
+            "along": -13.7,
+            "width": 3.6,
+            "style": "glass",
+            "reach": 0.32
+          },
+          {
+            "text": "BANK",
+            "face": "front",
+            "y": 4.6,
+            "along": 0,
+            "width": 3.6,
+            "style": "glass",
+            "reach": 0.32
+          }
+        ]
       },
       "notes": "Centennial book PDF p.35: the early-1900s photograph shows no porch roof over the sidewalk, so it is not drawn from the 1900 stop."
     }

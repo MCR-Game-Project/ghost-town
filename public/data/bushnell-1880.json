@@ -5797,7 +5797,7 @@
       "sign": "COLE",
       "porch": false,
       "year": "1860s",
-      "brick": "buff",
+      "brick": "cream",
       "x": -54.0,
       "z": -228.0,
       "facing": "+z",
@@ -5828,7 +5828,15 @@
           "frieze": 2.2,
           "mat": "dark",
           "spacing": 3.0
-        }
+        },
+        "palette": {
+          "trim": "trimCream",
+          "stone": "trimCream",
+          "voussoir": "trimCream",
+          "trimDark": "trimIron"
+        },
+        "winW": 2.6,
+        "upperH": 6.4
       }
     },
     {

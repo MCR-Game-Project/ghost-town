@@ -817,6 +817,7 @@ export function buildTown(data, scene) {
       for (let i = 0; i < sideCount; i++) {
         const z = -b.depth / 2 + ((i + 0.6) * b.depth) / (sideCount + 0.5);
         if (b.stories > 1) sideSash(x, wallH * (f.sideY ?? 0.68), z, side, sw, sh, sArch, false, archMat);
+        if (b.stories > 2 && f.sideY) sideSash(x, wallH * 0.45, z, side, sw, sh * 0.95, sArch, false, archMat);
         if (f.sideRows === 2 && !(f.sideSkip || []).includes(i)) sideSash(x, f.sideLowY ?? 5.6, z, side, sw, f.sideLowH ?? sh, sArch, false, archMat);
       }
     }

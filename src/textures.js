@@ -724,7 +724,7 @@ export function makeMaterials() {
       // Light painted or stuccoed brick (Hendee engraving, p.25): the brick shows only in relief.
       cream: std({
         normalMap: buffTex.normalMap,
-        color: "#e6dcc7",
+        color: "#ecdcc0",
         roughness: 1,
         uvFeet: brickFeet,
         vary: true,
