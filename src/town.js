@@ -501,10 +501,22 @@ export function buildTown(data, scene) {
     // Side runs.
     for (const sd of sides) {
       const sx = sd * (b.width / 2 + 0.14);
-      box(friezeMat, sx + sd * 0.12, wallH - fh / 2, 0, 0.34, fh, b.depth + 0.1);
-      box(mat, sx + sd * 0.3, wallH - fh - 0.15, 0, 0.6, 0.32, b.depth + 0.3);
-      box(mat, sx + sd * (proj / 2), wallH + 0.25, -0.2, proj + 0.4, 0.55, b.depth + 0.2);
-      box(mat, sx + sd * (proj / 2 + 0.12), wallH + 0.75, -0.2, proj + 0.75, 0.45, b.depth + 0.4);
+      if (o.sideStyle !== "corbel") {
+        box(friezeMat, sx + sd * 0.12, wallH - fh / 2, 0, 0.34, fh, b.depth + 0.1);
+        box(mat, sx + sd * 0.3, wallH - fh - 0.15, 0, 0.6, 0.32, b.depth + 0.3);
+      }
+      const sp = o.sideStyle === "corbel" ? 0.9 : proj;
+      const smat = o.sideStyle === "corbel" ? brickOf(b) : mat;
+      box(smat, sx + sd * (sp / 2), wallH + 0.25, -0.2, sp + 0.4, 0.55, b.depth + 0.2);
+      box(smat, sx + sd * (sp / 2 + 0.12), wallH + 0.75, -0.2, sp + 0.75, 0.45, b.depth + 0.4);
+      // sideStyle "corbel": stepped brick corbel courses instead of brackets (bank side, p.41).
+      if (o.sideStyle === "corbel") {
+        box(brickOf(b), sx + sd * 0.25, wallH - 0.9, -0.1, 0.5, 0.5, b.depth + 0.2);
+        box(brickOf(b), sx + sd * 0.5, wallH - 0.4, -0.1, 1.0, 0.5, b.depth + 0.3);
+        const m2 = Math.round(b.depth / 1.4);
+        for (let i = 0; i < m2; i++) box(brickOf(b), sx + sd * 0.2, wallH - 1.5, -b.depth / 2 + (i + 0.5) * (b.depth / m2), 0.4, 0.6, 0.6);
+        continue;
+      }
       const m = Math.max(3, Math.round(b.depth / (spacing * 1.25)));
       for (let i = 0; i < m; i++) {
         const z = -b.depth / 2 + 0.8 + ((b.depth - 1.6) * i) / (m - 1);
@@ -598,7 +610,7 @@ export function buildTown(data, scene) {
     const archMat = f.hood === "cream" ? mats.siding.cream : f.hood === "white" ? mats.siding.white : arch === "flat" ? mats.stone : mats.voussoir;
     const doorAt =
       f.door === "center" ? Math.floor((bays - 1) / 2) : f.door === "left" ? 0 : f.door === "none" ? -1 : bays - 1;
-    const winW = Math.min(6.2, Math.max(2.2, upperGap * 0.52));
+    const winW = f.winW ?? Math.min(6.2, Math.max(2.2, upperGap * 0.52));
     const winH = b.stories > 2 ? 6.1 : f.tall ? 8.6 : 7.3;
     const plate = f.storefront === "plate";
     if (b.stories > 1 && f.ground !== "keep") box(mats.stone, 0, wallH * 0.5, fz + 0.01, b.width * 0.96, 0.26, 0.14);
@@ -669,6 +681,14 @@ export function buildTown(data, scene) {
         // upperY lowers the upper row so a tall arched head clears a deep frieze (Hendee, p.25).
         const uy = wallH * (f.upperY ?? 0.72);
         frontSash(x, uy, fz, winW, f.upperH ?? winH, arch, false, archMat);
+        // heavyCaps: the deep moulded lintel caps over the bank's front windows (p.41).
+        if (f.heavyCaps) {
+          const top = uy + (f.upperH ?? winH) / 2;
+          box(mats.stone, x, top + 0.55, fz + 0.62, winW + 1.1, 0.9, 0.5);
+          box(mats.trim, x, top + 1.15, fz + 0.75, winW + 1.6, 0.32, 0.75);
+          box(mats.stone, x - winW / 2 - 0.45, top + 0.1, fz + 0.62, 0.35, 0.8, 0.45);
+          box(mats.stone, x + winW / 2 + 0.45, top + 0.1, fz + 0.62, 0.35, 0.8, 0.45);
+        }
         if (fill) box(fill, x, uy, fz + 0.1, winW * 0.7, winH * 0.72, 0.08);
         if (b.stories > 2) frontSash(x, wallH * 0.45, fz, winW * 0.92, winH * 0.86, arch, false, archMat);
       }
@@ -745,9 +765,15 @@ export function buildTown(data, scene) {
       if (!sideCount) break;
       if (party.includes(side === -1 ? "left" : "right")) continue;
       const x = side * (b.width / 2 + 0.1);
+      // Side-wall window size, height, arch and an optional ground row (round 3: the tall
+      // narrow arched side windows of the Bank of Bushnell, p.41).
+      const sw = f.sideWinW ?? 2.5;
+      const sh = f.sideWinH ?? 4.8;
+      const sArch = f.sideArch || arch;
       for (let i = 0; i < sideCount; i++) {
         const z = -b.depth / 2 + ((i + 0.6) * b.depth) / (sideCount + 0.5);
-        if (b.stories > 1) sideSash(x, wallH * 0.68, z, side, 2.5, 4.8, arch, false, archMat);
+        if (b.stories > 1) sideSash(x, wallH * (f.sideY ?? 0.68), z, side, sw, sh, sArch, false, archMat);
+        if (f.sideRows === 2 && !(f.sideSkip || []).includes(i)) sideSash(x, f.sideLowY ?? 5.6, z, side, sw, f.sideLowH ?? sh, sArch, false, archMat);
       }
     }
   };
@@ -1056,7 +1082,35 @@ export function buildTown(data, scene) {
     }
   };
 
+  // facade.signs: exactly the signs a photograph shows, each placed on a face:
+  // { text, sub, face: "front" | "side", side: 1 | -1, y, along, width, height, style, reach }.
+  // "along" runs to the building's local +x on the front, and toward the front on a side.
+  const photoSigns = (b) => {
+    const rot = (FACING[b.facing] ?? 0) + THREE.MathUtils.degToRad(b.rotation || 0);
+    const up = new THREE.Vector3(0, 1, 0);
+    const out = new THREE.Vector3(0, 0, 1).applyAxisAngle(up, rot);
+    const right = new THREE.Vector3(1, 0, 0).applyAxisAngle(up, rot);
+    for (const sg of b.facade.signs) {
+      const flat = sg.style === "wall" || sg.style === "wallDark" || sg.style === "glass";
+      const reach = sg.reach ?? (flat ? 0.12 : 0.5);
+      const pos = new THREE.Vector3(b.x, sg.y ?? 12, b.z);
+      let r = rot;
+      if (sg.face === "side") {
+        const sd = sg.side || 1;
+        pos.addScaledVector(right, sd * (b.width / 2 + reach)).addScaledVector(out, sg.along ?? 0);
+        r = rot + sd * (Math.PI / 2);
+      } else {
+        pos.addScaledVector(out, b.depth / 2 + reach).addScaledVector(right, sg.along ?? 0);
+      }
+      signs.push({ title: sg.text, subtitle: sg.sub || "", style: sg.style || "board", position: pos, rotation: r, width: sg.width ?? 10, height: sg.height, flush: true });
+    }
+  };
+
   const signFor = (b, wallH) => {
+    if (b.facade?.signs) {
+      photoSigns(b);
+      return;
+    }
     if (!b.sign) return;
     const rot = (FACING[b.facing] ?? 0) + THREE.MathUtils.degToRad(b.rotation || 0);
     const outward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
@@ -2274,7 +2328,8 @@ export function buildTown(data, scene) {
   };
 
   const addStore = (b, frame) => {
-    const floorH = 12;
+    // facade.floorH: taller storeys for the photo-matched brick blocks (estimate, round 3).
+    const floorH = b.facade?.floorH ?? 12;
     const wallH = b.stories * floorH;
     const body = frame ? paintOf(b) : brickOf(b);
     box(body, 0, wallH / 2, 0, b.width, wallH, b.depth);
@@ -2326,11 +2381,24 @@ export function buildTown(data, scene) {
       // With the deep crown the pediment sits on the crown molding (PDF p.41), not in the air.
       const rise = b.facade?.crown ? 5.8 : 6.4;
       const yBase = b.facade?.crown ? wallH + 1.3 : wallH + 2.7;
-      if (b.facade?.crown) box(brickOf(b), 0, yBase + 1.0, b.depth / 2 - 0.2, Math.min(18, b.width + 1.2) - 1, 2.0, 1.2);
-      drawPediment(brickOf(b), Math.min(18, b.width + 1.2), rise, yBase, b.depth / 2 + 0.55);
-      const peak = yBase + rise;
-      box(mats.trim, 0, peak + 1.3, b.depth / 2 + 0.7, 0.38, 2.6, 0.38);
-      box(mats.trimDark, 0, peak + 2.75, b.depth / 2 + 0.7, 0.85, 0.4, 0.85);
+      // pedimentWidth / pedimentRise / finial: the p.41 front pediment spans most of the
+      // narrow front and carries a tall turned finial.
+      const pw = b.facade?.pedimentWidth ?? Math.min(18, b.width + 1.2);
+      const pr = b.facade?.pedimentRise ?? rise;
+      if (b.facade?.crown) box(brickOf(b), 0, yBase + 1.0, b.depth / 2 - 0.2, pw - 1, 2.0, 1.2);
+      drawPediment(brickOf(b), pw, pr, yBase, b.depth / 2 + 0.55);
+      const peak = yBase + pr;
+      if (b.facade?.finial === "tall") {
+        box(mats.trim, 0, peak + 0.9, b.depth / 2 + 0.7, 1.4, 1.8, 1.4);
+        const urn = new THREE.SphereGeometry(0.75, 10, 8);
+        urn.translate(0, peak + 2.4, b.depth / 2 + 0.7);
+        urn.applyMatrix4(buildingMatrix);
+        put(mats.trim, urn);
+        box(mats.trim, 0, peak + 3.6, b.depth / 2 + 0.7, 0.3, 1.6, 0.3);
+      } else {
+        box(mats.trim, 0, peak + 1.3, b.depth / 2 + 0.7, 0.38, 2.6, 0.38);
+        box(mats.trimDark, 0, peak + 2.75, b.depth / 2 + 0.7, 0.85, 0.4, 0.85);
+      }
     }
     if (b.porch || b.kind === "hotel") {
       const z = b.depth / 2 + 4;
@@ -2347,16 +2415,24 @@ export function buildTown(data, scene) {
     if (b.facade?.sideStair) {
       const side = b.facade.sideStair;
       const sx = side * (b.width / 2 + 1.9);
-      const z0 = b.depth / 2 - 12;
+      const z0 = b.facade.stairAt ?? b.depth / 2 - 12;
       const z1 = z0 - 15;
       const rise = floorH + 0.4;
       const run = Math.abs(z0 - z1);
       const len = Math.hypot(run, rise);
-      const stringer = new THREE.BoxGeometry(3.0, 0.4, len);
-      stringer.rotateX(Math.atan2(rise, run));
-      stringer.translate(sx, rise / 2, (z0 + z1) / 2);
-      stringer.applyMatrix4(buildingMatrix);
-      put(mats.trimDark, stringer);
+      // Open stair: two stringers and separate treads (it read as a solid ramp, p.41).
+      for (const off of [-1.35, 1.35]) {
+        const stringer = new THREE.BoxGeometry(0.25, 0.9, len);
+        stringer.rotateX(Math.atan2(rise, run));
+        stringer.translate(sx + off, rise / 2, (z0 + z1) / 2);
+        stringer.applyMatrix4(buildingMatrix);
+        put(mats.trimDark, stringer);
+      }
+      const steps = Math.round(rise / 0.62);
+      for (let i = 1; i < steps; i++) {
+        const t = i / steps;
+        box(mats.plank, sx, rise * t, z0 + (z1 - z0) * t, 2.6, 0.14, 0.8);
+      }
       for (const rail of [-1.4, 1.4]) {
         const r = new THREE.BoxGeometry(0.14, 0.14, len);
         r.rotateX(Math.atan2(rise, run));
@@ -4659,6 +4735,14 @@ export function buildTown(data, scene) {
       0.9 + ((hue >> 10) % 14) / 14 * 0.08,
     );
     begin(b.x, b.z, b.facing, b.rotation || 0);
+    // facade.palette swaps the shared trim, iron, stone, hood and white materials for this
+    // building only, so a photo-matched front can carry muted, weathered colours.
+    const pal = b.facade?.palette;
+    const savedMats = pal ? { trim: mats.trim, trimDark: mats.trimDark, stone: mats.stone, voussoir: mats.voussoir, siding: mats.siding } : null;
+    if (pal) {
+      for (const k of ["trim", "trimDark", "stone", "voussoir"]) if (pal[k] && mats[pal[k]]) mats[k] = mats[pal[k]];
+      if (pal.white && mats[pal.white]) mats.siding = { ...mats.siding, white: mats[pal.white] };
+    }
     let height = 20;
     const handDrawn = Boolean(
       b.facade?.hendeeHome || b.facade?.turretHouse || b.facade?.studBarn || b.facade?.hoseTower ||
@@ -4717,6 +4801,7 @@ export function buildTown(data, scene) {
     else if (b.facade?.eastSide1904) height = addEastSideSchool(b);
     else if (b.kind === "school") height = addSchool(b);
     else height = addShed(b);
+    if (savedMats) Object.assign(mats, savedMats);
 
     const fp = footprint(b);
     colliders.push({ ...fp, id: b.id });
@@ -5387,8 +5472,9 @@ float lHash(vec3 p){ p=fract(p*0.1031); p+=dot(p,p.yzx+33.33); return fract((p.x
   for (const s of signs) {
     const tex = makeSignTexture(s.title, s.subtitle, s.style);
     const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.84, metalness: 0 });
-    const h = s.height || (s.style === "molded" ? s.width * 0.2 : s.style === "band" ? s.width * 0.22 : s.style === "letter" ? s.width * 0.95 : s.subtitle ? s.width * 0.36 : s.width * 0.28);
-    if (s.style === "letter" || s.style === "molded") {
+    const flat = s.style === "wall" || s.style === "wallDark" || s.style === "glass";
+    const h = s.height || (flat ? s.width * 0.2 : s.style === "molded" ? s.width * 0.2 : s.style === "band" ? s.width * 0.22 : s.style === "letter" ? s.width * 0.95 : s.subtitle ? s.width * 0.36 : s.width * 0.28);
+    if (s.style === "letter" || s.style === "molded" || flat) {
       mat.transparent = true;
       mat.alphaTest = 0.35;
       mat.roughness = 0.62;
@@ -5400,7 +5486,8 @@ float lHash(vec3 p){ p=fract(p*0.1031); p+=dot(p,p.yzx+33.33); return fract((p.x
     board.castShadow = true;
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(s.width, h), mat);
     mesh.position.z = 0.16;
-    if (s.style === "letter" || s.style === "molded" || s.style === "band") group.add(mesh);
+    if (flat) mesh.position.z = 0.04;
+    if (s.style === "letter" || s.style === "molded" || s.style === "band" || flat) group.add(mesh);
     else {
       const bracketL = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.7, 0.45), mats.trimDark);
       const bracketR = bracketL.clone();

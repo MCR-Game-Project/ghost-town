@@ -718,6 +718,19 @@ export function makeMaterials() {
       red: brick("#9a4034"),
       dark: brick("#7d332c"),
       soft: brick("#a85a3e"),
+      // Muted, weathered brick for the photo-matched centennial buildings (round 3).
+      weathered: brick("#7a4a40"),
+      smoke: brick("#5d443c"),
+      cream: std({
+        map: buffTex.map,
+        normalMap: buffTex.normalMap,
+        roughnessMap: buffTex.roughnessMap,
+        color: "#f7f1e4",
+        roughness: 1,
+        uvFeet: brickFeet,
+        vary: true,
+        normalScale: 0.55,
+      }),
       buff: std({
         map: buffTex.map,
         normalMap: buffTex.normalMap,
@@ -839,6 +852,14 @@ export function makeMaterials() {
       uvFeet: { u: 0.62, v: 3.35 },
     }),
     trim: std({ color: "#f3ead7", roughness: 0.72, uvFeet: { u: 6, v: 6 } }),
+    // Palette swaps for photo-matched buildings (facade.palette): muted cream paint,
+    // weathered stone, dark iron/painted wood, and a dull brick-red stone for hoods.
+    trimCream: std({ color: "#d6cab2", roughness: 0.85, uvFeet: { u: 6, v: 6 } }),
+    trimStone: std({ color: "#a59a86", roughness: 0.92, uvFeet: { u: 4, v: 4 } }),
+    trimIron: std({ color: "#3b332d", roughness: 0.75, uvFeet: { u: 4, v: 4 } }),
+    trimBrown: std({ color: "#5a4535", roughness: 0.8, uvFeet: { u: 4, v: 4 } }),
+    trimBrick: std({ color: "#6a4239", roughness: 0.9, uvFeet: { u: 2, v: 2 } }),
+    trimWhite: std({ color: "#e8e1d2", roughness: 0.82, uvFeet: { u: 6, v: 6 } }),
     trimDark: std({ color: "#4a3424", roughness: 0.7, uvFeet: { u: 4, v: 4 } }),
     voussoir: std({ color: "#8a4036", roughness: 0.86, uvFeet: { u: 2, v: 2 } }),
     reveal: std({ color: "#1c140f", roughness: 0.95, uvFeet: { u: 4, v: 4 } }),
@@ -990,6 +1011,27 @@ export function makeSignTexture(title, subtitle, style = "board") {
       g.font = `700 ${size}px Georgia, "Palatino Linotype", Palatino, serif`;
     }
     g.fillText(title, c.width / 2, c.height / 2 + 8);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 16;
+    return tex;
+  }
+  // "wall": letters painted straight on brick or clapboard; "glass": gilt letters on a
+  // window. Transparent, no board (round 3, signs read from the book photographs).
+  if (style === "wall" || style === "wallDark" || style === "glass") {
+    c.width = 1024;
+    c.height = 200;
+    g.clearRect(0, 0, c.width, c.height);
+    g.fillStyle = style === "glass" ? "#d8b45a" : style === "wallDark" ? "#2b211b" : "#ece3cf";
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    let size = 150;
+    g.font = `700 ${size}px Georgia, "Palatino Linotype", Palatino, serif`;
+    while (size > 40 && g.measureText(title).width > 980) {
+      size -= 4;
+      g.font = `700 ${size}px Georgia, "Palatino Linotype", Palatino, serif`;
+    }
+    g.fillText(title, c.width / 2, c.height / 2 + 6);
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = 16;

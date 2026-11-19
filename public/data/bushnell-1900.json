@@ -894,40 +894,103 @@
       "use": "bank",
       "kind": "brick-store",
       "material": "brick",
-      "brick": "red",
+      "brick": "smoke",
       "stories": 2,
       "width": 36,
-      "sign": "BANK OF BUSHNELL",
+      "sign": "",
       "confidence": "sourced",
       "year": "1900",
       "facade": {
         "photoMatch": true,
-        "arches": "round",
+        "arches": "flat",
         "bays": 3,
         "cornice": "bracket",
         "cornerPediment": true,
-        "awning": true,
         "door": "right",
         "tall": true,
         "storefront": "iron",
-        "upperSign": "DENTIST",
         "upperBays": 6,
-        "hood": "cream",
-        "photoSource": "Mark's undated photograph of the 400 block of East Main, looking north, and the postcard from the 300 block. Side stair, chimneys, and the BANK OF BUSHNELL band: Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.41.",
-        "chimneys": 3,
-        "sideStair": 1,
+        "winW": 2.5,
+        "upperH": 8.4,
+        "upperY": 0.74,
+        "heavyCaps": true,
+        "floorH": 14,
         "sideBays": 8,
-        "sideSign": {
-          "text": "BANK OF BUSHNELL",
-          "side": 1
-        },
+        "sideArch": "segmental",
+        "sideWinW": 2.2,
+        "sideWinH": 7.4,
+        "sideY": 0.74,
+        "sideRows": 2,
+        "sideSkip": [
+          2,
+          3,
+          4,
+          6
+        ],
+        "sideLowY": 5.2,
+        "sideLowH": 6.6,
+        "chimneys": 3,
+        "chimneySide": 1,
+        "sideStair": 1,
+        "stairAt": -2,
         "crown": {
-          "proj": 1.6,
-          "frieze": 2.0,
+          "proj": 1.8,
+          "frieze": 1.6,
           "friezeMat": "body",
-          "spacing": 2.4
+          "spacing": 2.2,
+          "sideStyle": "corbel"
         },
-        "chimneySide": 1
+        "pedimentWidth": 16,
+        "pedimentRise": 8.2,
+        "finial": "tall",
+        "palette": {
+          "trim": "trimBrown",
+          "stone": "trimBrick",
+          "voussoir": "trimBrick",
+          "trimDark": "trimIron"
+        },
+        "photoSource": "Mark's undated photograph of the 400 block of East Main, looking north, and the postcard from the 300 block. Side stair, chimneys, and the BANK OF BUSHNELL band: Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.41.",
+        "signs": [
+          {
+            "text": "BANK OF BUSHNELL",
+            "face": "side",
+            "side": 1,
+            "y": 14.4,
+            "along": 17,
+            "width": 14,
+            "height": 2.2,
+            "style": "painted"
+          },
+          {
+            "text": "DENTIST",
+            "face": "side",
+            "side": 1,
+            "y": 25.0,
+            "along": 22.5,
+            "width": 5.2,
+            "height": 1.3,
+            "style": "painted"
+          },
+          {
+            "text": "L. GARBER",
+            "sub": "CLOTHING · FURNISHING GOODS",
+            "face": "front",
+            "y": 11.0,
+            "along": -9,
+            "width": 15,
+            "height": 2.4,
+            "style": "painted"
+          },
+          {
+            "text": "BANK",
+            "face": "front",
+            "y": 5.4,
+            "along": 0,
+            "width": 5.4,
+            "style": "glass",
+            "reach": 0.32
+          }
+        ]
       },
       "facadeSpec": {
         "sourcePhoto": "public/photos/e-main-400-south-end-2010.png",
