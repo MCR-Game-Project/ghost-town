@@ -718,9 +718,9 @@ export function makeMaterials() {
       red: brick("#9a4034"),
       dark: brick("#7d332c"),
       soft: brick("#a85a3e"),
-      // Muted, weathered brick for the photo-matched centennial buildings (round 3).
-      weathered: brick("#7a4a40"),
-      smoke: brick("#5d443c"),
+      // Muted, weathered brick (the multiplier lifts green and blue against the red brick map) for the photo-matched centennial buildings (round 3).
+      weathered: brick("#9ef2ff"),
+      smoke: brick("#7ec2cc"),
       // Light painted or stuccoed brick (Hendee engraving, p.25): the brick shows only in relief.
       cream: std({
         normalMap: buffTex.normalMap,

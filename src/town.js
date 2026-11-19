@@ -4056,6 +4056,16 @@ export function buildTown(data, scene) {
         box(mats.plank, x + s2 * (w / 4), h / 2 + 0.2, fz + 0.08, w / 2 - 0.15, h, 0.12);
         box(mats.trimDark, x + s2 * (w / 4), h / 2 + 0.2, fz + 0.16, 0.16, h * 0.96, 0.04);
         box(mats.trimDark, x + s2 * (w / 4), h * 0.5, fz + 0.16, w / 2 - 0.4, 0.16, 0.04);
+        // Diagonal braces on each leaf, as on the p.125 doors.
+        for (const yy of [h * 0.27, h * 0.73]) {
+          const lw = w / 2 - 0.4;
+          const dl = Math.hypot(lw, h * 0.44);
+          const br = new THREE.BoxGeometry(0.2, dl, 0.05);
+          br.rotateZ(s2 * Math.atan2(lw, h * 0.44));
+          br.translate(x + s2 * (w / 4), yy + 0.2, fz + 0.17);
+          br.applyMatrix4(buildingMatrix);
+          put(mats.trimDark, br);
+        }
       }
     };
     pair(-b.width * 0.18, Math.min(8, b.width * 0.3), 10.5);
@@ -4157,6 +4167,25 @@ export function buildTown(data, scene) {
         rk.applyMatrix4(buildingMatrix);
         put(mats.trimDark, rk);
       }
+    }
+    // Second, smaller gabled dormer to the left of the lettered one (round 3, p.125).
+    {
+      const dx = -7.2;
+      const dz2 = b.depth / 2 - 4.5;
+      box(body, dx, wallH + 3.3, dz2, 4.6, 4.6, 3.6);
+      frontSash(dx, wallH + 3.4, dz2 + 1.82, 1.8, 2.6, "flat");
+      clapboardTriangle(body, 5.4, 2.4, wallH + 5.6, "z", dz2 + 1.82, dx, 0);
+      box(mats.trimDark, dx, wallH + 5.65, dz2 + 1.9, 5.8, 0.32, 0.6);
+      const len = Math.hypot(2.9, 2.5) + 0.2;
+      const ang = Math.atan2(2.5, 2.9);
+      for (const sd of [-1, 1]) {
+        const rk = new THREE.BoxGeometry(len, 0.32, 0.36);
+        rk.rotateZ(-sd * ang);
+        rk.translate(dx + sd * 1.45, wallH + 5.6 + 1.25, dz2 + 2.0);
+        rk.applyMatrix4(buildingMatrix);
+        put(mats.trimDark, rk);
+      }
+      gableFrontAt(4.8, 3.8, 2.4, wallH + 5.6, mats.roofDark, dx, dz2 - 0.1);
     }
     box(mats.trimDark, b.width / 2 - 1, wallH + 2.6, fz - 0.4, 0.5, 2.6, 0.5);
     chimneyStack(body, -b.width * 0.3, wallH + 5.5, -b.depth * 0.2, 2.4, 6, 2.4);

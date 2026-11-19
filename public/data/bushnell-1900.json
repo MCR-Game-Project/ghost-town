@@ -285,7 +285,7 @@
       "z": -216,
       "facing": "+z",
       "paint": "cream",
-      "brick": "red",
+      "brick": "weathered",
       "sign": "",
       "porch": false,
       "party": [],
@@ -326,7 +326,29 @@
         "engineHouse": true,
         "photoMatch": true,
         "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.125.",
-        "sign2": " "
+        "palette": {
+          "trim": "trimWhite"
+        },
+        "signs": [
+          {
+            "text": "BUSHNELL",
+            "face": "front",
+            "y": 13.1,
+            "along": -2.5,
+            "width": 7,
+            "height": 1.3,
+            "style": "wallDark"
+          },
+          {
+            "text": "FIRE DEPARTMENT",
+            "face": "front",
+            "y": 11.3,
+            "along": -0.5,
+            "width": 21,
+            "height": 2.2,
+            "style": "wallDark"
+          }
+        ]
       },
       "sourceMap": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.125",
       "notes": "Centennial book PDF p.125: a frame, gable-front engine house with large double doors, the painted name BUSHNELL FIRE DEPARTMENT, and an open belfry with a bell on the ridge, beside the brick City Hall (to its left in the photograph, on the Ball Bros. side). Replaces the one-story brick hose tower that was drawn from the 1910 stop as an estimate. Drawn from the 1900 stop (estimate; p.125 says the department became a city department in 1891). The book says the new fire house at Hurst and Dean was built in the past two years (p.125, printed 1954), so the fire sign comes off at the 1960 stop (estimate). Dimensions are estimates from the photograph."
