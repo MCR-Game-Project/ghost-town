@@ -720,6 +720,7 @@ export function makeMaterials() {
       soft: brick("#a85a3e"),
       // Muted, weathered brick (the multiplier lifts green and blue against the red brick map) for the photo-matched centennial buildings (round 3).
       weathered: brick("#9ef2ff"),
+      muted: brick("#b8d2d8"),
       smoke: brick("#7ec2cc"),
       // Light painted or stuccoed brick (Hendee engraving, p.25): the brick shows only in relief.
       cream: std({

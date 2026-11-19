@@ -4357,13 +4357,55 @@ export function buildTown(data, scene) {
     // Brick buttresses at the corners of the nave front (p.59 photograph).
     box(body, b.width / 2 - 0.6, wallH * 0.45, fz + 0.6, 1.6, wallH * 0.9, 1.4);
     box(mats.stone, b.width / 2 - 0.6, wallH * 0.9, fz + 0.75, 1.8, 0.4, 1.7);
-    frontSash(b.width * 0.12, 10, fz, 3.0, 9, "round", false, mats.stone);
-    frontSash(b.width * 0.36, 10, fz, 3.0, 9, "round", false, mats.stone);
-    frontSash(b.width * 0.22, wallH + rise * 0.35, fz, 2.2, 4, "round", false, mats.stone);
+    // Round 3 (p.59): pointed Gothic windows with light surrounds, buttresses between the
+    // side windows, and a cross gable over the middle of the side.
+    const sb = b.facade?.palette ? mats.trim : mats.stone;
+    frontSash(b.width * 0.12, 10, fz, 3.0, 9, "pointed", false, sb);
+    frontSash(b.width * 0.36, 10, fz, 3.0, 9, "pointed", false, sb);
+    frontSash(b.width * 0.22, wallH + rise * 0.35, fz, 2.2, 4, "pointed", false, sb);
     for (const side of [-1, 1]) {
       for (let i = 0; i < 4; i++) {
         const z = -b.depth * 0.36 + i * (b.depth * 0.22);
-        sideSash(side * (b.width / 2 + 0.08), 10.5, z, side, 2.8, 9, "round", false, mats.stone);
+        sideSash(side * (b.width / 2 + 0.08), 10.5, z, side, 2.8, 9, "round", false, sb);
+        // Pointed head over the round-headed side sash.
+        box(sb, side * (b.width / 2 + 0.35), 15.6, z, 0.3, 0.9, 1.0);
+      }
+      for (let i = 0; i <= 4; i++) {
+        const z = -b.depth * 0.47 + i * (b.depth * 0.22);
+        box(body, side * (b.width / 2 + 0.55), wallH * 0.42, z, 1.1, wallH * 0.84, 1.4);
+        box(mats.stone, side * (b.width / 2 + 0.6), wallH * 0.84, z, 1.3, 0.35, 1.6);
+      }
+    }
+    if (b.facade?.crossGable) {
+      const cg = b.facade.crossGable;
+      const sd = cg.side || 1;
+      const zc = cg.z ?? -b.depth * 0.03;
+      const span = cg.span ?? 14;
+      const cr = cg.rise ?? 7;
+      const xf = sd * (b.width / 2 + 0.3);
+      const pos = [xf, wallH, zc - span / 2, xf, wallH, zc + span / 2, xf, wallH + cr, zc];
+      const g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+      g.setAttribute("normal", new THREE.Float32BufferAttribute([sd, 0, 0, sd, 0, 0, sd, 0, 0], 3));
+      g.setAttribute("uv", new THREE.Float32BufferAttribute([0, 0, span / 4, 0, span / 8, cr / 3.2], 2));
+      g.setIndex(sd > 0 ? [0, 2, 1] : [0, 1, 2]);
+      g.applyMatrix4(buildingMatrix);
+      put(body, g);
+      const run = span / 2 + 0.8;
+      const ang = Math.atan2(cr, span / 2);
+      const sl = Math.hypot(run, cr * (run / (span / 2)));
+      const reach = b.width / 2 + 0.6;
+      for (const k of [-1, 1]) {
+        const slab = new THREE.BoxGeometry(reach, 0.3, sl);
+        slab.rotateX(k * ang);
+        slab.translate(sd * reach / 2, wallH + cr / 2 + 0.2, zc + k * (span / 4 + 0.2));
+        slab.applyMatrix4(buildingMatrix);
+        put(mats.roofDark, slab);
+        const rake = new THREE.BoxGeometry(0.3, 0.6, sl);
+        rake.rotateX(k * ang);
+        rake.translate(xf + sd * 0.3, wallH + cr / 2 + 0.1, zc + k * (span / 4 + 0.2));
+        rake.applyMatrix4(buildingMatrix);
+        put(mats.trim, rake);
       }
     }
     const tw = 12;
@@ -4373,14 +4415,19 @@ export function buildTown(data, scene) {
     box(body, tx, th / 2, tz, tw, th, tw);
     box(mats.stone, tx, 0.8, tz, tw + 0.6, 1.6, tw + 0.6);
     box(mats.trimDark, tx, 4.8, tz + tw / 2 + 0.06, 4.2, 8.6, 0.2);
-    archHood(mats.stone, tx, 9.1, tz + tw / 2 + 0.25, 4.8, 2.4, "z");
-    frontSash(tx, 22, tz + tw / 2 + 0.02, 1.8, 5.2, "round", false, mats.stone);
+    pointedHood(sb, tx, 9.1, tz + tw / 2 + 0.25, 4.8);
+    frontSash(tx, 22, tz + tw / 2 + 0.02, 1.8, 5.2, "pointed", false, sb);
+    // Two tall louvered openings a face (p.59).
     for (const face of [0, 1, 2, 3]) {
       const ang = (face * Math.PI) / 2;
       const ox = Math.sin(ang) * (tw / 2 + 0.06);
       const oz = Math.cos(ang) * (tw / 2 + 0.06);
-      box(mats.trim, tx + ox, th - 7, tz + oz, face % 2 ? 0.2 : 5, 8, face % 2 ? 5 : 0.2);
-      for (let k = 0; k < 5; k++) box(mats.trimDark, tx + ox * 1.01, th - 10 + k * 1.5, tz + oz * 1.01, face % 2 ? 0.12 : 4.4, 0.3, face % 2 ? 4.4 : 0.12);
+      for (const k of [-1, 1]) {
+        const ax = face % 2 ? 0 : k * 2.4;
+        const az = face % 2 ? k * 2.4 : 0;
+        box(mats.trim, tx + ox + ax, th - 6.5, tz + oz + az, face % 2 ? 0.2 : 3.6, 9, face % 2 ? 3.6 : 0.2);
+        for (let q = 0; q < 7; q++) box(mats.trimDark, tx + ox * 1.01 + ax, th - 10.2 + q * 1.2, tz + oz * 1.01 + az, face % 2 ? 0.12 : 3.0, 0.22, face % 2 ? 3.0 : 0.12);
+      }
     }
     box(mats.trim, tx, th + 0.3, tz, tw + 1, 0.6, tw + 1);
     // Tower crown: corbel band under the belfry cornice and corner pinnacles (p.59).
@@ -4390,6 +4437,22 @@ export function buildTown(data, scene) {
       pinnacle(mats.stone, tx + px * (tw / 2 - 0.3), th + 0.5, tz + pz * (tw / 2 - 0.3), 1.1, 4.2);
       box(body, tx + px * (tw / 2 + 0.2), (th - 12) / 2, tz + pz * (tw / 2 + 0.2), 1.3, th - 12, 1.3);
     }
+    // Gablets over each belfry face, at the foot of the spire ("gabled belfry tops", p.59).
+    clapboardTriangle(body, tw - 1.2, 4.2, th + 0.6, "z", tz + tw / 2 - 0.4, tx, 0);
+    clapboardTriangle(body, tw - 1.2, 4.2, th + 0.6, "z", tz - tw / 2 + 0.4, tx, 0);
+    for (const sd of [-1, 1]) {
+      const pos = [tx + sd * (tw / 2 - 0.4), th + 0.6, tz - (tw - 1.2) / 2, tx + sd * (tw / 2 - 0.4), th + 0.6, tz + (tw - 1.2) / 2, tx + sd * (tw / 2 - 0.4), th + 4.8, tz];
+      const g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+      g.setAttribute("normal", new THREE.Float32BufferAttribute([sd, 0, 0, sd, 0, 0, sd, 0, 0], 3));
+      g.setAttribute("uv", new THREE.Float32BufferAttribute([0, 0, 2.7, 0, 1.35, 1.3], 2));
+      g.setIndex(sd > 0 ? [0, 2, 1] : [0, 1, 2]);
+      g.applyMatrix4(buildingMatrix);
+      put(body, g);
+    }
+    for (const sd of [-1, 1]) {
+      gableCoping(mats.trim, tw - 0.6, 4.4, th + 0.6, tz + sd * (tw / 2 - 0.2), tx, 0.35);
+    }
     const spire = new THREE.ConeGeometry(tw * 0.62, 28, 4);
     spire.rotateY(Math.PI / 4);
     spire.translate(tx, th + 14.4, tz);
@@ -4397,6 +4460,10 @@ export function buildTown(data, scene) {
     put(mats.roofDark, spire);
     box(mats.trimDark, tx, th + 30, tz, 0.24, 3.4, 0.24);
     box(mats.trimDark, tx, th + 30.6, tz, 1.6, 0.24, 0.24);
+    if (b.facade?.palette) {
+      // White rake boards on the nave gable, as the photograph shows.
+      gableCoping(mats.trim, b.width + 1.0, rise * 0.96 + 0.35, wallH, fz + 0.45, 0, 0.45);
+    }
     signFor(b, 15);
     return th + 32;
   };

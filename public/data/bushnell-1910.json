@@ -187,14 +187,24 @@
       "id": "st-bernards-church-1912",
       "name": "St. Bernard's Catholic Church",
       "material": "brick",
-      "brick": "red",
+      "brick": "muted",
       "year": "1906",
       "width": 46,
       "depth": 64,
       "facade": {
         "stBernard1907": true,
         "photoMatch": true,
-        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.59."
+        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.59.",
+        "palette": {
+          "trim": "trimWhite"
+        },
+        "signs": [],
+        "crossGable": {
+          "side": 1,
+          "z": 6,
+          "span": 14,
+          "rise": 7
+        }
       },
       "sourceMap": "February 1912 Sanborn; Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.59–60",
       "notes": "Centennial book PDF p.59–60: the brick church was built in 1906 and dedicated in 1907; photograph on p.59: gable to the street, a corner tower with a louvered belfry and tall spire, round-arched windows. The February 1912 Sanborn labels St. Bernard's R.C. Church with a tower. Burned in December 1951. Depth is an estimate."
