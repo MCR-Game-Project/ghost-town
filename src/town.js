@@ -4224,8 +4224,9 @@ export function buildTown(data, scene) {
       gableFrontAt(wingW + 0.8, wd, 11, wall, mats.roofDark, wx, fz + 3.2 - wd / 2);
       box(mats.stone, wx, wall - 1.0, fz + 3.25, wingW + 0.2, 1.1, 0.25);
       for (const row of [base + floor * 0.55, base + floor * 1.55]) {
-        for (const dx of [-wingW * 0.3, -wingW * 0.1, wingW * 0.1, wingW * 0.3]) {
-          frontSash(wx + dx, row, fz + 3.2, 2.0, 6.6, "flat", false, mats.stone);
+        // Ribbons of five tall narrow windows, as in the p.71 photograph.
+        for (const dx of [-8, -4, 0, 4, 8]) {
+          frontSash(wx + dx, row, fz + 3.2, 3.0, 7.6, "flat", false, mats.stone);
         }
       }
       frontSash(wx, wall + 4.2, fz + 3.3, 2.4, 3.2, "round", false, mats.stone);
@@ -4237,48 +4238,64 @@ export function buildTown(data, scene) {
         sideSash(side * (b.width / 2 + 0.08), base + floor * 1.55, z, side, 2.2, 6.4, "flat", false, mats.stone);
       }
     }
-    // Entrance tower.
+    // Entrance tower (round 3, PDF p.71): a solid shaft to just above the eaves, a pair of
+    // arched windows, then a taller OPEN belfry stage (corner piers round a dark core, two
+    // arched openings a face), a flared eave, and a steep octagonal spire.
     const tw = 16;
     const tz = fz - 4;
-    const th = wall + 14;
-    box(body, 0, th / 2, tz, tw, th, tw);
+    const shaft = wall + 7;
+    const belH = 10;
+    const th = shaft + belH;
+    box(body, 0, shaft / 2, tz, tw, shaft, tw);
     box(mats.stone, 0, base / 2, tz, tw + 0.8, base, tw + 0.8);
-    box(mats.trimDark, 0, 5.6, tz + tw / 2 + 0.08, 6, 9.2, 0.2);
-    archHood(mats.stone, 0, 10.2, tz + tw / 2 + 0.3, 8.4, 4.2, "z");
-    for (const dx of [-3.2, 0, 3.2]) frontSash(dx, base + floor * 1.5, tz + tw / 2 + 0.05, 2.0, 5.6, "round", false, mats.stone);
-    // Belfry stage: three arched openings on each face under a stone cornice, then a
-    // flared eave and a steep pyramid spire with a finial (PDF p.71 photograph).
-    box(mats.stone, 0, th - 9.2, tz, tw + 0.5, 0.6, tw + 0.5);
-    for (const face of [0, 1, 2, 3]) {
-      const ang = (face * Math.PI) / 2;
-      const ox = Math.sin(ang) * (tw / 2 + 0.05);
-      const oz = Math.cos(ang) * (tw / 2 + 0.05);
-      for (const k of [-1, 0, 1]) {
-        const ax = face % 2 ? 0 : k * 4.2;
-        const az = face % 2 ? k * 4.2 : 0;
-        box(mats.trimDark, ox + ax, th - 5.6, tz + oz + az, face % 2 ? 0.2 : 2.8, 5.2, face % 2 ? 2.8 : 0.2);
-        if (face % 2 === 0) ringArch(mats.stone, ox + ax, th - 3.0, tz + oz * 1.02, 1.5, 0.3);
-      }
+    // Big round-arched entrance filling most of the tower front (p.71).
+    box(mats.trimDark, 0, 5.5, tz + tw / 2 + 0.45, 8.4, 11.0, 0.2);
+    {
+      const head = new THREE.CircleGeometry(4.2, 18, 0, Math.PI);
+      head.translate(0, 11.0, tz + tw / 2 + 0.56);
+      head.applyMatrix4(buildingMatrix);
+      put(mats.trimDark, head);
     }
-    box(mats.stone, 0, th - 0.6, tz, tw + 1.0, 1.0, tw + 1.0);
-    box(mats.trim, 0, th + 0.3, tz, tw + 2.6, 0.5, tw + 2.6);
-    box(mats.roofDark, 0, th + 0.75, tz, tw + 3.6, 0.3, tw + 3.6);
-    const spire = new THREE.ConeGeometry(tw * 0.7, 22, 4);
-    spire.rotateY(Math.PI / 4);
-    spire.translate(0, th + 11.6, tz);
+    ringArch(mats.stone, 0, 11.0, tz + tw / 2 + 0.7, 4.8, 0.6);
+    for (const sd of [-1, 1]) box(mats.stone, sd * 5.0, 5.5, tz + tw / 2 + 0.6, 1.2, 11, 0.6);
+    for (const dx of [-3.2, 0, 3.2]) frontSash(dx, base + floor * 1.5, tz + tw / 2 + 0.05, 2.0, 5.6, "round", false, mats.stone);
+    for (const dx of [-2.2, 2.2]) frontSash(dx, wall + 2.6, tz + tw / 2 + 0.05, 1.8, 4.2, "round", false, mats.stone);
+    box(mats.stone, 0, shaft - 0.3, tz, tw + 0.9, 0.7, tw + 0.9);
+    // Open stage.
+    box(mats.trimDark, 0, shaft + belH / 2, tz, tw - 4.2, belH, tw - 4.2);
+    for (const px of [-1, 1]) for (const pz of [-1, 1]) box(body, px * (tw / 2 - 0.9), shaft + belH / 2, tz + pz * (tw / 2 - 0.9), 1.8, belH, 1.8);
+    for (const sd of [-1, 1]) {
+      box(body, 0, shaft + belH / 2, tz + sd * (tw / 2 - 0.5), 1.2, belH, 1.0);
+      box(body, sd * (tw / 2 - 0.5), shaft + belH / 2, tz, 1.0, belH, 1.2);
+      box(mats.stone, 0, shaft + 1.2, tz + sd * (tw / 2 - 0.4), tw, 0.5, 0.9);
+      box(mats.stone, sd * (tw / 2 - 0.4), shaft + 1.2, tz, 0.9, 0.5, tw);
+      for (const k of [-1, 1]) ringArch(mats.stone, k * 3.6, shaft + belH - 3.0, tz + sd * (tw / 2 + 0.05), 2.4, 0.35);
+    }
+    box(mats.stone, 0, th - 1.2, tz, tw + 0.6, 2.4, tw + 0.6);
+    box(mats.stone, 0, th + 0.1, tz, tw + 1.6, 0.6, tw + 1.6);
+    // Flared eave.
+    box(mats.roofDark, 0, th + 0.55, tz, tw + 4.0, 0.3, tw + 4.0);
+    const skirt = new THREE.CylinderGeometry((tw + 1) * 0.62, (tw + 4) * 0.72, 2.2, 8, 1);
+    skirt.rotateY(Math.PI / 8);
+    skirt.translate(0, th + 1.8, tz);
+    skirt.applyMatrix4(buildingMatrix);
+    put(mats.roofDark, skirt);
+    const spire = new THREE.ConeGeometry((tw + 1) * 0.62, 26, 8);
+    spire.rotateY(Math.PI / 8);
+    spire.translate(0, th + 2.9 + 13, tz);
     spire.applyMatrix4(buildingMatrix);
     put(mats.roofDark, spire);
-    box(mats.trimDark, 0, th + 23.5, tz, 0.2, 3.0, 0.2);
+    box(mats.trimDark, 0, th + 30.5, tz, 0.2, 3.4, 0.2);
     {
-      const ball = new THREE.SphereGeometry(0.4, 8, 6);
-      ball.translate(0, th + 22.9, tz);
+      const ball = new THREE.SphereGeometry(0.45, 8, 6);
+      ball.translate(0, th + 29.2, tz);
       ball.applyMatrix4(buildingMatrix);
       put(mats.trimDark, ball);
     }
     chimneyStack(mats.brick.red, -b.width * 0.22, wall + 9, -b.depth * 0.15, 2.4, 8, 2.4);
     chimneyStack(mats.brick.red, b.width * 0.22, wall + 9, -b.depth * 0.15, 2.4, 8, 2.4);
     signFor(b, wall - 1);
-    return th + 24;
+    return th + 32;
   };
 
   // Flat-roofed brick school of the 1920s-30s: the 1922 high school addition (PDF p.72)

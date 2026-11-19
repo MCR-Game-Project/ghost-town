@@ -730,6 +730,17 @@ export function makeMaterials() {
         vary: true,
         normalScale: 0.55,
       }),
+      // Drab, smoke-dulled buff (West Side School, p.71).
+      drab: std({
+        map: buffTex.map,
+        normalMap: buffTex.normalMap,
+        roughnessMap: buffTex.roughnessMap,
+        color: "#c4b9ac",
+        roughness: 1,
+        uvFeet: brickFeet,
+        vary: true,
+        normalScale: 0.8,
+      }),
       buff: std({
         map: buffTex.map,
         normalMap: buffTex.normalMap,
