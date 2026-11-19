@@ -6090,7 +6090,7 @@
       "sign": "HENDEE",
       "porch": false,
       "year": "1860",
-      "brick": "buff",
+      "brick": "cream",
       "x": -477.0,
       "z": 227.0,
       "facing": "-z",
@@ -6118,26 +6118,64 @@
         "groundArch": "round",
         "hood": "white",
         "crown": {
-          "proj": 2.2,
+          "proj": 1.6,
           "frieze": 1.3,
           "mat": "white",
-          "spacing": 2.6
+          "spacing": 2.4
         },
         "veranda": {
+          "style": "light",
           "depth": 8,
-          "height": 13,
-          "cols": 7
-        },
-        "signAt": {
-          "y": 14.6,
-          "reach": 8.7,
-          "along": -19,
-          "width": 11
+          "height": 12.5,
+          "cols": 8,
+          "wrap": {
+            "side": 1,
+            "length": 30
+          }
         },
         "chimneys": 3,
         "chimneySide": 1,
-        "upperY": 0.68,
-        "upperH": 8.0
+        "upperY": 0.7,
+        "upperH": 9.4,
+        "winW": 2.8,
+        "palette": {
+          "white": "trimWhite",
+          "trim": "trimWhite",
+          "stone": "trimCream",
+          "trimDark": "trimIron"
+        },
+        "signs": [
+          {
+            "text": "HENDEE.",
+            "face": "front",
+            "y": 14.2,
+            "along": -20,
+            "width": 10,
+            "height": 2.0,
+            "style": "painted",
+            "reach": 8.3
+          },
+          {
+            "text": "BANK",
+            "face": "front",
+            "y": 6.0,
+            "along": 22.5,
+            "width": 4.4,
+            "style": "glass",
+            "reach": 0.35
+          },
+          {
+            "text": "BURNS & SANDERS",
+            "sub": "ATTY AT LAW",
+            "face": "side",
+            "side": 1,
+            "y": 18.5,
+            "along": 32,
+            "width": 6,
+            "height": 2.4,
+            "style": "painted"
+          }
+        ]
       }
     },
     {

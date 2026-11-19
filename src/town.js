@@ -549,8 +549,48 @@ export function buildTown(data, scene) {
   // Full-width columned porch across the ground floor (Hendee engraving, PDF p.25):
   // turned columns with caps and bases, arched spandrels between them, a fascia that
   // carries the HENDEE sign, a low roof, and a raised deck. Depth is an estimate.
+  // style "light": the thin flat canopy on slender square posts of the Hendee engraving
+  // (p.25), carried round the corner along one side by wrap: { side, length }.
+  const drawLightCanopy = (b, o) => {
+    const depth = o.depth ?? 8;
+    const h = o.height ?? 12.5;
+    const fz = b.depth / 2 + 0.14;
+    const zc = fz + depth;
+    const w = b.width + (o.extend ?? 0.6);
+    const cols = Math.max(2, o.cols ?? 7);
+    const xc = (o.shift ?? 0);
+    box(mats.plank, xc, 0.6, fz + depth / 2, w, 0.3, depth);
+    for (let i = 0; i < cols; i++) {
+      const x = xc - w / 2 + 0.3 + ((w - 0.6) * i) / (cols - 1);
+      box(mats.trim, x, h / 2, zc - 0.3, 0.38, h, 0.38);
+    }
+    box(mats.trim, xc, h - 0.3, zc - 0.25, w + 0.2, 0.75, 0.22);
+    const roof = new THREE.BoxGeometry(w + 0.3, 0.16, depth + 0.4);
+    roof.rotateX(0.05);
+    roof.translate(xc, h + 0.1, fz + depth / 2);
+    roof.applyMatrix4(buildingMatrix);
+    put(mats.roofDark, roof);
+    if (o.wrap) {
+      const sd = o.wrap.side || 1;
+      const len = o.wrap.length ?? b.depth * 0.6;
+      const sx = sd * (b.width / 2 + depth / 2 + 0.1);
+      const z0 = b.depth / 2 + 0.1;
+      box(mats.plank, sx, 0.6, z0 - len / 2, depth, 0.3, len);
+      const n = Math.max(2, Math.round(len / 9));
+      for (let i = 0; i <= n; i++) box(mats.trim, sx + sd * (depth / 2 - 0.3), h / 2, z0 - (len * i) / n, 0.38, h, 0.38);
+      box(mats.trim, sx + sd * (depth / 2 - 0.25), h - 0.3, z0 - len / 2, 0.22, 0.75, len);
+      const sroof = new THREE.BoxGeometry(depth + 0.4, 0.16, len);
+      sroof.rotateZ(-sd * 0.05);
+      sroof.translate(sx, h + 0.1, z0 - len / 2);
+      sroof.applyMatrix4(buildingMatrix);
+      put(mats.roofDark, sroof);
+    }
+    return { y: h + 2.2, z: zc };
+  };
+
   const drawVeranda = (b, v) => {
     const o = typeof v === "object" ? v : {};
+    if (o.style === "light") return drawLightCanopy(b, o);
     const depth = o.depth ?? 8;
     const h = o.height ?? 11;
     const fz = b.depth / 2 + 0.14;
@@ -630,7 +670,11 @@ export function buildTown(data, scene) {
           box(f.brickBase ? brickOf(b) : mats.trimDark, x, f.brickBase ? 1.45 : 1.1, fz, gw, f.brickBase ? 2.5 : 1.45, 0.2);
           box(mats.reveal, x, 5.15, fz - 0.04, gw * 0.9, 5.4, 0.12);
           box(mats.glass, x, 5.15, fz + 0.02, gw * 0.84, 5.15, 0.06);
-          box(mats.trim, x, 5.15, fz + 0.1, gw + 0.16, 5.7, 0.08);
+          // Open frame round the plate glass (it was a solid slab that hid the glass).
+          box(mats.trim, x - gw / 2, 5.15, fz + 0.1, 0.24, 5.7, 0.08);
+          box(mats.trim, x + gw / 2, 5.15, fz + 0.1, 0.24, 5.7, 0.08);
+          box(mats.trim, x, 7.9, fz + 0.1, gw + 0.16, 0.2, 0.08);
+          box(mats.trim, x, 2.4, fz + 0.1, gw + 0.16, 0.2, 0.08);
           box(mats.trim, x, 5.15, fz + 0.14, 0.08, 5.0, 0.04);
           box(mats.glass, x, 8.25, fz + 0.02, gw * 0.84, 0.66, 0.05);
           box(mats.stone, x, 8.7, fz + 0.1, gw + 0.22, 0.24, 0.22);
