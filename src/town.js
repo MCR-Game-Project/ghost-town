@@ -4481,13 +4481,13 @@ export function buildTown(data, scene) {
     gableFrontAt(b.width, b.depth, rise, wallH, mats.roofDark, 0, 0);
     clapboardTriangle(body, b.width, rise * 0.96, wallH, "z", b.depth / 2 + 0.02, 0, 0);
     clapboardTriangle(body, b.width, rise * 0.96, wallH, "z", -b.depth / 2 - 0.02, 0, 0);
-    box(mats.stone, 0, wallH + rise * 0.3, fz + 0.05, 7.4, rise * 0.5 + wallH * 0.5, 0.25);
-    // Tall pointed window with stone tracery (p.61), and stone coping on the gable.
-    frontSash(0, wallH * 0.85, fz + 0.2, 4.2, 9.5, "pointed", false, mats.stone);
-    box(mats.stone, 0, wallH * 0.85, fz + 0.75, 0.25, 9.0, 0.12);
+    // Round 3 (p.61): a wide pointed tracery window over a broad light stone door surround.
+    box(mats.stone, 0, 5.4, fz + 0.05, 9.0, 10.8, 0.25);
+    frontSash(0, wallH * 0.98, fz + 0.2, 6.4, 10.5, "pointed", false, mats.stone);
+    for (const dx of [-1.6, 0, 1.6]) box(mats.stone, dx, wallH * 0.98, fz + 0.75, 0.22, 10.0, 0.12);
     gableCoping(mats.stone, b.width + 0.8, rise * 0.96 + 0.3, wallH, fz + 0.25, 0, 0.6);
-    paneledDoor(0, fz + 0.2, 5.2, 8.0, false);
-    box(mats.stone, 0, 9.0, fz + 0.9, 7.2, 0.4, 1.6);
+    paneledDoor(0, fz + 0.3, 6.2, 8.4, false);
+    box(mats.stone, 0, 9.4, fz + 0.9, 9.4, 0.5, 1.6);
     frontSash(-b.width * 0.32, 8.5, fz, 2.2, 5, "round", false, mats.stone);
     frontSash(b.width * 0.32, 8.5, fz, 2.2, 5, "round", false, mats.stone);
     for (const side of [-1, 1]) {

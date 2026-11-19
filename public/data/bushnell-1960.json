@@ -46,7 +46,7 @@
       "z": 1320,
       "facing": "+z",
       "paint": "cream",
-      "brick": "buff",
+      "brick": "muted",
       "sign": "",
       "porch": false,
       "party": [],
@@ -57,7 +57,8 @@
       "facade": {
         "stBernard1953": true,
         "photoMatch": true,
-        "photoSource": "Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.61."
+        "photoSource": "Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.61.",
+        "signs": []
       },
       "sourceMap": "Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.59\u201361",
       "notes": "Centennial book PDF p.59\u201361: after the December 1951 fire the church was rebuilt and completed in 1953 on the same corner; the photograph shows a brick gable front with a cross, a tall round-arched window over the door, and no tower. Footprint and brick colour are estimates."
