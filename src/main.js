@@ -934,6 +934,7 @@ function builtTownYear(sliderYear) {
   if (year >= 1950) return 1950;
   if (year >= 1920) return 1920;
   if (year >= 1910) return 1910;
+  if (year >= 1905) return 1905;
   if (year >= 1900) return 1900;
   if (year >= 1890) return 1890;
   if (year >= 1880) return 1880;
@@ -1034,6 +1035,7 @@ function mountTown(builtYear, sliderYear = builtYear) {
   if (builtYear >= 1880 && townPatches.rural1880) applyTownPatch(data, townPatches.rural1880);
   if (builtYear >= 1890) applyTownPatch(data, townPatches[1890]);
   if (builtYear >= 1900) applyTownPatch(data, townPatches[1900]);
+  if (builtYear >= 1905) applyTownPatch(data, townPatches[1905]);
   if (builtYear >= 1910) applyTownPatch(data, townPatches[1910]);
   if (builtYear >= 1920) applyTownPatch(data, townPatches[1920]);
   if (builtYear >= 1950) applyTownPatch(data, townPatches[1950]);
@@ -1107,6 +1109,7 @@ async function main() {
     [1870, "bushnell-1870.json"],
     [1890, "bushnell-1890.json"],
     [1900, "bushnell-1900.json"],
+    [1905, "bushnell-1905.json"],
     [1910, "bushnell-1910.json"],
     [1920, "bushnell-1920.json"],
     [1950, "bushnell-1950.json"],
@@ -1132,11 +1135,12 @@ async function main() {
     1870: payloads[3],
     1890: payloads[4],
     1900: payloads[5],
-    1910: payloads[6],
-    1920: payloads[7],
-    1950: payloads[8],
-    1960: payloads[9],
-    1970: payloads[10],
+    1905: payloads[6],
+    1910: payloads[7],
+    1920: payloads[8],
+    1950: payloads[9],
+    1960: payloads[10],
+    1970: payloads[11],
   };
   townPatches.rural1880 = ruralNotes[0];
   for (const [year, extra] of [[1920, ruralNotes[1]], [1950, ruralNotes[2]], [1970, ruralNotes[3]]]) {

@@ -7002,10 +7002,14 @@ export function buildTown(data, scene) {
   }
 
   // Ground.
+  const groundYear = data.meta?.sliderYear || data.meta?.shownYear || 1880;
+  const pioneerPrairie = groundYear <= 1860;
+  const groundGrassMat = pioneerPrairie ? mats.prairie : mats.grass;
+  const groundParkMat = pioneerPrairie ? mats.prairiePark : mats.park;
   // Round 4: the plane is split into small cells and sits a little below the streets. As two
   // 40,000-foot triangles at y = 0 it won the depth test over the dirt streets in the
   // software renderer, so every dirt street read as lawn.
-  const prairie = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000, 100, 100), mats.grass);
+  const prairie = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000, 100, 100), groundGrassMat);
   prairie.rotation.x = -Math.PI / 2;
   prairie.position.y = -0.3;
   prairie.receiveShadow = true;
@@ -7015,7 +7019,7 @@ export function buildTown(data, scene) {
     if (block.use !== "park") continue;
     const w = block.x1 - block.x0;
     const d = block.z1 - block.z0;
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mats.park);
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, d), groundParkMat);
     mesh.rotation.x = -Math.PI / 2;
     mesh.position.set((block.x0 + block.x1) / 2, 0.03, (block.z0 + block.z1) / 2);
     mesh.receiveShadow = true;
@@ -7065,7 +7069,6 @@ export function buildTown(data, scene) {
   // From 1938 the W.P.A. black-topped every main street not already paved (p.46).
   // The book does not name the pavement itself. Brick for 1902-1906 and concrete from 1907
   // follow the walk dates (estimate). Spans are in plat feet after the mirror: +z is east.
-  const groundYear = data.meta?.sliderYear || data.meta?.shownYear || 1880;
   const walkEra = groundYear < 1902 ? "board" : groundYear < 1907 ? "brick" : "concrete";
   const modernPaved = (data.meta?.shownYear || 0) >= 1970;
   const blacktopAll = groundYear >= 1938;
@@ -7209,7 +7212,7 @@ float sNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
         const rowMid = street.at + side * (carriage / 2 + 0.7 + (margin - 0.7) / 2);
         // Business blocks get a walk to the lot line; the rest keep a grass parkway.
         if (span.business) flatStrip(walkMat, street.axis, from, to, rowMid, margin - 0.7, 0.2);
-        else flatStrip(mats.grass, street.axis, from, to, rowMid, margin - 0.7, 0.09);
+        else flatStrip(groundGrassMat, street.axis, from, to, rowMid, margin - 0.7, 0.09);
       }
     }
   }
@@ -7271,7 +7274,296 @@ float sNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
       vergeParts.push(geo);
     }
   }
-  const vergeMesh = new THREE.Mesh(mergeGeometries(vergeParts, false), mats.grass);
+    const vergeMesh = new THREE.Mesh(mergeGeometries(vergeParts, false), groundGrassMat);
+  vergeMesh.receiveShadow = true;
+  scene.add(vergeMesh);
+
+  if (pioneerPrairie) {
+    const distPointSeg = (px, pz, ax, az, bx, bz) => {
+      const dx = bx - ax;
+      const dz = bz - az;
+      const lenSq = dx * dx + dz * dz;
+      const t = lenSq > 0 ? Math.max(0, Math.min(1, ((px - ax) * dx + (pz - az) * dz) / lenSq)) : 0;
+      return Math.hypot(px - (ax + t * dx), pz - (az + t * dz));
+    };
+    const trackDist = (px, pz) => {
+      let best = Infinity;
+      for (const tr of data.tracks || []) {
+        const pts = tr.points || [];
+        for (let i = 0; i + 1 < pts.length; i++) {
+          const d = distPointSeg(px, pz, pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1]);
+          if (d < best) best = d;
+        }
+      }
+      return best;
+    };
+    const inStreet = (px, pz, pad = 0) => {
+      for (const st of data.streets) {
+        if (st.points) continue;
+        const hw = st.width / 2 + pad;
+        if (st.axis === "x") {
+          if (px >= st.from - pad && px <= st.to + pad && Math.abs(pz - st.at) <= hw) return true;
+        } else {
+          if (pz >= st.from - pad && pz <= st.to + pad && Math.abs(px - st.at) <= hw) return true;
+        }
+      }
+      return false;
+    };
+    const yardGeos = [];
+    const yardExclusions = [];
+    const pushDirtPatch = (cx, cz, w, d, rotY = 0, excludeInset = 1.5) => {
+      if (w < 2 || d < 2) return;
+      if (trackDist(cx, cz) < 12) return;
+      const geo = new THREE.PlaneGeometry(w, d);
+      geo.rotateX(-Math.PI / 2);
+      if (rotY) geo.rotateY(rotY);
+      geo.translate(cx, 0.095, cz);
+      yardGeos.push(geo);
+      const c = Math.abs(Math.cos(rotY));
+      const sn = Math.abs(Math.sin(rotY));
+      const hw = (w * c + d * sn) * 0.5 - excludeInset;
+      const hd = (w * sn + d * c) * 0.5 - excludeInset;
+      if (hw > 1 && hd > 1) yardExclusions.push({ x0: cx - hw, x1: cx + hw, z0: cz - hd, z1: cz + hd });
+    };
+    const addWornPath = (x0, z0, x1, z1, width, seed) => {
+      const dx = x1 - x0;
+      const dz = z1 - z0;
+      const len = Math.hypot(dx, dz);
+      if (len < 4) return;
+      const nx = -dz / len;
+      const nz = dx / len;
+      const segs = Math.max(2, Math.min(4, Math.ceil(len / 28)));
+      const sway = ((seed % 7) - 3) * 0.8;
+      for (let i = 0; i < segs; i++) {
+        const t0 = i / segs;
+        const t1 = (i + 1) / segs;
+        const tm = (t0 + t1) * 0.5;
+        const off0 = Math.sin(t0 * Math.PI) * sway;
+        const off1 = Math.sin(t1 * Math.PI) * sway;
+        const ax = x0 + dx * t0 + nx * off0;
+        const az = z0 + dz * t0 + nz * off0;
+        const bx = x0 + dx * t1 + nx * off1;
+        const bz = z0 + dz * t1 + nz * off1;
+        const mx = (ax + bx) * 0.5;
+        const mz = (az + bz) * 0.5;
+        if (inStreet(mx, mz, -2.5) || trackDist(mx, mz) < 12) continue;
+        const segLen = Math.hypot(bx - ax, bz - az) + 5.5;
+        const ang = Math.atan2(bx - ax, bz - az);
+        pushDirtPatch(mx, mz, width + ((seed + i) % 3) * 0.7, segLen, ang, 0.8);
+      }
+    };
+
+    const houses = [];
+    const barns = [];
+    for (const b of data.buildings) {
+      const h = idHash(b.id);
+      const fp = footprint(b);
+      const cx = (fp.minX + fp.maxX) / 2;
+      const cz = (fp.minZ + fp.maxZ) / 2;
+      const bw = fp.maxX - fp.minX;
+      const bd = fp.maxZ - fp.minZ;
+      const yaw = (FACING[b.facing] ?? 0) + ((b.rotation || 0) * Math.PI) / 180;
+      const fx = Math.sin(yaw);
+      const fz = Math.cos(yaw);
+      const isStore = b.kind === "frame-store" || b.kind === "brick-store" || b.kind === "hotel";
+      const isBarn = b.kind === "barn" || b.kind === "shed";
+      if (b.kind === "house") houses.push({ b, cx, cz, fp });
+      if (isBarn) barns.push({ b, cx, cz, fx, fz, bw, bd, h });
+
+      const padW = bw + (isBarn ? 32 : isStore ? 26 : 24) + (h % 7);
+      const padD = bd + (isBarn ? 34 : isStore ? 28 : 26) + ((h >> 3) % 7);
+      const fwdShift = isStore ? 6.5 : isBarn ? 2.0 : 4.5;
+      const yx = cx + fx * fwdShift;
+      const yz = cz + fz * fwdShift;
+      pushDirtPatch(yx, yz, padW, padD, ((h % 9) - 4) * 0.025, 2.0);
+      // Secondary slightly offset packed-earth patch for irregular yard boundary.
+      const sx = ((h % 11) - 5) * 1.4;
+      const sz = (((h >> 4) % 11) - 5) * 1.4;
+      pushDirtPatch(cx + sx - fx * 3, cz + sz - fz * 3, bw + 14 + (h % 5), bd + 14 + ((h >> 2) % 5), 0.14, 2.2);
+
+      // Worn footpath from front door/steps to the nearest facing street shoulder.
+      if (!isBarn) {
+        const frontHalf = Math.abs(fx) * (bw * 0.5) + Math.abs(fz) * (bd * 0.5);
+        const startX = cx + fx * (frontHalf + 2);
+        const startZ = cz + fz * (frontHalf + 2);
+        let bestDist = 175;
+        let endX = null;
+        let endZ = null;
+        for (const st of data.streets) {
+          if (st.points) continue;
+          if (Math.abs(fz) > 0.6 && st.axis === "x") {
+            if (startX < st.from || startX > st.to) continue;
+            const d = (st.at - startZ) * fz;
+            const edge = d - (st.width * 0.5 - 1.5);
+            if (edge > 2 && edge < bestDist) {
+              bestDist = edge;
+              endX = startX + ((h % 5) - 2) * 1.2;
+              endZ = st.at - fz * (st.width * 0.5 - 1.5);
+            }
+          } else if (Math.abs(fx) > 0.6 && st.axis === "z") {
+            if (startZ < st.from || startZ > st.to) continue;
+            const d = (st.at - startX) * fx;
+            const edge = d - (st.width * 0.5 - 1.5);
+            if (edge > 2 && edge < bestDist) {
+              bestDist = edge;
+              endX = st.at - fx * (st.width * 0.5 - 1.5);
+              endZ = startZ + ((h % 5) - 2) * 1.2;
+            }
+          }
+        }
+        if (endX !== null) {
+          addWornPath(startX, startZ, endX, endZ, isStore ? 10 : 6.8, h);
+        }
+      }
+    }
+
+    // Worn paths linking barns/sheds to the nearest house on the same block.
+    for (const barn of barns) {
+      let best = null;
+      let bestD = 195;
+      for (const hs of houses) {
+        const d = Math.hypot(hs.cx - barn.cx, hs.cz - barn.cz);
+        if (d >= bestD) continue;
+        const mx = (hs.cx + barn.cx) * 0.5;
+        const mz = (hs.cz + barn.cz) * 0.5;
+        if (inStreet(mx, mz, 0) || trackDist(mx, mz) < 12) continue;
+        bestD = d;
+        best = hs;
+      }
+      if (best) addWornPath(barn.cx, barn.cz, best.cx, best.cz, 6.2, barn.h);
+    }
+
+    if (yardGeos.length) {
+      const mergedYards = mergeGeometries(yardGeos, false);
+      yardGeos.forEach((g) => g.dispose());
+      if (mergedYards) {
+        const yardMesh = new THREE.Mesh(mergedYards, mats.dirtPatch);
+        yardMesh.receiveShadow = true;
+        yardMesh.renderOrder = 0;
+        scene.add(yardMesh);
+      }
+    }
+
+    // Taller tan-green uneven prairie grass tufts across unbuilt prairie & lots.
+    const buildTuftGeo = () => {
+      const positions = [];
+      const normals = [];
+      const uvs = [];
+      const bladeCount = 12;
+      for (let i = 0; i < bladeCount; i++) {
+        const ring = i < 4 ? 0.16 : 0.44 + (i % 3) * 0.16;
+        const posAng = i * 2.399963;
+        const bx = Math.cos(posAng) * ring;
+        const bz = Math.sin(posAng) * ring;
+        const faceAng = posAng + 0.55 + (i % 3) * 0.4;
+        const w = 0.14 + (i % 4) * 0.03;
+        const h = 0.52 + ((i * 7) % 5) * 0.12;
+        const lean = 0.32 + (i % 4) * 0.14;
+        const c = Math.cos(faceAng);
+        const sn = Math.sin(faceAng);
+        const hw = w * 0.5;
+        const outX = Math.cos(posAng);
+        const outZ = Math.sin(posAng);
+        const midX = bx + outX * lean * 0.38;
+        const midZ = bz + outZ * lean * 0.38;
+        const tipX = bx + outX * lean;
+        const tipZ = bz + outZ * lean;
+        const lx0 = bx - c * hw, lz0 = bz - sn * hw;
+        const rx0 = bx + c * hw, rz0 = bz + sn * hw;
+        const lx1 = midX - c * (hw * 0.55), lz1 = midZ - sn * (hw * 0.55);
+        const rx1 = midX + c * (hw * 0.55), rz1 = midZ + sn * (hw * 0.55);
+        const mh = h * 0.54;
+        positions.push(
+          lx0, 0, lz0, rx0, 0, rz0, rx1, mh, rz1,
+          lx0, 0, lz0, rx1, mh, rz1, lx1, mh, lz1,
+          lx1, mh, lz1, rx1, mh, rz1, tipX, h, tipZ,
+        );
+        for (let k = 0; k < 9; k++) normals.push(0, 1, 0);
+        uvs.push(0, 0, 1, 0, 1, 0.5, 0, 0, 1, 0.5, 0, 0.5, 0, 0.5, 1, 0.5, 0.5, 1);
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+      geo.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
+      geo.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+      return geo;
+    };
+
+    const inYardOrBuilding = (px, pz) => {
+      for (const c of colliders) {
+        if (px >= c.minX - 4.5 && px <= c.maxX + 4.5 && pz >= c.minZ - 4.5 && pz <= c.maxZ + 4.5) return true;
+      }
+      for (const y of yardExclusions) {
+        if (px >= y.x0 && px <= y.x1 && pz >= y.z0 && pz <= y.z1) return true;
+      }
+      return false;
+    };
+
+    let seed = 1860054;
+    const rand = () => {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      return seed / 4294967296;
+    };
+    const tufts = [];
+    const tryAddTuft = (tx, tz, clumpBoost = 0) => {
+      if (inStreet(tx, tz, 2.5) || trackDist(tx, tz) < 13.5 || inYardOrBuilding(tx, tz)) return;
+      const clump =
+        0.52 +
+        0.28 * Math.sin(tx * 0.019 + tz * 0.013) +
+        0.22 * Math.cos(tx * 0.037 - tz * 0.029) +
+        clumpBoost;
+      if (rand() > Math.max(0.22, Math.min(0.95, clump))) return;
+      const tall = 1.35 + clump * 1.45 + rand() * 0.75;
+      const wide = 1.55 + rand() * 1.25;
+      tufts.push({ tx, tz, tall, wide, rot: rand() * Math.PI * 2, shade: rand() });
+    };
+
+    for (let x = -1220; x <= 1140; x += 10) {
+      for (let z = -1320; z <= 1320; z += 10) {
+        tryAddTuft(x + (rand() - 0.5) * 8.5, z + (rand() - 0.5) * 8.5, 0.08);
+      }
+    }
+    for (let x = -2250; x <= 2250; x += 34) {
+      for (let z = -2250; z <= 2250; z += 34) {
+        if (x > -1240 && x < 1160 && z > -1340 && z < 1340) continue;
+        tryAddTuft(x + (rand() - 0.5) * 24, z + (rand() - 0.5) * 24, -0.05);
+      }
+    }
+
+    if (tufts.length) {
+      const tuftGeo = buildTuftGeo();
+      const tuftMat = new THREE.MeshStandardMaterial({
+        color: "#ffffff",
+        roughness: 0.94,
+        metalness: 0,
+        side: THREE.DoubleSide,
+      });
+      const grassMesh = new THREE.InstancedMesh(tuftGeo, tuftMat, tufts.length);
+      const tDummy = new THREE.Object3D();
+      const tCol = new THREE.Color();
+      const palette = [
+        new THREE.Color("#bfa558"),
+        new THREE.Color("#ad9248"),
+        new THREE.Color("#8b8a42"),
+        new THREE.Color("#6e7d3b"),
+        new THREE.Color("#5f6e32"),
+      ];
+      tufts.forEach((tf, i) => {
+        tDummy.position.set(tf.tx, 0.02, tf.tz);
+        tDummy.rotation.set(0, tf.rot, 0);
+        tDummy.scale.set(tf.wide, tf.tall, tf.wide);
+        tDummy.updateMatrix();
+        grassMesh.setMatrixAt(i, tDummy.matrix);
+        const baseC = palette[Math.floor(tf.shade * palette.length) % palette.length];
+        tCol.copy(baseC).offsetHSL((rand() - 0.5) * 0.02, 0, (rand() - 0.5) * 0.05);
+        grassMesh.setColorAt(i, tCol);
+      });
+      grassMesh.instanceMatrix.needsUpdate = true;
+      if (grassMesh.instanceColor) grassMesh.instanceColor.needsUpdate = true;
+      grassMesh.castShadow = false;
+      grassMesh.receiveShadow = true;
+      scene.add(grassMesh);
+    }
+  }
   vergeMesh.receiveShadow = true;
   scene.add(vergeMesh);
 
@@ -7718,19 +8010,80 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
     }
   }
 
-  // Trees in the recorded yards, plus one in most house yards, plus a distant line.
-  for (let i = 0; i < 56; i++) {
-    const angle = (i / 56) * Math.PI * 2;
-    const radius = 2200 + (i % 6) * 90;
-    extraTrees.push({
-      x: Math.cos(angle) * radius,
-      z: Math.sin(angle) * radius * 0.78,
-      kind: i % 2 ? "maple" : "elm",
-      scale: 1.7 + (i % 4) * 0.25,
-    });
+  let allTrees;
+  let lobeCount = 18;
+  if (pioneerPrairie) {
+    // 1854/1860: no mature shade trees on the open prairie; only a few small settler-planted saplings.
+    lobeCount = 8;
+    const saplingClear = (sx, sz) => {
+      for (const c of colliders) {
+        if (sx >= c.minX - 9 && sx <= c.maxX + 9 && sz >= c.minZ - 9 && sz <= c.maxZ + 9) return false;
+      }
+      for (const st of data.streets) {
+        if (st.points) continue;
+        const hw = st.width / 2 + 5;
+        if (st.axis === "x") {
+          if (sx >= st.from - 4 && sx <= st.to + 4 && Math.abs(sz - st.at) <= hw) return false;
+        } else {
+          if (sz >= st.from - 4 && sz <= st.to + 4 && Math.abs(sx - st.at) <= hw) return false;
+        }
+      }
+      for (const tr of data.tracks || []) {
+        const pts = tr.points || [];
+        for (let i = 0; i + 1 < pts.length; i++) {
+          const ax = pts[i][0], az = pts[i][1], bx = pts[i + 1][0], bz = pts[i + 1][1];
+          const dx = bx - ax, dz = bz - az, l2 = dx * dx + dz * dz;
+          const t = l2 > 0 ? Math.max(0, Math.min(1, ((sx - ax) * dx + (sz - az) * dz) / l2)) : 0;
+          if (Math.hypot(sx - (ax + t * dx), sz - (az + t * dz)) < 18) return false;
+        }
+      }
+      return true;
+    };
+    const saplings = [];
+    for (const b of data.buildings) {
+      const h = idHash(b.id);
+      if (b.kind === "house" && h % 5 === 0) {
+        const side = h % 2 === 0 ? 1 : -1;
+        const sx = b.x + side * (b.width / 2 + 12 + (h % 5));
+        const sz = b.z + ((h % 7) - 3) * 2;
+        if (saplingClear(sx, sz)) saplings.push({ x: sx, z: sz, scale: 0.48 + (h % 4) * 0.06 });
+      }
+      if (b.id === "markham-house-1854") {
+        for (const [dx, dz, sc] of [[24, 14, 0.50], [-22, -18, 0.44], [42, -26, 0.54]]) {
+          if (saplingClear(b.x + dx, b.z + dz)) saplings.push({ x: b.x + dx, z: b.z + dz, scale: sc });
+        }
+      }
+      if (b.id === "american-house-52" || b.id === "german-methodist-1857") {
+        const sx = b.x + 34;
+        const sz = b.z - 20;
+        if (saplingClear(sx, sz)) saplings.push({ x: sx, z: sz, scale: 0.58 });
+      }
+    }
+    if (groundYear >= 1860) {
+      for (const block of data.blocks) {
+        if (block.use !== "park") continue;
+        for (const [fx, fz, sc] of [[0.25, 0.3, 0.54], [0.75, 0.7, 0.48]]) {
+          const sx = block.x0 + (block.x1 - block.x0) * fx;
+          const sz = block.z0 + (block.z1 - block.z0) * fz;
+          if (saplingClear(sx, sz)) saplings.push({ x: sx, z: sz, scale: sc });
+        }
+      }
+    }
+    allTrees = saplings;
+  } else {
+    // Trees in the recorded yards, plus one in most house yards, plus a distant line.
+    for (let i = 0; i < 56; i++) {
+      const angle = (i / 56) * Math.PI * 2;
+      const radius = 2200 + (i % 6) * 90;
+      extraTrees.push({
+        x: Math.cos(angle) * radius,
+        z: Math.sin(angle) * radius * 0.78,
+        kind: i % 2 ? "maple" : "elm",
+        scale: 1.7 + (i % 4) * 0.25,
+      });
+    }
+    allTrees = data.trees.concat(extraTrees);
   }
-  const allTrees = data.trees.concat(extraTrees);
-  const lobeCount = 18;
   const foliage = (color, key) => {
     const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.84, metalness: 0, side: THREE.DoubleSide });
     mat.onBeforeCompile = (shader) => {
@@ -7747,8 +8100,8 @@ float lHash(vec3 p){ p=fract(p*0.1031); p+=dot(p,p.yzx+33.33); return fract((p.x
     mat.customProgramCacheKey = () => key;
     return mat;
   };
-  const leafMat = foliage("#3e6b34", "leaf-gaps-a");
-  const leafDarkMat = foliage("#2c5228", "leaf-gaps-b");
+  const leafMat = foliage(pioneerPrairie ? "#568040" : "#3e6b34", pioneerPrairie ? "leaf-sapling-a" : "leaf-gaps-a");
+  const leafDarkMat = foliage(pioneerPrairie ? "#436830" : "#2c5228", pioneerPrairie ? "leaf-sapling-b" : "leaf-gaps-b");
   const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.38, 0.62, 1, 8), mats.trunk, allTrees.length);
   const lobes = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 12, 9), leafMat, allTrees.length * lobeCount);
   const lobesDark = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 8), leafDarkMat, allTrees.length * lobeCount);
@@ -7764,7 +8117,8 @@ float lHash(vec3 p){ p=fract(p*0.1031); p+=dot(p,p.yzx+33.33); return fract((p.x
     const s = t.scale || 1;
     const trunkH = (8 + (i % 3) * 0.6) * s;
     dummy.position.set(t.x, trunkH / 2, t.z);
-    dummy.scale.set(s * 0.85, trunkH, s * 0.85);
+    const ts = pioneerPrairie ? s * 0.55 : s * 0.85;
+    dummy.scale.set(ts, trunkH, ts);
     dummy.rotation.set(0, i * 0.7, 0);
     dummy.updateMatrix();
     trunks.setMatrixAt(i, dummy.matrix);

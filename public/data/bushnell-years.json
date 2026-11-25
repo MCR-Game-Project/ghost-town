@@ -643,6 +643,42 @@
       "populationLabel": "2,490"
     },
     {
+      "year": 1905,
+      "census": [
+        {
+          "text": "Estimated population about 2,555 (no 1905 U.S. census; linear midpoint interpolated between the 1900 census of 2,490 and the 1910 census of 2,619).",
+          "source": "Interpolated midpoint between U.S. decennial censuses for Bushnell: 2,490 in 1900 and 2,619 in 1910."
+        },
+        {
+          "text": "Brick paving ordinances from 1902\u20131904 are shown: Hail Street from East Main to Crafford (finished April 1903) and East and West Main from Gridley to Barnes (finished summer 1904), with brick sidewalks (1902\u20131906).",
+          "source": "Bushnell, Illinois, centennial, 1854\u20131954, p.24\u201326."
+        }
+      ],
+      "school": [
+        {
+          "text": "The East Side school at Cole and Hurst opened in the winter of 1904, before Christmas, as a grade and high school alongside the 1896\u201397 West Side school. No enrollment count was found.",
+          "source": "Bushnell centennial book, 1854\u20131954, p.70\u201372."
+        }
+      ],
+      "businesses": [
+        {
+          "name": "Bushnell Record",
+          "type": "newspaper",
+          "year": "1882\u20131940",
+          "source": "Illinois Newspaper Project, University of Illinois. The title was published at Bushnell from 1882 to 1940. Proprietor for this stop was not copied."
+        },
+        {
+          "name": "McDonough Democrat",
+          "type": "newspaper",
+          "year": "1884 onward",
+          "source": "Library of Congress Chronicling America. The paper began at Bushnell in 1884. The record used here does not give a closing date or the proprietor for this stop."
+        }
+      ],
+      "population": 2555,
+      "populationEstimated": true,
+      "populationLabel": "estimated 2,555"
+    },
+    {
       "year": 1910,
       "census": [
         {

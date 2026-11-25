@@ -204,7 +204,7 @@
       "facade": {
         "stBernard1907": true,
         "photoMatch": true,
-        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.59.",
+        "photoSource": "Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.59.",
         "palette": {
           "trim": "trimWhite"
         },
@@ -216,13 +216,8 @@
           "rise": 7
         }
       },
-      "sourceMap": "February 1912 Sanborn; Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.59–60",
-      "notes": "Centennial book PDF p.59–60: the brick church was built in 1906 and dedicated in 1907; photograph on p.59: gable to the street, a corner tower with a louvered belfry and tall spire, round-arched windows. The February 1912 Sanborn labels St. Bernard's R.C. Church with a tower. Burned in December 1951. Depth is an estimate."
-    },
-    {
-      "id": "presbyterian-church",
-      "facing": "+x",
-      "notes": "Centennial book PDF p.65: in May 1903 the 1869 frame church (which had faced north) was turned to face west onto Hurst Street on the corner lot and rededicated 3 January 1904. Drawn turned from the 1910 stop before the 1917 brick enlargement."
+      "sourceMap": "February 1912 Sanborn; Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.59\u201360",
+      "notes": "Centennial book PDF p.59\u201360: the brick church was built in 1906 and dedicated in 1907; photograph on p.59: gable to the street, a corner tower with a louvered belfry and tall spire, round-arched windows. The February 1912 Sanborn labels St. Bernard's R.C. Church with a tower. Burned in December 1951. Depth is an estimate."
     }
   ],
   "add": [
@@ -514,7 +509,7 @@
         },
         "signs": []
       },
-      "notes": "photo from Mark, 292 W Hurst St, 2010. The 1909 numbering puts 300 at Jackson on West Hurst and 304 on the Barnes side of the Jackson–Washington block, which is where the Hendee Home stands. 292 is the even number just Dean-side of Jackson, on that same Barnes side. February 1912 sheet 3 is the first sheet that draws block 70, Barnes to Hurst, Dean to Jackson, and it shows dwellings there, but no lot on that sheet was matched to the number 292, so the footprint is an estimate from the photograph, about 40 by 42 feet. The brick first story, the round brick porch with white columns and steps, the blue-gray slate mansard, the red eaves, the pedimented dormer, and the front gable with the arched window are the photograph. No family name is printed. The start year is an estimate. The house stays through 1970. survivesTo 2010 records that it was standing for the photograph. The stand-in on this corner, house-147, comes off from the 1910 stop."
+      "notes": "photo from Mark, 292 W Hurst St, 2010. The 1909 numbering puts 300 at Jackson on West Hurst and 304 on the Barnes side of the Jackson\u2013Washington block, which is where the Hendee Home stands. 292 is the even number just Dean-side of Jackson, on that same Barnes side. February 1912 sheet 3 is the first sheet that draws block 70, Barnes to Hurst, Dean to Jackson, and it shows dwellings there, but no lot on that sheet was matched to the number 292, so the footprint is an estimate from the photograph, about 40 by 42 feet. The brick first story, the round brick porch with white columns and steps, the blue-gray slate mansard, the red eaves, the pedimented dormer, and the front gable with the arched window are the photograph. No family name is printed. The start year is an estimate. The house stays through 1970. survivesTo 2010 records that it was standing for the photograph. The stand-in on this corner, house-147, comes off from the 1910 stop."
     },
     {
       "id": "schulze-poultry-1912",
@@ -1195,52 +1190,6 @@
       "notes": "Three-story brick dwelling on block 70, about lot 5, the Hurst side between Dean and Jackson. February 1912 Sanborn, sheet 3. The sheet colors it pink. No family name is printed. Earlier detail sheets do not reach this block."
     },
     {
-      "id": "high-school-1904",
-      "name": "East Side School",
-      "kind": "school",
-      "use": "graded school and high school",
-      "material": "brick",
-      "stories": 3,
-      "width": 78,
-      "depth": 56,
-      "x": -347,
-      "z": -1783,
-      "facing": "-z",
-      "paint": "cream",
-      "brick": "red",
-      "sign": "SCHOOL",
-      "porch": false,
-      "party": [],
-      "confidence": "sourced",
-      "year": "1904",
-      "steeple": false,
-      "rotation": 0,
-      "facade": {
-        "eastSide1904": true,
-        "photoMatch": true,
-        "photoSource": "Mark's photograph of the high school on Cole Street."
-      },
-      "facadeSpec": {
-        "sourcePhoto": "public/photos/high-school-cole-street.png",
-        "photoDate": "undated",
-        "citation": "Mark's photograph of the high school on Cole Street",
-        "camera": {
-          "year": 1910,
-          "x": -300,
-          "z": 1870,
-          "lx": -370,
-          "lz": 1760,
-          "fov": 42,
-          "pitch": -0.06
-        },
-        "estimates": [
-          "The Sanborn sheets were not read for a separate school lot."
-        ]
-      },
-      "sourceMap": "Centennial book, 1854–1954",
-      "notes": "Centennial book PDF p.70–72: the East Side school at Cole and Hurst opened in the winter of 1904, with an addition in 1922. Three stories of red brick, a hipped roof, and the corner tower with the arched entry and open belfry in Mark's photograph. The 1875 school was on the West Side site, not here (PDF p.70). Mark says it was torn down in the late 1980s, after 1970, so it stays through the last year drawn."
-    },
-    {
       "id": "norcross-factory",
       "name": "C. S. Norcross & Sons",
       "kind": "factory",
@@ -1283,32 +1232,8 @@
           "The steel bins in the photograph are not dated before 1970, so they are not drawn."
         ]
       },
-      "sourceMap": "Centennial book, 1854–1954",
+      "sourceMap": "Centennial book, 1854\u20131954",
       "notes": "The centennial book says C. S. Norcross and Sons let the contract for their building in May 1906, and that it is the concrete-block factory at the corner of Davis and Dean, still in use when the book was written. A later line says he moved the factory to Bushnell in 1903. The 1906 contract is the date used for this block building. It is drawn from the 1910 stop, the first stop after May 1906. The 1954 directory still lists C. S. Norcross & Sons at Dean and Davis. Mark says the building was torn down in 2026. The model stops at 1970, so that demolition is recorded and not drawn. The rock-faced walls use the stone texture, because the model has no separate concrete-block material. The steel bins and the metal building in the about-2020 photograph are not dated before 1970, so they are not drawn."
-    },
-    {
-      "id": "hurst-crossing-shanty",
-      "name": "Crossing shanty",
-      "kind": "shed",
-      "use": "crossing watch",
-      "material": "frame",
-      "stories": 1,
-      "width": 12,
-      "depth": 10,
-      "x": -390,
-      "z": 28,
-      "facing": "+x",
-      "paint": "depot",
-      "brick": "red",
-      "sign": "",
-      "porch": false,
-      "party": [],
-      "confidence": "inferred",
-      "year": "1905",
-      "steeple": false,
-      "rotation": 0,
-      "sourceMap": "Mark's undated postcard, Bushnell Ill., looking west on Hurst",
-      "notes": "A small gabled watchman's shanty and a crossing-gate arm beside the Hurst Street crossing of the Burlington. No Sanborn label for a watchman's house was read. The postcard, estimated about 1905 to 1915, shows both. The side of the street is an estimate. Drawn from the 1910 stop."
     }
   ],
   "streetStyle": {

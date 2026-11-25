@@ -1,0 +1,84 @@
+{
+  "shownAs": 1905,
+  "mapLabel": "1900 Sanborn plus 1902\u20131905 dated town records",
+  "note": "Intermediate 1905 stop showing the 1902\u20131906 brick-paving years, early touring cars, and only buildings/changes dated on or before 1905 (Presbyterian church turned May 1903 / rededicated Jan 1904; East Side school opened winter 1904; Hurst crossing shanty c.1905). No 1905 buildings are invented.",
+  "update": [
+    {
+      "id": "presbyterian-church",
+      "facing": "+x",
+      "notes": "Centennial book PDF p.65: in May 1903 the 1869 frame church (which had faced north) was turned to face west onto Hurst Street on the corner lot and rededicated 3 January 1904. Drawn turned from the 1905 stop before the 1917 brick enlargement."
+    }
+  ],
+  "add": [
+    {
+      "id": "high-school-1904",
+      "name": "East Side School",
+      "kind": "school",
+      "use": "graded school and high school",
+      "material": "brick",
+      "stories": 3,
+      "width": 78,
+      "depth": 56,
+      "x": -347,
+      "z": -1783,
+      "facing": "-z",
+      "paint": "cream",
+      "brick": "red",
+      "sign": "SCHOOL",
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1904",
+      "steeple": false,
+      "rotation": 0,
+      "facade": {
+        "eastSide1904": true,
+        "photoMatch": true,
+        "photoSource": "Mark's photograph of the high school on Cole Street."
+      },
+      "facadeSpec": {
+        "sourcePhoto": "public/photos/high-school-cole-street.png",
+        "photoDate": "undated",
+        "citation": "Mark's photograph of the high school on Cole Street",
+        "camera": {
+          "year": 1910,
+          "x": -300,
+          "z": 1870,
+          "lx": -370,
+          "lz": 1760,
+          "fov": 42,
+          "pitch": -0.06
+        },
+        "estimates": [
+          "The Sanborn sheets were not read for a separate school lot."
+        ]
+      },
+      "sourceMap": "Centennial book, 1854\u20131954",
+      "notes": "Centennial book PDF p.70\u201372: the East Side school at Cole and Hurst opened in the winter of 1904, with an addition in 1922. Three stories of red brick, a hipped roof, and the corner tower with the arched entry and open belfry in Mark's photograph. The 1875 school was on the West Side site, not here (PDF p.70). Mark says it was torn down in the late 1980s, after 1970, so it stays through the last year drawn."
+    },
+    {
+      "id": "hurst-crossing-shanty",
+      "name": "Crossing shanty",
+      "kind": "shed",
+      "use": "crossing watch",
+      "material": "frame",
+      "stories": 1,
+      "width": 12,
+      "depth": 10,
+      "x": -390,
+      "z": 28,
+      "facing": "+x",
+      "paint": "depot",
+      "brick": "red",
+      "sign": "",
+      "porch": false,
+      "party": [],
+      "confidence": "inferred",
+      "year": "1905",
+      "steeple": false,
+      "rotation": 0,
+      "sourceMap": "Mark's undated postcard, Bushnell Ill., looking west on Hurst",
+      "notes": "A small gabled watchman's shanty and a crossing-gate arm beside the Hurst Street crossing of the Burlington. No Sanborn label for a watchman's house was read. The postcard, estimated about 1905 to 1915, shows both. The side of the street is an estimate. Drawn from the 1905 stop."
+    }
+  ]
+}

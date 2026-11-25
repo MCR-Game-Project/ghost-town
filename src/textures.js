@@ -668,8 +668,16 @@ function worldGround(kind, across) {
     mat.polygonOffsetFactor = -0.5;
     mat.polygonOffsetUnits = -0.5;
   }
+  if (kind === "dirtPatch") {
+    mat.transparent = true;
+    mat.depthWrite = false;
+    mat.polygonOffsetFactor = -0.35;
+    mat.polygonOffsetUnits = -0.35;
+  }
   const key = `${kind}:${across}`;
   const grass = kind === "grass" || kind === "park";
+  const prairie = kind === "prairie" || kind === "prairiePark";
+  const dirtPatch = kind === "dirtPatch";
   const ruts = kind === "street";
   const deep = kind === "park" ? "vec3(0.24, 0.36, 0.14)" : "vec3(0.30, 0.44, 0.18)";
   const light = kind === "park" ? "vec3(0.38, 0.50, 0.20)" : "vec3(0.46, 0.58, 0.24)";
@@ -716,7 +724,21 @@ vec3 gAlbedo(vec3 world, vec2 uv) {
   ${grass ? `vec3 col = mix(${deep}, ${light}, broad);
   col = mix(col, vec3(0.22, 0.40, 0.14), smoothstep(0.35, 0.7, mid) * 0.45);
   col = mix(col, vec3(0.50, 0.62, 0.28), smoothstep(0.55, 0.9, fine) * 0.28);
-  return col;` : `vec3 soil = mix(vec3(0.36, 0.24, 0.14), vec3(0.62, 0.46, 0.28), broad);
+  return col;` : prairie ? `float clump = gFbm(p * 0.28 + 19.0);
+  float stubble = gFbm(p * 1.45 + 31.0);
+  float tuftTex = gFbm(p * 3.4 + 7.0);
+  vec3 sod = ${kind === "prairiePark" ? "vec3(0.29, 0.35, 0.14)" : "vec3(0.28, 0.31, 0.13)"};
+  vec3 tanStraw = ${kind === "prairiePark" ? "vec3(0.51, 0.45, 0.22)" : "vec3(0.57, 0.48, 0.22)"};
+  vec3 sage = vec3(0.38, 0.42, 0.18);
+  vec3 thatch = vec3(0.32, 0.25, 0.13);
+  vec3 col = mix(sod, tanStraw, smoothstep(0.26, 0.74, broad));
+  col = mix(col, sage, smoothstep(0.40, 0.76, mid) * 0.52);
+  col = mix(col, thatch, smoothstep(0.50, 0.84, clump) * 0.42);
+  col += (stubble - 0.5) * 0.11 + (tuftTex - 0.5) * 0.08;
+  return col;` : dirtPatch ? `vec3 loam = mix(vec3(0.18, 0.12, 0.06), vec3(0.34, 0.24, 0.13), broad);
+  loam = mix(loam, vec3(0.23, 0.16, 0.09), smoothstep(0.40, 0.80, mid) * 0.52);
+  loam += (fine - 0.5) * 0.08;
+  return loam;` : `vec3 soil = mix(vec3(0.36, 0.24, 0.14), vec3(0.62, 0.46, 0.28), broad);
   soil = mix(soil, soil * vec3(0.82, 0.78, 0.7), smoothstep(0.45, 0.8, mid) * 0.35);
   soil += (fine - 0.5) * 0.08;
   ${ruts ? `float across = ${acrossExpr};
@@ -730,10 +752,18 @@ vec3 gAlbedo(vec3 world, vec2 uv) {
   float shoulder = smoothstep(0.0, 0.08, across) * smoothstep(1.0, 0.92, across);
   soil = mix(soil * 0.72, soil, shoulder);` : ""}
   return soil;`}
-}`)
-      .replace("#include <color_fragment>", "#include <color_fragment>\ndiffuseColor.rgb *= gAlbedo(vGWorld, vGUv);");
+}
+${dirtPatch ? `float gPatchAlpha(vec3 world, vec2 uv) {
+  vec2 q = uv * 2.0 - 1.0;
+  float boxDist = length(max(abs(q) - vec2(0.56), 0.0)) + min(max(abs(q.x) - 0.56, abs(q.y) - 0.56), 0.0);
+  float n1 = gFbm(world.xz * 0.12 + 5.3);
+  float n2 = gFbm(world.xz * 0.48 + 13.7);
+  float edge = length(q) * 0.36 + boxDist * 0.68 + (n1 - 0.5) * 0.32 + (n2 - 0.5) * 0.14;
+  return 0.95 * (1.0 - smoothstep(0.28, 0.86, edge));
+}` : ""}`)
+      .replace("#include <color_fragment>", `#include <color_fragment>\ndiffuseColor.rgb *= gAlbedo(vGWorld, vGUv);${dirtPatch ? "\ndiffuseColor.a *= gPatchAlpha(vGWorld, vGUv);" : ""}`);
   };
-  mat.customProgramCacheKey = () => `ground-v3-${key}`;
+  mat.customProgramCacheKey = () => `ground-v5-${key}`;
   mat.userData.ground = key;
   return mat;
 }
@@ -938,6 +968,9 @@ export function makeMaterials() {
     streetCross: worldGround("street", "x"),
     grass: worldGround("grass", "y"),
     park: worldGround("park", "y"),
+    prairie: worldGround("prairie", "y"),
+    prairiePark: worldGround("prairiePark", "y"),
+    dirtPatch: worldGround("dirtPatch", "y"),
     ballast: std({
       map: ballastTex.map,
       normalMap: ballastTex.normalMap,
