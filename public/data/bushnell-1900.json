@@ -358,7 +358,7 @@
       "name": "West Side School",
       "kind": "school",
       "use": "graded school",
-      "material": "brick",
+      "material": "stone",
       "stories": 2,
       "width": 96,
       "depth": 66,
@@ -380,7 +380,7 @@
         "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.71."
       },
       "sourceMap": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.70–71",
-      "notes": "Centennial book PDF p.70–71: rebuilt on the West Side site in 1896–97 after the fire, photograph on p.71: two stories of light brick on a raised basement, a central entrance tower with a pyramid spire, gabled wings, hipped roof. Burned in 1936. The footprint, the spot on the block, and facing Twyman are estimates."
+      "notes": "Centennial book PDF p.70–71: rebuilt on the West Side site in 1896–97 after the fire. Text (p.70) mentions buff brick and ornamental design; photograph on p.71 reads as rusticated stone Romanesque with a dark rock-faced basement, wide gabled wings with grouped tall windows, a big round-arched entrance, a triplet of arched tower windows, and a round upper belfry turret under a conical roof. Burned in 1936. The footprint, heights, stone tones, spot on the block, and facing Twyman are estimates."
     }
   ],
   "update": [

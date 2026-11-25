@@ -4295,108 +4295,343 @@ export function buildTown(data, scene) {
     return wallH + 14;
   };
 
-  // West Side School, built 1896-97 and burned in 1936 (PDF p.70-71): buff brick on a
-  // raised basement, two stories, a central entrance tower with a pyramid spire and an
-  // arched doorway, gabled wings to each side, hipped roof. Footprint is an estimate.
+  // West Side School, built 1896-97 and burned in 1936 (PDF p.70-71): rebuilt to match
+  // the p.71 photograph — rusticated stone Romanesque massing (dark rock-faced basement,
+  // weathered stone walls, dressed limestone belt courses and copings), wide gabled wings
+  // filling right up to a projecting central tower with a big deeply recessed round-arched
+  // entrance, triplet of arched windows, and a fat round belfry turret with conical roof.
+  // Book text (p.70) mentions buff brick; photo reads as rusticated stone. Heights,
+  // stone tones, and turret proportions are estimates from the photograph.
   const addWestSide1897 = (b) => {
-    const body = brickOf(b);
-    const base = 6;
-    const floor = 12.5;
+    const wallStone = mats.rusticStone;
+    const baseStone = mats.rusticStoneDark;
+    const trimStone = mats.stone;
+    const roofMat = mats.roofDark;
+    const base = 6.5;
+    const floor = 12.0;
     const wall = base + 2 * floor;
     const fz = b.depth / 2 + 0.12;
-    box(mats.stone, 0, base / 2, 0, b.width + 1.2, base, b.depth + 1.2);
-    box(body, 0, base + floor, 0, b.width, 2 * floor, b.depth);
-    box(mats.stone, 0, base + floor, 0, b.width + 0.4, 0.5, b.depth + 0.4);
-    trueHip(b.width, b.depth, 14, wall + 0.3, mats.roofDark, 0, 0, 1.2);
-    // Eave frieze and soffit around the main block.
-    box(mats.stone, 0, wall - 0.9, 0, b.width + 0.3, 1.0, b.depth + 0.3);
-    box(mats.trim, 0, wall + 0.1, 0, b.width + 2.2, 0.5, b.depth + 2.2);
-    const wingW = Math.min(26, b.width * 0.3);
-    for (const side of [-1, 1]) {
-      const wx = side * (b.width / 2 - wingW / 2);
-      box(body, wx, (wall + base) / 2, fz + 1.6, wingW, wall - base, 3.2);
-      box(mats.stone, wx, base / 2, fz + 1.9, wingW + 0.6, base, 3.8);
-      clapboardTriangle(body, wingW + 0.4, 11, wall, "z", fz + 3.0, wx, 0);
-      box(mats.trim, wx, wall + 0.2, fz + 3.4, wingW + 1.0, 0.5, 0.6);
-      // Steep wing gables with stone coping and a stone frieze (PDF p.71).
-      gableCoping(mats.stone, wingW + 1.0, 11.4, wall, fz + 3.3, wx, 0.65);
-      // Roof behind each wing gable, running back into the main hip.
-      const wd = b.depth * 0.55;
-      gableFrontAt(wingW + 0.8, wd, 11, wall, mats.roofDark, wx, fz + 3.2 - wd / 2);
-      box(mats.stone, wx, wall - 1.0, fz + 3.25, wingW + 0.2, 1.1, 0.25);
-      for (const row of [base + floor * 0.55, base + floor * 1.55]) {
-        // Ribbons of five tall narrow windows, as in the p.71 photograph.
-        for (const dx of [-8, -4, 0, 4, 8]) {
-          frontSash(wx + dx, row, fz + 3.2, 3.0, 7.6, "flat", false, mats.stone);
-        }
-      }
-      frontSash(wx, wall + 4.2, fz + 3.3, 2.4, 3.2, "round", false, mats.stone);
-    }
-    for (const side of [-1, 1]) {
-      for (let i = 0; i < 5; i++) {
-        const z = -b.depth / 2 + ((i + 0.6) * b.depth) / 5.2;
-        sideSash(side * (b.width / 2 + 0.08), base + floor * 0.55, z, side, 2.2, 6.4, "flat", false, mats.stone);
-        sideSash(side * (b.width / 2 + 0.08), base + floor * 1.55, z, side, 2.2, 6.4, "flat", false, mats.stone);
+
+    const scaleCylUVs = (geo, radius, height, mat) => {
+      const uv = geo.getAttribute("uv");
+      if (!uv) return;
+      const feet = mat?.userData?.uvFeet || { u: 6.4, v: 3.4 };
+      const su = (2 * Math.PI * radius) / feet.u;
+      const sv = height / feet.v;
+      for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * su, uv.getY(i) * sv);
+      uv.needsUpdate = true;
+    };
+
+    // Main block: rough dark stone basement, continuous limestone water-table, weathered stone walls.
+    box(baseStone, 0, base / 2, 0, b.width + 1.0, base, b.depth + 1.0);
+    box(trimStone, 0, base + 0.25, 0, b.width + 1.5, 0.6, b.depth + 1.5);
+    box(wallStone, 0, base + floor, 0, b.width, 2 * floor, b.depth);
+    // Horizontal Romanesque stone belt courses wrapping the main block.
+    box(trimStone, 0, base + 9.2, 0, b.width + 0.5, 0.5, b.depth + 0.5);
+    box(trimStone, 0, base + floor, 0, b.width + 0.7, 0.55, b.depth + 0.7);
+    box(trimStone, 0, wall - 1.0, 0, b.width + 0.6, 0.8, b.depth + 0.6);
+    box(mats.trimDark, 0, wall + 0.05, 0, b.width + 2.6, 0.45, b.depth + 2.6);
+    trueHip(b.width, b.depth, 15.5, wall + 0.25, roofMat, 0, 0, 1.5);
+
+    // Corner rusticated quoins/piers on the rear corners too.
+    for (const sx of [-1, 1]) {
+      for (const sz of [-1, 1]) {
+        box(baseStone, sx * (b.width / 2 - 0.5), base / 2, sz * (b.depth / 2 - 0.5), 2.4, base, 2.4);
       }
     }
-    // Entrance tower (round 3, PDF p.71): a solid shaft to just above the eaves, a pair of
-    // arched windows, then a taller OPEN belfry stage (corner piers round a dark core, two
-    // arched openings a face), a flared eave, and a steep octagonal spire.
-    const tw = 16;
-    const tz = fz - 4;
-    const shaft = wall + 7;
-    const belH = 10;
-    const th = shaft + belH;
-    box(body, 0, shaft / 2, tz, tw, shaft, tw);
-    box(mats.stone, 0, base / 2, tz, tw + 0.8, base, tw + 0.8);
-    // Big round-arched entrance filling most of the tower front (p.71).
-    box(mats.trimDark, 0, 5.5, tz + tw / 2 + 0.45, 8.4, 11.0, 0.2);
-    {
-      const head = new THREE.CircleGeometry(4.2, 18, 0, Math.PI);
-      head.translate(0, 11.0, tz + tw / 2 + 0.56);
-      head.applyMatrix4(buildingMatrix);
-      put(mats.trimDark, head);
+
+    // Wide gabled wings spanning from outer corners right up to the central tower (p.71).
+    const tw = 20;
+    const wingW = (b.width - tw) / 2; // 38 ft each on a 96 ft front — no blank wall gaps.
+    const wingProj = 2.2;
+    const wfz = fz + wingProj;
+    const gableRise = 15.5;
+    for (const side of [-1, 1]) {
+      const wx = side * (tw / 2 + wingW / 2);
+      box(baseStone, wx, base / 2, fz + wingProj / 2 + 0.2, wingW + 0.5, base, wingProj + 0.9);
+      box(trimStone, wx, base + 0.25, fz + wingProj / 2 + 0.25, wingW + 0.9, 0.6, wingProj + 1.3);
+      box(wallStone, wx, (wall + base) / 2, fz + wingProj / 2, wingW, wall - base, wingProj);
+      // Continuous wing belt courses & lintel bands.
+      box(trimStone, wx, base + 9.2, wfz + 0.12, wingW + 0.4, 0.5, 0.55);
+      box(trimStone, wx, base + floor, wfz + 0.15, wingW + 0.5, 0.55, 0.6);
+      box(trimStone, wx, wall - 1.0, wfz + 0.14, wingW + 0.5, 0.85, 0.6);
+      // Corner parapet shoulder / pier as seen at outer wing eaves in p.71.
+      const shX = wx + side * (wingW / 2 - 1.6);
+      box(wallStone, shX, wall + 1.5, wfz - 0.25, 3.2, 3.0, 2.6);
+      box(trimStone, shX, wall + 3.15, wfz - 0.25, 3.6, 0.55, 2.9);
+      // Steep stone front gable + coping + cross-gable roof back into main hip.
+      clapboardTriangle(wallStone, wingW - 0.8, gableRise, wall, "z", wfz - 0.25, wx, 0);
+      gableCoping(trimStone, wingW - 0.6, gableRise, wall + 0.4, wfz - 0.05, wx, 0.85);
+      box(trimStone, wx, wall + gableRise + 0.9, wfz - 0.05, 1.5, 1.5, 1.3);
+      const wd = b.depth * 0.58;
+      gableFrontAt(wingW - 0.4, wd, gableRise + 0.3, wall, roofMat, wx, wfz - wd / 2 - 0.2);
+      // Gable arched window.
+      frontSash(wx, wall + 5.0, wfz + 0.05, 3.0, 4.4, "open", false, trimStone, false, false);
+      ringArch(trimStone, wx, wall + 7.2, wfz + 0.32, 1.75, 0.3, true);
+      // Six tall narrow windows per wing per floor in three pairs, matching p.71.
+      const dxList = [-12.6, -8.8, -1.9, 1.9, 8.8, 12.6];
+      for (const dx of dxList) {
+        frontSash(wx + dx, base + 4.8, wfz + 0.05, 2.7, 7.2, "open", false, trimStone, false, false);
+        frontSash(wx + dx, base + floor + 4.6, wfz + 0.05, 2.7, 7.0, "open", false, trimStone, false, false);
+        // Basement slit below each pair center.
+      }
+      for (const bdx of [-10.7, 0, 10.7]) {
+        box(mats.trimDark, wx + bdx, base * 0.5, wfz + 0.3, 3.2, 1.8, 0.22);
+        box(trimStone, wx + bdx, base * 0.5 + 1.0, wfz + 0.34, 3.6, 0.35, 0.35);
+      }
     }
-    ringArch(mats.stone, 0, 11.0, tz + tw / 2 + 0.7, 4.8, 0.6);
-    for (const sd of [-1, 1]) box(mats.stone, sd * 5.0, 5.5, tz + tw / 2 + 0.6, 1.2, 11, 0.6);
-    for (const dx of [-3.2, 0, 3.2]) frontSash(dx, base + floor * 1.5, tz + tw / 2 + 0.05, 2.0, 5.6, "round", false, mats.stone);
-    for (const dx of [-2.2, 2.2]) frontSash(dx, wall + 2.6, tz + tw / 2 + 0.05, 1.8, 4.2, "round", false, mats.stone);
-    box(mats.stone, 0, shaft - 0.3, tz, tw + 0.9, 0.7, tw + 0.9);
-    // Open stage.
-    box(mats.trimDark, 0, shaft + belH / 2, tz, tw - 4.2, belH, tw - 4.2);
-    for (const px of [-1, 1]) for (const pz of [-1, 1]) box(body, px * (tw / 2 - 0.9), shaft + belH / 2, tz + pz * (tw / 2 - 0.9), 1.8, belH, 1.8);
+
+    // Side walls: six grouped tall windows per floor (3 pairs) matching the right side in p.71.
+    for (const side of [-1, 1]) {
+      const szList = [-19.5, -15.5, -2.0, 2.0, 15.5, 19.5];
+      for (const z of szList) {
+        sideSash(side * (b.width / 2 + 0.08), base + 4.8, z, side, 2.4, 7.0, "open", false, trimStone);
+        sideSash(side * (b.width / 2 + 0.08), base + floor + 4.6, z, side, 2.4, 6.8, "open", false, trimStone);
+      }
+      for (const bz of [-17.5, 0, 17.5]) {
+        box(mats.trimDark, side * (b.width / 2 + 0.52), base * 0.5, bz, 0.16, 1.7, 3.0);
+      }
+    }
+
+    // Central projecting entrance tower: square shaft below, fat round belfry turret & conical roof above.
+    const tfz = fz + 6.8;
+    const tDepth = 20;
+    const tz = tfz - tDepth / 2;
+    const shaft = 43.0;
+    const archR = 5.4;
+    const archSpring = 6.2;
+    const archWallTop = 15.0;
+
+    // Lower tower piers flanking the big recessed round-arched entrance.
+    const pierW = (tw - archR * 2) / 2; // 4.6 ft
     for (const sd of [-1, 1]) {
-      box(body, 0, shaft + belH / 2, tz + sd * (tw / 2 - 0.5), 1.2, belH, 1.0);
-      box(body, sd * (tw / 2 - 0.5), shaft + belH / 2, tz, 1.0, belH, 1.2);
-      box(mats.stone, 0, shaft + 1.2, tz + sd * (tw / 2 - 0.4), tw, 0.5, 0.9);
-      box(mats.stone, sd * (tw / 2 - 0.4), shaft + 1.2, tz, 0.9, 0.5, tw);
-      for (const k of [-1, 1]) ringArch(mats.stone, k * 3.6, shaft + belH - 3.0, tz + sd * (tw / 2 + 0.05), 2.4, 0.35);
+      const px = sd * (archR + pierW / 2);
+      box(baseStone, px, base / 2, tz, pierW + 0.4, base, tDepth + 0.4);
+      box(wallStone, px, (archWallTop + base) / 2, tz, pierW, archWallTop - base, tDepth);
+      // Dressed stone imposts & jamb pilasters framing the portal.
+      box(trimStone, sd * (archR + 0.7), archSpring - 0.35, tfz + 0.25, 1.8, 0.85, 1.1);
+      box(baseStone, sd * (archR + 0.75), (archSpring - 0.8) / 2, tfz + 0.2, 1.6, archSpring - 0.8, 0.9);
     }
-    box(mats.stone, 0, th - 1.2, tz, tw + 0.6, 2.4, tw + 0.6);
-    box(mats.stone, 0, th + 0.1, tz, tw + 1.6, 0.6, tw + 1.6);
-    // Flared eave.
-    box(mats.roofDark, 0, th + 0.55, tz, tw + 4.0, 0.3, tw + 4.0);
-    const skirt = new THREE.CylinderGeometry((tw + 1) * 0.62, (tw + 4) * 0.72, 2.2, 8, 1);
-    skirt.rotateY(Math.PI / 8);
-    skirt.translate(0, th + 1.8, tz);
-    skirt.applyMatrix4(buildingMatrix);
-    put(mats.roofDark, skirt);
-    const spire = new THREE.ConeGeometry((tw + 1) * 0.62, 26, 8);
-    spire.rotateY(Math.PI / 8);
-    spire.translate(0, th + 2.9 + 13, tz);
-    spire.applyMatrix4(buildingMatrix);
-    put(mats.roofDark, spire);
-    box(mats.trimDark, 0, th + 30.5, tz, 0.2, 3.4, 0.2);
+
+    // Spandrel & deep arched tunnel (tfz - 4.0 to tfz) built indexed so it merges cleanly.
     {
-      const ball = new THREE.SphereGeometry(0.45, 8, 6);
-      ball.translate(0, th + 29.2, tz);
-      ball.applyMatrix4(buildingMatrix);
-      put(mats.trimDark, ball);
+      const segs = 18;
+      const zF = tfz;
+      const zB = tfz - 4.0;
+      const pos = [];
+      const uvs = [];
+      const feet = wallStone?.userData?.uvFeet || { u: 6.4, v: 3.4 };
+      const pushTri = (a, b3, c) => {
+        for (const p3 of [a, b3, c]) {
+          pos.push(p3[0], p3[1], p3[2]);
+          uvs.push(p3[0] / feet.u, p3[1] / feet.v);
+        }
+      };
+      const outerPt = (ang) => {
+        if (ang <= Math.PI * 0.25) return [tw / 2, archSpring + (archWallTop - archSpring) * (ang / (Math.PI * 0.25))];
+        if (ang <= Math.PI * 0.75) return [tw / 2 - tw * ((ang - Math.PI * 0.25) / (Math.PI * 0.5)), archWallTop];
+        return [-tw / 2, archWallTop - (archWallTop - archSpring) * ((ang - Math.PI * 0.75) / (Math.PI * 0.25))];
+      };
+      for (let i = 0; i < segs; i++) {
+        const a0 = (Math.PI * i) / segs;
+        const a1 = (Math.PI * (i + 1)) / segs;
+        const ix0 = Math.cos(a0) * archR, iy0 = archSpring + Math.sin(a0) * archR;
+        const ix1 = Math.cos(a1) * archR, iy1 = archSpring + Math.sin(a1) * archR;
+        const [ox0, oy0] = outerPt(a0);
+        const [ox1, oy1] = outerPt(a1);
+        // Front spandrel quad (two tris, both windings for safety? No, standard outward + corner fill).
+        pushTri([ix0, iy0, zF], [ox0, oy0, zF], [ox1, oy1, zF]);
+        pushTri([ix0, iy0, zF], [ox1, oy1, zF], [ix1, iy1, zF]);
+        // Back spandrel quad.
+        pushTri([ix0, iy0, zB], [ox1, oy1, zB], [ox0, oy0, zB]);
+        pushTri([ix0, iy0, zB], [ix1, iy1, zB], [ox1, oy1, zB]);
+        // Inner arch soffit barrel.
+        pushTri([ix0, iy0, zF], [ix1, iy1, zF], [ix1, iy1, zB]);
+        pushTri([ix0, iy0, zF], [ix1, iy1, zB], [ix0, iy0, zB]);
+      }
+      // Side cheeks of the spandrel box from zB back to tz - tDepth / 2.
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+      geo.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+      geo.setIndex([...Array(pos.length / 3).keys()]);
+      geo.computeVertexNormals();
+      geo.applyMatrix4(buildingMatrix);
+      put(wallStone, geo);
     }
-    chimneyStack(mats.brick.red, -b.width * 0.22, wall + 9, -b.depth * 0.15, 2.4, 8, 2.4);
-    chimneyStack(mats.brick.red, b.width * 0.22, wall + 9, -b.depth * 0.15, 2.4, 8, 2.4);
+
+    // Recessed vestibule back wall, dark arch shadow, and double school doors.
+    box(mats.reveal, 0, (archSpring + archR) / 2, tfz - 4.05, archR * 2 + 0.4, archSpring + archR, 0.35);
+    box(wallStone, 0, (archWallTop + archSpring + archR) / 2, tfz - tDepth / 2 - 2.0, tw, archWallTop - (archSpring + archR) + 1.0, tDepth - 4.0);
+    // Double doors recessed inside the dark porch.
+    box(mats.trimDark, 0, 5.2, tfz - 3.7, 6.2, 8.2, 0.3);
+    for (const sd of [-1, 1]) {
+      box(mats.glass, sd * 1.4, 6.2, tfz - 3.5, 1.9, 3.2, 0.12);
+      box(mats.trim, sd * 1.4, 6.2, tfz - 3.45, 2.1, 0.15, 0.14);
+    }
+    box(mats.stone, 0, 0.75, tfz - 1.6, archR * 2 + 0.8, 1.5, 4.4);
+    // Broad stone entrance steps & walk leading toward Twyman.
+    box(trimStone, 0, 0.95, tfz + 1.2, 12.4, 0.55, 2.2);
+    box(trimStone, 0, 0.45, tfz + 2.6, 13.6, 0.55, 2.4);
+    box(trimStone, 0, 0.18, tfz + 22.0, 6.5, 0.2, 38.0);
+
+    // Bold radial cut-stone voussoirs + outer molded limestone archivolt over the entry arch.
+    {
+      const n = 15;
+      const rad = archR + 0.58;
+      const thick = 1.25;
+      for (let i = 0; i < n; i++) {
+        const ang = (Math.PI * (i + 0.5)) / n;
+        const arc = (Math.PI * rad) / n;
+        const geo = new THREE.BoxGeometry(arc * 0.86, thick, 0.75);
+        scaleBoxUVs(geo, arc * 0.86, thick, 0.75, trimStone);
+        geo.rotateZ(ang - Math.PI / 2);
+        geo.translate(Math.cos(ang) * rad, archSpring + Math.sin(ang) * rad, tfz + 0.22);
+        geo.applyMatrix4(buildingMatrix);
+        put(trimStone, geo);
+      }
+      ringArch(trimStone, 0, archSpring, tfz + 0.35, archR + 1.25, 0.32);
+    }
+
+    // Upper square tower shaft (y = archWallTop .. shaft).
+    box(trimStone, 0, archWallTop, tz, tw + 1.0, 0.65, tDepth + 1.0);
+    box(wallStone, 0, (shaft + archWallTop) / 2, tz, tw, shaft - archWallTop, tDepth);
+    // Belt courses on the tower shaft.
+    box(trimStone, 0, 16.2, tz, tw + 0.6, 0.45, tDepth + 0.6);
+    box(trimStone, 0, 26.2, tz, tw + 0.9, 0.6, tDepth + 0.9);
+    // Triplet of round-arched windows on the 2nd floor of the tower (center taller, p.71).
+    for (const [dx, wy, ww, wh] of [[-4.0, 19.3, 2.4, 5.2], [0, 19.9, 2.7, 6.2], [4.0, 19.3, 2.4, 5.2]]) {
+      frontSash(dx, wy, tfz + 0.05, ww, wh, "open", false, trimStone, false, false);
+      ringArch(trimStone, dx, wy + wh / 2, tfz + 0.30, ww / 2 + 0.22, 0.28, true);
+    }
+    // Third-stage recessed stone-framed window/tablet bay (p.71).
+    frontSash(0, 32.8, tfz + 0.05, 4.8, 5.4, "open", false, trimStone, false, false);
+    box(trimStone, 0, 35.8, tfz + 0.32, 6.2, 0.7, 0.85);
+    box(trimStone, 0, 29.8, tfz + 0.32, 6.2, 0.65, 0.85);
+    for (const sd of [-1, 1]) {
+      box(trimStone, sd * 2.8, 32.8, tfz + 0.28, 0.85, 6.2, 0.7);
+      // Side slits on the projecting flanks of the tower.
+      sideSash(sd * (tw / 2 + 0.06), 19.6, tfz - 4.2, sd, 2.0, 5.2, "open", false, trimStone);
+      sideSash(sd * (tw / 2 + 0.06), 32.8, tfz - 4.2, sd, 2.0, 4.8, "open", false, trimStone);
+    }
+
+    // Bold square tower cornice + stone corbels transitioning to the fat round turret.
+    box(trimStone, 0, shaft + 0.2, tz, tw + 1.8, 1.0, tDepth + 1.8);
+    for (let k = -4; k <= 4; k++) {
+      box(trimStone, k * 2.1, shaft - 0.65, tfz + 0.45, 0.7, 1.0, 0.9);
+      box(trimStone, k * 2.1, shaft - 0.65, tz - tDepth / 2 - 0.45, 0.7, 1.0, 0.9);
+    }
+    for (const sx of [-1, 1]) {
+      for (const sz of [-1, 1]) {
+        box(trimStone, sx * (tw / 2 - 1.2), shaft + 1.2, tz + sz * (tDepth / 2 - 1.2), 3.4, 1.2, 3.4);
+      }
+    }
+
+    // Fat round Romanesque belfry turret (cylinder drum + open arched openings + flared conical roof).
+    const drumR = 9.4;
+    const drumBase = shaft + 0.7;
+    const drumSolidH = 3.2;
+    const belfryH = 5.4;
+    const drumTop = drumBase + drumSolidH + belfryH;
+
+    // Lower solid stone cylinder.
+    {
+      const g = new THREE.CylinderGeometry(drumR, drumR + 0.25, drumSolidH, 24);
+      scaleCylUVs(g, drumR, drumSolidH, wallStone);
+      g.translate(0, drumBase + drumSolidH / 2, tz);
+      g.applyMatrix4(buildingMatrix);
+      put(wallStone, g);
+
+      const sill = new THREE.CylinderGeometry(drumR + 0.55, drumR + 0.55, 0.55, 24);
+      scaleCylUVs(sill, drumR + 0.55, 0.55, trimStone);
+      sill.translate(0, drumBase + drumSolidH + 0.15, tz);
+      sill.applyMatrix4(buildingMatrix);
+      put(trimStone, sill);
+    }
+
+    // Recessed dark core inside the round belfry so all openings read deeply shadowed.
+    {
+      const core = new THREE.CylinderGeometry(drumR - 1.7, drumR - 1.7, belfryH + 0.4, 24);
+      core.translate(0, drumBase + drumSolidH + belfryH / 2, tz);
+      core.applyMatrix4(buildingMatrix);
+      put(mats.trimDark, core);
+    }
+
+    // Ten radial stone piers around the round turret framing arched belfry openings.
+    const piers = 10;
+    const py0 = drumBase + drumSolidH + 0.35;
+    for (let i = 0; i < piers; i++) {
+      const ang = (Math.PI * 2 * i) / piers;
+      const rPier = drumR - 0.45;
+      const pg = new THREE.BoxGeometry(1.75, belfryH - 0.5, 1.5);
+      scaleBoxUVs(pg, 1.75, belfryH - 0.5, 1.5, wallStone);
+      pg.rotateY(-ang);
+      pg.translate(Math.sin(ang) * rPier, py0 + (belfryH - 0.5) / 2, tz + Math.cos(ang) * rPier);
+      pg.applyMatrix4(buildingMatrix);
+      put(wallStone, pg);
+
+      const cap = new THREE.BoxGeometry(2.05, 0.55, 1.75);
+      scaleBoxUVs(cap, 2.05, 0.55, 1.75, trimStone);
+      cap.rotateY(-ang);
+      cap.translate(Math.sin(ang) * rPier, py0 + belfryH - 0.55, tz + Math.cos(ang) * rPier);
+      cap.applyMatrix4(buildingMatrix);
+      put(trimStone, cap);
+
+      // Bracket under the flared turret eave.
+      const br = new THREE.BoxGeometry(0.65, 1.1, 1.4);
+      scaleBoxUVs(br, 0.65, 1.1, 1.4, trimStone);
+      br.rotateY(-ang);
+      br.translate(Math.sin(ang) * (drumR + 0.7), drumTop + 0.65, tz + Math.cos(ang) * (drumR + 0.7));
+      br.applyMatrix4(buildingMatrix);
+      put(trimStone, br);
+    }
+
+    // Upper stone drum frieze & circular cornice ring.
+    {
+      const frieze = new THREE.CylinderGeometry(drumR + 0.3, drumR, 1.4, 24);
+      scaleCylUVs(frieze, drumR + 0.15, 1.4, wallStone);
+      frieze.translate(0, drumTop + 0.5, tz);
+      frieze.applyMatrix4(buildingMatrix);
+      put(wallStone, frieze);
+
+      const corn = new THREE.CylinderGeometry(drumR + 0.9, drumR + 0.4, 0.65, 24);
+      scaleCylUVs(corn, drumR + 0.65, 0.65, trimStone);
+      corn.translate(0, drumTop + 1.35, tz);
+      corn.applyMatrix4(buildingMatrix);
+      put(trimStone, corn);
+    }
+
+    // Flared conical roof eave + broad conical slate turret roof (matched to p.71).
+    const eaveTop = drumTop + 3.6;
+    const coneH = 19.0;
+    {
+      const skirt = new THREE.CylinderGeometry(drumR + 0.4, drumR + 3.2, 2.1, 24);
+      scaleCylUVs(skirt, drumR + 1.8, 2.1, roofMat);
+      skirt.translate(0, drumTop + 2.55, tz);
+      skirt.applyMatrix4(buildingMatrix);
+      put(roofMat, skirt);
+
+      const cone = new THREE.ConeGeometry(drumR + 0.5, coneH, 24);
+      scaleCylUVs(cone, (drumR + 0.5) * 0.5, coneH, roofMat);
+      cone.translate(0, eaveTop + coneH / 2, tz);
+      cone.applyMatrix4(buildingMatrix);
+      put(roofMat, cone);
+    }
+
+    // Finial ball & slender flagstaff at the cone apex.
+    const apex = eaveTop + coneH;
+    {
+      const ball = new THREE.SphereGeometry(0.55, 10, 8);
+      ball.translate(0, apex + 0.35, tz);
+      ball.applyMatrix4(buildingMatrix);
+      put(trimStone, ball);
+    }
+    box(mats.trimDark, 0, apex + 3.4, tz, 0.22, 6.2, 0.22);
+
+    // Stout stone/brick chimneys behind the wing roofs (right-slope stack visible in p.71).
+    chimneyStack(wallStone, -b.width * 0.23, wall + 10.5, -b.depth * 0.12, 2.8, 8.5, 2.8);
+    chimneyStack(wallStone, b.width * 0.23, wall + 10.5, -b.depth * 0.12, 2.8, 8.5, 2.8);
     signFor(b, wall - 1);
-    return th + 32;
+    return apex + 6.5;
   };
 
   // Flat-roofed brick school of the 1920s-30s: the 1922 high school addition (PDF p.72)

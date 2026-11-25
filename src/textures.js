@@ -290,6 +290,55 @@ function stoneMaps() {
   });
 }
 
+function rusticStoneMaps() {
+  const w = 512;
+  const h = 256;
+  const rowH = [64, 56, 72, 64];
+  const rowY = [0, 64, 120, 192];
+  const rowBlocks = [
+    [0, 128, 224, 368, 512],
+    [0, 96, 232, 344, 448, 512],
+    [0, 144, 260, 404, 512],
+    [0, 88, 208, 320, 432, 512],
+  ];
+  return packMaps(w, h, (px, height, rough) => {
+    for (let y = 0; y < h; y++) {
+      let row = 3;
+      for (let r = 0; r < 4; r++) {
+        if (y >= rowY[r] && y < rowY[r] + rowH[r]) { row = r; break; }
+      }
+      const bh = rowH[row];
+      const ly = y - rowY[row];
+      const edges = rowBlocks[row];
+      for (let x = 0; x < w; x++) {
+        let col = 0;
+        for (let c = 0; c < edges.length - 1; c++) {
+          if (x >= edges[c] && x < edges[c + 1]) { col = c; break; }
+        }
+        const bx0 = edges[col];
+        const bw = edges[col + 1] - bx0;
+        const lx = x - bx0;
+        const jx = (hash(Math.floor(x / 3), Math.floor(y / 3)) - 0.5) * 2.4;
+        const dEdge = Math.min(lx + jx, bw - lx - jx, ly + jx, bh - ly - jx);
+        const joint = dEdge < 3.6;
+        const tone = hash(row * 17 + col, 7);
+        const coarse = (hash(Math.floor(x / 5), Math.floor(y / 4)) - 0.5) * 24;
+        const fine = (hash(x, y) - 0.5) * 16;
+        const rock = joint ? 0 : Math.min(1, Math.max(0, (dEdge - 3.6) / 14));
+        const shade = joint ? 86 : 152 + tone * 38 + rock * 22 + coarse + fine;
+        const i = y * w + x;
+        const o = i * 4;
+        px[o] = Math.max(0, Math.min(255, shade));
+        px[o + 1] = Math.max(0, Math.min(255, shade - 3));
+        px[o + 2] = Math.max(0, Math.min(255, shade - 10));
+        px[o + 3] = 255;
+        height[i] = joint ? 0.08 : 0.3 + rock * 0.52 + (coarse / 24) * 0.14 + (fine / 32) * 0.06;
+        rough[i] = joint ? 0.99 : 0.92;
+      }
+    }
+  });
+}
+
 function plankMaps() {
   const w = 512;
   const h = 256;
@@ -673,6 +722,7 @@ export function makeMaterials() {
   const tanShingleTex = shingleMaps("tan");
   const tinTex = tinMaps();
   const stoneTex = stoneMaps();
+  const rusticTex = rusticStoneMaps();
   const plankTex = plankMaps();
   const dirtTex = groundMaps(false);
   const ballastTex = ballastMaps();
@@ -964,6 +1014,26 @@ export function makeMaterials() {
       uvFeet: { u: 4.2, v: 2.2 },
       vary: true,
       normalScale: 0.75,
+    }),
+    rusticStone: std({
+      map: rusticTex.map,
+      normalMap: rusticTex.normalMap,
+      roughnessMap: rusticTex.roughnessMap,
+      color: "#ded6c5",
+      roughness: 1,
+      uvFeet: { u: 6.4, v: 3.4 },
+      vary: true,
+      normalScale: 1.9,
+    }),
+    rusticStoneDark: std({
+      map: rusticTex.map,
+      normalMap: rusticTex.normalMap,
+      roughnessMap: rusticTex.roughnessMap,
+      color: "#726c60",
+      roughness: 1,
+      uvFeet: { u: 5.8, v: 3.0 },
+      vary: true,
+      normalScale: 2.1,
     }),
     metal: std({
       color: "#5a636b",
