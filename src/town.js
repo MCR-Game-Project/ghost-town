@@ -833,11 +833,47 @@ export function buildTown(data, scene) {
         box(mats.trim, x, wallH * 0.92, fz + 0.48, 1.2, 0.55, 0.95);
       }
     }
+    if (f.quoinPilasters) {
+      const qCount = Math.floor((wallH - 12.5) / 1.8);
+      for (const qx of [-b.width / 2 + 0.5, b.width / 2 - 0.5]) {
+        for (let q = 0; q < qCount; q++) {
+          const qw = q % 2 === 0 ? 1.5 : 1.05;
+          box(mats.stone, qx, 12.2 + q * 1.8, fz + 0.22, qw, 1.15, 0.42);
+        }
+      }
+      if (bays === 13) {
+        for (const k of [3, 7, 10]) {
+          const px = -b.width / 2 + gap * k;
+          box(brickOf(b), px, 12 + (wallH - 14.5) / 2, fz + 0.14, 0.95, wallH - 14.5, 0.28);
+          box(mats.stone, px, 11.7, fz + 0.2, 1.15, 0.55, 0.36);
+        }
+      }
+      if (f.shedPorchSide || f.sideStair) {
+        const sx = (f.shedPorchSide || f.sideStair) * (b.width / 2 + 0.12);
+        for (const sz of [-b.depth / 2 + 0.6, b.depth / 2 - 0.6]) {
+          for (let q = 0; q < qCount; q++) {
+            const qd = q % 2 === 0 ? 1.5 : 1.05;
+            box(mats.stone, sx, 12.2 + q * 1.8, sz, 0.42, 1.15, qd);
+          }
+        }
+      }
+    }
     if (f.veranda) drawVeranda(b, f.veranda);
     if (f.pentRoof) {
       localBox(mats.roofSlate, 0, 10.5, fz + 2.3, b.width * 0.98, 0.2, 5.4, -0.38);
       box(mats.trimDark, 0, 9.55, fz + 0.2, b.width, 0.28, 0.35);
-    } else if (f.awning) drawAwning(b.width * 0.9, fz);
+    } else if (f.awning) {
+      if (f.awningFrom && bays > f.awningFrom) {
+        const startX = -b.width / 2 + gap * (f.awningFrom - 1);
+        const awW = b.width / 2 - startX - 0.6;
+        const awCx = (startX + b.width / 2 - 0.6) / 2;
+        localBox(mats.awning, awCx, 10.2, fz + 2.15, awW, 0.12, 4.4, -0.42);
+        localBox(mats.awningShade, awCx, 10.1, fz + 2.15, awW * 0.98, 0.05, 4.15, -0.42);
+        box(mats.awningShade, awCx, 9.48, fz + 4.05, awW, 0.55, 0.1);
+      } else {
+        drawAwning(b.width * 0.9, fz);
+      }
+    }
     if (f.stripedCanopy) {
       const canopyW = b.width * 0.36;
       const origin = b.width / 2 - canopyW / 2 - 0.3;
@@ -858,27 +894,51 @@ export function buildTown(data, scene) {
       }
     }
     if (f.shedPorch) {
-      const z = b.depth / 2 + 3.3;
-      box(mats.plank, 0, 0.55, z, b.width * 0.94, 0.28, 6.2);
-      localBox(mats.roofDark, 0, 9.3, z + 0.2, b.width + 0.4, 0.16, 6.6, -0.2);
-      for (let i = 0; i <= bays; i++) {
-        const x = -b.width / 2 + (b.width * i) / bays;
-        box(mats.trimDark, x, 4.7, z + 2.5, 0.38, 8.2, 0.38);
+      const pd = 7.2;
+      const zc = fz + pd / 2;
+      const eaveZ = fz + pd;
+      const sd = f.shedPorchSide || 0;
+      const postMat = mats.siding.cream;
+      const xLeft = sd === -1 ? -b.width / 2 - pd : -b.width / 2;
+      const xRight = sd === 1 ? b.width / 2 + pd : b.width / 2;
+      const fw = xRight - xLeft;
+      const fcx = (xLeft + xRight) / 2;
+      box(mats.plank, fcx, 0.48, zc, fw, 0.3, pd);
+      // Sloped porch roof falling toward East Main (+rotX tilts +z downward).
+      const froof = new THREE.BoxGeometry(fw + 0.3, 0.22, pd + 0.4);
+      scaleBoxUVs(froof, fw + 0.3, 0.22, pd + 0.4, mats.roofSlate);
+      froof.rotateX(0.2);
+      froof.translate(fcx, 9.85, zc);
+      froof.applyMatrix4(buildingMatrix);
+      put(mats.roofSlate, froof);
+      box(postMat, fcx, 9.0, eaveZ - 0.15, fw + 0.3, 0.55, 0.32);
+      const postCount = Math.max(4, Math.round(b.width / 9));
+      for (let i = 0; i <= postCount; i++) {
+        const x = -b.width / 2 + (b.width * i) / postCount;
+        box(postMat, x, 4.65, eaveZ - 0.25, 0.42, 8.6, 0.42);
       }
-    }
-    // Porch roof carried around onto the street side (Cole building engraving, PDF p.13).
-    if (f.shedPorch && f.shedPorchSide) {
-      const sx = f.shedPorchSide * (b.width / 2 + 3.3);
-      box(mats.plank, sx, 0.55, 0, 6.2, 0.28, b.depth * 0.96);
-      const roof = new THREE.BoxGeometry(6.6, 0.16, b.depth + 0.4);
-      roof.rotateZ(f.shedPorchSide * 0.2);
-      roof.translate(sx + f.shedPorchSide * 0.2, 9.3, 0);
-      roof.applyMatrix4(buildingMatrix);
-      put(mats.roofDark, roof);
-      const n = Math.max(2, Math.round(b.depth / 12));
-      for (let i = 0; i <= n; i++) {
-        const z = -b.depth / 2 + (b.depth * i) / n;
-        box(mats.trimDark, sx + f.shedPorchSide * 2.5, 4.7, z, 0.38, 8.2, 0.38);
+      if (sd) {
+        const sx = sd * (b.width / 2 + pd / 2);
+        const eaveX = sd * (b.width / 2 + pd);
+        box(mats.plank, sx, 0.48, 0, pd, 0.3, b.depth);
+        // Side roof falling outward toward the side street (-sd * rotZ tilts sd*x downward).
+        const sroof = new THREE.BoxGeometry(pd + 0.4, 0.22, b.depth + 0.4);
+        scaleBoxUVs(sroof, pd + 0.4, 0.22, b.depth + 0.4, mats.roofSlate);
+        sroof.rotateZ(-sd * 0.2);
+        sroof.translate(sx, 9.85, 0);
+        sroof.applyMatrix4(buildingMatrix);
+        put(mats.roofSlate, sroof);
+        box(postMat, eaveX - sd * 0.15, 9.0, 0, 0.32, 0.55, b.depth + 0.3);
+        const n = Math.max(3, Math.round(b.depth / 8.5));
+        for (let i = 0; i <= n; i++) {
+          const pz = -b.depth / 2 + (b.depth * i) / n;
+          box(postMat, eaveX - sd * 0.25, 4.65, pz, 0.42, 8.6, 0.42);
+        }
+        box(postMat, eaveX - sd * 0.25, 4.65, eaveZ - 0.25, 0.48, 8.6, 0.48);
+        // Small dormer hood over the 1880 outside stair on the Hail side (p.13).
+        if (b.facade?.sideStair === sd) {
+          box(mats.roofSlate, sd * (b.width / 2 + 2.2), 11.4, b.facade.stairAt ?? -6, 3.6, 1.4, 3.6);
+        }
       }
     }
     const party = b.party || [];
@@ -2475,6 +2535,7 @@ export function buildTown(data, scene) {
 
   const addStore = (b, frame) => {
     // facade.floorH: taller storeys for the photo-matched brick blocks (estimate, round 3).
+    if (b.id === "cole-building-10") tint.set("#e2d0ad");
     const floorH = b.facade?.floorH ?? 12;
     const wallH = b.stories * floorH;
     const body = frame ? paintOf(b) : brickOf(b);
@@ -3802,6 +3863,280 @@ export function buildTown(data, scene) {
   const addDepot = (b) => (b.id === "tpw-depot" ? addTpwDepot(b) : addCbqDepot(b));
 
   // Hotel Alexander photograph of the 1871 Hendee House: three brick stories, cornice, porch.
+  // Original Hendee building at Hurst & West Main (centennial book PDF p.25 engraving):
+  // two stories of warm buff/stuccoed masonry with quoined pilasters, six tall pointed-arch
+  // Gothic upper windows in two groups of three, six semicircular arched ground-floor shop
+  // openings between masonry piers, a heavy closely-bracketed cornice wrapping the Hurst side,
+  // three side chimneys, and a real sloped veranda porch on posts with curved arch braces
+  // carrying the bold HENDEE. signboard. Estimates: heights, exact molding depths, wall warmth.
+  const addHendeeStore = (b) => {
+    const wallH = 29.0;
+    const fz = b.depth / 2 + 0.14;
+    const body = mats.brick.buff;
+    const trim = mats.siding.white;
+    const stone = mats.stone;
+
+    const bays = 6;
+    const gap = b.width / bays;
+    const pierW = 1.6;
+    const archR = (gap - pierW) / 2;
+    const archSpring = 8.4;
+    const archWallTop = 13.2;
+
+    // Recess the ground-floor front wall behind the arched shopfront openings.
+    box(body, 0, wallH / 2, -0.65, b.width, wallH, b.depth - 1.3);
+    box(body, 0, (archWallTop + wallH) / 2, b.depth / 2 - 0.65, b.width, wallH - archWallTop, 1.3);
+    box(stone, 0, 0.6, -0.5, b.width + 0.6, 1.2, b.depth - 0.4);
+    box(trim, 0, 13.6, fz + 0.25, b.width + 0.6, 0.65, 0.6);
+    box(trim, b.width / 2 + 0.18, 13.6, 0, 0.5, 0.65, b.depth + 0.4);
+
+    // Quoined corner & center pilasters (two 3-window groups, p.25).
+    for (const qx of [-b.width / 2 + 0.6, 0, b.width / 2 - 0.6]) {
+      box(trim, qx, wallH * 0.68, fz + 0.18, 1.2, wallH * 0.46, 0.35);
+      for (let q = 0; q < 8; q++) {
+        box(trim, qx, 14.3 + q * 1.45, fz + 0.25, q % 2 === 0 ? 1.65 : 1.15, 0.9, 0.42);
+      }
+    }
+    for (let q = 0; q < 8; q++) {
+      box(trim, b.width / 2 + 0.18, 14.3 + q * 1.45, -b.depth / 2 + 0.65, 0.42, 0.9, q % 2 === 0 ? 1.65 : 1.15);
+    }
+
+    // Ground floor: six semicircular arched bays between seven masonry piers (p.25).
+    for (let i = 0; i <= bays; i++) {
+      const px = -b.width / 2 + gap * i;
+      const pw = i === 0 || i === bays ? pierW * 0.95 : pierW;
+      box(body, px, archWallTop / 2, fz - 0.45, pw, archWallTop, 1.15);
+      box(stone, px, 0.65, fz + 0.18, pw + 0.25, 1.3, 0.45);
+      box(trim, px, archSpring - 0.25, fz + 0.18, pw + 0.3, 0.5, 0.45);
+    }
+
+    {
+      const segs = 12;
+      const pos = [];
+      const uvs = [];
+      const feet = body?.userData?.uvFeet || { u: 2.67, v: 1.78 };
+      const pushTri = (a, b3, c) => {
+        for (const p3 of [a, b3, c]) {
+          pos.push(p3[0], p3[1], p3[2]);
+          uvs.push(p3[0] / feet.u, p3[1] / feet.v);
+        }
+      };
+      const zF = fz + 0.12;
+      const zB = fz - 0.9;
+      for (let col = 0; col < bays; col++) {
+        const cx = -b.width / 2 + gap * (col + 0.5);
+        const xL = cx - archR;
+        const xR = cx + archR;
+        const outerPt = (ang) => {
+          if (ang <= Math.PI * 0.25) return [xR, archSpring + (archWallTop - archSpring) * (ang / (Math.PI * 0.25))];
+          if (ang <= Math.PI * 0.75) return [xR - (xR - xL) * ((ang - Math.PI * 0.25) / (Math.PI * 0.5)), archWallTop];
+          return [xL, archWallTop - (archWallTop - archSpring) * ((ang - Math.PI * 0.75) / (Math.PI * 0.25))];
+        };
+        for (let i = 0; i < segs; i++) {
+          const a0 = (Math.PI * i) / segs;
+          const a1 = (Math.PI * (i + 1)) / segs;
+          const ix0 = cx + Math.cos(a0) * archR, iy0 = archSpring + Math.sin(a0) * archR;
+          const ix1 = cx + Math.cos(a1) * archR, iy1 = archSpring + Math.sin(a1) * archR;
+          const [ox0, oy0] = outerPt(a0);
+          const [ox1, oy1] = outerPt(a1);
+          pushTri([ix0, iy0, zF], [ox0, oy0, zF], [ox1, oy1, zF]);
+          pushTri([ix0, iy0, zF], [ox1, oy1, zF], [ix1, iy1, zF]);
+          pushTri([ix0, iy0, zB], [ox1, oy1, zB], [ox0, oy0, zB]);
+          pushTri([ix0, iy0, zB], [ix1, iy1, zB], [ox1, oy1, zB]);
+          pushTri([ix0, iy0, zF], [ix1, iy1, zF], [ix1, iy1, zB]);
+          pushTri([ix0, iy0, zF], [ix1, iy1, zB], [ix0, iy0, zB]);
+        }
+        ringArch(trim, cx, archSpring, fz + 0.22, archR + 0.12, 0.26);
+        box(trim, cx, archSpring + archR + 0.22, fz + 0.28, 0.55, 0.75, 0.4);
+        const head = new THREE.CircleGeometry(archR - 0.05, 18, 0, Math.PI);
+        head.translate(cx, archSpring, fz - 0.35);
+        head.applyMatrix4(buildingMatrix);
+        put(shopGlass, head);
+        if (col === 1 || col === 4) {
+          box(mats.reveal, cx, 4.4, fz - 0.55, archR * 1.9, 8.2, 0.2);
+          paneledDoor(cx, fz - 0.45, 4.6, 7.8, true);
+          box(stone, cx, 0.45, fz + 0.2, 5.4, 0.7, 1.4);
+        } else {
+          box(mats.trimDark, cx, 1.35, fz - 0.3, archR * 1.92, 1.7, 0.3);
+          box(mats.reveal, cx, 5.3, fz - 0.45, archR * 1.9, 6.2, 0.16);
+          box(shopGlass, cx, 5.3, fz - 0.35, archR * 1.78, 6.0, 0.08);
+          for (const mx of [-1.2, 1.2]) box(trim, cx + mx, 6.3, fz - 0.26, 0.12, 8.0, 0.1);
+          for (const my of [4.8, 8.4]) box(trim, cx, my, fz - 0.26, archR * 1.84, 0.14, 0.12);
+        }
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+      geo.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+      geo.setIndex([...Array(pos.length / 3).keys()]);
+      geo.computeVertexNormals();
+      geo.applyMatrix4(buildingMatrix);
+      put(body, geo);
+    }
+
+    // Upper story: six pointed-arch Gothic lancet windows in two groups of three (p.25).
+    const lancet = (cx, ySill, w, rectH, apexH) => {
+      const ySpring = ySill + rectH;
+      const yTop = ySpring + apexH;
+      const hw = w / 2;
+      const shape = new THREE.Shape();
+      shape.moveTo(-hw, 0);
+      shape.lineTo(hw, 0);
+      shape.lineTo(hw, rectH);
+      shape.lineTo(0, rectH + apexH);
+      shape.lineTo(-hw, rectH);
+      shape.closePath();
+      const glassGeo = new THREE.ShapeGeometry(shape);
+      if (!glassGeo.index) glassGeo.setIndex([...Array(glassGeo.getAttribute("position").count).keys()]);
+      glassGeo.translate(cx, ySill, fz + 0.04);
+      glassGeo.applyMatrix4(buildingMatrix);
+      put(shopGlass, glassGeo);
+
+      const frameGeo = new THREE.ShapeGeometry(shape);
+      if (!frameGeo.index) frameGeo.setIndex([...Array(frameGeo.getAttribute("position").count).keys()]);
+      frameGeo.scale(1.06, 1.03, 1);
+      frameGeo.translate(cx, ySill - 0.08, fz + 0.01);
+      frameGeo.applyMatrix4(buildingMatrix);
+      put(mats.reveal, frameGeo);
+
+      for (const mx of [-hw * 0.34, hw * 0.34]) {
+        box(trim, cx + mx, ySill + rectH * 0.58, fz + 0.1, 0.09, rectH * 1.08, 0.08);
+      }
+      for (const my of [ySill + rectH * 0.33, ySill + rectH * 0.67, ySpring]) {
+        box(trim, cx, my, fz + 0.1, w * 0.96, 0.1, 0.08);
+      }
+      for (const sd of [-1, 1]) box(trim, cx + sd * (hw + 0.12), ySill + rectH / 2, fz + 0.14, 0.24, rectH, 0.24);
+      box(stone, cx, ySill - 0.22, fz + 0.26, w + 1.0, 0.38, 0.72);
+      const len = Math.hypot(hw + 0.28, apexH + 0.22);
+      const ang = Math.atan2(apexH + 0.22, hw + 0.28);
+      for (const sd of [-1, 1]) {
+        const bar = new THREE.BoxGeometry(len, 0.36, 0.44);
+        scaleBoxUVs(bar, len, 0.36, 0.44, trim);
+        bar.rotateZ(-sd * ang);
+        bar.translate(cx + sd * (hw / 2 + 0.12), ySpring + apexH / 2 + 0.14, fz + 0.24);
+        bar.applyMatrix4(buildingMatrix);
+        put(trim, bar);
+        box(trim, cx + sd * (hw + 0.25), ySpring - 0.1, fz + 0.26, 0.44, 0.42, 0.44);
+      }
+      box(trim, cx, yTop + 0.18, fz + 0.28, 0.5, 0.65, 0.48);
+    };
+
+    for (const ux of [-20.4, -13.6, -6.8, 6.8, 13.6, 20.4]) {
+      lancet(ux, 15.1, 2.9, 6.6, 2.7);
+    }
+
+    for (let i = 0; i < 5; i++) {
+      const sz = -b.depth / 2 + ((i + 0.65) * b.depth) / 5.5;
+      sideSash(b.width / 2 + 0.08, 19.6, sz, 1, 2.5, 7.2, "pointed", false, trim);
+      sideSash(b.width / 2 + 0.08, 6.4, sz, 1, 2.4, 7.0, "flat", false, trim);
+    }
+
+    deepCrown(b, wallH, { proj: 2.2, frieze: 2.1, mat: "white", spacing: 1.75 });
+    for (const cz of [-20, 0, 20]) chimneyStack(mats.brick.red, b.width / 2 - 2.0, wallH + 3.6, cz, 2.4, 5.8, 2.4);
+
+    // Real sloped veranda porch with curved spandrel braces & Hurst wrap (p.25).
+    const pd = 8.4;
+    const pWrap = 32;
+    const pZ = fz + pd / 2;
+    const eaveZ = fz + pd;
+    const eaveX = b.width / 2 + pd;
+    box(stone, pd / 2, 0.45, pZ, b.width + pd, 0.9, pd);
+    box(mats.plank, pd / 2, 0.94, pZ, b.width + pd - 0.3, 0.12, pd - 0.3);
+    box(stone, b.width / 2 + pd / 2, 0.45, fz - pWrap / 2, pd, 0.9, pWrap);
+    box(mats.plank, b.width / 2 + pd / 2, 0.94, fz - pWrap / 2, pd - 0.3, 0.12, pWrap - 0.3);
+
+    {
+      const froof = new THREE.BoxGeometry(b.width + pd + 0.5, 0.22, pd + 0.6);
+      scaleBoxUVs(froof, b.width + pd + 0.5, 0.22, pd + 0.6, mats.roofSlate);
+      froof.rotateX(0.18);
+      froof.translate(pd / 2, 12.85, pZ);
+      froof.applyMatrix4(buildingMatrix);
+      put(mats.roofSlate, froof);
+
+      const sroof = new THREE.BoxGeometry(pd + 0.6, 0.22, pWrap + 0.4);
+      scaleBoxUVs(sroof, pd + 0.6, 0.22, pWrap + 0.4, mats.roofSlate);
+      sroof.rotateZ(-0.18);
+      sroof.translate(b.width / 2 + pd / 2, 12.85, fz - pWrap / 2);
+      sroof.applyMatrix4(buildingMatrix);
+      put(mats.roofSlate, sroof);
+    }
+    box(trim, pd / 2, 11.95, eaveZ - 0.2, b.width + pd + 0.4, 0.65, 0.36);
+    box(trim, eaveX - 0.2, 11.95, fz - pWrap / 2 + pd / 2, 0.36, 0.65, pWrap + pd);
+
+    const frontPosts = [-b.width / 2 + 0.4, -13.5, 0, 13.5, b.width / 2 - 0.4, eaveX - 0.25];
+    for (let i = 0; i < frontPosts.length; i++) {
+      const px = frontPosts[i];
+      box(trim, px, 1.5, eaveZ - 0.25, 0.85, 1.2, 0.85);
+      box(trim, px, 6.8, eaveZ - 0.25, 0.42, 9.8, 0.42);
+      if (i < frontPosts.length - 1) {
+        const span = frontPosts[i + 1] - px;
+        const r = Math.min(3.8, span * 0.34);
+        for (const sd of [-1, 1]) {
+          const sx = sd === 1 ? px + 0.2 : frontPosts[i + 1] - 0.2;
+          const arc = new THREE.TorusGeometry(r, 0.1, 5, 12, Math.PI / 2);
+          if (sd === 1) arc.rotateZ(Math.PI / 2);
+          arc.translate(sx + sd * r, 11.7 - r, eaveZ - 0.25);
+          arc.applyMatrix4(buildingMatrix);
+          put(mats.trimDark, arc);
+        }
+      }
+    }
+    for (let j = 1; j <= 3; j++) {
+      const pz = fz - (pWrap * j) / 3;
+      box(trim, eaveX - 0.25, 1.5, pz, 0.85, 1.2, 0.85);
+      box(trim, eaveX - 0.25, 6.8, pz, 0.42, 9.8, 0.42);
+    }
+
+    const rail = (x0, x1, zPos) => {
+      const rw = x1 - x0;
+      const rcx = (x0 + x1) / 2;
+      box(trim, rcx, 2.25, zPos, rw, 0.14, 0.16);
+      box(trim, rcx, 1.05, zPos, rw, 0.14, 0.16);
+      const bars = Math.max(4, Math.round(rw * 1.4));
+      for (let k = 0; k <= bars; k++) {
+        box(trim, x0 + (rw * k) / bars, 1.65, zPos, 0.1, 1.15, 0.1);
+      }
+    };
+    rail(-8.5, 8.5, eaveZ - 0.25);
+    rail(18.5, b.width / 2 - 0.6, eaveZ - 0.25);
+
+    {
+      const rot = (FACING[b.facing] ?? 0) + THREE.MathUtils.degToRad(b.rotation || 0);
+      const up = new THREE.Vector3(0, 1, 0);
+      const out = new THREE.Vector3(0, 0, 1).applyAxisAngle(up, rot);
+      const right = new THREE.Vector3(1, 0, 0).applyAxisAngle(up, rot);
+      signs.push({
+        title: "HENDEE.",
+        subtitle: "",
+        style: "painted",
+        position: new THREE.Vector3(b.x, 13.45, b.z).addScaledVector(out, eaveZ + 0.15).addScaledVector(right, -19.2),
+        rotation: rot,
+        width: 15.2,
+        height: 2.7,
+        flush: true,
+      });
+      signs.push({
+        title: "BANK",
+        subtitle: "",
+        style: "glass",
+        position: new THREE.Vector3(b.x, 5.6, b.z).addScaledVector(out, fz - 0.18).addScaledVector(right, 22.5),
+        rotation: rot,
+        width: 4.4,
+        flush: true,
+      });
+      signs.push({
+        title: "BURNS & SANDERS",
+        subtitle: "ATTY AT LAW",
+        style: "painted",
+        position: new THREE.Vector3(b.x, 18.5, b.z).addScaledVector(right, b.width / 2 + 0.25).addScaledVector(out, 26),
+        rotation: rot + Math.PI / 2,
+        width: 6.5,
+        height: 2.5,
+        flush: true,
+      });
+    }
+    return wallH + 3;
+  };
+
   const addHendeeHouse = (b) => {
     const wallH = 36;
     const body = new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.9 });
@@ -5248,7 +5583,7 @@ export function buildTown(data, scene) {
       b.facade?.engineHouse || b.facade?.cityHall || b.facade?.westSide1897 || b.facade?.flatSchool ||
       b.facade?.stBernard1907 || b.facade?.stBernard1953 || b.facade?.fireHouse1953 ||
       b.id === "presbyterian-church-1917" || b.id === "junction-depot" || b.id === "hurst-crossing-shanty" ||
-      b.id === "hendee-house-26"
+      b.id === "hendee-house-26" || b.id === "hendee-store-22"
     );
     if (b.facadeSpec && !handDrawn) {
       height = drawFacadeSpec(b, {
@@ -5281,6 +5616,7 @@ export function buildTown(data, scene) {
     else if (b.facade?.stBernard1953) height = addStBernard1953(b);
     else if (b.facade?.fireHouse1953) height = addFireHouse1953(b);
     else if (b.kind === "house") height = addHouse(b);
+    else if (b.id === "hendee-store-22") height = addHendeeStore(b);
     else if (b.id === "hendee-house-26") height = addHendeeHouse(b);
     else if (b.kind === "frame-store") height = addStore(b, true);
     else if (b.kind === "brick-store" || b.kind === "hotel") height = addStore(b, b.material === "frame");
