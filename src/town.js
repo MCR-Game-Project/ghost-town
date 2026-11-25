@@ -1293,6 +1293,7 @@ export function buildTown(data, scene) {
 
   const signFor = (b, wallH) => {
     if (b.facade?.signs) {
+      if (b.id === "bushnell-engine-house" && b.sign === "") return;
       photoSigns(b);
       return;
     }
@@ -2712,51 +2713,168 @@ export function buildTown(data, scene) {
   };
 
   // First Presbyterian after the 1917 enlargement: crenellated tower, cross gables.
+  // First Presbyterian Church enlarged 1916-1917 (Mark's postcard & PDF p.66):
+  // Left 2-story Smith Memorial Hall gable wing with basement lights and wide stained-glass
+  // gable windows, central crenellated brick tower with entrance canopy and louvered belfry,
+  // and right sanctuary gable wing with 3-light pointed window and cross gable.
   const addGothicChurch = (b) => {
-    const body = mats.brick.dark;
-    const wallH = 22;
-    box(body, 0, wallH / 2 + 1.2, -2, b.width, wallH, b.depth);
-    box(mats.stone, 0, 1.3, -2, b.width + 1.2, 2.6, b.depth + 1.2);
-    gable(b.width, b.depth, 12, wallH + 1, mats.roofDark);
-    const wingX = b.width * 0.15;
-    box(body, wingX, 12, b.depth * 0.15, b.width * 0.72, 20, b.depth * 0.55);
-    gableAt(b.width * 0.72, b.depth * 0.55, 8, 22, mats.roofDark, wingX, b.depth * 0.15);
-    const fz = b.depth / 2;
-    const pointed = (x, y, z, w, h) => {
-      box(mats.trim, x, y, z, w + 0.4, h + 0.3, 0.16);
-      box(mats.glass, x, y - 0.2, z + 0.08, w * 0.72, h * 0.72, 0.05);
-      archHood(mats.stone, x, y + h * 0.35, z + 0.12, w + 0.2, h * 0.45, "z");
-    };
-    pointed(b.width * 0.08, 12, fz + 0.2, 3.4, 10);
-    pointed(b.width * 0.28, 11, fz + 0.2, 2.6, 8);
-    pointed(-b.width * 0.12, 11, fz - 4, 2.4, 8);
-    const tx = -b.width / 2 + 8;
-    const tz = fz - 6;
-    box(body, tx, 20, tz, 16, 40, 16);
-    box(mats.stone, tx, 1.4, tz, 17.2, 2.8, 17.2);
-    for (const face of [
-      [0, 8.2, 0],
-      [8.2, 0, 1],
-      [-8.2, 0, -1],
-    ]) {
-      box(mats.trim, tx + face[0], 24, tz + face[1], face[2] ? 0.2 : 3.2, 8, face[2] ? 3.2 : 0.2);
-      box(mats.trimDark, tx + face[0], 24, tz + face[1], face[2] ? 0.12 : 1.6, 5.5, face[2] ? 1.6 : 0.12);
-      archHood(mats.stone, tx + face[0], 27.2, tz + face[1], 3.4, 1.8, face[2] ? "x" : "z");
+    const body = brickOf(b);
+    const st = mats.stone;
+    const rf = mats.roofDark;
+    const W = b.width;
+    const D = b.depth;
+    const fz = D / 2;
+
+    // Rear sanctuary nave mass tying the wings together.
+    const naveW = W - 4;
+    const naveD = D - 18;
+    const naveZc = -9;
+    box(body, 2, 11.5, naveZc, naveW, 23, naveD);
+    box(st, 2, 1.8, naveZc, naveW + 0.6, 3.6, naveD + 0.6);
+    gableAt(naveW, naveD, 12, 23, rf, 2, naveZc);
+
+    // Left 2-story gabled Smith Memorial Hall wing (p.66).
+    const hw = 21;
+    const hd = D - 4;
+    const hx = -W / 2 + hw / 2;
+    const hzc = 2;
+    const hWall = 23;
+    const hRise = 10.5;
+    box(body, hx, hWall / 2, hzc, hw, hWall, hd);
+    box(mats.brick.dark, hx, 1.9, hzc, hw + 0.5, 3.8, hd + 0.5);
+    box(st, hx, 3.9, hzc, hw + 0.7, 0.45, hd + 0.7);
+    gableFrontAt(hw, hd, hRise, hWall, rf, hx, hzc);
+    clapboardTriangle(body, hw, hRise * 0.96, hWall, "z", fz, hx, 0);
+    clapboardTriangle(body, hw, hRise * 0.96, hWall, "z", hzc - hd / 2, hx, 0);
+    gableCoping(mats.trim, hw + 1.0, hRise * 0.96 + 0.3, hWall, fz + 0.35, hx, 0.55);
+    // Half-timber truss in the Smith Hall gable peak (p.66).
+    box(mats.trim, hx, hWall + 2.8, fz + 0.12, hw * 0.68, 0.35, 0.25);
+    box(mats.trim, hx, hWall + 5.8, fz + 0.12, 0.35, 6.2, 0.25);
+    const MHall = faceM(0, hx, fz);
+    // 1st-floor wide 3-light square stained-glass window + 2nd-floor wide arched 3-light window.
+    for (const bx of [-5.2, -1.7, 1.7, 5.2]) {
+      fbox(MHall, mats.trimDark, bx, 1.8, 0.28, 1.8, 1.6, 0.12);
+      fbox(MHall, st, bx, 1.8, 0.2, 2.3, 2.0, 0.2);
     }
-    pointed(tx, 8, tz + 8.2, 3.6, 8);
-    box(mats.trimDark, tx - 0.7, 6.2, tz + 8.35, 1.1, 6.4, 0.08);
-    box(mats.trimDark, tx + 0.7, 6.2, tz + 8.35, 1.1, 6.4, 0.08);
-    for (let i = 0; i < 7; i++) {
-      const mx = tx - 7 + i * 2.3;
-      box(body, mx, 40.4, tz + 7.6, 1.3, 2.2, 1.1);
-      box(body, tx + 7.6, 40.4, tz - 7 + i * 2.3, 1.1, 2.2, 1.3);
+    fbox(MHall, st, 0, 7.6, 0.12, 8.6, 5.6, 0.24);
+    fbox(MHall, shopGlass, 0, 7.6, 0.18, 7.6, 4.8, 0.08);
+    for (const u of [-1.25, 1.25]) fbox(MHall, mats.trim, u, 7.6, 0.25, 0.26, 4.8, 0.14);
+    fbox(MHall, st, 0, 10.6, 0.26, 9.2, 0.5, 0.45);
+    fbox(MHall, st, 0, 4.8, 0.26, 9.2, 0.45, 0.45);
+    // 2nd floor wide round-arched 3-light window.
+    roundWin(MHall, 0, 14.2, 7.8, 3.2, { lights: 3, circle: false, surround: 0.55, mat: st });
+    // Left return wall of Smith Memorial Hall: 3 bays of triple flat windows per story (p.66).
+    const MHL = faceM(-Math.PI / 2, -W / 2, hzc);
+    for (const u of [-16, -2, 12]) {
+      fbox(MHL, mats.trimDark, u, 1.8, 0.28, 3.0, 1.6, 0.12);
+      fbox(MHL, st, u, 1.8, 0.2, 3.6, 2.0, 0.2);
+      for (const yy of [7.6, 16.5]) {
+        for (const dx of [-2.0, 0, 2.0]) {
+          fbox(MHL, mats.trim, u + dx, yy, 0.14, 1.6, 4.8, 0.2);
+          fbox(MHL, shopGlass, u + dx, yy, 0.18, 1.2, 4.2, 0.08);
+        }
+        fbox(MHL, st, u, yy + 2.6, 0.24, 6.2, 0.42, 0.38);
+        fbox(MHL, st, u, yy - 2.6, 0.24, 6.2, 0.38, 0.38);
+      }
     }
-    box(mats.stone, 0, 0.2, fz + 8, b.width + 10, 0.25, 7);
-    const tree = new THREE.Vector3(b.width * 0.55, 0, fz + 10);
+
+    // Central square crenellated tower (14x14, 41 ft tall).
+    const tw = 14;
+    const tx = 0.5;
+    const tz = fz - tw / 2 + 1.5;
+    const th = 41;
+    box(body, tx, th / 2, tz, tw, th, tw);
+    box(mats.brick.dark, tx, 1.9, tz, tw + 0.5, 3.8, tw + 0.5);
+    box(st, tx, 3.9, tz, tw + 0.7, 0.45, tw + 0.7);
+    box(st, tx, 13.8, tz, tw + 0.7, 0.55, tw + 0.7);
+    box(st, tx, 27.6, tz, tw + 0.5, 0.45, tw + 0.5);
+    box(st, tx, th + 0.25, tz, tw + 0.7, 0.55, tw + 0.7);
+    // 5 crenellated merlons per side with stone caps.
+    for (let i = 0; i < 5; i++) {
+      const o = -tw / 2 + 1.1 + i * ((tw - 2.2) / 4);
+      for (const sd of [-1, 1]) {
+        box(body, tx + o, th + 1.4, tz + sd * (tw / 2 - 0.55), 1.6, 1.9, 1.1);
+        box(st, tx + o, th + 2.45, tz + sd * (tw / 2 - 0.55), 1.85, 0.32, 1.3);
+        box(body, tx + sd * (tw / 2 - 0.55), th + 1.4, tz + o, 1.1, 1.9, 1.6);
+        box(st, tx + sd * (tw / 2 - 0.55), th + 2.45, tz + o, 1.3, 0.32, 1.85);
+      }
+    }
+    const MTF = faceM(0, tx, tz + tw / 2);
+    // Arched double entrance + flat bracketed canopy (p.66) + steps.
+    gothicWin(MTF, 0, 1.4, 5.4, 5.2, { glass: mats.trimDark, surround: 0.65, mat: st });
+    fbox(MTF, mats.trim, -1.25, 4.0, 0.18, 2.1, 5.4, 0.16);
+    fbox(MTF, mats.trim, 1.25, 4.0, 0.18, 2.1, 5.4, 0.16);
+    box(mats.trim, tx, 9.6, tz + tw / 2 + 2.4, 11.2, 0.5, 4.8);
+    box(mats.roofDark, tx, 9.95, tz + tw / 2 + 2.4, 11.4, 0.25, 5.0);
+    for (const px of [-4.6, 4.6]) box(mats.trimDark, tx + px, 5.1, tz + tw / 2 + 4.3, 0.4, 8.8, 0.4);
+    box(st, tx, 0.45, tz + tw / 2 + 2.6, 8.8, 0.9, 5.2);
+    // Middle stage triple lancet windows on tower front (p.66).
+    for (const u of [-2.4, 0, 2.4]) {
+      fbox(MTF, st, u, 19.2, 0.12, 1.55, 5.8, 0.22);
+      fbox(MTF, shopGlass, u, 19.2, 0.18, 1.1, 5.2, 0.08);
+    }
+    // Belfry louvered pointed/slotted openings on all 4 tower faces.
+    for (const M of towerFaces(tx, tz, tw / 2)) {
+      gothicWin(M, 0, 29.8, 3.8, 5.8, { glass: mats.reveal, surround: 0.55, mat: st, louvres: true, lights: 2 });
+    }
+    // Flanking narrow stained-glass windows beside the tower front.
+    const MF = faceM(0, 0, fz);
+    for (const fx of [-6.8, 8.6]) {
+      fbox(MF, st, fx, 7.6, 0.12, 2.0, 4.8, 0.22);
+      fbox(MF, shopGlass, fx, 7.6, 0.18, 1.5, 4.2, 0.08);
+      fbox(MF, st, fx, 16.5, 0.12, 2.0, 4.6, 0.22);
+      fbox(MF, shopGlass, fx, 16.5, 0.18, 1.5, 4.0, 0.08);
+    }
+
+    // Right gabled sanctuary wing (postcard + p.66).
+    const sw = W / 2 - (tx + tw / 2) + 2;
+    const sx = W / 2 - sw / 2;
+    const sd = D - 10;
+    const szc = -1;
+    const sWall = 18.5;
+    const sRise = 10.5;
+    box(body, sx, sWall / 2, szc, sw, sWall, sd);
+    box(mats.brick.dark, sx, 1.9, szc, sw + 0.5, 3.8, sd + 0.5);
+    box(st, sx, 3.9, szc, sw + 0.7, 0.45, sd + 0.7);
+    gableFrontAt(sw, sd, sRise, sWall, rf, sx, szc);
+    clapboardTriangle(body, sw, sRise * 0.96, sWall, "z", szc + sd / 2, sx, 0);
+    clapboardTriangle(body, sw, sRise * 0.96, sWall, "z", szc - sd / 2, sx, 0);
+    gableCoping(st, sw + 0.8, sRise * 0.96 + 0.3, sWall, szc + sd / 2 + 0.3, sx, 0.5);
+    const MS = faceM(0, sx, szc + sd / 2);
+    gothicWin(MS, 0, 5.2, 8.4, 6.2, { lights: 3, circle: true, surround: 0.6, mat: st });
+    roseWin(MS, 0, sWall + 4.4, 1.6, { tube: 0.26, mat: st });
+
+    // Right (+x) side sanctuary cross-gable with pitched roof mass + 3-light pointed window (postcard).
+    {
+      const cgw = 22;
+      const cgd = 16;
+      const cgx = W / 2 - cgd / 2;
+      const cgz = 4;
+      const cRise = 10.5;
+      const cHalf = cgw / 2 + 0.6;
+      const cLen = Math.hypot(cHalf, cRise) + 0.4;
+      const cAng = Math.atan2(cRise, cHalf);
+      for (const sd of [-1, 1]) {
+        const rg = new THREE.BoxGeometry(cgd + 0.8, 0.38, cLen);
+        scaleBoxUVs(rg, cgd + 0.8, 0.38, cLen, rf);
+        rg.rotateX(sd * cAng);
+        rg.translate(cgx, sWall + cRise / 2, cgz + (sd * cHalf) / 2);
+        rg.applyMatrix4(buildingMatrix);
+        put(rf, rg);
+      }
+    }
+    const MR = faceM(Math.PI / 2, W / 2, 4);
+    faceGable(MR, body, st, 0, sWall, 22, 10.5);
+    gothicWin(MR, 0, 5.2, 8.2, 6.0, { lights: 3, circle: true, surround: 0.6, mat: st });
+    roseWin(MR, 0, sWall + 4.2, 1.5, { tube: 0.25, mat: st });
+    gothicWin(MR, -18, 5.8, 2.4, 5.2, { surround: 0.4, mat: st });
+
+    box(st, 0, 0.2, fz + 6, W + 6, 0.25, 6);
+    const tree = new THREE.Vector3(W * 0.55, 0, fz + 9);
     tree.applyMatrix4(buildingMatrix);
     extraTrees.push({ x: tree.x, z: tree.z, kind: "maple", scale: 0.7 });
     signFor(b, 16);
-    return 48;
+    return th + 4;
   };
 
   // 1915 Hail and Crafford postcard: red brick, slate turret, columned porch.
@@ -4504,8 +4622,8 @@ export function buildTown(data, scene) {
         }
       }
     };
-    pair(-b.width * 0.18, Math.min(8, b.width * 0.3), 10.5);
-    pair(b.width * 0.24, Math.min(8, b.width * 0.3), 10.5);
+    pair(-b.width * 0.175, Math.min(8.6, b.width * 0.28), 10.6);
+    pair(b.width * 0.255, Math.min(8.6, b.width * 0.28), 10.6);
     paneledDoor(-b.width * 0.42, fz, 2.8, 7.2, false);
     frontSash(b.width * 0.04, 6.6, fz, 2.2, 5.4, "flat");
     frontSash(-b.width * 0.22, 16.4, fz, 2.6, 5.2, "flat");
@@ -5460,6 +5578,353 @@ export function buildTown(data, scene) {
     return top + 14;
   };
 
+  // Semicircular round-arched window with optional mullions & radial head tracery (p.67, p.66).
+  const roundShape = (hw, rectH, Ctor = THREE.Shape) => {
+    const s = new Ctor();
+    s.moveTo(-hw, 0);
+    s.lineTo(hw, 0);
+    s.lineTo(hw, rectH);
+    s.absarc(0, rectH, hw, 0, Math.PI, false);
+    s.lineTo(-hw, 0);
+    return s;
+  };
+  const roundWin = (M, cx, ySill, w, rectH, opt = {}) => {
+    const hw = w / 2;
+    const st = opt.mat || mats.trim;
+    const s = opt.surround ?? 0.45;
+    const lights = opt.lights || 1;
+    const glass = new THREE.ShapeGeometry(roundShape(hw, rectH), 14);
+    glass.translate(cx, ySill, 0.05);
+    fput(M, opt.glass || shopGlass, glass);
+    const outer = roundShape(hw + s, rectH);
+    outer.holes.push(roundShape(hw, rectH, THREE.Path));
+    const ring = new THREE.ExtrudeGeometry(outer, { depth: 0.32, bevelEnabled: false, curveSegments: 14 });
+    feetUV(ring, st);
+    ring.translate(cx, ySill, 0);
+    fput(M, st, ring);
+    fbox(M, st, cx, ySill - 0.22, 0.3, w + s * 2 + 0.4, 0.4, 0.7);
+    if (lights > 1) {
+      const lw = w / lights;
+      fbox(M, st, cx, ySill + rectH, 0.16, w, 0.22, 0.22);
+      for (let k = 1; k < lights; k++) {
+        const u = -hw + lw * k;
+        const headH = Math.sqrt(Math.max(0, hw * hw - u * u));
+        fbox(M, st, cx + u, ySill + (rectH + headH) / 2, 0.16, 0.24, rectH + headH, 0.22);
+      }
+      if (opt.circle) {
+        const cr = hw * 0.38;
+        const cy = ySill + rectH + hw * 0.5;
+        const t = new THREE.TorusGeometry(cr, 0.14, 6, 24);
+        t.translate(cx, cy, 0.18);
+        fput(M, st, t);
+      }
+    }
+    return ySill + rectH + hw;
+  };
+
+  // Original First Presbyterian Church, dedicated 1869 (PDF p.64): cream/white frame
+  // steep gable front, center gabled vestibule, slender left corner pinnacle turret, tall
+  // right corner tower with circular medallions, open gabled belfry, tall spire, and
+  // pointed lancet side windows. Turned to face Hurst in 1903 (1910 stop).
+  const addPresbyterian1869 = (b) => {
+    const body = paintOf(b);
+    const trim = mats.trim;
+    const rf = mats.roofDark;
+    const W = b.width;
+    const D = b.depth;
+    const fz = D / 2;
+
+    // Main nave slightly inset on the right to sit beside the corner tower.
+    const nw = W - 8;
+    const ncx = -4;
+    const nd = D - 4;
+    const nzc = -2;
+    const wallH = 19;
+    const rise = 16;
+    box(body, ncx, wallH / 2, nzc, nw, wallH, nd);
+    box(mats.stone, ncx, 0.8, nzc, nw + 0.6, 1.6, nd + 0.6);
+    gableFrontAt(nw, nd, rise, wallH, rf, ncx, nzc);
+    clapboardTriangle(body, nw, rise * 0.96, wallH, "z", nzc + nd / 2 + 0.02, ncx, 0);
+    clapboardTriangle(body, nw, rise * 0.96, wallH, "z", nzc - nd / 2 - 0.02, ncx, 0);
+    gableCoping(trim, nw + 0.8, rise * 0.96 + 0.3, wallH, nzc + nd / 2 + 0.25, ncx, 0.45);
+    box(trim, ncx, wallH - 0.2, nzc + nd / 2 + 0.15, nw + 0.4, 0.45, 0.35);
+
+    // Left-front corner pinnacle turret with slender spire (p.64).
+    const px = ncx - nw / 2 + 1.2;
+    const pz = nzc + nd / 2 - 1.2;
+    box(body, px, (wallH + 5) / 2, pz, 3.2, wallH + 5, 3.2);
+    box(trim, px, wallH + 5.2, pz, 3.8, 0.5, 3.8);
+    pinnacle(rf, px, wallH + 5.5, pz, 2.2, 8.5);
+    box(mats.trimDark, px, wallH + 14.5, pz, 0.16, 2.2, 0.16);
+
+    // Center gabled entrance vestibule (p.64).
+    const vw = 12;
+    const vd = 5.5;
+    const vzc = nzc + nd / 2 + vd / 2;
+    const vWall = 11.5;
+    const vRise = 7.5;
+    box(body, ncx, vWall / 2, vzc, vw, vWall, vd);
+    box(mats.stone, ncx, 0.8, vzc, vw + 0.5, 1.6, vd + 0.5);
+    gableFrontAt(vw, vd, vRise, vWall, rf, ncx, vzc);
+    clapboardTriangle(body, vw, vRise * 0.96, vWall, "z", vzc + vd / 2 + 0.02, ncx, 0);
+    gableCoping(trim, vw + 0.6, vRise * 0.96 + 0.25, vWall, vzc + vd / 2 + 0.22, ncx, 0.4);
+    const MV = faceM(0, ncx, vzc + vd / 2);
+    gothicWin(MV, 0, 1.4, 4.6, 5.4, { glass: mats.trimDark, surround: 0.45, mat: trim });
+    paneledDoor(ncx - 1.0, vzc + vd / 2 + 0.12, 1.9, 6.2, false);
+    paneledDoor(ncx + 1.0, vzc + vd / 2 + 0.12, 1.9, 6.2, false);
+    box(mats.stone, ncx, 0.45, vzc + vd / 2 + 1.8, 6.4, 0.9, 3.4);
+
+    // Small round louver/medallion high in the front nave gable above the vestibule (p.64).
+    const MF = faceM(0, ncx, nzc + nd / 2);
+    roseWin(MF, 0, 25.0, 1.15, { tube: 0.22, mat: trim, glass: mats.reveal });
+
+    // Tall right-front corner tower with medallions, gabled open belfry, and spire (p.64).
+    const tw = 11.5;
+    const tx = W / 2 - tw / 2;
+    const tz = nzc + nd / 2 - tw / 2 + 2.5;
+    const th = 34;
+    box(body, tx, th / 2, tz, tw, th, tw);
+    box(mats.stone, tx, 0.9, tz, tw + 0.7, 1.8, tw + 0.7);
+    for (const cx of [-tw / 2 + 0.5, tw / 2 - 0.5]) {
+      for (const cz of [-tw / 2 + 0.5, tw / 2 - 0.5]) {
+        box(trim, tx + cx, th / 2, tz + cz, 0.9, th, 0.9);
+      }
+    }
+    for (const y of [15.5, 24.5, 32.8]) box(trim, tx, y, tz, tw + 0.8, 0.6, tw + 0.8);
+    box(trim, tx, th + 0.35, tz, tw + 1.5, 0.7, tw + 1.5);
+    const MTF = faceM(0, tx, tz + tw / 2);
+    const MTR = faceM(Math.PI / 2, tx + tw / 2, tz);
+    gothicWin(MTF, 0, 4.2, 2.8, 6.6, { surround: 0.45, mat: trim });
+    gothicWin(MTR, 0, 4.2, 2.8, 6.6, { surround: 0.45, mat: trim });
+    // Circular medallions on the upper shaft below the belfry (p.64).
+    for (const M of towerFaces(tx, tz, tw / 2)) {
+      roseWin(M, 0, 28.5, 1.35, { tube: 0.25, mat: trim, glass: mats.reveal });
+    }
+    // Open gabled belfry + tall slender spire.
+    const bw = tw - 1.6;
+    const bTop = th + 10.5;
+    box(body, tx, (th + bTop) / 2 + 0.3, tz, bw, bTop - th - 0.6, bw);
+    for (const M of towerFaces(tx, tz, bw / 2)) {
+      gothicWin(M, 0, th + 1.6, 3.2, 4.6, { glass: mats.reveal, surround: 0.4, mat: trim, louvres: true });
+      faceGable(M, body, trim, 0, bTop, bw, 5.4);
+    }
+    box(trim, tx, bTop + 0.15, tz, bw + 0.9, 0.45, bw + 0.9);
+    const bCap = new THREE.ConeGeometry(bw * 0.72, 4.8, 4);
+    bCap.rotateY(Math.PI / 4);
+    bCap.translate(tx, bTop + 2.6, tz);
+    bCap.applyMatrix4(buildingMatrix);
+    put(rf, bCap);
+    for (const px2 of [-1, 1]) for (const pz2 of [-1, 1]) {
+      pinnacle(trim, tx + px2 * (bw / 2 - 0.3), bTop + 0.35, tz + pz2 * (bw / 2 - 0.3), 0.7, 2.6);
+    }
+    const spire = new THREE.ConeGeometry(bw * 0.56, 26, 4);
+    spire.rotateY(Math.PI / 4);
+    spire.translate(tx, bTop + 13.5, tz);
+    spire.applyMatrix4(buildingMatrix);
+    put(rf, spire);
+    box(mats.trimDark, tx, bTop + 28.2, tz, 0.2, 4.0, 0.2);
+    const ball = new THREE.SphereGeometry(0.45, 8, 6);
+    ball.translate(tx, bTop + 27.6, tz);
+    ball.applyMatrix4(buildingMatrix);
+    put(trim, ball);
+
+    // Four pointed lancet windows along both nave sides + rear chimney.
+    const ML = faceM(-Math.PI / 2, ncx - nw / 2, nzc);
+    const MR = faceM(Math.PI / 2, ncx + nw / 2, nzc);
+    for (let i = 0; i < 4; i++) {
+      const u = -nd * 0.32 + i * (nd * 0.2);
+      gothicWin(ML, u, 4.8, 2.3, 6.2, { surround: 0.35, mat: trim });
+      gothicWin(MR, -u, 4.8, 2.3, 6.2, { surround: 0.35, mat: trim });
+    }
+    chimneyStack(mats.brick.red, ncx, wallH + rise - 1, nzc - nd * 0.36, 2.2, 7.5, 2.2);
+    return bTop + 30;
+  };
+
+  // Baptist Church, built 1866 on Crafford (PDF p.66-67): white clapboard gable-front
+  // frame church on a dark raised basement, NO tower, large 3-light round-arched traceried
+  // window left of center, single round-arched window far left, small hip-roofed entrance
+  // vestibule on the right, 4 tall side windows, rear chimney.
+  const addBaptistChurch = (b) => {
+    const body = paintOf(b);
+    const trim = mats.trim;
+    const rf = mats.roofDark;
+    const W = b.width;
+    const D = b.depth;
+    const fz = D / 2;
+    const baseH = 2.2;
+    const wallH = 17.5;
+    const rise = 12.5;
+
+    box(body, 0, wallH / 2 + baseH * 0.5, 0, W, wallH - baseH * 0.5, D);
+    box(mats.brick.dark, 0, baseH / 2, 0, W + 0.5, baseH, D + 0.5);
+    gableFrontAt(W, D, rise, wallH, rf, 0, 0);
+    clapboardTriangle(body, W, rise * 0.96, wallH, "z", fz + 0.02, 0, 0);
+    clapboardTriangle(body, W, rise * 0.96, wallH, "z", -fz - 0.02, 0, 0);
+    // Raking cornice + classical cornice returns (p.67).
+    {
+      const half = W / 2 + 0.6;
+      const r = rise * 0.96 + 0.35;
+      const len = Math.hypot(half, r) + 0.3;
+      const ang = Math.atan2(r, half);
+      for (const sd of [-1, 1]) {
+        const rk = new THREE.BoxGeometry(len, 0.55, 0.55);
+        rk.rotateZ(-sd * ang);
+        rk.translate((sd * half) / 2, wallH + r / 2 + 0.1, fz + 0.3);
+        rk.applyMatrix4(buildingMatrix);
+        put(trim, rk);
+        box(trim, sd * (W / 2 - 1.2), wallH + 0.05, fz + 0.25, 3.2, 0.55, 0.7);
+      }
+    }
+    const MF = faceM(0, 0, fz);
+    // Basement lights under the main front windows.
+    for (const bx of [-12.0, -5.0, 0.5]) {
+      fbox(MF, mats.trimDark, bx, 1.15, 0.28, 2.0, 1.1, 0.1);
+      fbox(MF, trim, bx, 1.15, 0.2, 2.4, 1.4, 0.16);
+    }
+    // Large 3-light round-arched traceried window slightly left of center + single round window far left.
+    roundWin(MF, -2.0, 4.4, 7.6, 5.8, { lights: 3, circle: true, surround: 0.55, mat: trim });
+    roundWin(MF, -12.0, 4.8, 2.7, 5.8, { surround: 0.4, mat: trim });
+
+    // Small hip-roofed entrance vestibule on the right (p.67).
+    const vx = 10.6;
+    const vw = 7.6;
+    const vd = 3.8;
+    const vzc = fz + vd / 2;
+    const vh = 10.2;
+    box(body, vx, vh / 2, vzc, vw, vh, vd);
+    box(mats.brick.dark, vx, baseH / 2, vzc, vw + 0.4, baseH, vd + 0.4);
+    box(trim, vx, vh + 0.15, vzc, vw + 0.9, 0.45, vd + 0.9);
+    trueHip(vw + 0.4, vd + 0.4, 2.4, vh + 0.35, rf, vx, vzc, 0.7);
+    paneledDoor(vx - 1.25, fz + vd + 0.1, 2.3, 7.2, false);
+    paneledDoor(vx + 1.25, fz + vd + 0.1, 2.3, 7.2, false);
+    box(mats.stone, vx, 0.35, fz + vd + 1.8, vw * 0.85, 0.7, 3.4);
+
+    // Four tall side windows + basement lights + rear chimney.
+    for (const side of [-1, 1]) {
+      for (let i = 0; i < 4; i++) {
+        const z = -D * 0.34 + i * (D * 0.22);
+        sideSash(side * (W / 2 + 0.08), 8.6, z, side, 2.5, 7.2, "flat", false, trim);
+        box(mats.trimDark, side * (W / 2 + 0.28), 1.15, z, 0.1, 1.0, 2.0);
+      }
+    }
+    chimneyStack(mats.brick.red, 0, wallH + rise - 1, -D * 0.38, 2.0, 6.5, 2.0);
+    return wallH + rise + 2;
+  };
+
+  // American House, 1855 white frame hotel (PDF p.14 engraving):
+  // Left 3-story gable-front block (AMERICAN HOUSE. painted between 2nd & 3rd floors),
+  // right 2.5-story gable-front wing (2 chimneys, attic louver), continuous full-width
+  // 1-story porch (9 posts, BILLIARD HALL on right fascia) supporting an open-sky
+  // 2nd-story balcony with continuous turned balustrade.
+  const addAmericanHouse = (b) => {
+    const body = paintOf(b);
+    const trim = mats.trim;
+    const rf = mats.roofDark;
+    const W = b.width;
+    const D = b.depth;
+    const fz = D / 2;
+
+    // Left 3-story gable-front block (x: -28 .. -2, w = 26).
+    const lw = 26;
+    const lcx = -W / 2 + lw / 2;
+    const lWall = 29;
+    const lRise = 9.5;
+    box(body, lcx, lWall / 2, 0, lw, lWall, D);
+    box(mats.stone, lcx, 0.45, 0, lw + 0.4, 0.9, D + 0.4);
+    gableFrontAt(lw, D, lRise, lWall, rf, lcx, 0);
+    clapboardTriangle(body, lw, lRise * 0.96, lWall, "z", fz + 0.02, lcx, 0);
+    clapboardTriangle(body, lw, lRise * 0.96, lWall, "z", -fz - 0.02, lcx, 0);
+    gableCoping(trim, lw + 0.8, lRise * 0.96 + 0.3, lWall, fz + 0.25, lcx, 0.45);
+    for (const x of [lcx - lw / 2, lcx + lw / 2]) box(trim, x, lWall / 2, fz + 0.1, 0.4, lWall, 0.28);
+    // 3 bays on 2nd & 3rd floors with shutters (p.14); AMERICAN HOUSE. sits at y = 20.6.
+    for (const x of [lcx - 7.5, lcx, lcx + 7.5]) {
+      frontSash(x, 24.4, fz + 0.08, 2.5, 4.6, "flat", true);
+      frontSash(x, 15.8, fz + 0.08, 2.5, 5.2, "flat", true);
+    }
+    // Ground floor under left porch: corner entry + tall multi-pane shop/parlor windows.
+    paneledDoor(lcx - 9.8, fz + 0.1, 2.5, 7.6, false);
+    for (const x of [lcx - 4.4, lcx + 1.0, lcx + 7.2]) {
+      frontSash(x, 5.6, fz + 0.08, 3.4, 7.2, "flat", false);
+    }
+    chimneyStack(mats.brick.red, lcx + 2, lWall + lRise - 1, -D * 0.18, 2.0, 5.5, 2.0);
+
+    // Right 2.5-story gable-front wing (x: -2 .. +28, w = 30, flush front at fz).
+    const rw = W - lw;
+    const rcx = lcx + lw / 2 + rw / 2;
+    const rDepth = D - 4;
+    const rzc = fz - rDepth / 2;
+    const rWall = 19.5;
+    const rRise = 10.5;
+    box(body, rcx, rWall / 2, rzc, rw, rWall, rDepth);
+    box(mats.stone, rcx, 0.45, rzc, rw + 0.4, 0.9, rDepth + 0.4);
+    gableFrontAt(rw, rDepth, rRise, rWall, rf, rcx, rzc);
+    clapboardTriangle(body, rw, rRise * 0.96, rWall, "z", fz + 0.02, rcx, 0);
+    clapboardTriangle(body, rw, rRise * 0.96, rWall, "z", rzc - rDepth / 2 - 0.02, rcx, 0);
+    gableCoping(trim, rw + 0.8, rRise * 0.96 + 0.3, rWall, fz + 0.25, rcx, 0.45);
+    box(trim, rcx, rWall - 0.15, fz + 0.18, rw + 0.4, 0.45, 0.35);
+    box(trim, rcx + rw / 2, rWall / 2, fz + 0.1, 0.4, rWall, 0.28);
+    // Gable attic shuttered louver + two ridge chimneys (p.14).
+    box(mats.trimDark, rcx, rWall + 4.2, fz + 0.14, 2.2, 4.4, 0.14);
+    box(trim, rcx, rWall + 4.2, fz + 0.08, 2.8, 5.0, 0.12);
+    chimneyStack(mats.brick.red, rcx - 3.5, rWall + rRise - 1, rzc - 8, 2.0, 5.5, 2.0);
+    chimneyStack(mats.brick.red, rcx + 3.5, rWall + rRise - 1, rzc + 8, 2.0, 5.5, 2.0);
+    // 2nd floor bays on right wing: alternating shuttered windows & balcony doors.
+    for (let i = 0; i < 6; i++) {
+      const x = rcx - rw / 2 + 2.8 + (i * (rw - 5.6)) / 5;
+      if (i === 1 || i === 4) {
+        box(trim, x, 14.6, fz + 0.08, 2.5, 6.6, 0.18);
+        box(mats.trimDark, x, 14.6, fz + 0.16, 2.0, 6.1, 0.12);
+        box(mats.glass, x, 15.6, fz + 0.22, 1.4, 2.6, 0.05);
+      }
+      else frontSash(x, 15.6, fz + 0.08, 2.1, 4.8, "flat", i !== 2);
+    }
+    // 1st floor billiard hall front under right porch.
+    paneledDoor(rcx - 1.5, fz + 0.1, 2.6, 7.6, false);
+    for (const x of [rcx - 10.0, rcx - 5.8, rcx + 4.2, rcx + 9.6]) {
+      frontSash(x, 5.6, fz + 0.08, 3.2, 7.2, "flat", false);
+    }
+
+    // Side wall windows on left 3-story wall & right 2.5-story wall.
+    for (const z of [-12, 8]) {
+      sideSash(-W / 2 - 0.08, 15.8, z, -1, 2.2, 4.8, "flat", true);
+      sideSash(-W / 2 - 0.08, 24.4, z, -1, 2.2, 4.4, "flat", true);
+    }
+    for (const z of [-6, 10]) {
+      sideSash(W / 2 + 0.08, 6.2, z, 1, 2.2, 5.0, "flat", true);
+      sideSash(W / 2 + 0.08, 15.6, z, 1, 2.2, 4.6, "flat", true);
+    }
+
+    // Continuous full-width 1st-story porch + open-sky 2nd-story balcony with balustrade.
+    const pd = 7.2;
+    const pzc = fz + pd / 2;
+    const pfz = fz + pd;
+    box(mats.plank, 0, 0.55, pzc, W + 1.2, 0.45, pd + 0.6);
+    box(trim, 0, 10.6, pzc, W + 0.8, 1.1, pd + 0.4);
+    box(mats.plank, 0, 11.2, pzc, W + 0.6, 0.25, pd + 0.2);
+    // 9 slender porch posts across the 56-ft front.
+    for (let i = 0; i < 9; i++) {
+      const px = -W / 2 + 0.8 + ((W - 1.6) * i) / 8;
+      box(trim, px, 5.5, pfz - 0.25, 0.45, 9.6, 0.45);
+    }
+    // 2nd-floor continuous turned balustrade across front + both ends.
+    box(trim, 0, 14.0, pfz - 0.15, W + 0.6, 0.28, 0.34);
+    box(trim, 0, 11.45, pfz - 0.15, W + 0.6, 0.24, 0.3);
+    const balN = 54;
+    for (let i = 0; i <= balN; i++) {
+      const bx = -W / 2 + 0.4 + ((W - 0.8) * i) / balN;
+      box(trim, bx, 12.75, pfz - 0.15, 0.22, 2.4, 0.22);
+    }
+    for (const sx of [-W / 2 + 0.15, W / 2 - 0.15]) {
+      box(trim, sx, 14.0, pzc, 0.34, 0.28, pd);
+      box(trim, sx, 11.45, pzc, 0.3, 0.24, pd);
+      for (let i = 1; i < 7; i++) {
+        box(trim, sx, 12.75, fz + (pd * i) / 7, 0.22, 2.4, 0.22);
+      }
+    }
+    signFor(b, lWall);
+    return lWall + lRise + 2;
+  };
+
   // St. Bernard Catholic Church, brick, built 1906 and dedicated 15 May 1907; burned
   // 20 December 1951 (PDF p.59-60, photograph p.59): gable to the street, a square
   // corner tower with a louvered belfry and a tall spire, round-arched windows.
@@ -6036,6 +6501,7 @@ export function buildTown(data, scene) {
       b.facade?.engineHouse || b.facade?.cityHall || b.facade?.westSide1897 || b.facade?.flatSchool ||
       b.facade?.stBernard1907 || b.facade?.stBernard1953 || b.facade?.fireHouse1953 ||
       b.facade?.methodist1884 || b.facade?.methodist1925 || b.facade?.stBernardRectory ||
+      b.facade?.presbyterian1869 || b.facade?.presbyterian1917 || b.facade?.baptist1866 || b.facade?.americanHouse ||
       b.id === "presbyterian-church-1917" || b.id === "junction-depot" || b.id === "hurst-crossing-shanty" ||
       b.id === "hendee-house-26" || b.id === "hendee-store-22"
     );
@@ -6072,6 +6538,10 @@ export function buildTown(data, scene) {
     else if (b.facade?.methodist1884) height = addMethodist1884(b);
     else if (b.facade?.methodist1925) height = addMethodist1925(b);
     else if (b.facade?.stBernardRectory) height = addStBernardRectory(b);
+    else if (b.facade?.presbyterian1869) height = addPresbyterian1869(b);
+    else if (b.facade?.presbyterian1917) height = addGothicChurch(b);
+    else if (b.facade?.baptist1866) height = addBaptistChurch(b);
+    else if (b.facade?.americanHouse) height = addAmericanHouse(b);
     else if (b.kind === "house") height = addHouse(b);
     else if (b.id === "hendee-store-22") height = addHendeeStore(b);
     else if (b.id === "hendee-house-26") height = addHendeeHouse(b);

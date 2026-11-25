@@ -63,27 +63,90 @@
         "sourcePhoto": "public/photos/funeral-home-2010.png",
         "photoDate": "2010",
         "citation": "photo from Mark, 771 N. Crafford St., 2010",
-        "camera": { "year": 1970, "x": 1084, "z": 598, "lx": 1130, "lz": 518, "fov": 36, "pitch": 0.14, "eye": 5.6 },
+        "camera": {
+          "year": 1970,
+          "x": 1084,
+          "z": 598,
+          "lx": 1130,
+          "lz": 518,
+          "fov": 36,
+          "pitch": 0.14,
+          "eye": 5.6
+        },
         "front": [
-          { "id": "left-gable", "width": 14, "note": "Projecting gable bay. Two arched windows in the gable. About 14 feet." },
-          { "id": "center", "width": 16, "note": "Paired windows on both floors. About 16 feet." },
-          { "id": "right", "width": 16, "note": "Window bay with the center-right porch and the steps at its outer end. About 16 feet." }
+          {
+            "id": "left-gable",
+            "width": 14,
+            "note": "Projecting gable bay. Two arched windows in the gable. About 14 feet."
+          },
+          {
+            "id": "center",
+            "width": 16,
+            "note": "Paired windows on both floors. About 16 feet."
+          },
+          {
+            "id": "right",
+            "width": 16,
+            "note": "Window bay with the center-right porch and the steps at its outer end. About 16 feet."
+          }
         ],
-        "estimates": ["No year-built was found. The house is first drawn at the 1920 stop.", "No Sanborn footprint was matched. The footprint is the photograph.", "The left gable, the two porches, and the hedge are traced from the 2010 photograph. The column count is an estimate."],
+        "estimates": [
+          "No year-built was found. The house is first drawn at the 1920 stop.",
+          "No Sanborn footprint was matched. The footprint is the photograph.",
+          "The left gable, the two porches, and the hedge are traced from the 2010 photograph. The column count is an estimate."
+        ],
         "wall": "#8d3a32",
         "wallKind": "brick",
         "trim": "#f4efe4",
-        "floors": [12, 12],
+        "floors": [
+          12,
+          12
+        ],
         "cornice": "bracket",
         "bays": [
-          { "width": 12, "windows": ["sash", "sash"] },
-          { "width": 16, "windows": ["door", "pair-arch"] },
-          { "width": 12, "windows": ["sash", "sash"] }
+          {
+            "width": 12,
+            "windows": [
+              "sash",
+              "sash"
+            ]
+          },
+          {
+            "width": 16,
+            "windows": [
+              "door",
+              "pair-arch"
+            ]
+          },
+          {
+            "width": 12,
+            "windows": [
+              "sash",
+              "sash"
+            ]
+          }
         ],
-        "roof": { "type": "hip", "kind": "shingle", "color": "#c4a86a", "rise": 11 },
-        "dormer": { "width": 15, "windows": 2, "rise": 6.2 },
-        "porch": { "width": 28, "depth": 9, "columns": true, "doorX": -2 },
-        "hedge": { "z": 18, "count": 16 },
+        "roof": {
+          "type": "hip",
+          "kind": "shingle",
+          "color": "#c4a86a",
+          "rise": 11
+        },
+        "dormer": {
+          "width": 15,
+          "windows": 2,
+          "rise": 6.2
+        },
+        "porch": {
+          "width": 28,
+          "depth": 9,
+          "columns": true,
+          "doorX": -2
+        },
+        "hedge": {
+          "z": 18,
+          "count": 16
+        },
         "chimney": true,
         "signs": []
       },
@@ -103,7 +166,7 @@
       "x": -520,
       "z": 420,
       "facing": "+x",
-      "sign": "PRESBYTERIAN",
+      "sign": "",
       "confidence": "sourced",
       "year": "1917",
       "porch": false,
@@ -113,17 +176,26 @@
       "rotation": 0,
       "sourceMap": "Centennial book, 1854–1954; Mark's postcard",
       "facade": {
+        "presbyterian1917": true,
         "photoMatch": true,
-        "photoSource": "Postcard captioned First Presbyterian Church, Bushnell, Ill."
+        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.66; postcard captioned First Presbyterian Church, Bushnell, Ill."
       },
       "facadeSpec": {
         "sourcePhoto": "public/photos/first-presbyterian-hurst.png",
         "photoDate": "postcard",
         "citation": "Postcard captioned First Presbyterian Church, Bushnell, Ill.",
-        "camera": { "year": 1920, "x": -455, "z": -420, "lx": -540, "lz": -420, "fov": 46, "pitch": -0.08 },
+        "camera": {
+          "year": 1920,
+          "x": -455,
+          "z": -420,
+          "lx": -540,
+          "lz": -420,
+          "fov": 46,
+          "pitch": -0.08
+        },
         "estimates": []
       },
-      "notes": "The congregation's building was dedicated in 1869 on this ground and is the plainer church drawn through 1910. In May 1903 the old church, which faced north, was turned to face west on the corner lot, and dedicated again on 3 January 1904. The centennial book says the building was enlarged to its present size beginning in the spring of 1917, the Smith Memorial Hall work having started in the summer of 1916. The crenellated tower, pointed windows, and cross gables are that enlarged church, from Mark's postcard. The model has no 1917 stop, so the new front appears at the 1920 stop, the first one after the enlargement. The earlier building stays through 1910."
+      "notes": "The congregation's building was dedicated in 1869 on this ground and is the plainer church drawn through 1910. In May 1903 the old church, which faced north, was turned to face west on the corner lot, and dedicated again on 3 January 1904. The centennial book says the building was enlarged to its present size beginning in the spring of 1917, the Smith Memorial Hall work having started in the summer of 1916. The crenellated tower, pointed windows, and cross gables are that enlarged church, from Mark's postcard. The model has no 1917 stop, so the new front appears at the 1920 stop, the first one after the enlargement. The earlier building stays through 1910. Rebuilt in Round 8 from Mark's postcard and centennial book p.66: left 2-story gabled Smith Memorial Hall wing with basement lights and wide stained-glass gable windows, central crenellated brick tower with entrance canopy, triple middle windows and louvered belfry, and right gabled sanctuary wing with 3-light pointed stained-glass window."
     }
   ],
   "streets": [

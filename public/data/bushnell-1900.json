@@ -146,8 +146,18 @@
         "sourcePhoto": "public/photos/truman-pioneer-stud-farm.png",
         "photoDate": "postcard",
         "citation": "Mark's illustrated postcard, Trumans' Pioneer Stud Farm",
-        "camera": { "year": 1910, "x": -8640, "z": 310, "lx": -8720, "lz": 420, "fov": 40, "pitch": -0.04 },
-        "estimates": ["The footprint is an estimate from the postcard."]
+        "camera": {
+          "year": 1910,
+          "x": -8640,
+          "z": 310,
+          "lx": -8720,
+          "lz": 420,
+          "fov": 40,
+          "pitch": -0.04
+        },
+        "estimates": [
+          "The footprint is an estimate from the postcard."
+        ]
       },
       "kind": "barn",
       "use": "horse barn",
@@ -308,9 +318,9 @@
       "use": "fire station",
       "material": "frame",
       "stories": 2,
-      "width": 26,
+      "width": 34,
       "depth": 44,
-      "x": 249,
+      "x": 251.5,
       "z": -213,
       "facing": "+z",
       "paint": "white",
@@ -333,25 +343,25 @@
           {
             "text": "BUSHNELL",
             "face": "front",
-            "y": 13.1,
-            "along": -2.5,
-            "width": 7,
-            "height": 1.3,
+            "y": 14.3,
+            "along": 0.0,
+            "width": 9.2,
+            "height": 1.5,
             "style": "wallDark"
           },
           {
             "text": "FIRE DEPARTMENT",
             "face": "front",
-            "y": 11.3,
-            "along": -0.5,
-            "width": 21,
-            "height": 2.2,
+            "y": 11.8,
+            "along": 0.4,
+            "width": 28.5,
+            "height": 2.4,
             "style": "wallDark"
           }
         ]
       },
       "sourceMap": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.125",
-      "notes": "Centennial book PDF p.125: a frame, gable-front engine house with large double doors, the painted name BUSHNELL FIRE DEPARTMENT, and an open belfry with a bell on the ridge, beside the brick City Hall (to its left in the photograph, on the Ball Bros. side). Replaces the one-story brick hose tower that was drawn from the 1910 stop as an estimate. Drawn from the 1900 stop (estimate; p.125 says the department became a city department in 1891). The book says the new fire house at Hurst and Dean was built in the past two years (p.125, printed 1954), so the fire sign comes off at the 1960 stop (estimate). Dimensions are estimates from the photograph."
+      "notes": "Centennial book PDF p.125: a frame, gable-front engine house with large double doors, the painted name BUSHNELL FIRE DEPARTMENT, and an open belfry with a bell on the ridge, beside the brick City Hall (to its left in the photograph, on the Ball Bros. side). Replaces the one-story brick hose tower that was drawn from the 1910 stop as an estimate. Drawn from the 1900 stop (estimate; p.125 says the department became a city department in 1891). The book says the new fire house at Hurst and Dean was built in the past two years (p.125, printed 1954), so the fire sign comes off at the 1960 stop (estimate). Dimensions are estimates from the photograph. Widened from 26 ft to 34 ft (x: 251.5) in Round 8 to sit tightly beside the 36-ft City Hall (0.5 ft clear of City Hall, 1.5 ft clear of Ball Bros., collision-neutral)."
     },
     {
       "id": "west-side-school-1897",
@@ -390,7 +400,9 @@
       "sign": "",
       "x": 300,
       "width": 60,
-      "party": ["right"],
+      "party": [
+        "right"
+      ],
       "year": "1895",
       "facade": {
         "ballCream": true,
@@ -404,25 +416,82 @@
         "sourcePhoto": "public/photos/ball-bros-590-e-main-2010.png",
         "photoDate": "2010",
         "citation": "photo from Mark, 590 E Main St, 2010",
-        "camera": { "year": 1970, "x": 296, "z": 114, "lx": 318, "lz": 200, "fov": 50, "pitch": 0.04, "eye": 5.25 },
-        "estimates": ["Showing the cream front from the 1900 stop is an estimate. A 1907 biography dates the Main Street building then standing to 1895. The photograph does not date the front."],
+        "camera": {
+          "year": 1970,
+          "x": 296,
+          "z": 114,
+          "lx": 318,
+          "lz": 200,
+          "fov": 50,
+          "pitch": 0.04,
+          "eye": 5.25
+        },
+        "estimates": [
+          "Showing the cream front from the 1900 stop is an estimate. A 1907 biography dates the Main Street building then standing to 1895. The photograph does not date the front."
+        ],
         "wall": "#f3ead8",
         "wallKind": "clapboard",
         "trim": "#f7f1e6",
         "pilasters": "#8d3a32",
-        "floors": [12, 12],
-        "cornice": "bracket",
-        "pediment": { "width": 0.5, "rise": 5.2, "x": -4 },
-        "bays": [
-          { "width": 8, "windows": ["storefront", "flat"] },
-          { "width": 8, "windows": ["storefront", "flat"] },
-          { "width": 8, "windows": ["storefront", "flat"] }
+        "floors": [
+          12,
+          12
         ],
-        "storefront": { "frame": "#f4efe4", "height": 9.2 },
-        "roof": { "type": "curved", "kind": "shingle", "color": "#f4efe4", "x": 8, "radius": 4.2 },
+        "cornice": "bracket",
+        "pediment": {
+          "width": 0.5,
+          "rise": 5.2,
+          "x": -4
+        },
+        "bays": [
+          {
+            "width": 8,
+            "windows": [
+              "storefront",
+              "flat"
+            ]
+          },
+          {
+            "width": 8,
+            "windows": [
+              "storefront",
+              "flat"
+            ]
+          },
+          {
+            "width": 8,
+            "windows": [
+              "storefront",
+              "flat"
+            ]
+          }
+        ],
+        "storefront": {
+          "frame": "#f4efe4",
+          "height": 9.2
+        },
+        "roof": {
+          "type": "curved",
+          "kind": "shingle",
+          "color": "#f4efe4",
+          "x": 8,
+          "radius": 4.2
+        },
         "signs": [
-          { "text": "BALL BROS", "x": -4, "y": 30, "width": 9, "from": 1900 },
-          { "text": "CARRIAGE", "x": 8, "y": 18, "width": 7, "from": 1900 }
+          {
+            "text": "BALL BROS",
+            "x": -4,
+            "y": 30,
+            "width": 9,
+            "from": 1900
+          },
+          {
+            "text": "CARRIAGE",
+            "x": 8,
+            "y": 18,
+            "width": 7,
+            "from": 1900
+          }
         ]
       },
       "sourceMap": "photo from Mark, 590 E Main St, 2010",
@@ -440,7 +509,9 @@
       "width": 56,
       "depth": 84,
       "stories": 2,
-      "party": ["left"],
+      "party": [
+        "left"
+      ],
       "facade": {
         "mcpCorner": true,
         "photoMatch": true,
@@ -451,25 +522,80 @@
         "sourcePhoto": "public/photos/e-main-500-north-end-mcp-2010.png",
         "photoDate": "2010",
         "citation": "photo from Mark, 2010",
-        "camera": { "year": 1970, "x": 408, "z": 156, "lx": 368, "lz": 194, "fov": 54, "pitch": 0.14, "eye": 5.25 },
-        "estimates": ["No Sanborn label dated this front. It is drawn from the 1900 stop, with the cream Ball Bros. front. That year is an estimate."],
+        "camera": {
+          "year": 1970,
+          "x": 408,
+          "z": 156,
+          "lx": 368,
+          "lz": 194,
+          "fov": 54,
+          "pitch": 0.14,
+          "eye": 5.25
+        },
+        "estimates": [
+          "No Sanborn label dated this front. It is drawn from the 1900 stop, with the cream Ball Bros. front. That year is an estimate."
+        ],
         "wall": "#9a4034",
         "wallKind": "brick",
         "trim": "#f4efe4",
-        "floors": [13, 13],
-        "cornice": "bracket",
-        "parapet": { "finial": { "color": "#8d3a32", "x": 2 } },
-        "bays": [
-          { "width": 14, "windows": ["storefront", "round"] },
-          { "width": 14, "windows": ["storefront", "round"] },
-          { "width": 14, "windows": ["storefront", "round"] },
-          { "width": 14, "windows": ["storefront", "round"] }
+        "floors": [
+          13,
+          13
         ],
-        "storefront": { "frame": "#f4efe4", "height": 9 },
+        "cornice": "bracket",
+        "parapet": {
+          "finial": {
+            "color": "#8d3a32",
+            "x": 2
+          }
+        },
+        "bays": [
+          {
+            "width": 14,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          },
+          {
+            "width": 14,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          },
+          {
+            "width": 14,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          },
+          {
+            "width": 14,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          }
+        ],
+        "storefront": {
+          "frame": "#f4efe4",
+          "height": 9
+        },
         "medallions": [
-          { "text": "M", "x": 18 },
-          { "text": "C", "x": 4 },
-          { "text": "P", "x": -10 }
+          {
+            "text": "M",
+            "x": 18
+          },
+          {
+            "text": "C",
+            "x": 4
+          },
+          {
+            "text": "P",
+            "x": -10
+          }
         ],
         "signs": []
       },
@@ -543,20 +669,60 @@
         "sourcePhoto": "public/photos/e-main-400-south-end-2010.png",
         "photoDate": "2010",
         "citation": "photo from Mark, E Main 400 block south end, 2010",
-        "camera": { "year": 1970, "x": -352, "z": 148, "lx": -352, "lz": 215, "fov": 64, "pitch": 0.14, "eye": 5.2 },
-        "estimates": ["The green paint, the pent roof, and the brick base are the 2010 photograph and are not drawn before 1970."],
+        "camera": {
+          "year": 1970,
+          "x": -352,
+          "z": 148,
+          "lx": -352,
+          "lz": 215,
+          "fov": 64,
+          "pitch": 0.14,
+          "eye": 5.2
+        },
+        "estimates": [
+          "The green paint, the pent roof, and the brick base are the 2010 photograph and are not drawn before 1970."
+        ],
         "wall": "#7d332c",
         "wallKind": "brick",
         "trim": "#f4efe4",
-        "floors": [12, 12],
+        "floors": [
+          12,
+          12
+        ],
         "cornice": "corbel",
         "bays": [
-          { "width": 12, "windows": ["storefront", "round"] },
-          { "width": 12, "windows": ["storefront", "round"] },
-          { "width": 12, "windows": ["storefront", "round"] }
+          {
+            "width": 12,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          },
+          {
+            "width": 12,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          },
+          {
+            "width": 12,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          }
         ],
-        "storefront": { "frame": "#f4efe4", "height": 9 },
-        "alterations": [{ "from": 1970, "wall": "#8a9a72" }],
+        "storefront": {
+          "frame": "#f4efe4",
+          "height": 9
+        },
+        "alterations": [
+          {
+            "from": 1970,
+            "wall": "#8a9a72"
+          }
+        ],
         "signs": []
       },
       "notes": "Facade matched to Mark's 1907 photograph of the 400 block of East Main, Hurst to Hail, the Crafford side. Round arches, a corbelled and bracketed cornice, an awning, and sidewalk posts are from that picture. The lot within the block is an estimate. The January 1886 Sanborn already shows storefronts along this side. photo from Mark, E Main 400 block south end, 2010, shows this next front north of the Hurst corner with three upstairs windows under white hoods and the same corbelled cornice. The green paint is the 2010 photograph and is not drawn in this year.",
@@ -895,18 +1061,47 @@
         "sourcePhoto": "public/photos/e-main-400-south-end-2010.png",
         "photoDate": "2010",
         "citation": "photo from Mark, E Main 400 block south end, 2010",
-        "camera": { "year": 1970, "x": -352, "z": 148, "lx": -352, "lz": 215, "fov": 64, "pitch": 0.14, "eye": 5.2 },
-        "estimates": ["No name on this front was read. The 2010 glass storefront is drawn at the 1970 stop."],
+        "camera": {
+          "year": 1970,
+          "x": -352,
+          "z": 148,
+          "lx": -352,
+          "lz": 215,
+          "fov": 64,
+          "pitch": 0.14,
+          "eye": 5.2
+        },
+        "estimates": [
+          "No name on this front was read. The 2010 glass storefront is drawn at the 1970 stop."
+        ],
         "wall": "#c9c2b6",
         "wallKind": "clapboard",
         "trim": "#f4efe4",
-        "floors": [11, 11],
+        "floors": [
+          11,
+          11
+        ],
         "cornice": "plain",
         "bays": [
-          { "width": 12, "windows": ["storefront", "round"] },
-          { "width": 12, "windows": ["storefront", "round"] }
+          {
+            "width": 12,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          },
+          {
+            "width": 12,
+            "windows": [
+              "storefront",
+              "round"
+            ]
+          }
         ],
-        "storefront": { "frame": "#f4efe4", "height": 8.6 },
+        "storefront": {
+          "frame": "#f4efe4",
+          "height": 8.6
+        },
         "signs": []
       },
       "notes": "photo from Mark, E Main 400 block south end, 2010. The third front north of the Hurst corner is the gray-white front with two arched hoods. No Sanborn label was read for this door, and the 1907 photograph was not used to name it. The earlier frame storefront stays. The modern ground floor is the 2010 photograph and is not drawn in this year.",
