@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { worldToPlat } from "./orient.js";
 import {
   makeHeadGeo,
   makeEyeWhitesGeo,
@@ -118,6 +119,106 @@ function lipToneFor(skinHex) {
   return `#${c.getHexString()}`;
 }
 
+function colorDist2(a, b) {
+  const ca = new THREE.Color(a);
+  const cb = new THREE.Color(b);
+  const dr = ca.r - cb.r;
+  const dg = ca.g - cb.g;
+  const db = ca.b - cb.b;
+  return dr * dr + dg * dg + db * db;
+}
+
+function isSkinLike(hex, skin = null) {
+  if (skin && colorDist2(hex, skin) < 0.012) return true;
+  return SKIN_TONES.some((tone) => colorDist2(hex, tone) < 0.007);
+}
+
+const SAFE_SHIRTS = ["#d8d2c4", "#7d93a8", "#6a7b5c", "#8b5a4a", "#4f6270", "#eae5da", "#6e8aa4", "#7a8b68"];
+
+function shiftHex(hex, turns, rng) {
+  const c = new THREE.Color(hex);
+  const hsl = { h: 0, s: 0, l: 0 };
+  c.getHSL(hsl);
+  hsl.h = (hsl.h + turns + rng() * 0.06) % 1;
+  if (hsl.h < 0) hsl.h += 1;
+  // Keep cloth out of the skin value range if it drifted toward pale peach
+  if (hsl.s < 0.12) hsl.s = 0.18;
+  c.setHSL(hsl.h, hsl.s, hsl.l);
+  return `#${c.getHexString()}`;
+}
+
+function ensureClothed(profile) {
+  const clothEqualsTorso = profile.sleeveColor === profile.torsoColor;
+  const dressMatched = profile.skirtKind !== "none" && profile.skirtKind !== "short" && profile.skirtColor === profile.torsoColor;
+  if (isSkinLike(profile.torsoColor, profile.skin)) {
+    const safe = SAFE_SHIRTS.filter((c) => !isSkinLike(c, profile.skin));
+    profile.torsoColor = safe[Math.floor((profile.hScale * 97) % safe.length)];
+    if (clothEqualsTorso) profile.sleeveColor = profile.torsoColor;
+    if (dressMatched) profile.skirtColor = profile.torsoColor;
+  }
+  if (isSkinLike(profile.sleeveColor, profile.skin)) {
+    profile.sleeveColor = isSkinLike(profile.torsoColor, profile.skin) ? SAFE_SHIRTS[0] : profile.torsoColor;
+  }
+}
+
+function ensureNeighborVariety(actors, rng) {
+  const poses = ["casual", "hip", "folded", "chatting"];
+  const hatSwap = {
+    cloche: "none",
+    none: "cloche",
+    boater: "fedora",
+    fedora: "boater",
+    bowler: "boater",
+    wide: "cap",
+    cap: "wide",
+    bonnet: "edwardian",
+    edwardian: "bonnet",
+    tophat: "wide",
+  };
+  const done = [];
+  for (const a of actors) {
+    const near = done.filter((b) => Math.hypot(a.x - b.x, a.z - b.z) < 16);
+    const p = a.profile;
+    if (near.some((b) => b.poseType === a.poseType)) {
+      const used = new Set(near.map((b) => b.poseType));
+      const free = poses.filter((pose) => !used.has(pose));
+      if (free.length) a.poseType = pick(free, rng);
+    }
+    const clothClash = (color) =>
+      near.some(
+        (b) => colorDist2(b.profile.torsoColor, color) < 0.03 && colorDist2(b.profile.skirtColor, p.skirtColor) < 0.03,
+      );
+    if (clothClash(p.torsoColor)) {
+      const sleeveFollows = p.sleeveColor === p.torsoColor;
+      const dressFollows = (p.skirtKind === "full" || p.skirtKind === "mid" || p.skirtKind === "bustle") && p.skirtColor === p.torsoColor;
+      let next = shiftHex(p.torsoColor, 0.18, rng);
+      for (let k = 0; k < 12 && (clothClash(next) || isSkinLike(next, p.skin)); k++) {
+        next = shiftHex(next, 0.14, rng);
+      }
+      p.torsoColor = next;
+      if (sleeveFollows) p.sleeveColor = next;
+      if (dressFollows) p.skirtColor = next;
+      else if (p.skirtKind === "short") {
+        const skirtClash = near.some((b) => colorDist2(b.profile.skirtColor, p.skirtColor) < 0.03);
+        if (skirtClash) p.skirtColor = shiftHex(p.skirtColor, 0.18, rng);
+      }
+    }
+    const hatClash = near.find(
+      (b) => b.profile.hatStyle === p.hatStyle && colorDist2(b.profile.hatColor, p.hatColor) < 0.025,
+    );
+    if (hatClash) {
+      const alt = hatSwap[p.hatStyle];
+      if (alt && !near.some((b) => b.profile.hatStyle === alt)) {
+        p.hatStyle = alt;
+      } else {
+        p.hatColor = shiftHex(p.hatColor, 0.2, rng);
+      }
+    }
+    done.push(a);
+  }
+}
+
+
 function dressProfile(era, role, rng) {
   // role: "man" | "woman" | "farmer" | "boy" | "girl"
   const skin = pick(SKIN_TONES, rng);
@@ -127,7 +228,7 @@ function dressProfile(era, role, rng) {
   const buildW = 0.90 + rng() * 0.22; // slender -> stocky build variation
 
   if (role === "farmer") {
-    const shirt = pick(["#b7c2cb", "#d6ceb8", "#97a693", "#c4b296", "#b6947f"], rng);
+    const shirt = pick(["#b7c2cb", "#d6ceb8", "#97a693", "#c4b296", "#7a8fa0"], rng);
     const denim = pick(["#384c68", "#415776", "#4e565f", "#5a4f43"], rng);
     const hatColor = era === "pioneer" ? "#6c563f" : era === "jazz" ? "#cbb47d" : "#6b645a";
     const hatStyle = era === "pioneer" ? "wide" : era === "midcentury" ? "cap" : rng() < 0.6 ? "wide" : "cap";
@@ -166,7 +267,7 @@ function dressProfile(era, role, rng) {
   if (role === "boy" || role === "girl") {
     const hScale = 0.64 + rng() * 0.16;
     if (role === "boy") {
-      const shirt = pick(["#ccc4b2", "#8ba0b3", "#a28870", "#c78b6e", "#7d8d78"], rng);
+      const shirt = pick(["#d8d2c4", "#7d93a8", "#6a7b5c", "#8b5a4a", "#4f6270"], rng);
       const pants = pick(["#453f38", "#3a4554", "#594c3d", "#505459"], rng);
       const hatStyle = era === "pioneer" ? "wide" : era === "midcentury" ? "none" : rng() < 0.55 ? "cap" : "none";
       return {
@@ -387,7 +488,7 @@ function dressProfile(era, role, rng) {
     }
 
     // midcentury 1950-1970+
-    const shirt = pick(["#eae5da", "#6e8aa4", "#c46a5a", "#7a8b68", "#d6c278", "#5d6d7c", "#c4a882"], rng);
+    const shirt = pick(["#eae5da", "#6e8aa4", "#c46a5a", "#7a8b68", "#d6c278", "#5d6d7c", "#c4b896"], rng);
     const slacks = pick(["#42474e", "#5b5346", "#353a41", "#6c655a"], rng);
     const hatStyle = rng() < 0.22 ? "fedora" : rng() < 0.36 ? "cap" : "none";
     return {
@@ -601,7 +702,7 @@ function dressProfile(era, role, rng) {
   }
 
   // midcentury 1950-1970+
-  const blouse = pick(["#eae5da", "#6e8aa4", "#c46a5a", "#7a8b68", "#d8c47a", "#c4a882"], rng);
+  const blouse = pick(["#eae5da", "#6e8aa4", "#c46a5a", "#7a8b68", "#d8c47a", "#c4b896"], rng);
   const skirt = pick(["#49525c", "#6c5a4d", "#4c5c4e", "#6b474d", "#3d424a"], rng);
   return {
     role,
@@ -1023,6 +1124,10 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
     }
   }
 
+  const varietyRng = makeRng(year * 977 + 131 + 17);
+  for (const a of actors) ensureClothed(a.profile);
+  ensureNeighborVariety(actors, varietyRng);
+
   const count = actors.length;
   if (!count) return null;
 
@@ -1047,82 +1152,90 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
   });
 
   const parts = [];
-  const makePart = (geo, mat = matCloth, shadow = true) => {
-    const slotOf = new Int16Array(count).fill(-1);
-    const colors = [];
-    const part = { geo, mat, shadow, slotOf, colors, mesh: null };
+  // farOk: part is drawn at the far LOD (beyond ~60 ft). Facial/trim details stay close-only.
+  const makePart = (geoHi, geoLo = null, mat = matCloth, shadow = true, farOk = true) => {
+    const used = new Int8Array(count);
+    const colorOf = new Array(count);
+    const part = { geoHi, geoLo, mat, shadow, farOk, used, colorOf, meshHi: null, meshLo: null, hiN: 0, loN: 0 };
     parts.push(part);
     return part;
   };
   const bind = (part, i, color) => {
-    part.slotOf[i] = part.colors.length;
-    part.colors.push(new THREE.Color(color));
+    part.used[i] = 1;
+    part.colorOf[i] = new THREE.Color(color);
   };
 
   // Head & Face
-  const heads = makePart(makeHeadGeo(), matSkin);
-  const eyeWhites = makePart(makeEyeWhitesGeo(), matTrim, false);
-  const irises = makePart(makeIrisesGeo(), matTrim, false);
-  const brows = makePart(makeBrowsGeo(), matCloth, false);
-  const mouths = makePart(makeMouthGeo(), matCloth, false);
-  const beards = makePart(makeBeardGeo(), matCloth, false);
-  const necks = makePart(makeNeckGeo(), matSkin);
-  const hairBases = makePart(makeHairBaseGeo());
-  const hairBuns = makePart(makeHairBunGeo(), matCloth, false);
-  const hairBobs = makePart(makeHairSideBobGeo(), matCloth, false);
+  const heads = makePart(makeHeadGeo("hi"), makeHeadGeo("lo"), matSkin);
+  const eyeWhites = makePart(makeEyeWhitesGeo(), null, matTrim, false, false);
+  const irises = makePart(makeIrisesGeo(), null, matTrim, false, false);
+  const brows = makePart(makeBrowsGeo(), null, matCloth, false, false);
+  const mouths = makePart(makeMouthGeo(), null, matCloth, false, false);
+  const beards = makePart(makeBeardGeo("hi"), makeBeardGeo("lo"), matCloth, false);
+  const necks = makePart(makeNeckGeo("hi"), makeNeckGeo("lo"), matSkin);
+  const hairBases = makePart(makeHairBaseGeo("hi"), makeHairBaseGeo("lo"));
+  const hairBuns = makePart(makeHairBunGeo("hi"), makeHairBunGeo("lo"), matCloth, false);
+  const hairBobs = makePart(makeHairSideBobGeo("hi"), makeHairSideBobGeo("lo"), matCloth, false);
 
   // Torsos & Tailoring
-  const torsosMen = makePart(makeTorsoMenGeo());
-  const torsosShirt = makePart(makeTorsoShirtGeo());
-  const torsosWomen = makePart(makeTorsoWomenGeo());
-  const pelvises = makePart(makePelvisGeo());
-  const coatTails = makePart(makeCoatTailGeo());
-  const shirtFronts = makePart(makeShirtFrontGeo(), matCloth, false);
-  const womanCollars = makePart(makeWomanCollarGeo(), matCloth, false);
-  const lapels = makePart(makeLapelsGeo(), matCloth, false);
-  const ties = makePart(makeTieGeo(), matCloth, false);
-  const vests = makePart(makeVestGeo(), matCloth, false);
-  const overallsBibs = makePart(makeOverallsBibGeo(), matCloth, false);
-  const shawls = makePart(makeShawlGeo());
+  const torsosMen = makePart(makeTorsoMenGeo("hi"), makeTorsoMenGeo("lo"));
+  const torsosShirt = makePart(makeTorsoShirtGeo("hi"), makeTorsoShirtGeo("lo"));
+  const torsosWomen = makePart(makeTorsoWomenGeo("hi"), makeTorsoWomenGeo("lo"));
+  const pelvises = makePart(makePelvisGeo("hi"), makePelvisGeo("lo"));
+  const coatTails = makePart(makeCoatTailGeo("hi"), makeCoatTailGeo("lo"));
+  const shirtFronts = makePart(makeShirtFrontGeo(), null, matCloth, false, false);
+  const womanCollars = makePart(makeWomanCollarGeo(), null, matCloth, false, false);
+  const lapels = makePart(makeLapelsGeo(), null, matCloth, false, false);
+  const ties = makePart(makeTieGeo(), null, matCloth, false, false);
+  const vests = makePart(makeVestGeo("hi"), makeVestGeo("lo"), matCloth, false);
+  const overallsBibs = makePart(makeOverallsBibGeo("hi"), makeOverallsBibGeo("lo"), matCloth, false);
+  const shawls = makePart(makeShawlGeo("hi"), makeShawlGeo("lo"));
 
   // Skirts
-  const skirtsFull = makePart(makeSkirtFullGeo());
-  const skirtsBustle = makePart(makeSkirtBustleGeo());
-  const skirtsMid = makePart(makeSkirtMidGeo());
-  const skirtsShort = makePart(makeSkirtShortGeo());
+  const skirtsFull = makePart(makeSkirtFullGeo("hi"), makeSkirtFullGeo("lo"));
+  const skirtsBustle = makePart(makeSkirtBustleGeo("hi"), makeSkirtBustleGeo("lo"));
+  const skirtsMid = makePart(makeSkirtMidGeo("hi"), makeSkirtMidGeo("lo"));
+  const skirtsShort = makePart(makeSkirtShortGeo("hi"), makeSkirtShortGeo("lo"));
 
   // Articulated 2-segment Limbs, Hands & Shoes
-  const thighGeo = makeThighGeo();
-  const calfGeo = makeCalfGeo();
-  const shoeGeo = makeShoeGeo();
-  const uArmGeo = makeUpperArmGeo();
-  const fArmGeo = makeForearmGeo();
-  const handGeo = makeHandGeo();
-  const puffGeo = makePuffSleeveGeo();
+  const thighHi = makeThighGeo("hi");
+  const thighLo = makeThighGeo("lo");
+  const calfHi = makeCalfGeo("hi");
+  const calfLo = makeCalfGeo("lo");
+  const shoeHi = makeShoeGeo("hi");
+  const shoeLo = makeShoeGeo("lo");
+  const uArmHi = makeUpperArmGeo("hi");
+  const uArmLo = makeUpperArmGeo("lo");
+  const fArmHi = makeForearmGeo("hi");
+  const fArmLo = makeForearmGeo("lo");
+  const handHi = makeHandGeo("hi");
+  const handLo = makeHandGeo("lo");
+  const puffHi = makePuffSleeveGeo("hi");
+  const puffLo = makePuffSleeveGeo("lo");
 
-  const thighsL = makePart(thighGeo);
-  const thighsR = makePart(thighGeo);
-  const calvesL = makePart(calfGeo);
-  const calvesR = makePart(calfGeo);
-  const shoesL = makePart(shoeGeo, matTrim);
-  const shoesR = makePart(shoeGeo, matTrim);
-  const uArmsL = makePart(uArmGeo);
-  const uArmsR = makePart(uArmGeo);
-  const fArmsL = makePart(fArmGeo);
-  const fArmsR = makePart(fArmGeo);
-  const handsL = makePart(handGeo, matSkin, false);
-  const handsR = makePart(handGeo, matSkin, false);
-  const puffsL = makePart(puffGeo);
-  const puffsR = makePart(puffGeo);
+  const thighsL = makePart(thighHi, thighLo);
+  const thighsR = makePart(thighHi, thighLo);
+  const calvesL = makePart(calfHi, calfLo);
+  const calvesR = makePart(calfHi, calfLo);
+  const shoesL = makePart(shoeHi, shoeLo, matTrim);
+  const shoesR = makePart(shoeHi, shoeLo, matTrim);
+  const uArmsL = makePart(uArmHi, uArmLo);
+  const uArmsR = makePart(uArmHi, uArmLo);
+  const fArmsL = makePart(fArmHi, fArmLo);
+  const fArmsR = makePart(fArmHi, fArmLo);
+  const handsL = makePart(handHi, handLo, matSkin, false);
+  const handsR = makePart(handHi, handLo, matSkin, false);
+  const puffsL = makePart(puffHi, puffLo);
+  const puffsR = makePart(puffHi, puffLo);
 
   // Hats
-  const hatCrowns = makePart(makeHatCrownCylGeo());
-  const hatFedoras = makePart(makeFedoraCrownGeo());
-  const hatDomes = makePart(makeHatDomeGeo());
-  const hatBrimsCurved = makePart(makeHatBrimCurvedGeo());
-  const hatBrimsFlat = makePart(makeHatBrimFlatGeo());
-  const hatBands = makePart(makeHatBandGeo(), matCloth, false);
-  const hatBonnets = makePart(makeBonnetGeo());
+  const hatCrowns = makePart(makeHatCrownCylGeo("hi"), makeHatCrownCylGeo("lo"));
+  const hatFedoras = makePart(makeFedoraCrownGeo("hi"), makeFedoraCrownGeo("lo"));
+  const hatDomes = makePart(makeHatDomeGeo("hi"), makeHatDomeGeo("lo"));
+  const hatBrimsCurved = makePart(makeHatBrimCurvedGeo("hi"), makeHatBrimCurvedGeo("lo"));
+  const hatBrimsFlat = makePart(makeHatBrimFlatGeo("hi"), makeHatBrimFlatGeo("lo"));
+  const hatBands = makePart(makeHatBandGeo(), null, matCloth, false, false);
+  const hatBonnets = makePart(makeBonnetGeo("hi"), makeBonnetGeo("lo"));
 
   const c = new THREE.Color();
   actors.forEach((a, i) => {
@@ -1219,16 +1332,21 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
   });
 
   const allMeshes = [];
-  for (const part of parts) {
-    if (!part.colors.length) continue;
-    const m = new THREE.InstancedMesh(part.geo, part.mat, part.colors.length);
+  const mkInst = (geo, part, n) => {
+    const m = new THREE.InstancedMesh(geo, part.mat, n);
     m.castShadow = part.shadow;
     m.receiveShadow = part.shadow;
     m.frustumCulled = false;
-    part.colors.forEach((col, slot) => m.setColorAt(slot, col));
-    if (m.instanceColor) m.instanceColor.needsUpdate = true;
-    part.mesh = m;
+    m.count = 0;
     allMeshes.push(m);
+    return m;
+  };
+  for (const part of parts) {
+    let n = 0;
+    for (let i = 0; i < count; i++) if (part.used[i]) n++;
+    if (!n) continue;
+    part.meshHi = mkInst(part.geoHi, part, n);
+    if (part.geoLo && part.farOk) part.meshLo = mkInst(part.geoLo, part, n);
   }
 
   const group = new THREE.Group();
@@ -1255,21 +1373,28 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
   const euler = new THREE.Euler();
   const zeroMat = new THREE.Matrix4().makeScale(0, 0, 0);
 
+  const lodFar = new Int8Array(count);
+
   const setMat = (part, i, mat) => {
-    const s = part.slotOf[i];
-    if (s >= 0) part.mesh.setMatrixAt(s, mat);
+    if (!part.used[i]) return;
+    const far = lodFar[i] && part.meshLo;
+    if (lodFar[i] && !part.farOk) return;
+    const mesh = far ? part.meshLo : part.meshHi;
+    if (!mesh) return;
+    const slot = far ? part.loN++ : part.hiN++;
+    mesh.setMatrixAt(slot, mat);
+    mesh.setColorAt(slot, part.colorOf[i]);
   };
 
   const setLocal = (part, i, parentMat, lx, ly, lz, rx, ry, rz, sx, sy, sz) => {
-    const s = part.slotOf[i];
-    if (s < 0) return;
+    if (!part.used[i]) return;
     pos.set(lx, ly, lz);
     euler.set(rx, ry, rz, "YXZ");
     quat.setFromEuler(euler);
     scl.set(sx, sy, sz);
     partMat.compose(pos, quat, scl);
     finalMat.multiplyMatrices(parentMat, partMat);
-    part.mesh.setMatrixAt(s, finalMat);
+    setMat(part, i, finalMat);
   };
 
   const computeLegChain = (hipX, hipY, hipRx, hipRz, kneeRx, ankleRx, buildS, soleOut, out) => {
@@ -1348,7 +1473,21 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
   const chainL = { hip: new THREE.Matrix4(), knee: new THREE.Matrix4(), ankle: new THREE.Matrix4() };
   const chainR = { hip: new THREE.Matrix4(), knee: new THREE.Matrix4(), ankle: new THREE.Matrix4() };
 
-  const applyPose = (elapsed) => {
+  const applyPose = (elapsed, camera) => {
+    for (const part of parts) {
+      part.hiN = 0;
+      part.loN = 0;
+    }
+    let camX = 0;
+    let camZ = 0;
+    let haveCam = false;
+    if (camera && camera.position) {
+      const plat = worldToPlat(camera.position.x, camera.position.z);
+      camX = plat.x;
+      camZ = plat.z;
+      haveCam = true;
+    }
+
     actors.forEach((a, i) => {
       const p = a.profile;
       const hs = p.hScale;
@@ -1504,6 +1643,15 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
         }
       }
 
+      if (haveCam) {
+        const dist = Math.hypot(px - camX, pz - camZ);
+        if (a._far) a._far = dist > 60;
+        else a._far = dist > 72;
+        lodFar[i] = a._far ? 1 : 0;
+      } else {
+        lodFar[i] = 0;
+      }
+
       const hipX = child ? 0.19 : 0.225;
       const legScale = bw * (p.role === "woman" || child ? 0.88 : 0.96);
       computeLegChain(-hipX, 2.92, hipRxL, hipRzL, kneeRxL, ankleRxL, legScale, soleL, chainL);
@@ -1648,10 +1796,21 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
       }
     });
 
-    for (const m of allMeshes) m.instanceMatrix.needsUpdate = true;
+    for (const part of parts) {
+      if (part.meshHi) {
+        part.meshHi.count = part.hiN;
+        part.meshHi.instanceMatrix.needsUpdate = true;
+        if (part.meshHi.instanceColor) part.meshHi.instanceColor.needsUpdate = true;
+      }
+      if (part.meshLo) {
+        part.meshLo.count = part.loN;
+        part.meshLo.instanceMatrix.needsUpdate = true;
+        if (part.meshLo.instanceColor) part.meshLo.instanceColor.needsUpdate = true;
+      }
+    }
   };
 
   applyPose(0);
 
-  return (elapsed) => applyPose(elapsed);
+  return (elapsed, camera) => applyPose(elapsed, camera);
 }
