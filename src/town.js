@@ -7543,6 +7543,9 @@ export function buildTown(data, scene) {
     // 1907 districts: Crafford north from Hail five blocks, and Hurst from East Main to Crafford (p.26).
     { year: 1907, name: "Crafford Street", from: -30, to: 1600 },
     { year: 1907, name: "Hurst Street", from: 121, to: 611, business: true },
+    // July 1909 State hard road: west on Hurst Street to the C. B. & Q. railroad west of
+    // the city (p.30). Western endpoint at the plat edge (-1700) is an estimate (track unmapped).
+    { year: 1909, name: "Hurst Street", from: -1700, to: -611 },
     // August 1909 contract: around both parks, and from the First National Bank west to the
     // west park (p.30). The park blocks are the model's inferred park blocks.
     { year: 1909, name: "Barnes Street", from: 121, to: 611 },
@@ -7550,15 +7553,27 @@ export function buildTown(data, scene) {
     { year: 1909, name: "Barnes Street", from: -611, to: -121 },
     { year: 1909, name: "Hurst Street", from: -611, to: -121 },
     { year: 1909, name: "Dean Street", from: -870, to: -390 },
-    // Districts seven and eight, let in late 1910: Dean from Hail to the schoolhouse, three
-    // blocks (p.31). Shown from 1911 (estimate). The two Crafford blocks south of the
-    // Methodist church are not placed, because that church's lot is not fixed in the model.
+    // Districts seven and eight, let in 1910 (p.31): two blocks on Crafford Street from the
+    // Methodist church (Block 73, Hurst-Barnes, already paved in 1909) south across Davis to
+    // the T. P. & W. edge (estimate, stopping north of the rail ballast at -1673), and three
+    // blocks on Dean from Hail to the schoolhouse (shown from 1911, estimate).
+    { year: 1910, name: "Crafford Street", from: -1673, to: -870 },
     { year: 1911, name: "Dean Street", from: -30, to: 1290 },
+    // 1923 ordinance: from the Presbyterian church south one block and then east a block (p.38).
+    // Block 71 around the church was paved in 1904/1909, so this runs south along Dean from
+    // Barnes to Davis and east along Davis to West Main (estimate).
+    { year: 1923, name: "Dean Street", from: -1290, to: -870 },
+    { year: 1923, name: "Davis Street", from: -611, to: -121 },
     // West Main from Gridley north, contract July 1924 (p.39).
     { year: 1924, name: "West Main Street", from: 390, to: 1600 },
     // Hail and Hurst from the East Park east to the state road on Cole, ordinance Sept 1926 (p.40).
     { year: 1926, name: "Hail Street", from: 581, to: 1871 },
     { year: 1926, name: "Hurst Street", from: 581, to: 1871 },
+    // 1928 paving: two blocks on Rile and two on Davis Streets (p.41). Exact block endpoints are
+    // not stated; placed as a connected pair meeting at Rile and Davis (Hurst-Davis on Rile,
+    // East Main-Rile on Davis; estimate).
+    { year: 1928, name: "Rile Street", from: -1290, to: -390 },
+    { year: 1928, name: "Davis Street", from: 121, to: 1031 },
   ];
   const pavedSpans = (name) => PAVING.filter((span) => span.name === name && span.year <= groundYear);
   const flatMat = (color, rough = 0.95, key = color, joints = 0) => {
@@ -7589,7 +7604,11 @@ float sNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
   // Pale, worn concrete, as in the 1954 Main Street photographs (p.113-p.116).
   // Geometry is in plat feet, so the joints run square to the streets.
   const concretePave = flatMat("#aaa498", 0.94, "concrete", 20);
+  concretePave.polygonOffsetFactor = -2;
+  concretePave.polygonOffsetUnits = -2;
   const concreteWalk = flatMat("#c4beb2", 0.9, "walk", 5);
+  concreteWalk.polygonOffsetFactor = -2;
+  concreteWalk.polygonOffsetUnits = -2;
   // W.P.A. black-top with a gravel base (p.46).
   const blacktop = flatMat("#6c6a66", 0.97, "blacktop");
   const brickPave = mats.brick.red.clone();
@@ -7597,8 +7616,14 @@ float sNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
   // Vitrified paving brick reads duller and browner than wall brick.
   brickPave.color.set("#8c7d74");
   brickPave.polygonOffset = true;
-  brickPave.polygonOffsetFactor = -1;
-  brickPave.polygonOffsetUnits = -1;
+  brickPave.polygonOffsetFactor = -2;
+  brickPave.polygonOffsetUnits = -2;
+  const parkwayMat = groundGrassMat.clone();
+  parkwayMat.onBeforeCompile = groundGrassMat.onBeforeCompile;
+  parkwayMat.customProgramCacheKey = () => `${groundGrassMat.customProgramCacheKey()}:parkway`;
+  parkwayMat.polygonOffset = true;
+  parkwayMat.polygonOffsetFactor = -1.5;
+  parkwayMat.polygonOffsetUnits = -1.5;
   const pavedMat = walkEra === "brick" ? brickPave : concretePave;
   const walkMat = walkEra === "brick" ? brickPave : concreteWalk;
   const curbMat = mats.stone.clone();
@@ -7672,7 +7697,7 @@ float sNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
         const rowMid = street.at + side * (carriage / 2 + 0.7 + (margin - 0.7) / 2);
         // Business blocks get a walk to the lot line; the rest keep a grass parkway.
         if (span.business) flatStrip(walkMat, street.axis, from, to, rowMid, margin - 0.7, 0.2);
-        else flatStrip(groundGrassMat, street.axis, from, to, rowMid, margin - 0.7, 0.09);
+        else flatStrip(parkwayMat, street.axis, from, to, rowMid, margin - 0.7, 0.09);
       }
     }
   }

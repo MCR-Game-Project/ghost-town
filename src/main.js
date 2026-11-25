@@ -1083,7 +1083,9 @@ onCensusYear = (year) => {
     if (value >= 1965 && value < 1970) bands.push("after-mickelberry");
     // 1941–1949 keep the 1920 town and take the stud-farm signs and flags off.
     if (value > 1940 && value < 1950) bands.push("after-stud-farm");
-    // Round 4: W.P.A. black-top from 1938, and the cars change with the slider year.
+    // Round 4 & preview/paving: paving spans and W.P.A. black-top change with the slider year.
+    const paveYears = [1902, 1904, 1907, 1909, 1910, 1911, 1923, 1924, 1926, 1928];
+    bands.push("pave-" + paveYears.filter((y) => value >= y).length);
     if (value >= 1938) bands.push("blacktop");
     // preview/vehicles: cars, street lamps, rolling stock, and wagons change with the slider year.
     bands.push(vehicleBand(value));
