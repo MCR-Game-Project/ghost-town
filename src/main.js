@@ -606,7 +606,7 @@ function frame() {
   const detail = townGroup.getObjectByName("building-detail");
   if (detail) detail.visible = camera.position.y < 160;
   const dt = Math.min(clock.getDelta(), 0.05);
-  if (townUpdate && !shot) townUpdate(clock.elapsedTime);
+  if (townUpdate) townUpdate(shot ? 0 : clock.elapsedTime, camera);
   if (mode === "walk" && town) {
     const speed = keys.has("ShiftLeft") || keys.has("ShiftRight") ? 34 : 16;
     const forward = lookVector();
