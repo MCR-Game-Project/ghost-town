@@ -825,6 +825,19 @@ export function makeMaterials() {
       vary: true,
       normalScale: 0.65,
     });
+  const sidingSized = (color, uvFeet) =>
+    std({
+      map: sidingTex.map,
+      normalMap: sidingTex.normalMap,
+      roughnessMap: sidingTex.roughnessMap,
+      color,
+      roughness: 1,
+      uvFeet,
+      vary: true,
+      normalScale: 0.65,
+    });
+  const narrowFeet = { u: 7, v: 2.45 };
+  const wideFeet = { u: 9, v: 4.8 };
 
   const boardBatten = (color) =>
     std({
@@ -913,6 +926,34 @@ export function makeMaterials() {
       darkred: siding("#6e2e2a"),
       depot: siding("#8d4d3a"),
     },
+    siding1880: {
+      warmCream: sidingSized("#ddd0b6", narrowFeet),
+      buff: sidingSized("#cbb998", narrowFeet),
+      sage: sidingSized("#969e89", narrowFeet),
+      slateGray: sidingSized("#a4a59e", narrowFeet),
+      ochre: sidingSized("#c4ab7a", narrowFeet),
+      barnRed: sidingSized("#7b4038", narrowFeet),
+      chalkWhite: sidingSized("#dbd5c9", narrowFeet),
+      taupe: sidingSized("#b5a692", narrowFeet),
+    },
+    siding1910: {
+      white: siding("#ebe4d5"),
+      olive: siding("#7d886e"),
+      mustard: siding("#c8ae70"),
+      warmGray: siding("#b4aea2"),
+      russet: siding("#8c4c3d"),
+      cream: siding("#e7ddc4"),
+    },
+    siding1950: {
+      white: sidingSized("#f0ede6", wideFeet),
+      mint: sidingSized("#c2cfc0", wideFeet),
+      butter: sidingSized("#ebe2bc", wideFeet),
+      blueGray: sidingSized("#c4cdd2", wideFeet),
+      sand: sidingSized("#ddd1bd", wideFeet),
+      lightGray: sidingSized("#cfcdc9", wideFeet),
+    },
+    shutter1880: sidingSized("#354138", narrowFeet),
+    concreteBase: std({ color: "#a8a49c", roughness: 0.92, uvFeet: { u: 8, v: 4 } }),
     boardBatten: {
       weathered: boardBatten("#9d8e7a"),
       gray: boardBatten("#aba497"),
