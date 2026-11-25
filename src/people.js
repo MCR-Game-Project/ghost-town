@@ -108,13 +108,13 @@ function makeRng(seed) {
 
 const pick = (arr, r) => arr[Math.floor(r() * arr.length) % arr.length];
 
-const SKIN_TONES = ["#e2c3a7", "#d4ac8a", "#c99674", "#e7cbb2", "#c39d7b", "#b68562"];
+const SKIN_TONES = ["#d6a785", "#c89672", "#b98460", "#dcb18f", "#ae7b58", "#c28e6b"];
 const HAIR_TONES = ["#261d17", "#3f2c1f", "#5e432c", "#7c603f", "#55504c", "#1a1614", "#8e877e"];
 const EYE_TONES = ["#2c2018", "#352c24", "#2f3d48", "#483526"];
 
 function lipToneFor(skinHex) {
   const c = new THREE.Color(skinHex);
-  c.lerp(new THREE.Color("#9e5c54"), 0.42);
+  c.lerp(new THREE.Color("#844038"), 0.56);
   return `#${c.getHexString()}`;
 }
 
@@ -856,9 +856,11 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
       profile,
       phase: rng() * Math.PI * 2,
       weightSide: rng() < 0.5 ? -1 : 1,
-      lookBias: (rng() - 0.5) * 0.42,
-      armBiasL: 0.16 + rng() * 0.24,
-      armBiasR: 0.16 + rng() * 0.24,
+      poseType: pick(["casual", "hip", "folded", "chatting"], rng),
+      lookBias: (rng() - 0.5) * 0.56,
+      headTilt: (rng() - 0.5) * 0.10,
+      armBiasL: 0.22 + rng() * 0.32,
+      armBiasR: 0.22 + rng() * 0.32,
     });
   };
 
@@ -1031,6 +1033,12 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
     roughness: 0.86,
     metalness: 0.02,
   });
+  const matSkin = new THREE.MeshStandardMaterial({
+    color: "#ffffff",
+    vertexColors: true,
+    roughness: 0.68,
+    metalness: 0.02,
+  });
   const matTrim = new THREE.MeshStandardMaterial({
     color: "#ffffff",
     vertexColors: true,
@@ -1052,13 +1060,13 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
   };
 
   // Head & Face
-  const heads = makePart(makeHeadGeo());
+  const heads = makePart(makeHeadGeo(), matSkin);
   const eyeWhites = makePart(makeEyeWhitesGeo(), matTrim, false);
   const irises = makePart(makeIrisesGeo(), matTrim, false);
   const brows = makePart(makeBrowsGeo(), matCloth, false);
   const mouths = makePart(makeMouthGeo(), matCloth, false);
   const beards = makePart(makeBeardGeo(), matCloth, false);
-  const necks = makePart(makeNeckGeo());
+  const necks = makePart(makeNeckGeo(), matSkin);
   const hairBases = makePart(makeHairBaseGeo());
   const hairBuns = makePart(makeHairBunGeo(), matCloth, false);
   const hairBobs = makePart(makeHairSideBobGeo(), matCloth, false);
@@ -1102,8 +1110,8 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
   const uArmsR = makePart(uArmGeo);
   const fArmsL = makePart(fArmGeo);
   const fArmsR = makePart(fArmGeo);
-  const handsL = makePart(handGeo, matCloth, false);
-  const handsR = makePart(handGeo, matCloth, false);
+  const handsL = makePart(handGeo, matSkin, false);
+  const handsR = makePart(handGeo, matSkin, false);
   const puffsL = makePart(puffGeo);
   const puffsR = makePart(puffGeo);
 
@@ -1364,12 +1372,17 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
 
       let uArmRxL = 0.05;
       let uArmRxR = 0.05;
-      let elbowRxL = -0.24;
-      let elbowRxR = -0.24;
+      let uArmRyL = 0.04;
+      let uArmRyR = -0.04;
+      let uArmRzL = 0;
+      let uArmRzR = 0;
+      let elbowRxL = -0.28;
+      let elbowRxR = -0.28;
       let torsoYaw = 0;
       let torsoLean = 0.02;
       let headYaw = 0;
       let headPitch = 0;
+      let headRoll = 0;
 
       const longSkirt = p.skirtKind === "full" || p.skirtKind === "bustle";
       const hasSkirt = p.skirtKind !== "none";
@@ -1392,51 +1405,103 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
         const stride = elapsed * a.speed * 1.85 + a.phase;
         const s = Math.sin(stride);
         const c = Math.cos(stride);
-        const maxStride = longSkirt ? 0.12 : hasSkirt ? 0.18 : 0.34;
+        const maxStride = longSkirt ? 0.14 : hasSkirt ? 0.22 : 0.38;
 
         hipRxL = -s * maxStride;
         hipRxR = s * maxStride;
-        kneeRxL = Math.max(0.04, (longSkirt ? 0.14 : 0.34) * Math.max(0, c) + 0.08 * Math.max(0, s));
-        kneeRxR = Math.max(0.04, (longSkirt ? 0.14 : 0.34) * Math.max(0, -c) + 0.08 * Math.max(0, -s));
+        kneeRxL = Math.max(0.05, (longSkirt ? 0.16 : 0.40) * Math.max(0, c) + 0.10 * Math.max(0, s));
+        kneeRxR = Math.max(0.05, (longSkirt ? 0.16 : 0.40) * Math.max(0, -c) + 0.10 * Math.max(0, -s));
         ankleRxL = -(hipRxL + kneeRxL) * 0.85;
         ankleRxR = -(hipRxR + kneeRxR) * 0.85;
 
-        uArmRxL = s * 0.28;
-        uArmRxR = -s * 0.28;
-        elbowRxL = -0.22 - 0.18 * Math.max(0, -s);
-        elbowRxR = -0.22 - 0.18 * Math.max(0, s);
-        torsoYaw = -s * 0.06;
-        torsoLean = 0.04;
-        headYaw = a.lookBias * 0.35 + Math.sin(stride * 0.5) * 0.05;
+        uArmRxL = s * 0.34;
+        uArmRxR = -s * 0.34;
+        elbowRxL = -0.28 - 0.22 * Math.max(0, -s);
+        elbowRxR = -0.28 - 0.22 * Math.max(0, s);
+        torsoYaw = -s * 0.09;
+        torsoLean = 0.055;
+        headYaw = a.lookBias * 0.45 + Math.sin(stride * 0.5) * 0.06;
+        headRoll = a.headTilt * 0.5;
       } else {
-        // Natural weight-shift idle pose (distinct even at elapsed = 0 for static shots)
+        // Varied natural contrapposto idle poses (non-stiff even in static shots)
         const idle = elapsed * 1.05 + a.phase;
         const ws = a.weightSide;
-        const legReach = longSkirt ? 0.03 : hasSkirt ? 0.06 : 0.13;
+        const legReach = longSkirt ? 0.03 : hasSkirt ? 0.07 : 0.17;
+        const legSide = longSkirt ? 0.03 : hasSkirt ? 0.04 : 0.075;
         if (ws < 0) {
-          hipRxL = 0.02;
+          hipRxL = 0.03;
           kneeRxL = 0.03;
-          ankleRxL = -0.05;
+          ankleRxL = -0.06;
+          hipRzL = 0.02;
           hipRxR = -legReach;
-          kneeRxR = legReach * 1.45;
+          kneeRxR = legReach * 1.55;
           ankleRxR = -kneeRxR * 0.45;
-          hipRzR = -0.05;
+          hipRzR = -legSide;
         } else {
-          hipRxR = 0.02;
+          hipRxR = 0.03;
           kneeRxR = 0.03;
-          ankleRxR = -0.05;
+          ankleRxR = -0.06;
+          hipRzR = -0.02;
           hipRxL = -legReach;
-          kneeRxL = legReach * 1.45;
+          kneeRxL = legReach * 1.55;
           ankleRxL = -kneeRxL * 0.45;
-          hipRzL = 0.05;
+          hipRzL = legSide;
         }
-        torsoYaw = ws * 0.05 + Math.sin(idle * 0.5) * 0.02;
-        headYaw = a.lookBias + Math.sin(idle) * 0.12;
-        headPitch = Math.sin(idle * 0.7) * 0.03;
-        uArmRxL = 0.04 + Math.sin(idle * 0.8) * 0.03;
-        uArmRxR = 0.06 - Math.sin(idle * 0.8) * 0.03;
-        elbowRxL = -a.armBiasL;
-        elbowRxR = -a.armBiasR;
+
+        torsoYaw = ws * 0.10 + Math.sin(idle * 0.5) * 0.025;
+        torsoLean = 0.035;
+        headYaw = a.lookBias + Math.sin(idle) * 0.13;
+        headPitch = 0.02 + Math.sin(idle * 0.7) * 0.035;
+        headRoll = a.headTilt;
+
+        if (a.poseType === "hip") {
+          // One hand resting at hip/pocket, opposite arm relaxed
+          if (ws < 0) {
+            uArmRxR = 0.10;
+            uArmRyR = 0.10;
+            uArmRzR = 0.18;
+            elbowRxR = -0.68;
+            uArmRxL = -0.04 + Math.sin(idle * 0.8) * 0.03;
+            elbowRxL = -a.armBiasL;
+          } else {
+            uArmRxL = 0.10;
+            uArmRyL = -0.10;
+            uArmRzL = -0.18;
+            elbowRxL = -0.68;
+            uArmRxR = -0.04 - Math.sin(idle * 0.8) * 0.03;
+            elbowRxR = -a.armBiasR;
+          }
+        } else if (a.poseType === "folded") {
+          // Relaxed forearms brought inward in front of waist
+          uArmRxL = -0.14;
+          uArmRxR = -0.12;
+          uArmRyL = -0.34;
+          uArmRyR = 0.34;
+          elbowRxL = -0.78 - Math.sin(idle * 0.6) * 0.04;
+          elbowRxR = -0.74 + Math.sin(idle * 0.6) * 0.04;
+        } else if (a.poseType === "chatting") {
+          // Conversational stance with one gesturing forearm
+          torsoLean = 0.055;
+          if (ws < 0) {
+            uArmRxL = -0.22 + Math.sin(idle * 1.1) * 0.05;
+            uArmRyL = -0.22;
+            elbowRxL = -0.86 + Math.sin(idle * 1.3) * 0.08;
+            uArmRxR = 0.06;
+            elbowRxR = -0.34;
+          } else {
+            uArmRxR = -0.22 + Math.sin(idle * 1.1) * 0.05;
+            uArmRyR = 0.22;
+            elbowRxR = -0.86 + Math.sin(idle * 1.3) * 0.08;
+            uArmRxL = 0.06;
+            elbowRxL = -0.34;
+          }
+        } else {
+          // Asymmetrical casual weight-shift stance
+          uArmRxL = -0.04 + Math.sin(idle * 0.8) * 0.035;
+          uArmRxR = 0.08 - Math.sin(idle * 0.8) * 0.035;
+          elbowRxL = -a.armBiasL;
+          elbowRxR = -(a.armBiasR + 0.18);
+        }
       }
 
       const hipX = child ? 0.19 : 0.225;
@@ -1514,16 +1579,16 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
       else if (p.skirtKind === "short") setMat(skirtsShort, i, tParent);
 
       // Arms & Hands
-      const shoulderX = (p.torsoKind === "woman" ? 0.48 : p.torsoKind === "shirt" ? 0.53 : 0.57) * bw;
+      const shoulderX = (p.torsoKind === "woman" ? 0.45 : p.torsoKind === "shirt" ? 0.50 : 0.54) * bw;
       const armFlare = hasSkirt ? 0.16 : 0.08;
       const armBuild = bw * (p.role === "woman" || child ? 0.84 : 0.96);
-      setArmChain(i, -1, -shoulderX, 4.50, uArmRxL, 0.04, -armFlare, elbowRxL, armBuild, uArmsL, fArmsL, handsL, puffsL, p.puffSleeve);
-      setArmChain(i, 1, shoulderX, 4.50, uArmRxR, -0.04, armFlare, elbowRxR, armBuild, uArmsR, fArmsR, handsR, puffsR, p.puffSleeve);
+      setArmChain(i, -1, -shoulderX, 4.48, uArmRxL, uArmRyL, -armFlare + uArmRzL, elbowRxL, armBuild, uArmsL, fArmsL, handsL, puffsL, p.puffSleeve);
+      setArmChain(i, 1, shoulderX, 4.48, uArmRxR, uArmRyR, armFlare + uArmRzR, elbowRxR, armBuild, uArmsR, fArmsR, handsR, puffsR, p.puffSleeve);
 
       // Head matrix (shared by skull, eyes, brows, mouth, beard, hair, and hat)
       const headS = child ? 1.18 : 1.0;
       pos.set(0, 4.95, 0.035);
-      euler.set(headPitch, torsoYaw + headYaw, 0, "YXZ");
+      euler.set(headPitch, torsoYaw + headYaw, headRoll, "YXZ");
       quat.setFromEuler(euler);
       scl.set(headS, headS, headS);
       partMat.compose(pos, quat, scl);
@@ -1547,39 +1612,39 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
       // Hats
       const hsMode = p.hatStyle;
       if (hsMode === "wide") {
-        setLocal(hatFedoras, i, headMat, 0, 0.80, -0.01, -0.03, 0, 0, 1.04, 1.15, 1.04);
+        setLocal(hatFedoras, i, headMat, 0, 0.82, -0.01, -0.03, 0, 0, 1.08, 1.20, 1.10);
         setLocal(hatBrimsCurved, i, headMat, 0, 0.62, -0.01, -0.03, 0, 0, 0.78, 1.0, 0.80);
-        setLocal(hatBands, i, headMat, 0, 0.67, -0.01, -0.03, 0, 0, 1.00, 1.0, 1.04);
+        setLocal(hatBands, i, headMat, 0, 0.67, -0.01, -0.03, 0, 0, 1.04, 1.0, 1.08);
       } else if (hsMode === "tophat") {
-        setLocal(hatCrowns, i, headMat, 0, 1.02, 0, 0, 0, 0, 0.96, 0.76, 0.96);
-        setLocal(hatBrimsCurved, i, headMat, 0, 0.64, 0, 0, 0, 0, 0.60, 1.0, 0.62);
-        setLocal(hatBands, i, headMat, 0, 0.70, 0, 0, 0, 0, 0.97, 1.1, 0.97);
+        setLocal(hatCrowns, i, headMat, 0, 1.03, -0.01, 0, 0, 0, 1.02, 0.76, 1.08);
+        setLocal(hatBrimsCurved, i, headMat, 0, 0.65, -0.01, 0, 0, 0, 0.62, 1.0, 0.65);
+        setLocal(hatBands, i, headMat, 0, 0.71, -0.01, 0, 0, 0, 1.02, 1.1, 1.08);
       } else if (hsMode === "bonnet") {
         setLocal(hatBonnets, i, headMat, 0, 0.44, -0.04, -0.18, 0, 0, 1.0, 1.0, 1.0);
         setLocal(hatBands, i, headMat, 0, 0.22, -0.12, -0.18, 0, 0, 0.78, 0.7, 0.84);
       } else if (hsMode === "bowler") {
-        setLocal(hatDomes, i, headMat, 0, 0.70, -0.01, 0, 0, 0, 0.96, 1.08, 0.98);
-        setLocal(hatBrimsCurved, i, headMat, 0, 0.60, -0.01, 0, 0, 0, 0.54, 1.0, 0.56);
-        setLocal(hatBands, i, headMat, 0, 0.64, -0.01, 0, 0, 0, 0.94, 0.85, 0.98);
+        setLocal(hatDomes, i, headMat, 0, 0.72, -0.01, 0, 0, 0, 1.02, 1.12, 1.06);
+        setLocal(hatBrimsCurved, i, headMat, 0, 0.61, -0.01, 0, 0, 0, 0.56, 1.0, 0.58);
+        setLocal(hatBands, i, headMat, 0, 0.65, -0.01, 0, 0, 0, 0.99, 0.85, 1.04);
       } else if (hsMode === "boater") {
-        setLocal(hatCrowns, i, headMat, 0, 0.74, 0, 0.03, 0, 0, 1.02, 0.25, 1.02);
-        setLocal(hatBrimsFlat, i, headMat, 0, 0.62, 0, 0.03, 0, 0, 0.72, 1.0, 0.72);
-        setLocal(hatBands, i, headMat, 0, 0.68, 0, 0.03, 0, 0, 0.98, 0.9, 0.98);
+        setLocal(hatCrowns, i, headMat, 0, 0.77, -0.01, 0.03, 0, 0, 1.08, 0.28, 1.16);
+        setLocal(hatBrimsFlat, i, headMat, 0, 0.65, -0.01, 0.03, 0, 0, 0.76, 1.0, 0.80);
+        setLocal(hatBands, i, headMat, 0, 0.71, -0.01, 0.03, 0, 0, 1.05, 0.9, 1.13);
       } else if (hsMode === "fedora") {
-        setLocal(hatFedoras, i, headMat, 0, 0.78, 0.01, 0.06, 0, 0, 1.0, 1.05, 1.02);
-        setLocal(hatBrimsCurved, i, headMat, 0, 0.62, 0.02, 0.08, 0, 0, 0.68, 1.0, 0.72);
-        setLocal(hatBands, i, headMat, 0, 0.66, 0.01, 0.06, 0, 0, 0.96, 0.9, 1.02);
+        setLocal(hatFedoras, i, headMat, 0, 0.80, 0.00, 0.06, 0, 0, 1.05, 1.14, 1.08);
+        setLocal(hatBrimsCurved, i, headMat, 0, 0.62, 0.01, 0.08, 0, 0, 0.70, 1.0, 0.74);
+        setLocal(hatBands, i, headMat, 0, 0.66, 0.00, 0.06, 0, 0, 1.01, 0.9, 1.06);
       } else if (hsMode === "edwardian") {
-        setLocal(hatCrowns, i, headMat, 0, 0.76, -0.01, -0.03, 0, 0, 0.96, 0.24, 0.96);
-        setLocal(hatBrimsFlat, i, headMat, 0, 0.65, -0.01, -0.03, 0, 0, 0.88, 1.0, 0.88);
-        setLocal(hatBands, i, headMat, 0, 0.70, -0.01, -0.03, 0, 0, 0.94, 0.85, 0.94);
+        setLocal(hatCrowns, i, headMat, 0, 0.78, -0.01, -0.03, 0, 0, 1.08, 0.26, 1.14);
+        setLocal(hatBrimsFlat, i, headMat, 0, 0.67, -0.01, -0.03, 0, 0, 0.90, 1.0, 0.92);
+        setLocal(hatBands, i, headMat, 0, 0.72, -0.01, -0.03, 0, 0, 1.05, 0.85, 1.11);
       } else if (hsMode === "cloche") {
-        setLocal(hatDomes, i, headMat, 0, 0.60, 0.01, 0.06, 0, 0, 1.01, 1.06, 1.05);
-        setLocal(hatBrimsCurved, i, headMat, 0, 0.48, 0.03, 0.10, 0, 0, 0.44, 1.0, 0.48);
-        setLocal(hatBands, i, headMat, 0, 0.51, 0.01, 0.06, 0, 0, 0.99, 0.8, 1.03);
+        setLocal(hatDomes, i, headMat, 0, 0.64, 0.00, 0.04, 0, 0, 1.03, 1.10, 1.07);
+        setLocal(hatBrimsCurved, i, headMat, 0, 0.52, 0.02, 0.07, 0, 0, 0.45, 1.0, 0.49);
+        setLocal(hatBands, i, headMat, 0, 0.55, 0.00, 0.04, 0, 0, 1.01, 0.8, 1.05);
       } else if (hsMode === "cap") {
-        setLocal(hatDomes, i, headMat, 0, 0.66, -0.02, -0.04, 0, 0, 0.94, 0.74, 0.98);
-        setLocal(hatBrimsFlat, i, headMat, 0, 0.58, 0.22, 0.10, 0, 0, 0.34, 1.0, 0.44);
+        setLocal(hatDomes, i, headMat, 0, 0.68, -0.02, -0.04, 0, 0, 1.00, 0.82, 1.06);
+        setLocal(hatBrimsFlat, i, headMat, 0, 0.60, 0.22, 0.08, 0, 0, 0.35, 1.0, 0.45);
       }
     });
 
