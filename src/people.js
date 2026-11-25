@@ -67,7 +67,7 @@ function makeRng(seed) {
 
 const pick = (arr, r) => arr[Math.floor(r() * arr.length) % arr.length];
 
-const SKIN_TONES = ["#e8be9e", "#dfb08e", "#d6a380", "#ecc5a8", "#cfa07e"];
+const SKIN_TONES = ["#e0c4a8", "#c99572", "#d4ab88", "#b07a58", "#e6ccb4", "#c4a07e", "#a87a5a"];
 const HAIR_TONES = ["#2c221b", "#483324", "#6e4e34", "#8a6d48", "#5b5550", "#1e1a18"];
 
 function dressProfile(era, role, rng) {
@@ -170,8 +170,8 @@ function dressProfile(era, role, rng) {
         torsoColor: coat,
         torsoScale: [1.02, 1.02, 1.0],
         legColor: pants,
-        skirtScale: [0.60, 1.15, 0.52],
-        skirtY: 2.25,
+        skirtScale: [0.72, 1.38, 0.62],
+        skirtY: 2.15,
         skirtZ: -0.02,
         skirtColor: coat,
         accentType: "vest",
@@ -252,7 +252,7 @@ function dressProfile(era, role, rng) {
       };
     }
     // midcentury 1950-1970+
-    const shirt = pick(["#d4d0c6", "#7e96ad", "#9aa58f", "#b89578", "#687a8c", "#c4b698"], rng);
+    const shirt = pick(["#ece8de", "#6e8aa4", "#c46a5a", "#7a8b68", "#d8c47a", "#5d6d7c", "#c4a882", "#b89578"], rng);
     const slacks = pick(["#43484e", "#5b5346", "#363b42", "#6e675b"], rng);
     const hatStyle = rng() < 0.22 ? "fedora" : rng() < 0.34 ? "cap" : "none";
     return {
@@ -317,7 +317,7 @@ function dressProfile(era, role, rng) {
       skirtZ: -0.22,
       skirtColor: gown,
       accentType: "shawl",
-      accentColor: pick(["#c9bfae", "#393432", "#6e4e4a"], rng),
+      accentColor: pick(["#8a7a64", "#393432", "#6e4e4a", "#5a5348"], rng),
       puffSleeve: true,
       hatStyle,
       hatColor: pick(["#3f3834", "#5c4d44", "#7e7262"], rng),
@@ -326,7 +326,7 @@ function dressProfile(era, role, rng) {
   }
   if (era === "edwardian") {
     // Shirtwaist blouse + long flared skirt
-    const blouse = pick(["#e3ded2", "#d8dfe4", "#dfd2cc", "#dce0d2"], rng);
+    const blouse = pick(["#d8d2c4", "#cfd5da", "#d6c8c0", "#d2d6c8"], rng);
     const skirt = pick(["#30343a", "#453b35", "#38423a", "#4c393c"], rng);
     return {
       role,
@@ -397,7 +397,7 @@ function dressProfile(era, role, rng) {
     };
   }
   // midcentury 1950-1970+
-  const blouse = pick(["#dfd9cc", "#86a2ba", "#c88682", "#96aa88", "#d6be78"], rng);
+  const blouse = pick(["#ebe6da", "#6e8aa4", "#c46a5a", "#7a8b68", "#d8c47a", "#5d6d7c", "#c4a882"], rng);
   const skirt = pick(["#49525c", "#6c5a4d", "#4c5c4e", "#6b474d", "#3d424a"], rng);
   return {
     role,
@@ -641,17 +641,73 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
     actors.push({ ...spec, profile, phase: rng() * Math.PI * 2 });
   };
 
-  // 1854/1860 pioneer distribution: Markham store + pioneer houses/stores.
+  // Group nearby storefront spots so 2-3 people stand talking together.
+  const storeGroups = [];
+  const claimed = new Set();
+  const storeOrder = storeSpots.slice().sort((a, b) => {
+    const aMain = a.z >= 160 && a.z <= 220 ? 0 : 1;
+    const bMain = b.z >= 160 && b.z <= 220 ? 0 : 1;
+    // Prefer the commercial core of Main (roughly Gridley to the square) over the far west end.
+    const aCore = Math.abs(a.x + 80);
+    const bCore = Math.abs(b.x + 80);
+    return aMain - bMain || aCore - bCore;
+  });
+  for (let i = 0; i < storeOrder.length; i++) {
+    if (claimed.has(i)) continue;
+    const g = [storeOrder[i]];
+    claimed.add(i);
+    for (let j = i + 1; j < storeOrder.length; j++) {
+      if (claimed.has(j)) continue;
+      if (Math.hypot(storeOrder[j].x - storeOrder[i].x, storeOrder[j].z - storeOrder[i].z) < 16) {
+        g.push(storeOrder[j]);
+        claimed.add(j);
+      }
+    }
+    storeGroups.push(g);
+  }
+  // Spread conversation groups along Main (north sidewalk first) instead of packing one block.
+  const isMainGroup = (g) => g.some((p) => p.z >= 160 && p.z <= 220);
+  const mainFirst = storeGroups.filter(isMainGroup);
+  const otherGroups = storeGroups.filter((g) => !isMainGroup(g));
+  const anchors = [-320, -180, -40, 120, 300];
+  const spread = [];
+  const remaining = mainFirst.slice();
+  for (const ax of anchors) {
+    remaining.sort((a, b) => {
+      const ca = a.reduce((s, p) => s + p.x, 0) / a.length;
+      const cb = b.reduce((s, p) => s + p.x, 0) / b.length;
+      return Math.abs(ca - ax) - Math.abs(cb - ax);
+    });
+    if (remaining.length) spread.push(remaining.shift());
+  }
+  storeGroups.length = 0;
+  storeGroups.push(...spread, ...remaining, ...otherGroups);
+
+  const fillCluster = (spots, n) => {
+    const cluster = spots.slice(0, 3);
+    if (cluster.length && cluster.length < n) {
+      const c = cluster[0];
+      const towardStreet = c.z > 156 ? -3.0 : 3.0;
+      const tx = c.x + (cluster.length === 2 ? (c.x > cluster[0].x ? -2.2 : 2.2) : 0);
+      const tz = c.z + towardStreet;
+      if (isClear(tx, tz)) cluster.push({ x: tx, z: tz, yaw: c.yaw + Math.PI });
+    }
+    const take = Math.min(n, cluster.length);
+    const cx = cluster.slice(0, take).reduce((s, p) => s + p.x, 0) / take;
+    const cz = cluster.slice(0, take).reduce((s, p) => s + p.z, 0) / take;
+    for (let k = 0; k < take; k++) {
+      const sp = cluster[k];
+      const yaw = Math.hypot(cx - sp.x, cz - sp.z) > 0.4 ? Math.atan2(cx - sp.x, cz - sp.z) : sp.yaw;
+      addActor({ kind: "idle", x: sp.x, z: sp.z, y: groundYAt(sp.x, sp.z), yaw });
+    }
+  };
+
+  // 1854/1860 pioneer distribution: small talking groups at Main / Markham storefronts.
   if (year <= 1860) {
-    for (let i = 0; i < Math.min(storeSpots.length, year <= 1854 ? 2 : 5); i++) {
-      const sp = storeSpots[(i * 3) % storeSpots.length];
-      addActor({
-        kind: "idle",
-        x: sp.x,
-        z: sp.z,
-        y: groundYAt(sp.x, sp.z),
-        yaw: sp.yaw,
-      });
+    const nGroups = year <= 1854 ? 1 : 2;
+    const per = year <= 1854 ? 2 : 3;
+    for (let g = 0; g < Math.min(nGroups, storeGroups.length); g++) {
+      fillCluster(storeGroups[g], per);
     }
     const need = targetCount - actors.length;
     for (let i = 0; i < need && yardSpots.length; i++) {
@@ -714,17 +770,17 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
       }
     }
 
-    for (let i = 0; i < nStore && storeSpots.length; i++) {
-      const sp = storeSpots[(i * 7 + 2) % storeSpots.length];
-      if (!actors.some((a) => Math.hypot(a.x - sp.x, a.z - sp.z) < 2.2)) {
-        addActor({ kind: "idle", x: sp.x, z: sp.z, y: groundYAt(sp.x, sp.z), yaw: sp.yaw });
-      }
+    let storeAdded = 0;
+    for (let g = 0; g < storeGroups.length && storeAdded < nStore; g++) {
+      const before = actors.length;
+      fillCluster(storeGroups[g], Math.min(3, nStore - storeAdded));
+      storeAdded += actors.length - before;
     }
 
     for (let i = 0; i < nDepot && depotSpots.length; i++) {
       const sp = depotSpots[i % depotSpots.length];
       const jx = sp.x + (i >= depotSpots.length ? (rng() - 0.5) * 6 : 0);
-      if (isClear(jx, sp.z, true) && !actors.some((a) => Math.hypot(a.x - jx, a.z - sp.z) < 2.2)) {
+      if (isClear(jx, sp.z, true) && !actors.some((a) => Math.hypot(a.x - jx, a.z - sp.z) < 3.4)) {
         addActor({
           kind: i % 3 === 0 ? "walk" : "idle",
           ax: Math.max(sp.minX, jx - 10),
@@ -762,41 +818,56 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
   };
 
   // Pivoted limb geometries: top at y = 0 so X rotation swings cleanly around hip / shoulder.
-  const legGeo = new THREE.CylinderGeometry(0.19, 0.14, 2.55, 8);
-  legGeo.translate(0, -1.275, 0);
-  const shoeGeo = new THREE.BoxGeometry(0.26, 0.22, 0.46);
-  shoeGeo.translate(0, -2.54, 0.08);
-  const armGeo = new THREE.CylinderGeometry(0.15, 0.12, 1.95, 8);
-  armGeo.translate(0, -0.975, 0);
-  const torsoGeo = new THREE.CylinderGeometry(0.46, 0.39, 2.05, 10);
-  const skirtGeo = new THREE.CylinderGeometry(0.36, 0.78, 1.0, 12);
-  const accentGeo = new THREE.CylinderGeometry(0.46, 0.42, 1.0, 10);
-  const headGeo = new THREE.SphereGeometry(0.37, 10, 8);
-  const hairGeo = new THREE.SphereGeometry(0.395, 10, 8);
-  const puffGeo = new THREE.SphereGeometry(0.28, 8, 6);
-  const crownGeo = new THREE.CylinderGeometry(0.37, 0.40, 1.0, 10);
-  const brimGeo = new THREE.CylinderGeometry(1.0, 1.0, 0.08, 12);
+  // Tapered limbs, a pelvis, neck, shoulders, and hands keep close-up silhouettes from reading as sticks.
+  const legGeo = new THREE.CylinderGeometry(0.23, 0.11, 2.52, 10);
+  legGeo.translate(0, -1.26, 0);
+  const shoeGeo = new THREE.BoxGeometry(0.30, 0.18, 0.54);
+  shoeGeo.translate(0, -2.58, 0.10);
+  const armGeo = new THREE.CylinderGeometry(0.155, 0.09, 1.78, 10);
+  armGeo.translate(0, -0.89, 0);
+  const handGeo = new THREE.SphereGeometry(0.10, 8, 6);
+  handGeo.translate(0, -1.82, 0.02);
+  const torsoGeo = new THREE.CylinderGeometry(0.40, 0.34, 1.78, 12);
+  const hipGeo = new THREE.CylinderGeometry(0.38, 0.40, 0.55, 12);
+  const neckGeo = new THREE.CylinderGeometry(0.15, 0.16, 0.20, 8);
+  const shoulderGeo = new THREE.SphereGeometry(0.155, 8, 6);
+  const skirtGeo = new THREE.CylinderGeometry(0.28, 0.82, 1.0, 14);
+  const accentGeo = new THREE.CylinderGeometry(0.44, 0.40, 1.0, 12);
+  const headGeo = new THREE.SphereGeometry(0.34, 12, 10);
+  const hairGeo = new THREE.SphereGeometry(0.36, 12, 10);
+  const puffGeo = new THREE.SphereGeometry(0.22, 8, 6);
+  const crownGeo = new THREE.CylinderGeometry(0.34, 0.38, 1.0, 12);
+  const brimGeo = new THREE.CylinderGeometry(1.0, 1.0, 0.07, 16);
+  const domeGeo = new THREE.SphereGeometry(0.38, 12, 10);
 
   const heads = makeInst(headGeo);
   const hairs = makeInst(hairGeo);
+  const necks = makeInst(neckGeo);
   const torsos = makeInst(torsoGeo);
+  const hips = makeInst(hipGeo);
   const skirts = makeInst(skirtGeo);
   const accents = makeInst(accentGeo);
   const legsL = makeInst(legGeo);
   const legsR = makeInst(legGeo);
   const shoesL = makeInst(shoeGeo);
   const shoesR = makeInst(shoeGeo);
+  const shouldersL = makeInst(shoulderGeo);
+  const shouldersR = makeInst(shoulderGeo);
   const armsL = makeInst(armGeo);
   const armsR = makeInst(armGeo);
+  const handsL = makeInst(handGeo);
+  const handsR = makeInst(handGeo);
   const puffsL = makeInst(puffGeo);
   const puffsR = makeInst(puffGeo);
   const hatCrowns = makeInst(crownGeo);
   const hatBrims = makeInst(brimGeo);
+  const hatDomes = makeInst(domeGeo);
 
   const allMeshes = [
-    heads, hairs, torsos, skirts, accents,
-    legsL, legsR, shoesL, shoesR, armsL, armsR, puffsL, puffsR,
-    hatCrowns, hatBrims,
+    heads, hairs, necks, torsos, hips, skirts, accents,
+    legsL, legsR, shoesL, shoesR,
+    shouldersL, shouldersR, armsL, armsR, handsL, handsR,
+    puffsL, puffsR, hatCrowns, hatBrims, hatDomes,
   ];
   const group = new THREE.Group();
   group.name = "pedestrians";
@@ -806,21 +877,30 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
   const c = new THREE.Color();
   actors.forEach((a, i) => {
     const p = a.profile;
+    const shoe = p.role === "farmer" ? "#3a2e24" : "#1c1612";
+    const hipColor = p.skirtScale[1] > 0 && p.role !== "man" ? p.skirtColor : p.legColor;
     heads.setColorAt(i, c.set(p.skin));
     hairs.setColorAt(i, c.set(p.hair));
+    necks.setColorAt(i, c.set(p.skin));
     torsos.setColorAt(i, c.set(p.torsoColor));
+    hips.setColorAt(i, c.set(hipColor));
     skirts.setColorAt(i, c.set(p.skirtColor));
     accents.setColorAt(i, c.set(p.accentColor));
     legsL.setColorAt(i, c.set(p.legColor));
     legsR.setColorAt(i, c.set(p.legColor));
-    shoesL.setColorAt(i, c.set("#261f1a"));
-    shoesR.setColorAt(i, c.set("#261f1a"));
+    shoesL.setColorAt(i, c.set(shoe));
+    shoesR.setColorAt(i, c.set(shoe));
+    shouldersL.setColorAt(i, c.set(p.torsoColor));
+    shouldersR.setColorAt(i, c.set(p.torsoColor));
     armsL.setColorAt(i, c.set(p.torsoColor));
     armsR.setColorAt(i, c.set(p.torsoColor));
+    handsL.setColorAt(i, c.set(p.skin));
+    handsR.setColorAt(i, c.set(p.skin));
     puffsL.setColorAt(i, c.set(p.torsoColor));
     puffsR.setColorAt(i, c.set(p.torsoColor));
     hatCrowns.setColorAt(i, c.set(p.hatColor));
     hatBrims.setColorAt(i, c.set(p.hatColor));
+    hatDomes.setColorAt(i, c.set(p.hatColor));
   });
   for (const m of allMeshes) {
     if (m.instanceColor) m.instanceColor.needsUpdate = true;
@@ -860,7 +940,11 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
       if (a.kind === "walk") {
         const dist = Math.hypot(a.bx - a.ax, a.bz - a.az);
         const period = Math.max(4, (dist * 2) / a.speed);
-        const u = ((elapsed + a.phase * 3.1) % period) / period;
+        if (a.u0 == null) {
+          const along = dist > 0.1 ? ((a.x - a.ax) * (a.bx - a.ax) + (a.z - a.az) * (a.bz - a.az)) / (dist * dist) : 0.5;
+          a.u0 = Math.max(0.02, Math.min(0.48, along * 0.5));
+        }
+        const u = ((elapsed / period) + a.u0) % 1;
         const going = u < 0.5;
         const t = going ? u * 2 : (1 - u) * 2;
         px = a.ax + (a.bx - a.ax) * t;
@@ -883,14 +967,19 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
       scl.set(hs, hs, hs);
       rootMat.compose(pos, quat, scl);
 
-      setPart(heads, i, 0, 5.15, 0, 0, headYaw, 0, 1, 1.05, 1);
+      const child = p.role === "boy" || p.role === "girl";
+      const headS = child ? 1.16 : 1.0;
+      setPart(heads, i, 0, 5.08, 0, 0, headYaw, 0, headS, headS * 1.04, headS);
+      setPart(necks, i, 0, 4.76, 0, 0, 0, 0, 1.05, 1, 1.05);
       if (p.showHair) {
-        setPart(hairs, i, 0, 5.20, -0.06, 0, headYaw, 0, 1.02, 0.96, 1.04);
+        const bun = p.role === "woman" || p.role === "girl";
+        setPart(hairs, i, 0, 5.16, bun ? -0.12 : -0.07, 0, headYaw, 0, bun ? 1.06 : 1.10, bun ? 0.78 : 0.95, bun ? 1.18 : 1.12);
       } else {
-        setPart(hairs, i, 0, 5.20, 0, 0, 0, 0, 0, 0, 0);
+        setPart(hairs, i, 0, 5.22, 0, 0, 0, 0, 0, 0, 0);
       }
 
-      setPart(torsos, i, 0, 3.60, 0, 0, 0, 0, p.torsoScale[0] * 1.25, p.torsoScale[1], p.torsoScale[2] * 0.85);
+      setPart(torsos, i, 0, 3.72, 0, 0, 0, 0, p.torsoScale[0] * 1.28, p.torsoScale[1], p.torsoScale[2] * 0.92);
+      setPart(hips, i, 0, 2.62, 0, 0, 0, 0, p.role === "woman" || p.role === "girl" ? 1.12 : 1.18, 1, 0.95);
 
       if (p.skirtScale[1] > 0) {
         setPart(skirts, i, 0, p.skirtY, p.skirtZ, 0, 0, 0, p.skirtScale[0], p.skirtScale[1], p.skirtScale[2]);
@@ -899,70 +988,81 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
       }
 
       if (p.accentType === "vest") {
-        setPart(accents, i, 0, 3.55, 0.16, 0, 0, 0, p.torsoScale[0] * 0.66, 1.25, p.torsoScale[2] * 0.66);
+        setPart(accents, i, 0, 3.58, 0.14, 0, 0, 0, p.torsoScale[0] * 0.62, 1.12, p.torsoScale[2] * 0.62);
       } else if (p.accentType === "shawl") {
-        setPart(accents, i, 0, 4.15, -0.02, 0, 0, 0, 1.10, 0.92, 0.92);
+        // Drape over the shoulders, not a flat bib on the chest.
+        setPart(accents, i, 0, 4.28, -0.04, 0, 0, 0, 1.28, 0.50, 1.08);
       } else if (p.accentType === "overalls") {
-        setPart(accents, i, 0, 3.25, 0.16, 0, 0, 0, p.torsoScale[0] * 0.74, 1.40, p.torsoScale[2] * 0.68);
+        setPart(accents, i, 0, 3.35, 0.12, 0, 0, 0, p.torsoScale[0] * 0.78, 1.28, p.torsoScale[2] * 0.70);
       } else if (p.accentType === "belt") {
-        setPart(accents, i, 0, 2.75, 0, 0, 0, 0, p.torsoScale[0] * 1.06, 0.22, p.torsoScale[2] * 0.88);
+        setPart(accents, i, 0, 2.78, 0, 0, 0, 0, p.torsoScale[0] * 1.10, 0.18, p.torsoScale[2] * 0.92);
       } else if (p.accentType === "pinafore") {
-        setPart(accents, i, 0, 2.95, 0.10, 0, 0, 0, 0.68, 1.55, 0.66);
+        setPart(accents, i, 0, 3.15, 0.08, 0, 0, 0, 0.58, 1.12, 0.48);
       } else {
         setPart(accents, i, 0, 3, 0, 0, 0, 0, 0, 0, 0);
       }
 
       const hideLegs = p.skirtScale[1] > 2.4;
       const ls = hideLegs ? 0 : 1;
-      setPart(legsL, i, -0.22, 2.65, 0, legSwing, 0, 0, ls, ls, ls);
-      setPart(legsR, i, 0.22, 2.65, 0, -legSwing, 0, 0, ls, ls, ls);
-      setPart(shoesL, i, -0.22, 2.65, 0, legSwing, 0, 0, 1, 1, 1);
-      setPart(shoesR, i, 0.22, 2.65, 0, -legSwing, 0, 0, 1, 1, 1);
+      const stance = child ? 0.20 : 0.28;
+      setPart(legsL, i, -stance, 2.58, 0, legSwing, 0, 0, ls, ls, ls);
+      setPart(legsR, i, stance, 2.58, 0, -legSwing, 0, 0, ls, ls, ls);
+      const shoeS = hideLegs ? 0.85 : 1;
+      setPart(shoesL, i, -stance, 2.58, 0, legSwing, 0, 0, shoeS, shoeS, shoeS);
+      setPart(shoesR, i, stance, 2.58, 0, -legSwing, 0, 0, shoeS, shoeS, shoeS);
 
-      const shoulderX = p.torsoScale[0] * 0.68;
-      setPart(armsL, i, -shoulderX, 4.52, 0, armSwing, 0, 0.06, 1, 1, 1);
-      setPart(armsR, i, shoulderX, 4.52, 0, -armSwing, 0, -0.06, 1, 1, 1);
+      const shoulderX = 0.42 + p.torsoScale[0] * 0.22;
+      setPart(shouldersL, i, -shoulderX + 0.04, 4.50, 0, 0, 0, 0, 0.92, 0.78, 0.92);
+      setPart(shouldersR, i, shoulderX - 0.04, 4.50, 0, 0, 0, 0, 0.92, 0.78, 0.92);
+      setPart(armsL, i, -shoulderX, 4.46, 0, armSwing, 0, 0.08, 1, 1, 1);
+      setPart(armsR, i, shoulderX, 4.46, 0, -armSwing, 0, -0.08, 1, 1, 1);
+      setPart(handsL, i, -shoulderX, 4.46, 0, armSwing, 0, 0.08, 1, 1, 1);
+      setPart(handsR, i, shoulderX, 4.46, 0, -armSwing, 0, -0.08, 1, 1, 1);
 
       if (p.puffSleeve) {
-        setPart(puffsL, i, -shoulderX - 0.04, 4.28, 0, 0, 0, 0, 1.18, 1.32, 1.18);
-        setPart(puffsR, i, shoulderX + 0.04, 4.28, 0, 0, 0, 0, 1.18, 1.32, 1.18);
+        setPart(puffsL, i, -shoulderX - 0.04, 4.12, 0, 0, 0, 0, 1.15, 1.20, 1.15);
+        setPart(puffsR, i, shoulderX + 0.04, 4.12, 0, 0, 0, 0, 1.15, 1.20, 1.15);
       } else {
         setPart(puffsL, i, 0, 4, 0, 0, 0, 0, 0, 0, 0);
         setPart(puffsR, i, 0, 4, 0, 0, 0, 0, 0, 0, 0);
       }
 
-      // Hats
-      const hsMode = p.hatStyle;
-      if (hsMode === "wide") {
-        setPart(hatCrowns, i, 0, 5.56, 0, 0, headYaw, 0, 0.98, 0.42, 0.98);
-        setPart(hatBrims, i, 0, 5.38, 0, 0, headYaw, 0, 0.72, 1.0, 0.72);
-      } else if (hsMode === "tophat") {
-        setPart(hatCrowns, i, 0, 5.75, 0, 0, headYaw, 0, 0.92, 0.80, 0.92);
-        setPart(hatBrims, i, 0, 5.38, 0, 0, headYaw, 0, 0.60, 1.0, 0.60);
-      } else if (hsMode === "bonnet") {
-        setPart(hatCrowns, i, 0, 5.24, -0.06, -0.18, headYaw, 0, 1.12, 0.56, 1.24);
-        setPart(hatBrims, i, 0, 5.30, 0, 0, 0, 0, 0, 0, 0);
-      } else if (hsMode === "bowler") {
-        setPart(hatCrowns, i, 0, 5.54, 0, 0, headYaw, 0, 0.94, 0.40, 0.94);
-        setPart(hatBrims, i, 0, 5.36, 0, 0, headYaw, 0, 0.52, 1.0, 0.52);
-      } else if (hsMode === "boater") {
-        setPart(hatCrowns, i, 0, 5.50, 0, 0, headYaw, 0, 0.98, 0.30, 0.98);
-        setPart(hatBrims, i, 0, 5.36, 0, 0, headYaw, 0, 0.66, 1.0, 0.66);
-      } else if (hsMode === "fedora") {
-        setPart(hatCrowns, i, 0, 5.54, 0, 0.04, headYaw, 0, 0.96, 0.40, 1.02);
-        setPart(hatBrims, i, 0, 5.36, 0.04, 0.06, headYaw, 0, 0.62, 1.0, 0.66);
-      } else if (hsMode === "edwardian") {
-        setPart(hatCrowns, i, 0, 5.52, 0, 0, headYaw, 0, 0.96, 0.32, 0.96);
-        setPart(hatBrims, i, 0, 5.38, 0, 0, headYaw, 0, 0.78, 1.0, 0.78);
-      } else if (hsMode === "cloche") {
-        setPart(hatCrowns, i, 0, 5.42, 0, 0.05, headYaw, 0, 1.04, 0.44, 1.04);
-        setPart(hatBrims, i, 0, 5.24, 0.04, 0.12, headYaw, 0, 0.46, 1.0, 0.48);
-      } else if (hsMode === "cap") {
-        setPart(hatCrowns, i, 0, 5.46, -0.02, 0, headYaw, 0, 0.94, 0.24, 0.96);
-        setPart(hatBrims, i, 0, 5.35, 0.18, 0.08, headYaw, 0, 0.36, 1.0, 0.46);
-      } else {
+      // Hats: dome crowns for bowler / cloche / bonnet; cylinders for the rest.
+      const zeroHat = () => {
         setPart(hatCrowns, i, 0, 5.5, 0, 0, 0, 0, 0, 0, 0);
         setPart(hatBrims, i, 0, 5.4, 0, 0, 0, 0, 0, 0, 0);
+        setPart(hatDomes, i, 0, 5.5, 0, 0, 0, 0, 0, 0, 0);
+      };
+      const hsMode = p.hatStyle;
+      zeroHat();
+      if (hsMode === "wide") {
+        setPart(hatCrowns, i, 0, 5.58, 0, 0, headYaw, 0, 1.02, 0.36, 1.02);
+        setPart(hatBrims, i, 0, 5.40, 0, 0, headYaw, 0, 0.82, 1.0, 0.82);
+      } else if (hsMode === "tophat") {
+        setPart(hatCrowns, i, 0, 5.78, 0, 0, headYaw, 0, 0.90, 0.78, 0.90);
+        setPart(hatBrims, i, 0, 5.40, 0, 0, headYaw, 0, 0.62, 1.0, 0.62);
+      } else if (hsMode === "bonnet") {
+        setPart(hatDomes, i, 0, 5.28, -0.10, -0.22, headYaw, 0, 1.18, 0.82, 1.28);
+        setPart(hatBrims, i, 0, 5.10, 0.16, 0.18, headYaw, 0, 0.42, 1.0, 0.36);
+      } else if (hsMode === "bowler") {
+        setPart(hatDomes, i, 0, 5.48, 0, 0, headYaw, 0, 1.00, 0.92, 1.00);
+        setPart(hatBrims, i, 0, 5.32, 0, 0, headYaw, 0, 0.54, 1.0, 0.54);
+      } else if (hsMode === "boater") {
+        setPart(hatCrowns, i, 0, 5.50, 0, 0, headYaw, 0, 1.02, 0.22, 1.02);
+        setPart(hatBrims, i, 0, 5.38, 0, 0, headYaw, 0, 0.78, 1.0, 0.78);
+      } else if (hsMode === "fedora") {
+        setPart(hatCrowns, i, 0, 5.56, 0.04, 0.10, headYaw, 0, 0.94, 0.36, 1.06);
+        setPart(hatBrims, i, 0, 5.36, 0.06, 0.12, headYaw, 0, 0.70, 1.0, 0.74);
+      } else if (hsMode === "edwardian") {
+        setPart(hatCrowns, i, 0, 5.52, 0, 0, headYaw, 0, 0.98, 0.26, 0.98);
+        setPart(hatBrims, i, 0, 5.38, 0, 0, headYaw, 0, 0.92, 1.0, 0.92);
+      } else if (hsMode === "cloche") {
+        setPart(hatDomes, i, 0, 5.36, 0.06, 0, headYaw, 0, 1.08, 0.98, 1.12);
+        setPart(hatBrims, i, 0, 5.16, 0.08, 0.10, headYaw, 0, 0.48, 1.0, 0.50);
+      } else if (hsMode === "cap") {
+        setPart(hatCrowns, i, 0, 5.46, -0.02, 0, headYaw, 0, 0.98, 0.22, 1.00);
+        setPart(hatDomes, i, 0, 5.40, -0.02, 0, headYaw, 0, 0.92, 0.55, 0.92);
+        setPart(hatBrims, i, 0, 5.32, 0.20, 0.10, headYaw, 0, 0.38, 1.0, 0.50);
       }
     });
 
@@ -970,5 +1070,6 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
   };
 
   applyPose(0);
-  return (elapsed) => applyPose(elapsed);
+    return (elapsed) => applyPose(elapsed);
 }
+
