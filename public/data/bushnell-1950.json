@@ -4,6 +4,17 @@
   "note": "Streets the 1944 Avon sheet draws that the 1918 Good Hope sheet does not. Lakelawn Estate is still open ground on this sheet.",
   "update": [
     {
+      "id": "methodist-church",
+      "year": "1925",
+      "facade": {
+        "methodist1925": true,
+        "photoMatch": true,
+        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.63 (photograph captioned The Present Church)."
+      },
+      "sourceMap": "March 1906 Sanborn; Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.61–63",
+      "notes": "Centennial book PDF p.61: after the February 4, 1923 fire the congregation met in a tabernacle on an adjacent block (not drawn: no stop falls between 1923 and 1925 and its block is not named) and dedicated the present church on Sunday, July 12, 1925 (also PDF p.39). The book (PDF p.55) puts the church on Crafford Street; it is kept on the 1906 Sanborn lot. Form from the PDF p.63 photograph: dark brick with light stone trim, a large front gable with a big pointed traceried window between buttresses, a lower hip-roofed wing on the left with round-arched windows, a square corner tower at the right with paired louvered pointed belfry openings and a flat coped top, a gabled entrance porch with a pointed doorway at the foot of the tower, and a large hipped roof behind. No lettering is drawn; the photograph shows only a small notice board. The footprint (kept at 44 by 72), heights and colours are estimates."
+    },
+    {
       "id": "crafford-771",
       "name": "Funeral home",
       "use": "funeral home",

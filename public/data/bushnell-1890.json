@@ -22,6 +22,23 @@
   ],
   "update": [
     {
+      "id": "methodist-church",
+      "material": "brick",
+      "brick": "dark",
+      "width": 44,
+      "depth": 72,
+      "sign": "",
+      "steeple": true,
+      "year": "1884",
+      "facade": {
+        "methodist1884": true,
+        "photoMatch": true,
+        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.62 (drawing of the second Methodist church, 1884–1923)."
+      },
+      "sourceMap": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.61–62",
+      "notes": "Centennial book PDF p.61: the 1863 frame church was razed in the spring of 1883 and the new church was dedicated in May 1884; it burned on February 4, 1923 (also PDF p.38). Form from the PDF p.62 drawing: a brick front gable with a large pointed traceried window, small pointed windows, a lower side aisle on the left, a square corner tower at the right front with a pointed door, a round star window, a blank tablet, a corbelled band, a belfry with gablets and a tall spire, and a gabled side wing behind the tower. The tablet lettering cannot be read, so it is blank. The footprint (kept at 44 by 72), heights, brick colour and the lot (inferred until the 1906 Sanborn) are estimates."
+    },
+    {
       "id": "hendee-house-26",
       "name": "Hotel Alexander",
       "sign": "ALEXANDER",

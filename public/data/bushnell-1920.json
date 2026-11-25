@@ -4,6 +4,35 @@
   "note": "Streets the 1918 Good Hope sheet draws beyond the 1854 plat. They are not on the February 1912 Sanborn, so the 1910 stop does not include them. No plat dates were found.",
   "add": [
     {
+      "id": "st-bernard-rectory-1916",
+      "name": "St. Bernard's Rectory",
+      "kind": "house",
+      "use": "rectory",
+      "material": "brick",
+      "brick": "muted",
+      "paint": "cream",
+      "stories": 2.5,
+      "width": 28,
+      "depth": 34,
+      "x": -48,
+      "z": 1335,
+      "facing": "+z",
+      "sign": "",
+      "porch": true,
+      "party": [],
+      "confidence": "sourced",
+      "steeple": false,
+      "rotation": 0,
+      "year": "1916",
+      "facade": {
+        "stBernardRectory": true,
+        "photoMatch": true,
+        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.61 (photograph of the new church and the rectory)."
+      },
+      "sourceMap": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.60–61",
+      "notes": "Centennial book PDF p.60: in the autumn of 1916 Father John M. Sheedy directed the building of the rectory (parish house) and moved in that year. The PDF p.61 photograph shows it immediately to the left of the 1953 church, facing the same street: a large two-and-a-half-story brick house with a hipped main roof and a row of dormers, a front gable on the church side, a tall chimney, and a broad one-story front porch with a flat roof on the corner side. Drawn from the 1920 stop beside the 1907 church and kept beside the 1953 church; no removal date was found. No name is drawn. The footprint (28 by 34, between the church and Hail Street), heights, brick colour and porch depth are estimates."
+    },
+    {
       "id": "crafford-771",
       "name": "Dwelling",
       "kind": "house",
