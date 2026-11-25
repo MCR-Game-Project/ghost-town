@@ -2,8 +2,8 @@ import * as THREE from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 // Procedural sculpted geometry builders for period pedestrians (no photo textures).
-// Every geometry carries outward-facing normals and a vertex `color` attribute so
-// `instanceColor` tints cleanly while preserving fabric folds, tailoring, and facial AO.
+// Every geometry preserves smooth vertex normals across curved surfaces and carries
+// a vertex `color` attribute so `instanceColor` tints cleanly with folds and AO.
 
 export function ensureVertexColors(geo, r = 1, g = 1, b = 1) {
   const pos = geo.getAttribute("position");
@@ -20,22 +20,28 @@ export function ensureVertexColors(geo, r = 1, g = 1, b = 1) {
   return geo;
 }
 
+// Compute smooth normals on each indexed part BEFORE converting to non-indexed,
+// so merging heterogeneous parts never degrades smooth shading into flat facets.
 function mergeParts(parts) {
   const prepped = parts.map((g) => {
-    const nonIdx = (g.index ? g.toNonIndexed() : g).clone();
+    const src = g.clone();
+    if (!src.getAttribute("normal")) src.computeVertexNormals();
+    const nonIdx = src.index ? src.toNonIndexed() : src;
     nonIdx.deleteAttribute("uv");
-    if (!nonIdx.getAttribute("normal")) nonIdx.computeVertexNormals();
     return ensureVertexColors(nonIdx);
   });
-  const merged = mergeGeometries(prepped, false);
-  merged.computeVertexNormals();
-  return merged;
+  return mergeGeometries(prepped, false);
 }
 
-// Smooth elliptical loft with optional pleats, front flattening, and bustle curve.
+const smoothstep = (e0, e1, x) => {
+  const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
+  return t * t * (3 - 2 * t);
+};
+
+// Smooth elliptical loft with optional pleats, front flattening, bustle curve, and
+// seam-free 360-degree vertex normals (plus optional crisp flat end-caps).
 // theta = 0 faces +Z (front), theta = PI/2 faces +X, theta = PI faces -Z (back).
-// Outward-facing CCW winding: (a, b, d) and (b, e, d).
-export function buildLoft(rings, radialSegs = 20, options = {}) {
+export function buildLoft(rings, radialSegs = 24, options = {}) {
   const {
     thetaStart = 0,
     thetaLen = Math.PI * 2,
@@ -43,7 +49,7 @@ export function buildLoft(rings, radialSegs = 20, options = {}) {
     capTop = false,
   } = options;
   const openArc = Math.abs(thetaLen - Math.PI * 2) > 1e-4;
-  const cols = radialSegs + 1;
+  const cols = openArc ? radialSegs + 1 : radialSegs;
   const positions = [];
   const colors = [];
   const indices = [];
@@ -92,51 +98,64 @@ export function buildLoft(rings, radialSegs = 20, options = {}) {
 
   for (let r = 0; r < rings.length - 1; r++) {
     for (let c = 0; c < radialSegs; c++) {
+      const cNext = openArc ? c + 1 : (c + 1) % radialSegs;
       const a = r * cols + c;
-      const b = a + 1;
+      const b = r * cols + cNext;
       const d = (r + 1) * cols + c;
-      const e = d + 1;
+      const e = (r + 1) * cols + cNext;
       indices.push(a, b, d);
       indices.push(b, e, d);
     }
   }
 
-  if (capBottom && !openArc) {
-    const bRing = rings[0];
-    const centerIdx = positions.length / 3;
-    positions.push(bRing.ox || 0, bRing.y, bRing.oz || 0);
-    const bs = (bRing.shade ?? 1.0) * 0.85;
-    colors.push(bs, bs, bs);
-    for (let c = 0; c < radialSegs; c++) {
-      indices.push(centerIdx, c + 1, c);
-    }
+  const wallGeo = new THREE.BufferGeometry();
+  wallGeo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  wallGeo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  wallGeo.setIndex(indices);
+  wallGeo.computeVertexNormals();
+
+  if ((!capBottom && !capTop) || openArc) {
+    return wallGeo;
   }
 
-  if (capTop && !openArc) {
-    const tRing = rings[rings.length - 1];
-    const topBase = (rings.length - 1) * cols;
-    const centerIdx = positions.length / 3;
-    positions.push(tRing.ox || 0, tRing.y, tRing.oz || 0);
-    const ts = tRing.shade ?? 1.0;
-    colors.push(ts, ts, ts);
+  // Keep caps as separate indexed pieces so flat cap normals never crease the smooth side loft
+  const parts = [wallGeo];
+  const makeCap = (ringIdx, isTop) => {
+    const ring = rings[ringIdx];
+    const ox = ring.ox || 0;
+    const oz = ring.oz || 0;
+    const cPos = [ox, ring.y, oz];
+    const cs = Math.max(0.55, (ring.shade ?? 1.0) * (isTop ? 1.0 : 0.85));
+    const cCol = [cs, cs, cs];
+    const cIdx = [];
     for (let c = 0; c < radialSegs; c++) {
-      indices.push(centerIdx, topBase + c, topBase + c + 1);
+      const src = (ringIdx * cols + c) * 3;
+      cPos.push(positions[src], positions[src + 1], positions[src + 2]);
+      cCol.push(colors[src], colors[src + 1], colors[src + 2]);
     }
-  }
+    for (let c = 0; c < radialSegs; c++) {
+      const n = (c + 1) % radialSegs;
+      if (isTop) cIdx.push(0, 1 + c, 1 + n);
+      else cIdx.push(0, 1 + n, 1 + c);
+    }
+    const cg = new THREE.BufferGeometry();
+    cg.setAttribute("position", new THREE.Float32BufferAttribute(cPos, 3));
+    cg.setAttribute("color", new THREE.Float32BufferAttribute(cCol, 3));
+    cg.setIndex(cIdx);
+    cg.computeVertexNormals();
+    return cg;
+  };
 
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-  geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-  geo.setIndex(indices);
-  geo.computeVertexNormals();
-  return geo;
+  if (capBottom) parts.push(makeCap(0, false));
+  if (capTop) parts.push(makeCap(rings.length - 1, true));
+  return parts.length === 1 ? wallGeo : mergeParts(parts);
 }
 
 // Sculpted head centered on headPivot (base of skull at y = 0, crown at y = 0.76).
-// Head center at y = 0.38. Includes brow ridge, recessed eye sockets, nose bridge/tip,
-// jaw/chin taper, lip line, ear projections, and soft facial AO vertex shading.
+// Includes brow ridge, recessed eye sockets, defined nose bridge/tip + under-nose shadow,
+// cheekbone fullness, jaw/chin taper, lip contour, ears, and soft facial AO.
 export function makeHeadGeo() {
-  const geo = new THREE.SphereGeometry(1, 18, 12);
+  const geo = new THREE.SphereGeometry(1, 26, 20);
   const pos = geo.getAttribute("position");
   const colors = new Float32Array(pos.count * 3);
 
@@ -155,56 +174,65 @@ export function makeHeadGeo() {
       const t = -vy;
       x *= 1 - 0.30 * Math.pow(t, 1.35);
       if (vz > 0) {
-        const chin = Math.exp(-(vx * vx * 6.5 + Math.pow((vy + 0.68) * 3.2, 2)));
-        z += 0.044 * chin;
+        const chin = Math.exp(-(vx * vx * 6.0 + Math.pow((vy + 0.68) * 3.0, 2)));
+        z += 0.048 * chin;
       }
-      if (vy < -0.55) shade *= 0.88;
+      if (vy < -0.50) shade *= 0.82;
     }
 
-    if (vz > 0.15) {
-      const cheek = Math.exp(-(Math.pow((Math.abs(vx) - 0.52) * 3.2, 2) + Math.pow((vy + 0.05) * 3.8, 2)));
-      z += 0.020 * cheek;
+    // Cheekbones & warm mid-face blush
+    if (vz > 0.12) {
+      const cheek = Math.exp(-(Math.pow((Math.abs(vx) - 0.50) * 3.1, 2) + Math.pow((vy + 0.04) * 3.6, 2)));
+      z += 0.022 * cheek;
       blush = cheek;
     }
 
-    if (vz > 0.35) {
-      const sock = Math.exp(-(Math.pow((Math.abs(vx) - 0.34) * 4.8, 2) + Math.pow((vy - 0.06) * 6.2, 2)));
-      z -= 0.028 * sock;
-      shade *= 1 - 0.14 * sock;
+    // Recessed eye sockets with clear orbital AO
+    if (vz > 0.32) {
+      const sock = Math.exp(-(Math.pow((Math.abs(vx) - 0.34) * 4.6, 2) + Math.pow((vy - 0.06) * 5.8, 2)));
+      z -= 0.034 * sock;
+      shade *= 1 - 0.22 * sock;
     }
 
-    if (vz > 0.42) {
-      const brow = Math.exp(-(Math.pow(vx * 1.9, 2) + Math.pow((vy - 0.22) * 6.5, 2)));
-      z += 0.022 * brow;
+    // Brow ridge catchlight
+    if (vz > 0.38) {
+      const brow = Math.exp(-(Math.pow(vx * 1.85, 2) + Math.pow((vy - 0.22) * 6.0, 2)));
+      z += 0.026 * brow;
+      shade *= 1 + 0.03 * brow;
     }
 
-    if (vz > 0.45 && Math.abs(vx) < 0.28) {
-      const noseX = Math.exp(-Math.pow(vx / 0.115, 2));
-      const noseY = Math.exp(-Math.pow((vy + 0.05) / 0.16, 2));
-      const tip = Math.exp(-Math.pow((vy + 0.12) / 0.08, 2));
-      const nose = noseX * (0.72 * noseY + 0.45 * tip);
-      z += 0.084 * nose;
-      const underNose = noseX * Math.exp(-Math.pow((vy + 0.22) / 0.06, 2));
-      shade *= 1 - 0.14 * underNose;
+    // Defined nose bridge, tip, and under-nose philtrum shadow
+    if (vz > 0.42 && Math.abs(vx) < 0.30) {
+      const noseX = Math.exp(-Math.pow(vx / 0.12, 2));
+      const noseY = Math.exp(-Math.pow((vy + 0.04) / 0.17, 2));
+      const tip = Math.exp(-Math.pow((vy + 0.12) / 0.085, 2));
+      const nose = noseX * (0.76 * noseY + 0.52 * tip);
+      z += 0.104 * nose;
+      const underNose = noseX * Math.exp(-Math.pow((vy + 0.23) / 0.065, 2));
+      shade *= 1 - 0.22 * underNose;
     }
 
-    if (vz > 0.45 && Math.abs(vx) < 0.30) {
-      const mouthLine = Math.exp(-(Math.pow(vx * 4.5, 2) + Math.pow((vy + 0.36) * 14.0, 2)));
-      z -= 0.012 * mouthLine;
-      shade *= 1 - 0.08 * mouthLine;
+    // Mouth crease + lower-lip shadow
+    if (vz > 0.42 && Math.abs(vx) < 0.34) {
+      const mouthLine = Math.exp(-(Math.pow(vx * 4.2, 2) + Math.pow((vy + 0.36) * 12.0, 2)));
+      z -= 0.016 * mouthLine;
+      shade *= 1 - 0.14 * mouthLine;
+      const underLip = Math.exp(-(Math.pow(vx * 5.0, 2) + Math.pow((vy + 0.48) * 10.0, 2)));
+      shade *= 1 - 0.12 * underLip;
     }
 
-    if (Math.abs(vx) > 0.80 && vy > -0.24 && vy < 0.20 && vz > -0.26 && vz < 0.14) {
-      const ear = Math.exp(-(Math.pow((vy + 0.02) * 5.0, 2) + Math.pow((vz + 0.06) * 6.0, 2)));
-      x += Math.sign(vx) * 0.036 * ear;
-      shade *= 1 - 0.08 * ear;
-      blush = Math.max(blush, ear * 0.6);
+    // Ears
+    if (Math.abs(vx) > 0.78 && vy > -0.25 && vy < 0.22 && vz > -0.28 && vz < 0.16) {
+      const ear = Math.exp(-(Math.pow((vy + 0.02) * 4.8, 2) + Math.pow((vz + 0.06) * 5.8, 2)));
+      x += Math.sign(vx) * 0.038 * ear;
+      shade *= 1 - 0.10 * ear;
+      blush = Math.max(blush, ear * 0.65);
     }
 
     pos.setXYZ(i, x, y + 0.38, z);
-    colors[i * 3] = Math.min(1.04, shade * (1 + 0.035 * blush));
+    colors[i * 3] = Math.min(1.04, shade * (1 + 0.045 * blush));
     colors[i * 3 + 1] = shade * (1 - 0.025 * blush);
-    colors[i * 3 + 2] = shade * (1 - 0.035 * blush);
+    colors[i * 3 + 2] = shade * (1 - 0.040 * blush);
   }
 
   geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
@@ -214,58 +242,68 @@ export function makeHeadGeo() {
 
 export function makeEyeWhitesGeo() {
   const mk = (sx) => {
-    const g = new THREE.SphereGeometry(1, 8, 6);
-    g.scale(0.050, 0.027, 0.022);
+    const g = new THREE.SphereGeometry(1, 10, 8);
+    g.scale(0.056, 0.032, 0.024);
     g.rotateY(sx * 0.16);
-    g.translate(sx * 0.100, 0.402, 0.285);
-    return ensureVertexColors(g, 0.96, 0.95, 0.93);
+    g.translate(sx * 0.100, 0.402, 0.283);
+    return ensureVertexColors(g, 0.96, 0.95, 0.92);
   };
   return mergeParts([mk(-1), mk(1)]);
 }
 
 export function makeIrisesGeo() {
   const mk = (sx) => {
-    const g = new THREE.SphereGeometry(1, 8, 6);
-    g.scale(0.027, 0.027, 0.020);
-    g.translate(sx * 0.100, 0.402, 0.299);
-    return ensureVertexColors(g, 1, 1, 1);
+    const iris = new THREE.SphereGeometry(1, 10, 8);
+    iris.scale(0.033, 0.033, 0.022);
+    iris.translate(sx * 0.100, 0.402, 0.299);
+    ensureVertexColors(iris, 0.88, 0.88, 0.88);
+    const pupil = new THREE.SphereGeometry(1, 8, 6);
+    pupil.scale(0.017, 0.017, 0.016);
+    pupil.translate(sx * 0.100, 0.402, 0.312);
+    ensureVertexColors(pupil, 0.18, 0.18, 0.18);
+    return mergeParts([iris, pupil]);
   };
   return mergeParts([mk(-1), mk(1)]);
 }
 
 export function makeBrowsGeo() {
   const mk = (sx) => {
-    const g = new THREE.CapsuleGeometry(0.013, 0.070, 2, 5);
-    g.rotateZ(Math.PI / 2 - sx * 0.10);
-    g.scale(1.0, 0.85, 0.75);
-    g.translate(sx * 0.100, 0.454, 0.307);
-    return ensureVertexColors(g, 0.86, 0.86, 0.86);
+    const g = new THREE.CapsuleGeometry(0.017, 0.082, 4, 8);
+    g.rotateZ(Math.PI / 2 - sx * 0.12);
+    g.scale(1.0, 0.82, 0.78);
+    g.translate(sx * 0.102, 0.460, 0.309);
+    return ensureVertexColors(g, 0.78, 0.78, 0.78);
   };
   return mergeParts([mk(-1), mk(1)]);
 }
 
 export function makeMouthGeo() {
-  const g = new THREE.SphereGeometry(1, 8, 6);
-  g.scale(0.062, 0.018, 0.024);
-  g.translate(0, 0.240, 0.306);
-  return ensureVertexColors(g, 0.94, 0.92, 0.92);
+  const upper = new THREE.SphereGeometry(1, 12, 8);
+  upper.scale(0.068, 0.017, 0.026);
+  upper.translate(0, 0.246, 0.308);
+  ensureVertexColors(upper, 0.86, 0.84, 0.84);
+  const lower = new THREE.SphereGeometry(1, 12, 8);
+  lower.scale(0.058, 0.016, 0.025);
+  lower.translate(0, 0.228, 0.307);
+  ensureVertexColors(lower, 0.96, 0.94, 0.94);
+  return mergeParts([upper, lower]);
 }
 
-// Tailored mustache + trimmed jawline beard (not a floating chin ball)
+// Tailored mustache + trimmed jawline beard
 export function makeBeardGeo() {
-  const mustL = new THREE.CapsuleGeometry(0.016, 0.056, 2, 5);
+  const mustL = new THREE.CapsuleGeometry(0.018, 0.062, 4, 6);
   mustL.rotateZ(Math.PI / 2 + 0.20);
-  mustL.translate(-0.044, 0.278, 0.316);
-  const mustR = new THREE.CapsuleGeometry(0.016, 0.056, 2, 5);
+  mustL.translate(-0.046, 0.278, 0.318);
+  const mustR = new THREE.CapsuleGeometry(0.018, 0.062, 4, 6);
   mustR.rotateZ(Math.PI / 2 - 0.20);
-  mustR.translate(0.044, 0.278, 0.316);
+  mustR.translate(0.046, 0.278, 0.318);
   const chin = buildLoft(
     [
       { y: 0.02, rx: 0.15, rz: 0.16, oz: 0.12, shade: 0.85 },
       { y: 0.12, rx: 0.19, rz: 0.20, oz: 0.11, shade: 0.93 },
       { y: 0.22, rx: 0.20, rz: 0.19, oz: 0.09, shade: 0.96 },
     ],
-    10,
+    14,
     { thetaStart: -Math.PI * 0.45, thetaLen: Math.PI * 0.90 },
   );
   return mergeParts([mustL, mustR, chin]);
@@ -279,13 +317,13 @@ export function makeNeckGeo() {
       { y: 5.04, rx: 0.145, rz: 0.145, shade: 0.96 },
       { y: 5.16, rx: 0.150, rz: 0.150, shade: 0.90 },
     ],
-    14,
+    16,
   );
 }
 
-// Sculpted hair cap covering crown, temples, and nape — never clips cheeks or jawline.
+// Smooth, voluminous hair cap using continuous smoothstep blending (no faceted vertex jumps).
 export function makeHairBaseGeo() {
-  const geo = new THREE.SphereGeometry(1, 12, 8);
+  const geo = new THREE.SphereGeometry(1, 24, 18);
   const pos = geo.getAttribute("position");
   const colors = new Float32Array(pos.count * 3);
 
@@ -295,27 +333,30 @@ export function makeHairBaseGeo() {
     const vz = pos.getZ(i);
 
     const theta = Math.atan2(vx, vz);
-    const strand = 1 + 0.024 * Math.cos(18 * theta);
+    const wave = 1 + 0.018 * Math.cos(14 * theta);
 
-    // Hair covers top/crown (vy > 0.34), temples above ears (|vx| > 0.72 && vy > 0.08),
-    // and back of skull (vz < -0.15 && vy > -0.35). Everything on the face/jaw stays inside skull.
-    const onBack = vz < -0.15 && vy > -0.38;
-    const onCrown = vy > 0.34 + 0.12 * Math.max(0, vz);
-    const onTemple = Math.abs(vx) > 0.72 && vz > -0.25 && vz < 0.25 && vy > 0.08 && vy < 0.40;
-    const keepOut = !(onBack || onCrown || onTemple);
+    // Smooth continuous coverage weights (0 on face -> 1 on crown/back/temples)
+    const crownMask = smoothstep(0.24, 0.44, vy - 0.14 * Math.max(0, vz));
+    const backMask = smoothstep(-0.02, -0.26, vz) * smoothstep(-0.56, -0.22, vy);
+    const templeMask =
+      smoothstep(0.58, 0.78, Math.abs(vx)) *
+      smoothstep(-0.04, 0.16, vy) *
+      smoothstep(0.32, 0.04, vz);
+    const cover = Math.max(crownMask, backMask, templeMask);
 
-    const rBoost = keepOut ? -0.06 : 0.036;
-    const jawScale = vy < 0 ? 1 - 0.30 * Math.pow(-vy, 1.35) : 1.0;
+    // Smoothly tuck non-hair face vertices inside skull, lift hair with natural volume
+    const rBoost = -0.055 + cover * (0.108 + 0.016 * Math.max(0, vy));
+    const jawScale = vy < 0 ? 1 - 0.28 * Math.pow(-vy, 1.35) : 1.0;
 
-    const rx = (0.300 + rBoost) * strand * jawScale;
-    const ry = 0.390 + Math.max(0, rBoost);
-    const rz = (0.340 + rBoost) * strand;
+    const rx = (0.296 + rBoost) * wave * jawScale;
+    const ry = 0.386 + Math.max(0, rBoost * 0.95);
+    const rz = (0.336 + rBoost) * wave;
 
     const x = vx * rx;
-    const y = vy * ry + 0.39;
-    const z = vz * rz - 0.014;
+    const y = vy * ry + 0.394;
+    const z = vz * rz - 0.016;
 
-    const shade = 0.92 + 0.08 * Math.cos(18 * theta) + 0.04 * Math.max(0, vy);
+    const shade = 0.88 + 0.07 * Math.cos(14 * theta) + 0.07 * Math.max(0, vy);
     pos.setXYZ(i, x, y, z);
     colors[i * 3] = shade;
     colors[i * 3 + 1] = shade;
@@ -328,39 +369,43 @@ export function makeHairBaseGeo() {
 }
 
 export function makeHairBunGeo() {
-  const g = new THREE.SphereGeometry(1, 10, 8);
-  g.scale(0.145, 0.130, 0.125);
-  g.translate(0, 0.37, -0.34);
+  const g = new THREE.SphereGeometry(1, 16, 12);
+  g.scale(0.160, 0.140, 0.135);
+  g.translate(0, 0.38, -0.34);
   return ensureVertexColors(g, 0.94, 0.94, 0.94);
 }
 
+// Smoothly sculpted voluminous bob / swept nape hair
 export function makeHairSideBobGeo() {
-  const mk = (sx) => {
-    const g = new THREE.CapsuleGeometry(0.072, 0.24, 3, 6);
-    g.scale(0.68, 1.0, 1.12);
-    g.rotateZ(sx * 0.10);
-    g.translate(sx * 0.212, 0.31, -0.10);
-    return ensureVertexColors(g, 0.94, 0.94, 0.94);
-  };
-  const back = new THREE.CapsuleGeometry(0.135, 0.20, 3, 6);
-  back.rotateZ(Math.PI / 2);
-  back.scale(1.22, 1.14, 0.86);
-  back.translate(0, 0.29, -0.26);
-  return mergeParts([mk(-1), mk(1), back]);
+  const hood = buildLoft(
+    [
+      { y: 0.12, rx: 0.33, rz: 0.34, oz: -0.06, pleatAmp: 0.032, pleatFreq: 10, shade: 0.86 },
+      { y: 0.28, rx: 0.36, rz: 0.38, oz: -0.04, pleatAmp: 0.028, pleatFreq: 10, shade: 0.94 },
+      { y: 0.48, rx: 0.35, rz: 0.38, oz: -0.03, pleatAmp: 0.018, pleatFreq: 10, shade: 0.99 },
+      { y: 0.66, rx: 0.28, rz: 0.31, oz: -0.02, shade: 1.00 },
+    ],
+    20,
+    { thetaStart: Math.PI * 0.32, thetaLen: Math.PI * 1.36 },
+  );
+  const backRoll = new THREE.SphereGeometry(1, 16, 12);
+  backRoll.scale(0.28, 0.18, 0.18);
+  backRoll.translate(0, 0.24, -0.25);
+  ensureVertexColors(backRoll, 0.92, 0.92, 0.92);
+  return mergeParts([hood, backRoll]);
 }
 
 // Anatomical men's coat/jacket torso (y = 3.24..4.80)
 export function makeTorsoMenGeo() {
   return buildLoft(
     [
-      { y: 3.24, rx: 0.50, rz: 0.33, ox: 0, oz: 0.00, pleatAmp: 0.022, pleatFreq: 8, shade: 0.93 },
-      { y: 3.48, rx: 0.46, rz: 0.30, ox: 0, oz: 0.00, pleatAmp: 0.018, pleatFreq: 8, shade: 0.96 },
-      { y: 3.88, rx: 0.52, rz: 0.34, ox: 0, oz: 0.02, pleatAmp: 0.014, pleatFreq: 8, shade: 0.99 },
-      { y: 4.30, rx: 0.59, rz: 0.36, ox: 0, oz: 0.03, pleatAmp: 0.010, pleatFreq: 8, shade: 1.02 },
-      { y: 4.62, rx: 0.62, rz: 0.31, ox: 0, oz: 0.01, pleatAmp: 0.006, pleatFreq: 8, shade: 1.00 },
+      { y: 3.24, rx: 0.50, rz: 0.33, ox: 0, oz: 0.00, pleatAmp: 0.020, pleatFreq: 8, shade: 0.93 },
+      { y: 3.48, rx: 0.46, rz: 0.30, ox: 0, oz: 0.00, pleatAmp: 0.016, pleatFreq: 8, shade: 0.96 },
+      { y: 3.88, rx: 0.52, rz: 0.34, ox: 0, oz: 0.02, pleatAmp: 0.012, pleatFreq: 8, shade: 0.99 },
+      { y: 4.30, rx: 0.59, rz: 0.36, ox: 0, oz: 0.03, pleatAmp: 0.008, pleatFreq: 8, shade: 1.02 },
+      { y: 4.62, rx: 0.62, rz: 0.31, ox: 0, oz: 0.01, pleatAmp: 0.005, pleatFreq: 8, shade: 1.00 },
       { y: 4.80, rx: 0.24, rz: 0.20, ox: 0, oz: 0.00, shade: 0.92 },
     ],
-    20,
+    24,
     { capBottom: true, capTop: true },
   );
 }
@@ -368,14 +413,14 @@ export function makeTorsoMenGeo() {
 export function makeTorsoShirtGeo() {
   return buildLoft(
     [
-      { y: 3.34, rx: 0.40, rz: 0.24, pleatAmp: 0.0, pleatFreq: 10, shade: 0.90 },
-      { y: 3.56, rx: 0.44, rz: 0.28, pleatAmp: 0.014, pleatFreq: 10, shade: 0.96 },
+      { y: 3.34, rx: 0.39, rz: 0.23, pleatAmp: 0.0, pleatFreq: 10, shade: 0.90 },
+      { y: 3.56, rx: 0.435, rz: 0.275, pleatAmp: 0.014, pleatFreq: 10, shade: 0.96 },
       { y: 4.02, rx: 0.53, rz: 0.34, ox: 0, oz: 0.02, pleatAmp: 0.012, pleatFreq: 10, shade: 1.01 },
       { y: 4.44, rx: 0.58, rz: 0.33, ox: 0, oz: 0.02, pleatAmp: 0.008, pleatFreq: 10, shade: 1.02 },
       { y: 4.68, rx: 0.56, rz: 0.28, shade: 0.99 },
       { y: 4.82, rx: 0.22, rz: 0.19, shade: 0.92 },
     ],
-    20,
+    24,
     { capBottom: true, capTop: true },
   );
 }
@@ -383,14 +428,14 @@ export function makeTorsoShirtGeo() {
 export function makeTorsoWomenGeo() {
   return buildLoft(
     [
-      { y: 3.36, rx: 0.37, rz: 0.25, pleatAmp: 0.018, pleatFreq: 8, shade: 0.94 },
-      { y: 3.62, rx: 0.39, rz: 0.26, pleatAmp: 0.015, pleatFreq: 8, shade: 0.97 },
-      { y: 4.08, rx: 0.48, rz: 0.33, ox: 0, oz: 0.045, pleatAmp: 0.010, pleatFreq: 8, shade: 1.02 },
+      { y: 3.36, rx: 0.37, rz: 0.25, pleatAmp: 0.016, pleatFreq: 8, shade: 0.94 },
+      { y: 3.62, rx: 0.39, rz: 0.26, pleatAmp: 0.014, pleatFreq: 8, shade: 0.97 },
+      { y: 4.08, rx: 0.48, rz: 0.33, ox: 0, oz: 0.045, pleatAmp: 0.009, pleatFreq: 8, shade: 1.02 },
       { y: 4.45, rx: 0.50, rz: 0.28, ox: 0, oz: 0.015, shade: 1.00 },
       { y: 4.65, rx: 0.46, rz: 0.23, shade: 0.98 },
       { y: 4.78, rx: 0.19, rz: 0.17, shade: 0.92 },
     ],
-    20,
+    24,
     { capBottom: true, capTop: true },
   );
 }
@@ -400,11 +445,11 @@ export function makePelvisGeo() {
     [
       { y: 2.68, rx: 0.44, rz: 0.31, shade: 0.90 },
       { y: 2.96, rx: 0.48, rz: 0.33, shade: 0.96 },
-      { y: 3.26, rx: 0.475, rz: 0.315, shade: 0.98 },
-      { y: 3.42, rx: 0.470, rz: 0.305, shade: 0.78 },
-      { y: 3.48, rx: 0.465, rz: 0.300, shade: 0.88 },
+      { y: 3.26, rx: 0.455, rz: 0.295, shade: 0.98 },
+      { y: 3.42, rx: 0.445, rz: 0.285, shade: 0.78 },
+      { y: 3.48, rx: 0.440, rz: 0.280, shade: 0.88 },
     ],
-    18,
+    22,
     { capBottom: true, capTop: true },
   );
 }
@@ -413,12 +458,12 @@ export function makePelvisGeo() {
 export function makeCoatTailGeo() {
   return buildLoft(
     [
-      { y: 2.18, rx: 0.58, rz: 0.40, pleatAmp: 0.032, pleatFreq: 9, shade: 0.90 },
-      { y: 2.62, rx: 0.54, rz: 0.37, pleatAmp: 0.025, pleatFreq: 9, shade: 0.94 },
-      { y: 3.05, rx: 0.50, rz: 0.34, pleatAmp: 0.018, pleatFreq: 9, shade: 0.97 },
-      { y: 3.44, rx: 0.47, rz: 0.31, pleatAmp: 0.010, pleatFreq: 9, shade: 0.95 },
+      { y: 2.18, rx: 0.58, rz: 0.40, pleatAmp: 0.030, pleatFreq: 9, shade: 0.90 },
+      { y: 2.62, rx: 0.54, rz: 0.37, pleatAmp: 0.024, pleatFreq: 9, shade: 0.94 },
+      { y: 3.05, rx: 0.50, rz: 0.34, pleatAmp: 0.016, pleatFreq: 9, shade: 0.97 },
+      { y: 3.44, rx: 0.47, rz: 0.31, pleatAmp: 0.009, pleatFreq: 9, shade: 0.95 },
     ],
-    18,
+    22,
     { thetaStart: Math.PI * 0.16, thetaLen: Math.PI * 1.68 },
   );
 }
@@ -434,7 +479,7 @@ export function makeShirtFrontGeo() {
       { y: 4.66, rx: 0.23, rz: 0.21, ox: 0, oz: 0.02, shade: 0.94 },
       { y: 4.78, rx: 0.19, rz: 0.18, ox: 0, oz: 0.01, shade: 1.00 },
     ],
-    14,
+    18,
   );
   return mergeParts([vFront, collarRing]);
 }
@@ -447,7 +492,7 @@ export function makeWomanCollarGeo() {
       { y: 4.74, rx: 0.21, rz: 0.19, oz: 0.01, shade: 1.00 },
       { y: 4.82, rx: 0.18, rz: 0.17, shade: 0.96 },
     ],
-    16,
+    18,
   );
 }
 
@@ -480,7 +525,7 @@ export function makeVestGeo() {
       { y: 3.74, rx: 0.51, rz: 0.352, ox: 0, oz: 0.018, shade: 0.97 },
       { y: 4.12, rx: 0.53, rz: 0.368, ox: 0, oz: 0.025, shade: 1.00 },
     ],
-    12,
+    14,
     { thetaStart: -Math.PI * 0.14, thetaLen: Math.PI * 0.28 },
   );
 }
@@ -493,7 +538,7 @@ export function makeOverallsBibGeo() {
       { y: 3.82, rx: 0.550, rz: 0.375, ox: 0, oz: 0.02, shade: 0.98 },
       { y: 4.24, rx: 0.565, rz: 0.390, ox: 0, oz: 0.025, shade: 1.00 },
     ],
-    12,
+    14,
     { thetaStart: -Math.PI * 0.24, thetaLen: Math.PI * 0.48 },
   );
   const mkStrap = (sx) => {
@@ -508,12 +553,12 @@ export function makeOverallsBibGeo() {
 export function makeShawlGeo() {
   return buildLoft(
     [
-      { y: 3.88, rx: 0.60, rz: 0.38, pleatAmp: 0.03, pleatFreq: 10, shade: 0.90 },
-      { y: 4.24, rx: 0.58, rz: 0.36, pleatAmp: 0.02, pleatFreq: 10, shade: 0.97 },
+      { y: 3.88, rx: 0.60, rz: 0.38, pleatAmp: 0.028, pleatFreq: 10, shade: 0.90 },
+      { y: 4.24, rx: 0.58, rz: 0.36, pleatAmp: 0.020, pleatFreq: 10, shade: 0.97 },
       { y: 4.56, rx: 0.54, rz: 0.30, shade: 1.00 },
       { y: 4.74, rx: 0.24, rz: 0.20, shade: 0.94 },
     ],
-    18,
+    22,
     { thetaStart: Math.PI * 0.14, thetaLen: Math.PI * 1.72 },
   );
 }
@@ -521,14 +566,14 @@ export function makeShawlGeo() {
 export function makeSkirtFullGeo() {
   return buildLoft(
     [
-      { y: 0.26, rx: 0.98, rz: 0.90, pleatAmp: 0.055, pleatFreq: 10, shade: 0.88 },
-      { y: 0.98, rx: 0.88, rz: 0.80, pleatAmp: 0.048, pleatFreq: 10, shade: 0.92 },
-      { y: 1.85, rx: 0.74, rz: 0.66, pleatAmp: 0.038, pleatFreq: 10, shade: 0.96 },
-      { y: 2.75, rx: 0.57, rz: 0.48, pleatAmp: 0.025, pleatFreq: 10, shade: 0.99 },
-      { y: 3.25, rx: 0.44, rz: 0.34, pleatAmp: 0.015, pleatFreq: 10, shade: 0.98 },
+      { y: 0.26, rx: 0.98, rz: 0.90, pleatAmp: 0.052, pleatFreq: 10, shade: 0.88 },
+      { y: 0.98, rx: 0.88, rz: 0.80, pleatAmp: 0.046, pleatFreq: 10, shade: 0.92 },
+      { y: 1.85, rx: 0.74, rz: 0.66, pleatAmp: 0.036, pleatFreq: 10, shade: 0.96 },
+      { y: 2.75, rx: 0.57, rz: 0.48, pleatAmp: 0.024, pleatFreq: 10, shade: 0.99 },
+      { y: 3.25, rx: 0.44, rz: 0.34, pleatAmp: 0.014, pleatFreq: 10, shade: 0.98 },
       { y: 3.44, rx: 0.39, rz: 0.27, pleatAmp: 0.008, pleatFreq: 10, shade: 0.93 },
     ],
-    24,
+    28,
     { capBottom: true },
   );
 }
@@ -536,14 +581,14 @@ export function makeSkirtFullGeo() {
 export function makeSkirtBustleGeo() {
   return buildLoft(
     [
-      { y: 0.26, rx: 0.92, rz: 0.84, backBustle: 0.22, pleatAmp: 0.052, pleatFreq: 10, shade: 0.88 },
-      { y: 1.05, rx: 0.82, rz: 0.74, backBustle: 0.28, pleatAmp: 0.045, pleatFreq: 10, shade: 0.92 },
-      { y: 2.00, rx: 0.68, rz: 0.58, backBustle: 0.36, pleatAmp: 0.038, pleatFreq: 10, shade: 0.96 },
-      { y: 2.82, rx: 0.54, rz: 0.42, backBustle: 0.42, pleatAmp: 0.028, pleatFreq: 10, shade: 1.00 },
-      { y: 3.26, rx: 0.43, rz: 0.32, backBustle: 0.20, pleatAmp: 0.015, pleatFreq: 10, shade: 0.98 },
+      { y: 0.26, rx: 0.92, rz: 0.84, backBustle: 0.22, pleatAmp: 0.050, pleatFreq: 10, shade: 0.88 },
+      { y: 1.05, rx: 0.82, rz: 0.74, backBustle: 0.28, pleatAmp: 0.044, pleatFreq: 10, shade: 0.92 },
+      { y: 2.00, rx: 0.68, rz: 0.58, backBustle: 0.36, pleatAmp: 0.036, pleatFreq: 10, shade: 0.96 },
+      { y: 2.82, rx: 0.54, rz: 0.42, backBustle: 0.42, pleatAmp: 0.026, pleatFreq: 10, shade: 1.00 },
+      { y: 3.26, rx: 0.43, rz: 0.32, backBustle: 0.20, pleatAmp: 0.014, pleatFreq: 10, shade: 0.98 },
       { y: 3.44, rx: 0.39, rz: 0.27, backBustle: 0.06, pleatAmp: 0.008, pleatFreq: 10, shade: 0.93 },
     ],
-    24,
+    28,
     { capBottom: true },
   );
 }
@@ -551,13 +596,13 @@ export function makeSkirtBustleGeo() {
 export function makeSkirtMidGeo() {
   return buildLoft(
     [
-      { y: 1.24, rx: 0.74, rz: 0.70, pleatAmp: 0.048, pleatFreq: 9, shade: 0.89 },
-      { y: 1.90, rx: 0.67, rz: 0.61, pleatAmp: 0.040, pleatFreq: 9, shade: 0.94 },
-      { y: 2.65, rx: 0.58, rz: 0.48, pleatAmp: 0.024, pleatFreq: 9, shade: 0.98 },
-      { y: 3.18, rx: 0.46, rz: 0.34, pleatAmp: 0.014, pleatFreq: 9, shade: 0.99 },
+      { y: 1.24, rx: 0.74, rz: 0.70, pleatAmp: 0.046, pleatFreq: 9, shade: 0.89 },
+      { y: 1.90, rx: 0.67, rz: 0.61, pleatAmp: 0.038, pleatFreq: 9, shade: 0.94 },
+      { y: 2.65, rx: 0.58, rz: 0.48, pleatAmp: 0.022, pleatFreq: 9, shade: 0.98 },
+      { y: 3.18, rx: 0.46, rz: 0.34, pleatAmp: 0.012, pleatFreq: 9, shade: 0.99 },
       { y: 3.44, rx: 0.40, rz: 0.28, pleatAmp: 0.006, pleatFreq: 9, shade: 0.93 },
     ],
-    22,
+    26,
     { capBottom: true },
   );
 }
@@ -565,13 +610,13 @@ export function makeSkirtMidGeo() {
 export function makeSkirtShortGeo() {
   return buildLoft(
     [
-      { y: 1.66, rx: 0.72, rz: 0.66, pleatAmp: 0.052, pleatFreq: 10, shade: 0.90 },
-      { y: 2.25, rx: 0.65, rz: 0.57, pleatAmp: 0.038, pleatFreq: 10, shade: 0.95 },
-      { y: 2.85, rx: 0.56, rz: 0.45, pleatAmp: 0.022, pleatFreq: 10, shade: 0.98 },
+      { y: 1.66, rx: 0.72, rz: 0.66, pleatAmp: 0.048, pleatFreq: 10, shade: 0.90 },
+      { y: 2.25, rx: 0.65, rz: 0.57, pleatAmp: 0.036, pleatFreq: 10, shade: 0.95 },
+      { y: 2.85, rx: 0.56, rz: 0.45, pleatAmp: 0.020, pleatFreq: 10, shade: 0.98 },
       { y: 3.24, rx: 0.45, rz: 0.33, pleatAmp: 0.012, pleatFreq: 10, shade: 0.99 },
       { y: 3.44, rx: 0.40, rz: 0.28, pleatAmp: 0.005, pleatFreq: 10, shade: 0.93 },
     ],
-    22,
+    26,
     { capBottom: true },
   );
 }
@@ -585,11 +630,11 @@ export function makeThighGeo() {
       { y: -0.45, rx: 0.215, rz: 0.218, shade: 0.99 },
       { y: 0.00, rx: 0.228, rz: 0.222, shade: 0.97 },
     ],
-    10,
+    14,
   );
-  const hipCap = new THREE.SphereGeometry(1, 8, 6);
+  const hipCap = new THREE.SphereGeometry(1, 12, 8);
   hipCap.scale(0.220, 0.215, 0.205);
-  const kneeCap = new THREE.SphereGeometry(0.158, 8, 6);
+  const kneeCap = new THREE.SphereGeometry(0.158, 12, 8);
   kneeCap.translate(0, -1.36, 0);
   return mergeParts([shaft, hipCap, kneeCap]);
 }
@@ -602,22 +647,22 @@ export function makeCalfGeo() {
       { y: -0.40, rx: 0.166, rz: 0.175, oz: -0.02, shade: 0.99 },
       { y: 0.00, rx: 0.158, rz: 0.158, shade: 0.96 },
     ],
-    10,
+    14,
   );
-  const ankleCap = new THREE.SphereGeometry(0.112, 8, 6);
+  const ankleCap = new THREE.SphereGeometry(0.112, 10, 8);
   ankleCap.translate(0, -1.34, 0);
   return mergeParts([shaft, ankleCap]);
 }
 
 export function makeShoeGeo() {
-  const vamp = new THREE.SphereGeometry(1, 8, 6);
+  const vamp = new THREE.SphereGeometry(1, 12, 8);
   vamp.scale(0.148, 0.105, 0.275);
   vamp.translate(0, -0.115, 0.14);
   const heel = new THREE.BoxGeometry(0.23, 0.10, 0.20);
   heel.translate(0, -0.17, -0.06);
   const sole = new THREE.BoxGeometry(0.25, 0.045, 0.44);
   sole.translate(0, -0.197, 0.17);
-  const collar = new THREE.CylinderGeometry(0.125, 0.14, 0.14, 8);
+  const collar = new THREE.CylinderGeometry(0.125, 0.14, 0.14, 12);
   collar.translate(0, -0.05, 0);
   return mergeParts([vamp, heel, sole, collar]);
 }
@@ -630,10 +675,10 @@ export function makeUpperArmGeo() {
       { y: -0.14, rx: 0.175, rz: 0.175, shade: 1.00 },
       { y: 0.00, rx: 0.168, rz: 0.168, shade: 0.98 },
     ],
-    10,
+    14,
   );
-  const deltoid = new THREE.SphereGeometry(0.168, 8, 6);
-  const elbow = new THREE.SphereGeometry(0.138, 8, 6);
+  const deltoid = new THREE.SphereGeometry(0.168, 12, 8);
+  const elbow = new THREE.SphereGeometry(0.138, 10, 8);
   elbow.translate(0, -0.98, 0);
   return mergeParts([shaft, deltoid, elbow]);
 }
@@ -646,35 +691,35 @@ export function makeForearmGeo() {
       { y: -0.12, rx: 0.140, rz: 0.138, shade: 1.00 },
       { y: 0.00, rx: 0.134, rz: 0.134, shade: 0.97 },
     ],
-    10,
+    14,
   );
-  const wristCap = new THREE.SphereGeometry(0.098, 8, 6);
+  const wristCap = new THREE.SphereGeometry(0.098, 10, 8);
   wristCap.translate(0, -0.86, 0);
   return mergeParts([shaft, wristCap]);
 }
 
 export function makeHandGeo() {
-  const palm = new THREE.SphereGeometry(1, 8, 6);
+  const palm = new THREE.SphereGeometry(1, 10, 8);
   palm.scale(0.068, 0.135, 0.105);
   palm.translate(0, -0.13, 0.01);
-  const fingers = new THREE.SphereGeometry(1, 8, 6);
+  const fingers = new THREE.SphereGeometry(1, 10, 8);
   fingers.scale(0.056, 0.14, 0.088);
   fingers.translate(0, -0.27, 0.015);
-  const thumb = new THREE.CapsuleGeometry(0.028, 0.10, 2, 5);
+  const thumb = new THREE.CapsuleGeometry(0.028, 0.10, 4, 6);
   thumb.rotateX(0.45);
   thumb.translate(0, -0.14, 0.10);
   return mergeParts([palm, fingers, thumb]);
 }
 
 export function makePuffSleeveGeo() {
-  const g = new THREE.SphereGeometry(1, 10, 8);
+  const g = new THREE.SphereGeometry(1, 16, 12);
   g.scale(0.23, 0.26, 0.23);
   g.translate(0, -0.22, 0);
   return ensureVertexColors(g, 0.98, 0.98, 0.98);
 }
 
 export function makeHatCrownCylGeo() {
-  const g = new THREE.CylinderGeometry(0.32, 0.36, 1.0, 16);
+  const g = new THREE.CylinderGeometry(0.32, 0.36, 1.0, 22);
   return ensureVertexColors(g, 0.96, 0.96, 0.96);
 }
 
@@ -683,22 +728,22 @@ export function makeFedoraCrownGeo() {
     [
       { y: -0.20, rx: 0.36, rz: 0.40, shade: 0.92 },
       { y: -0.02, rx: 0.34, rz: 0.39, shade: 0.98 },
-      { y: 0.16, rx: 0.24, rz: 0.35, frontPinch: 0.03, shade: 1.00 },
-      { y: 0.22, rx: 0.16, rz: 0.28, frontPinch: 0.04, shade: 0.94 },
+      { y: 0.16, rx: 0.25, rz: 0.36, frontPinch: 0.03, shade: 1.00 },
+      { y: 0.22, rx: 0.18, rz: 0.30, frontPinch: 0.04, shade: 0.94 },
     ],
-    18,
+    22,
     { capBottom: true, capTop: true },
   );
 }
 
 export function makeHatDomeGeo() {
-  const g = new THREE.SphereGeometry(1, 12, 8);
+  const g = new THREE.SphereGeometry(1, 20, 14);
   g.scale(0.36, 0.32, 0.38);
   return ensureVertexColors(g, 0.96, 0.96, 0.96);
 }
 
 export function makeHatBrimCurvedGeo() {
-  const geo = new THREE.CylinderGeometry(1.0, 1.0, 0.055, 22, 1);
+  const geo = new THREE.CylinderGeometry(1.0, 1.0, 0.055, 28, 1);
   const pos = geo.getAttribute("position");
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i);
@@ -713,12 +758,12 @@ export function makeHatBrimCurvedGeo() {
 }
 
 export function makeHatBrimFlatGeo() {
-  const g = new THREE.CylinderGeometry(1.0, 1.0, 0.045, 22);
+  const g = new THREE.CylinderGeometry(1.0, 1.0, 0.045, 28);
   return ensureVertexColors(g, 0.97, 0.97, 0.97);
 }
 
 export function makeHatBandGeo() {
-  const g = new THREE.CylinderGeometry(0.37, 0.38, 0.11, 18);
+  const g = new THREE.CylinderGeometry(0.37, 0.38, 0.11, 22);
   return ensureVertexColors(g, 0.92, 0.92, 0.92);
 }
 
@@ -730,10 +775,10 @@ export function makeBonnetGeo() {
       { y: 0.28, rx: 0.39, rz: 0.43, shade: 1.00 },
       { y: 0.40, rx: 0.25, rz: 0.29, shade: 0.96 },
     ],
-    20,
+    24,
     { thetaStart: Math.PI * 0.24, thetaLen: Math.PI * 1.52 },
   );
-  const back = new THREE.SphereGeometry(1, 10, 8);
+  const back = new THREE.SphereGeometry(1, 16, 12);
   back.scale(0.36, 0.34, 0.34);
   back.translate(0, 0.06, -0.13);
   return mergeParts([hood, back]);
