@@ -651,3 +651,35 @@ Each building below was redrawn with the screenshot camera set to roughly the bo
 - **West Side School (PDF p.71).** The tower is taller, with an open belfry stage, a flared eave and a steep octagonal spire. The entrance is a large round arch, and the wings have ribbons of five tall windows. The brick is a duller buff (colour is an estimate). Heights are estimates.
 - **St. Bernard's, 1907 (PDF p.59).** Pointed windows with light surrounds, buttresses on the side, and a cross gable on the side. The belfry has paired louvers and small gables at the foot of the spire, and the rakes are white. The ST. BERNARD'S signboard was removed because the photograph has none. The brick is a muted red (estimate). On the side away from the camera the cross gable is not drawn, since that side is not shown.
 - **St. Bernard's, 1953 (PDF p.61).** Muted red brick instead of buff. A wide tracery window over a broad stone door surround. No signboard.
+
+### Centennial book pass, round 4: streets by year and calmer storefronts (preview only)
+
+Source: the same 1954 centennial book (PDF pages). Built on the preview branch only. Everything is hand-built and parametric; no photograph is used as a texture. "Estimate" marks anything not read directly from the book.
+
+**Streets and walks by year**
+
+- **Walks.** Board walks until 1902, brick walks from 1902, concrete walks from 1907 (p.24, p.26). After 1902 the raised boardwalks become flat brick or concrete strips, and plank crossings are drawn only in the board years.
+- **Street surface.** Dirt before the first paving ordinance. The book does not name the paving material. Brick for 1902–1906 and concrete from 1907 follow the walk dates (estimate). Only the spans below are paved; every other street stays dirt, with puddles, until 1938.
+- **Paving districts (year shown, page):**
+  - 1902: Hail Street from East Main to Crafford (ordinance Sept 1902, finished April 1903; p.24).
+  - 1904: East and West Main from Gridley to Barnes (finished summer 1904, p.26; the Gridley–Barnes span is named at the March 1903 meeting, p.25). The book's "fourteen blocks" is not resolved, so the span is an estimate.
+  - 1907: Crafford north from Hail for five blocks, and Hurst from East Main to Crafford (p.26).
+  - 1909: around both parks, and from the First National Bank west to the west park (August 1909 contract, p.30). The park blocks are the model's inferred park blocks.
+  - 1911: Dean from Hail to the schoolhouse, three blocks (districts seven and eight, let late 1910, p.31). The year 1911 is an estimate.
+  - 1924: West Main from Gridley north (contract July 1924, p.39).
+  - 1926: Hail and Hurst from the East Park east to the state road on Cole (ordinance Sept 1926, p.40).
+  - 1938 on: the W.P.A. black-topped every main street not already paved (p.46). Later town streets (Street/Drive/Lane/Avenue/Boulevard polylines) are black-top.
+- **Not placed:** the two Crafford blocks south of the Methodist church (1910; the church lot is not fixed in the model), the 1909 Hurst state road that the book calls a failure, the 1923 Presbyterian district, and the 1928 Rile/Davis paving. Their exact spans are not fixed.
+- **Prairie depth fix.** The large prairie ground plane was winning the depth test over the street surfaces, so dirt streets drew as lawn in every year. The prairie is now subdivided and set slightly lower, and the street layer's polygon offset was corrected. This is a rendering fix only.
+- **Street names** stay painted on the roadway in all years. No post signs were added. Rail keeps its own colour.
+
+**Vehicles by era**
+
+- Horses, wagons, buggies and hitching rails until 1950. From the 1950 stop there are no horses, wagons, hitch rails, troughs or per-store barrels. The 1954 photographs (p.113–p.116) show parked sedans and no horses; the cut-off year is an estimate.
+- Cars: an early touring car or two from 1905 (the p.39 White Way photograph shows one early car among the buggies), Model-T-type cars in the 1910s–20s, late-1940s/1950s sedans at 1950, longer 1960s cars at 1960/1970. The town had about 25 autos in 1908 and 35 assessed in 1912 (p.29, p.32). Car counts, models, colours and the exact parking spots are estimates. Sizes are to scale in feet (about 11–17.5 ft long). Cars park at the curb between the hitch rails and keep clear of intersections.
+
+**Calmer storefronts**
+
+- The white storefront panels are gone. Ground-floor shop windows are now dark glass in a thin open frame, in a cream or dark trim per building.
+- **Cornices vary per building** (bracketed, corbelled brick, pressed metal, panelled frieze, or arcaded corbel table), chosen per building so neighbours differ. The cornice finish (cream, dark or stone) and a deep frieze also vary. The style for a given building is an estimate unless set from a photograph; individual buildings can be fixed with `facade.corniceStyle` / `facade.corniceFinish`.
+- **Fewer signboards.** Generic trade boards (GROCERY, HARDWARE, DRY GOODS and the like) on stand-in stores are no longer drawn. Proper names, halls and hotels from sources are kept, and words read off photographs are kept with `signRead`. In the 1900 stop four boards keep `signRead` because they were already tied to a source in earlier rounds: DRUGS (Sperling's, p.16–17, p.55), CLOTHIERS (Mark's Hotel Alexander postcard), THE DEMOCRAT (Mark's about-1900 West Main view), and the bakery-5 GROCERY board (its existing entry). If any of these is not actually legible in its picture, it should come off. Upper-storey lettering read from photographs (for example OPERA HOUSE) is kept.

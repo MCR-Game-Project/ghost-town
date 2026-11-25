@@ -575,6 +575,11 @@ function worldGround(kind, across) {
   mat.polygonOffset = true;
   mat.polygonOffsetFactor = 1.5;
   mat.polygonOffsetUnits = 1.5;
+  // Round 4: a dirt street is drawn over the prairie, so it must not be pushed back past it.
+  if (kind === "street") {
+    mat.polygonOffsetFactor = -0.5;
+    mat.polygonOffsetUnits = -0.5;
+  }
   const key = `${kind}:${across}`;
   const grass = kind === "grass" || kind === "park";
   const ruts = kind === "street";

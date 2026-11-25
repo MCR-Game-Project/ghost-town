@@ -564,6 +564,7 @@
     },
     {
       "id": "hardware-3",
+      "signRead": true,
       "facade": {
         "photoMatch": true,
         "arches": "round",
@@ -685,6 +686,7 @@
     },
     {
       "id": "general-store-27",
+      "signRead": true,
       "facade": {
         "photoMatch": true,
         "arches": "round",
@@ -1142,12 +1144,14 @@
     },
     {
       "id": "dry-goods-30",
+      "signRead": true,
       "sign": "THE DEMOCRAT",
       "name": "The Democrat",
       "notes": "The readable cornice sign in Mark's about-1900 view looking south on West Main. The McDonough Democrat began in 1884. A 1908 paving note sends a route east on Hail to the Democrat office, which puts the office at Hail and West Main, the near end of this view. The exact bay is an estimate. The photograph is not used to call any other door a newspaper."
     },
     {
       "id": "bakery-5",
+      "signRead": true,
       "sign": "GROCERY",
       "name": "Grocery",
       "notes": "Mark's view north on the 400 block of East Main shows a sign ending in GROCERY. The letters before it were not legible, so they are not used. This is the generic word only, on an existing stand-in past the pediment."

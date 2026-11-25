@@ -1051,6 +1051,8 @@ function mountTown(builtYear, sliderYear = builtYear) {
   town = data;
   data.meta = data.meta || {};
   data.meta.shownYear = builtYear;
+  // Round 4: the street surface and the cars follow the slider year inside a stop.
+  data.meta.sliderYear = sliderYear;
   const built = buildTown(town, townGroup);
   colliders = built.colliders;
   picks = built.picks;
@@ -1064,10 +1066,14 @@ onCensusYear = (year) => {
   const built = builtTownYear(year);
   setTownNote(year, built);
   const eraBand = (value) => {
-    if (value >= 1965 && value < 1970) return "after-mickelberry";
+    const bands = [];
+    if (value >= 1965 && value < 1970) bands.push("after-mickelberry");
     // 1941–1949 keep the 1920 town and take the stud-farm signs and flags off.
-    if (value > 1940 && value < 1950) return "after-stud-farm";
-    return "same";
+    if (value > 1940 && value < 1950) bands.push("after-stud-farm");
+    // Round 4: W.P.A. black-top from 1938, and the cars change with the slider year.
+    if (value >= 1938) bands.push("blacktop");
+    bands.push(value < 1905 ? "no-cars" : value < 1915 ? "touring" : value < 1935 ? "tee" : value < 1956 ? "fifties" : value < 1980 ? "sixties" : "modern");
+    return bands.join("|") || "same";
   };
   if (built === shownBuiltYear && eraBand(year) === eraBand(shownSliderYear)) return;
   shownSliderYear = year;

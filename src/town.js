@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { makeMaterials, makeSignTexture } from "./textures.js";
 import { mirrorPlat } from "./orient.js";
 import { drawFacadeSpec } from "./facade/assemble.js";
@@ -13,9 +14,22 @@ const idHash = (id) => {
   return h;
 };
 
+// Trade words that stand in for a shop's use. They are not sign readings (round 4).
+const GENERIC_SIGNS = new Set([
+  "GROCERY", "GROCERIES", "DRY GOODS", "HARDWARE", "BOOTS & SHOES", "BOOTS", "SHOES", "BAKERY",
+  "FURNITURE", "OFFICES", "VARIETY", "MILLINERY", "BARBER", "TIN & STOVES", "SALOON", "HARNESS",
+  "PRINTER", "CANDY", "RESTAURANT", "STORE", "BOARDING", "GENERAL STORE", "CLOTHING", "CLOTHIERS",
+  "DRUGS", "MEATS", "CHINA", "CIGARS", "JEWELRY", "BOWLING", "ROOMS", "LODGINGS", "GRAIN & COAL",
+  "STEAM LAUNDRY", "IMPLEMENTS", "LUNCH", "HALL",
+]);
+
 export function buildTown(data, scene) {
   mirrorPlat(data);
   const mats = makeMaterials();
+  // Round 4: the slider year, for things that change inside a stop (ground, cars, hitch rails).
+  const eraYear = data.meta?.sliderYear || data.meta?.shownYear || 1880;
+  // Round 4: shop windows read dark in every street photograph, not as pale panels.
+  const shopGlass = new THREE.MeshStandardMaterial({ color: "#2a333b", roughness: 0.16, metalness: 0.35, envMapIntensity: 0.85 });
   const buckets = new Map();
   const detailBuckets = new Map();
   let detailOn = false;
@@ -399,8 +413,62 @@ export function buildTown(data, scene) {
   // Unnamed shops on Main, Hail, and Hurst. Bay width follows the street photographs:
   // a brick front is about twelve feet to a window, a false front about fourteen.
   // Door side alternates so the row is not a repeated stamp. No proprietor is painted on.
+  // Round 4: the tops of the unnamed brick fronts differ from one building to the next, as in
+  // the West Main 1900 (p.34), White Way 1905 (p.39), East Main 1907, and 1954 (p.113-p.116)
+  // photographs: a bracketed metal cornice, a corbelled brick top, a dark pressed-metal
+  // cornice, a coped parapet with a raised name block, or an arched brick corbel table.
+  // Which front gets which is an estimate (by id); facade.corniceStyle overrides it.
+  const CORNICE_STYLES = ["bracket", "corbel", "metal", "panel", "arcade"];
+  const streetCornice = (b, wallH, fz) => {
+    const style = b.facade?.corniceStyle || CORNICE_STYLES[idHash(`${b.id}:cornice`) % CORNICE_STYLES.length];
+    const brick = brickOf(b);
+    if (style === "bracket") {
+      box(mats.trim, 0, wallH - 0.15, fz + 0.05, b.width + 0.5, 0.55, 0.55);
+      dentilCourse(wallH - 0.7, fz + 0.22, b.width);
+      bracketRow(wallH - 0.85, fz, b.width);
+    } else if (style === "corbel") {
+      // Three stepped brick courses under a stone coping; no painted trim.
+      box(brick, 0, wallH - 2.1, fz + 0.18, b.width, 0.5, 0.36);
+      box(brick, 0, wallH - 1.55, fz + 0.34, b.width, 0.5, 0.68);
+      box(brick, 0, wallH - 1.0, fz + 0.5, b.width + 0.2, 0.5, 1.0);
+      const n = Math.max(4, Math.round(b.width / 1.6));
+      for (let i = 0; i < n; i++) box(brick, -b.width / 2 + (b.width * (i + 0.5)) / n, wallH - 2.75, fz + 0.2, 0.55, 0.7, 0.4);
+      box(mats.stone, 0, wallH + 0.55, fz - 0.2, b.width + 0.5, 0.35, 1.4);
+    } else if (style === "metal") {
+      // Dark pressed-metal cornice with a frieze and paired brackets.
+      box(mats.trimDark, 0, wallH - 1.2, fz + 0.14, b.width, 1.9, 0.28);
+      box(mats.trimDark, 0, wallH - 0.05, fz + 0.55, b.width + 0.9, 0.6, 1.35);
+      box(mats.trimDark, 0, wallH + 0.4, fz + 0.7, b.width + 1.2, 0.32, 1.6);
+      const n = Math.max(2, Math.round(b.width / 7));
+      for (let i = 0; i <= n; i++) {
+        const x = -b.width / 2 + 0.3 + ((b.width - 0.6) * i) / n;
+        for (const dx of [-0.35, 0.35]) box(mats.trimDark, x + dx, wallH - 1.0, fz + 0.5, 0.3, 1.7, 0.75);
+      }
+    } else if (style === "panel") {
+      // Coped parapet stepping up to a raised name block at the center (no name is painted).
+      box(brick, 0, wallH + 0.9, fz - 0.1, b.width, 1.8, 0.8);
+      const pw = Math.min(b.width * 0.45, 12);
+      box(brick, 0, wallH + 2.3, fz - 0.1, pw, 1.4, 0.8);
+      box(mats.stone, 0, wallH + 1.9, fz - 0.05, b.width + 0.3, 0.3, 1.05);
+      box(mats.stone, 0, wallH + 3.1, fz - 0.05, pw + 0.4, 0.3, 1.05);
+      box(brick, 0, wallH + 1.0, fz + 0.36, pw - 1.2, 0.8, 0.12);
+      box(brick, 0, wallH - 0.5, fz + 0.3, b.width, 0.45, 0.45);
+    } else {
+      // Arched corbel table: small round-headed brick arches under a brick band.
+      box(brick, 0, wallH - 0.5, fz + 0.42, b.width + 0.2, 0.7, 0.85);
+      const n = Math.max(4, Math.round(b.width / 2.2));
+      for (let i = 0; i <= n; i++) box(brick, -b.width / 2 + (b.width * i) / n, wallH - 1.35, fz + 0.3, 0.42, 1.1, 0.6);
+      for (let i = 0; i < n; i++) {
+        const x = -b.width / 2 + (b.width * (i + 0.5)) / n;
+        box(brick, x, wallH - 1.0, fz + 0.3, b.width / n - 0.4, 0.38, 0.6);
+      }
+      box(mats.stone, 0, wallH + 0.2, fz + 0.1, b.width + 0.4, 0.3, 1.2);
+    }
+  };
+
   const drawStreetFront = (b, wallH, frame, groundOnly = false) => {
     const fz = b.depth / 2 + 0.14;
+    const shade = idHash(`${b.id}:shop`);
     const bays = frame
       ? Math.max(2, Math.min(3, Math.round(b.width / 14)))
       : Math.max(2, Math.min(4, Math.round(b.width / 12)));
@@ -417,11 +485,7 @@ export function buildTown(data, scene) {
         if (b.stories > 2) frontSash(x, wallH * 0.42, fz, winW, 5.6, arch, false, archMat, frame);
       }
     }
-    if (!frame && !groundOnly) {
-      box(mats.trim, 0, wallH - 0.15, fz + 0.05, b.width + 0.5, 0.55, 0.55);
-      dentilCourse(wallH - 0.7, fz + 0.22, b.width);
-      bracketRow(wallH - 0.85, fz, b.width);
-    }
+    if (!frame && !groundOnly) streetCornice(b, wallH, fz);
     for (let col = 0; col < bays; col++) {
       const x = -b.width / 2 + gap * (col + 0.5);
       if (col === doorAt) {
@@ -429,12 +493,18 @@ export function buildTown(data, scene) {
         paneledDoor(x, fz, dw, 7.2);
       } else {
         const gw = Math.min(frame ? 5.4 : 7.2, gap - 0.9);
+        // Round 4: an open frame round dark plate glass. A solid trim slab used to sit in
+        // front of the glass, which made every shop window a white panel.
+        const frameMat = shade % 2 ? mats.trimDark : mats.trim;
         box(mats.trimDark, x, 1.05, fz, gw, 1.35, 0.2);
         box(mats.reveal, x, 5.05, fz - 0.04, gw * 0.9, 5.4, 0.12);
-        box(mats.glass, x, 5.05, fz + 0.02, gw * 0.82, 5.1, 0.06);
-        box(mats.trim, x, 5.05, fz + 0.1, gw + 0.16, 5.7, 0.08);
-        box(mats.trim, x, 5.05, fz + 0.14, 0.08, 5.0, 0.04);
-        box(mats.glass, x, 8.15, fz + 0.02, gw * 0.82, 0.62, 0.05);
+        box(shopGlass, x, 5.05, fz + 0.02, gw * 0.84, 5.1, 0.06);
+        box(frameMat, x - gw / 2, 5.05, fz + 0.1, 0.24, 5.7, 0.1);
+        box(frameMat, x + gw / 2, 5.05, fz + 0.1, 0.24, 5.7, 0.1);
+        box(frameMat, x, 7.85, fz + 0.1, gw + 0.16, 0.22, 0.1);
+        box(frameMat, x, 2.25, fz + 0.1, gw + 0.16, 0.22, 0.1);
+        box(frameMat, x, 5.05, fz + 0.14, 0.08, 5.0, 0.04);
+        box(shopGlass, x, 8.15, fz + 0.02, gw * 0.84, 0.62, 0.05);
         box(mats.stone, x, 8.55, fz + 0.1, gw + 0.2, 0.22, 0.2);
         if (!frame) {
           box(mats.trimDark, x - gw / 2 - 0.15, 4.8, fz + 0.12, 0.28, 8.4, 0.22);
@@ -664,19 +734,19 @@ export function buildTown(data, scene) {
           if (f.door === "center") box(mats.trim, x, 4.15, fz + 0.16, 0.1, 6.6, 0.04);
         } else if (plate) {
           box(mats.siding.white, x, 0.7, fz, gw, 1.15, 0.18);
-          box(mats.glass, x, 5.4, fz + 0.04, gw * 0.92, 7.6, 0.06);
+          box(shopGlass, x, 5.4, fz + 0.04, gw * 0.92, 7.6, 0.06);
           box(mats.trim, x, 5.4, fz + 0.1, 0.08, 7.4, 0.04);
         } else {
           box(f.brickBase ? brickOf(b) : mats.trimDark, x, f.brickBase ? 1.45 : 1.1, fz, gw, f.brickBase ? 2.5 : 1.45, 0.2);
           box(mats.reveal, x, 5.15, fz - 0.04, gw * 0.9, 5.4, 0.12);
-          box(mats.glass, x, 5.15, fz + 0.02, gw * 0.84, 5.15, 0.06);
+          box(shopGlass, x, 5.15, fz + 0.02, gw * 0.84, 5.15, 0.06);
           // Open frame round the plate glass (it was a solid slab that hid the glass).
           box(mats.trim, x - gw / 2, 5.15, fz + 0.1, 0.24, 5.7, 0.08);
           box(mats.trim, x + gw / 2, 5.15, fz + 0.1, 0.24, 5.7, 0.08);
           box(mats.trim, x, 7.9, fz + 0.1, gw + 0.16, 0.2, 0.08);
           box(mats.trim, x, 2.4, fz + 0.1, gw + 0.16, 0.2, 0.08);
           box(mats.trim, x, 5.15, fz + 0.14, 0.08, 5.0, 0.04);
-          box(mats.glass, x, 8.25, fz + 0.02, gw * 0.84, 0.66, 0.05);
+          box(shopGlass, x, 8.25, fz + 0.02, gw * 0.84, 0.66, 0.05);
           box(mats.stone, x, 8.7, fz + 0.1, gw + 0.22, 0.24, 0.22);
           if (f.storefront === "iron") {
             box(mats.trimDark, x - gw / 2 - 0.14, 4.9, fz + 0.12, 0.26, 8.6, 0.22);
@@ -739,9 +809,17 @@ export function buildTown(data, scene) {
     }
     if (f.crown) deepCrown(b, wallH, f.crown);
     else if (f.cornice === "bracket" || f.cornice === "plain" || f.cornice === "corbel") {
-      box(mats.trim, 0, wallH + 0.35, fz + 0.55, b.width + 1.3, 0.95, 1.35);
-      box(mats.trim, 0, wallH - 0.35, fz + 0.28, b.width + 0.4, 0.42, 0.7);
-      dentilCourse(wallH - 0.15, fz + 0.85, b.width);
+      // Round 4: the same kind of cornice is not the same cornice. The finish (painted wood,
+      // dark pressed metal, or stone-colored) and the frieze depth vary by building (estimate);
+      // facade.corniceFinish overrides it.
+      const finishes = { cream: mats.trim, dark: mats.trimDark, stone: mats.stone };
+      const fin = f.corniceFinish || ["cream", "dark", "stone"][idHash(`${b.id}:finish`) % 3];
+      const cm = finishes[fin] || mats.trim;
+      const deep = idHash(`${b.id}:frieze`) % 2 === 0;
+      box(cm, 0, wallH + 0.35, fz + 0.55, b.width + 1.3, deep ? 1.15 : 0.95, deep ? 1.6 : 1.35);
+      box(cm, 0, wallH - 0.35, fz + 0.28, b.width + 0.4, 0.42, 0.7);
+      if (deep) box(cm, 0, wallH - 1.55, fz + 0.2, b.width, 1.6, 0.3);
+      dentilCourse(wallH - 0.15, fz + 0.85, b.width, { mat: cm });
       if (f.cornice === "bracket" || f.cornice === "corbel") bracketRow(wallH - 0.85, fz + 0.2, b.width);
       if (f.cornice === "corbel") {
         box(brickOf(b), 0, wallH - 1.55, fz + 0.42, b.width, 0.55, 0.55);
@@ -948,6 +1026,8 @@ export function buildTown(data, scene) {
 
   const dressFront = (b) => {
     if (b.facade?.shedPorch || b.porch) return;
+    // No hitch rails or barrels at the store fronts from 1950 (1954 photographs, p.113-p.116).
+    if (eraYear >= 1950) return;
     const h = idHash(`${b.id}:dress`);
     const fz = b.depth / 2;
     if (h % 3 !== 0) {
@@ -1157,6 +1237,27 @@ export function buildTown(data, scene) {
       return;
     }
     if (!b.sign) return;
+    // Round 4: most hanging boards come off the stores. A trade word on a stand-in or on a
+    // Sanborn-labelled room (GROCERY, DRY GOODS, BARBER...) was never read on the building,
+    // so it is not painted. Firm and hall names stay, and so do words read off a
+    // photograph (facade.signRead). Upper signs from photographs are kept below.
+    const store = b.kind === "brick-store" || b.kind === "frame-store" || (b.kind === "hotel" && b.confidence !== "sourced");
+    if (store && !b.facade?.signRead && !b.signRead && (b.confidence !== "sourced" || GENERIC_SIGNS.has(String(b.sign).toUpperCase()))) {
+      if (b.facade?.upperSign) {
+        const rot0 = (FACING[b.facing] ?? 0) + THREE.MathUtils.degToRad(b.rotation || 0);
+        const out0 = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot0);
+        const y0 = Math.min(wallH - 1.2, b.stories * 8 + 4);
+        signs.push({
+          title: b.facade.upperSign,
+          subtitle: "",
+          style: "board",
+          position: new THREE.Vector3(b.x, b.facade.upperSignAbove ? wallH + 2.4 : y0 + 4.2, b.z).addScaledVector(out0, b.depth / 2 + 0.55),
+          rotation: rot0,
+          width: Math.min(b.width * 0.46, 14),
+        });
+      }
+      return;
+    }
     const rot = (FACING[b.facing] ?? 0) + THREE.MathUtils.degToRad(b.rotation || 0);
     const outward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
     if (b.facade?.signBand) {
@@ -4981,8 +5082,12 @@ export function buildTown(data, scene) {
   }
 
   // Ground.
-  const prairie = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000), mats.grass);
+  // Round 4: the plane is split into small cells and sits a little below the streets. As two
+  // 40,000-foot triangles at y = 0 it won the depth test over the dirt streets in the
+  // software renderer, so every dirt street read as lawn.
+  const prairie = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000, 100, 100), mats.grass);
   prairie.rotation.x = -Math.PI / 2;
+  prairie.position.y = -0.3;
   prairie.receiveShadow = true;
   scene.add(prairie);
 
@@ -5034,37 +5139,173 @@ export function buildTown(data, scene) {
     scene.add(mesh);
   }
 
-  const pavedNames = new Set(["East Main Street", "Crafford Street"]);
-  const pavedNow = (data.meta?.shownYear || 0) >= 1970;
+  // Round 4: the ground by year (centennial book). Before 1902 the streets are dirt and the
+  // business walks are boards. The old board walks gave way to brick from 1902 and to concrete
+  // from 1907 (p.24, p.26). Paving districts follow the dated ordinances and contracts below.
+  // From 1938 the W.P.A. black-topped every main street not already paved (p.46).
+  // The book does not name the pavement itself. Brick for 1902-1906 and concrete from 1907
+  // follow the walk dates (estimate). Spans are in plat feet after the mirror: +z is east.
+  const groundYear = data.meta?.sliderYear || data.meta?.shownYear || 1880;
+  const walkEra = groundYear < 1902 ? "board" : groundYear < 1907 ? "brick" : "concrete";
+  const modernPaved = (data.meta?.shownYear || 0) >= 1970;
+  const blacktopAll = groundYear >= 1938;
+  const PAVING = [
+    // First ordinance Sept 1902, Hail from East Main to Crafford, finished April 1903 (p.24).
+    { year: 1902, name: "Hail Street", from: 121, to: 611, business: true },
+    // East and West Main from Gridley south, finished summer 1904 (p.26). The March 1903
+    // meeting names Gridley to Barnes (p.25). The book's "fourteen blocks" is not resolved,
+    // so the span is Gridley to Barnes (estimate).
+    { year: 1904, name: "East Main Street", from: -870, to: 450, business: true },
+    { year: 1904, name: "West Main Street", from: -870, to: 450, business: true },
+    // 1907 districts: Crafford north from Hail five blocks, and Hurst from East Main to Crafford (p.26).
+    { year: 1907, name: "Crafford Street", from: -30, to: 1600 },
+    { year: 1907, name: "Hurst Street", from: 121, to: 611, business: true },
+    // August 1909 contract: around both parks, and from the First National Bank west to the
+    // west park (p.30). The park blocks are the model's inferred park blocks.
+    { year: 1909, name: "Barnes Street", from: 121, to: 611 },
+    { year: 1909, name: "Crafford Street", from: -870, to: -390 },
+    { year: 1909, name: "Barnes Street", from: -611, to: -121 },
+    { year: 1909, name: "Hurst Street", from: -611, to: -121 },
+    { year: 1909, name: "Dean Street", from: -870, to: -390 },
+    // Districts seven and eight, let in late 1910: Dean from Hail to the schoolhouse, three
+    // blocks (p.31). Shown from 1911 (estimate). The two Crafford blocks south of the
+    // Methodist church are not placed, because that church's lot is not fixed in the model.
+    { year: 1911, name: "Dean Street", from: -30, to: 1290 },
+    // West Main from Gridley north, contract July 1924 (p.39).
+    { year: 1924, name: "West Main Street", from: 390, to: 1600 },
+    // Hail and Hurst from the East Park east to the state road on Cole, ordinance Sept 1926 (p.40).
+    { year: 1926, name: "Hail Street", from: 581, to: 1871 },
+    { year: 1926, name: "Hurst Street", from: 581, to: 1871 },
+  ];
+  const pavedSpans = (name) => PAVING.filter((span) => span.name === name && span.year <= groundYear);
+  const flatMat = (color, rough = 0.95, key = color, joints = 0) => {
+    const mat = new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: 0 });
+    mat.polygonOffset = true;
+    mat.polygonOffsetFactor = -1;
+    mat.polygonOffsetUnits = -1;
+    mat.onBeforeCompile = (shader) => {
+      shader.vertexShader = shader.vertexShader
+        .replace("#include <common>", "#include <common>\nvarying vec3 vSurfW;")
+        .replace("#include <begin_vertex>", "#include <begin_vertex>\nvSurfW = transformed;");
+      shader.fragmentShader = shader.fragmentShader
+        .replace("#include <common>", `#include <common>
+varying vec3 vSurfW;
+float sHash(vec2 p){ p=fract(p*vec2(123.34,345.45)); p+=dot(p,p+34.345); return fract(p.x*p.y); }
+float sNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
+  return mix(mix(sHash(i),sHash(i+vec2(1.0,0.0)),f.x), mix(sHash(i+vec2(0.0,1.0)),sHash(i+vec2(1.0,1.0)),f.x), f.y); }`)
+        .replace("#include <color_fragment>", `#include <color_fragment>
+          float sn = sNoise(vSurfW.xz * 0.06) * 0.6 + sNoise(vSurfW.xz * 0.45) * 0.4;
+          diffuseColor.rgb *= mix(vec3(0.9), vec3(1.06), sn);
+          ${joints ? `vec2 jc = abs(fract(vSurfW.xz / ${joints.toFixed(1)}) - 0.5) * ${joints.toFixed(1)};
+          float joint = 1.0 - smoothstep(0.08, 0.22, min(jc.x, jc.y));
+          diffuseColor.rgb *= 1.0 - joint * 0.14;` : ""}`);
+    };
+    mat.customProgramCacheKey = () => `surface-r4b-${key}`;
+    return mat;
+  };
+  // Pale, worn concrete, as in the 1954 Main Street photographs (p.113-p.116).
+  // Geometry is in plat feet, so the joints run square to the streets.
+  const concretePave = flatMat("#aaa498", 0.94, "concrete", 20);
+  const concreteWalk = flatMat("#c4beb2", 0.9, "walk", 5);
+  // W.P.A. black-top with a gravel base (p.46).
+  const blacktop = flatMat("#6c6a66", 0.97, "blacktop");
+  const brickPave = mats.brick.red.clone();
+  brickPave.vertexColors = false;
+  // Vitrified paving brick reads duller and browner than wall brick.
+  brickPave.color.set("#8c7d74");
+  brickPave.polygonOffset = true;
+  brickPave.polygonOffsetFactor = -1;
+  brickPave.polygonOffsetUnits = -1;
+  const pavedMat = walkEra === "brick" ? brickPave : concretePave;
+  const walkMat = walkEra === "brick" ? brickPave : concreteWalk;
+  const curbMat = mats.stone.clone();
+  curbMat.vertexColors = false;
+  curbMat.color.set("#cfc9bd");
+  const groundParts = new Map();
+  const addPart = (mat, geo) => {
+    if (!groundParts.has(mat)) groundParts.set(mat, []);
+    groundParts.get(mat).push(geo);
+  };
+  // A flat strip on the street: axis "x" runs along x at z = across, axis "z" runs along z.
+  const flatStrip = (mat, axis, from, to, across, size, y, thick = 0) => {
+    const len = Math.abs(to - from);
+    const mid = (from + to) / 2;
+    if (len < 0.5) return;
+    let geo;
+    if (thick > 0) {
+      geo = axis === "x" ? new THREE.BoxGeometry(len, thick, size) : new THREE.BoxGeometry(size, thick, len);
+      if (mat.userData?.uvFeet) scaleBoxUVs(geo, axis === "x" ? len : size, thick, axis === "x" ? size : len, mat);
+      geo.translate(axis === "x" ? mid : across, y - thick / 2, axis === "x" ? across : mid);
+    } else {
+      geo = axis === "x" ? new THREE.PlaneGeometry(len, size) : new THREE.PlaneGeometry(size, len);
+      const uv = geo.getAttribute("uv");
+      const feet = mat.userData?.uvFeet || { u: 3.2, v: 3.2 };
+      const uScale = (axis === "x" ? len : size) / feet.u;
+      const vScale = (axis === "x" ? size : len) / feet.v;
+      for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * uScale, uv.getY(i) * vScale);
+      geo.rotateX(-Math.PI / 2);
+      geo.translate(axis === "x" ? mid : across, y, axis === "x" ? across : mid);
+    }
+    addPart(mat, geo);
+  };
+
   for (const street of data.streets) {
     if (street.points) {
-      addPolylineStreet(street, mats, scene);
+      // Town streets drawn as lines are black-topped with the rest; country roads stay dirt.
+      const townStreet = /Street|Drive|Lane|Avenue|Boulevard/.test(street.name);
+      addPolylineStreet(street, blacktopAll && townStreet ? blacktop : mats.street, scene);
       continue;
     }
-    if (pavedNow && pavedNames.has(street.name)) continue;
     const len = street.to - street.from;
-    const geo =
-      street.axis === "x"
-        ? new THREE.PlaneGeometry(len, street.width)
-        : new THREE.PlaneGeometry(street.width, len);
-    const mesh = new THREE.Mesh(
-      geo,
-      street.axis === "x" ? mats.street : mats.streetCross,
-    );
-    mesh.rotation.x = -Math.PI / 2;
-    if (street.axis === "x") mesh.position.set((street.from + street.to) / 2, 0.05, street.at);
-    else mesh.position.set(street.at, 0.05, (street.from + street.to) / 2);
-    mesh.receiveShadow = true;
-    scene.add(mesh);
+    const spans = pavedSpans(street.name);
+    if (blacktopAll || spans.length === 0 || spans.some((sp) => sp.from > street.from || sp.to < street.to)) {
+      // Base surface: dirt, or black-top once the W.P.A. work is done.
+      if (blacktopAll) {
+        flatStrip(blacktop, street.axis, street.from, street.to, street.at, street.width - 2, 0.06);
+      } else {
+        const geo =
+          street.axis === "x"
+            ? new THREE.PlaneGeometry(len, street.width)
+            : new THREE.PlaneGeometry(street.width, len);
+        const mesh = new THREE.Mesh(geo, street.axis === "x" ? mats.street : mats.streetCross);
+        mesh.rotation.x = -Math.PI / 2;
+        if (street.axis === "x") mesh.position.set((street.from + street.to) / 2, 0.05, street.at);
+        else mesh.position.set(street.at, 0.05, (street.from + street.to) / 2);
+        mesh.receiveShadow = true;
+        scene.add(mesh);
+      }
+    }
+    // The 1970 stop keeps its own photo-matched paving on East Main, Hurst, and North Crafford.
+    for (const span of spans) {
+      const from = Math.max(street.from, span.from);
+      const to = Math.min(street.to, span.to);
+      if (to <= from) continue;
+      const margin = street.width >= 70 ? 10 : 12;
+      const carriage = street.width - margin * 2;
+      flatStrip(pavedMat, street.axis, from, to, street.at, carriage, 0.1);
+      for (const side of [-1, 1]) {
+        const edge = street.at + side * (carriage / 2 + 0.35);
+        flatStrip(curbMat, street.axis, from, to, edge, 0.7, 0.42, 0.42);
+        const rowMid = street.at + side * (carriage / 2 + 0.7 + (margin - 0.7) / 2);
+        // Business blocks get a walk to the lot line; the rest keep a grass parkway.
+        if (span.business) flatStrip(walkMat, street.axis, from, to, rowMid, margin - 0.7, 0.2);
+        else flatStrip(mats.grass, street.axis, from, to, rowMid, margin - 0.7, 0.09);
+      }
+    }
   }
 
+  // Board walks before 1902; brick and then concrete walks after, on the same lines.
   for (const walk of data.boardwalks) {
-    if (pavedNow) {
+    if (modernPaved) {
       const onMain = walk.axis === "x" && Math.abs(Math.abs(walk.at) - 156) < 50;
       const onHurst = walk.axis === "z" && Math.abs(Math.abs(walk.at) - 420) < 55;
       if (onMain || onHurst) continue;
     }
     const len = Math.abs(walk.to - walk.from);
+    if (walkEra !== "board") {
+      flatStrip(walkMat, walk.axis, walk.from, walk.to, walk.at, walk.width + 2, 0.24);
+      continue;
+    }
     const geo =
       walk.axis === "x"
         ? new THREE.BoxGeometry(len, 0.35, walk.width)
@@ -5083,10 +5324,17 @@ export function buildTown(data, scene) {
     scene.add(mesh);
   }
 
+  for (const [mat, geos] of groundParts) {
+    const mesh = new THREE.Mesh(mergeGeometries(geos, false), mat);
+    mesh.receiveShadow = true;
+    if (mat === curbMat) mesh.castShadow = true;
+    scene.add(mesh);
+  }
+
   const vergeParts = [];
   for (const street of data.streets) {
     if (street.points) continue;
-    if (pavedNow && (street.name === "East Main Street" || street.name === "Hurst Street")) continue;
+    if (modernPaved && (street.name === "East Main Street" || street.name === "Hurst Street")) continue;
     const len = Math.abs(street.to - street.from);
     const verge = 8;
     for (const side of [-1, 1]) {
@@ -5110,18 +5358,21 @@ export function buildTown(data, scene) {
   const named = data.streets.filter((street) => street.name.endsWith("Street"));
   const eastWest = named.filter((street) => street.axis === "x");
   const northSouth = named.filter((street) => street.axis === "z");
+  // Plank crossings belong to the board-walk years only.
   const crossingParts = [];
-  for (const road of eastWest) {
-    for (const cross of northSouth) {
-      if (cross.at < road.from || cross.at > road.to) continue;
-      if (road.at < cross.from || road.at > cross.to) continue;
-      const across = new THREE.BoxGeometry(11, 0.16, road.width * 0.62);
-      scaleBoxUVs(across, 11, 0.16, road.width * 0.62, mats.plank);
-      across.translate(cross.at, 0.12, road.at);
-      const along = new THREE.BoxGeometry(cross.width * 0.62, 0.16, 11);
-      scaleBoxUVs(along, cross.width * 0.62, 0.16, 11, mats.plank);
-      along.translate(cross.at, 0.15, road.at);
-      crossingParts.push(across, along);
+  if (walkEra === "board") {
+    for (const road of eastWest) {
+      for (const cross of northSouth) {
+        if (cross.at < road.from || cross.at > road.to) continue;
+        if (road.at < cross.from || road.at > cross.to) continue;
+        const across = new THREE.BoxGeometry(11, 0.16, road.width * 0.62);
+        scaleBoxUVs(across, 11, 0.16, road.width * 0.62, mats.plank);
+        across.translate(cross.at, 0.12, road.at);
+        const along = new THREE.BoxGeometry(cross.width * 0.62, 0.16, 11);
+        scaleBoxUVs(along, cross.width * 0.62, 0.16, 11, mats.plank);
+        along.translate(cross.at, 0.15, road.at);
+        crossingParts.push(across, along);
+      }
     }
   }
   if (crossingParts.length) {
@@ -5131,14 +5382,17 @@ export function buildTown(data, scene) {
     scene.add(crossings);
   }
 
+  // Mud holes on the unpaved business streets only.
   const puddleParts = [];
   for (const road of named) {
+    if (blacktopAll) break;
     if (!/Main|Hail|Hurst|Gridley/.test(road.name)) continue;
-    if (pavedNow && pavedNames.has(road.name)) continue;
+    const spans = pavedSpans(road.name);
     const span = road.to - road.from;
     const count = Math.max(3, Math.floor(Math.abs(span) / 180));
     for (let i = 0; i < count; i++) {
       const along = road.from + ((i + 0.35) * span) / count;
+      if (spans.some((sp) => along > sp.from - 8 && along < sp.to + 8)) continue;
       const side = (i % 2 === 0 ? 1 : -1) * road.width * 0.16;
       const geo = new THREE.PlaneGeometry(9, 4.2);
       const uv = geo.getAttribute("uv");
@@ -5274,12 +5528,16 @@ export function buildTown(data, scene) {
   wire.position.set(-480, 22.6, -18);
   scene.add(wire);
 
-  // Props.
+  // Props. From the 1950 stop the horses, wagons, hitching rails, and troughs are gone:
+  // the 1954 Main Street photographs (p.113-p.116) show parked cars and none of them (estimate of the year).
+  const horseYears = groundYear < 1950;
   const propRoot = new THREE.Group();
   for (const p of data.props) {
+    if (!horseYears && ["horse", "wagon", "hitching", "trough"].includes(p.type)) continue;
     propRoot.add(makeProp(p, mats));
   }
   scene.add(propRoot);
+  addVehicles(data, mats, scene, groundYear, modernPaved);
 
   // Street looks taken from dated photographs. Each one is only on the years
   // whose patch sets streetStyle, and only on the street the picture shows.
@@ -5369,9 +5627,10 @@ export function buildTown(data, scene) {
     if (crafford) dressStreet({ ...crafford, from: 0, to: 450 }, { ruts: true, curb: true, walk: true, trees: "spring" });
   }
   const eastMain = streetByName("East Main Street");
-  if (eastMain) dressStreet({ ...eastMain, from: -520, to: 560 }, { curb: true, walk: true, inset: 8, sides: [1] });
+  // These stone walks and curbs are the concrete-walk years only (from 1907, p.26).
+  if (eastMain && walkEra === "concrete") dressStreet({ ...eastMain, from: -520, to: 560 }, { curb: true, walk: true, inset: 8, sides: [1] });
   const craffordNorth = streetByName("Crafford Street");
-  if (craffordNorth) dressStreet({ ...craffordNorth, from: 980, to: 1280 }, { curb: true, walk: true, inset: 6, sides: [-1] });
+  if (craffordNorth && walkEra === "concrete") dressStreet({ ...craffordNorth, from: 980, to: 1280 }, { curb: true, walk: true, inset: 6, sides: [-1] });
   if ((data.meta?.shownYear || 0) >= 1970) {
     const asphalt = new THREE.MeshStandardMaterial({ color: "#6a6d70", roughness: 0.96, metalness: 0 });
     asphalt.polygonOffset = true;
@@ -5664,7 +5923,7 @@ float lHash(vec3 p){ p=fract(p*0.1031); p+=dot(p,p.yzx+33.33); return fract((p.x
 
 const streetLabelCache = new Map();
 
-function addPolylineStreet(street, mats, scene) {
+function addPolylineStreet(street, surfaceMat, scene) {
   const pts = street.points;
   const half = street.width / 2;
   const positions = [];
@@ -5693,7 +5952,7 @@ function addPolylineStreet(street, mats, scene) {
   geo.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
   geo.setIndex(indices);
   geo.computeVertexNormals();
-  const mesh = new THREE.Mesh(geo, mats.street);
+  const mesh = new THREE.Mesh(geo, surfaceMat);
   mesh.receiveShadow = true;
   scene.add(mesh);
 
@@ -5780,7 +6039,7 @@ function addStreetNames(data, mats, scene) {
       // 400-block approach slab that replaces grass in the Something Special
       // photograph tops out near 1.3. Keep the letters on the walking surface.
       const pavedNow = (data.meta?.shownYear || 0) >= 1970;
-      let y = 0.12;
+      let y = 0.16;
       if (pavedNow) {
         y = 0.36;
         const onApproach =
@@ -5945,6 +6204,196 @@ function addWagonWheel(group, mats, x, y, z, radius) {
     obj.castShadow = true;
   });
   group.add(wheel);
+}
+
+// Round 4: period motor cars, parked at the curb on the business streets.
+// The White Way photograph of 1905 (p.39) shows one early open car among the buggies.
+// The town had about 25 autos in 1908 and 35 assessed in 1912 (p.29, p.32). The 1954 Main
+// Street photographs (p.113-p.116) show rounded late-1940s and early-1950s sedans.
+// Counts and models per stop are estimates; sizes are real sizes in feet.
+function carStyleFor(year) {
+  if (year < 1905) return null;
+  if (year < 1915) return "touring";
+  if (year < 1935) return "tee";
+  if (year < 1956) return "fifties";
+  if (year < 1980) return "sixties";
+  return "modern";
+}
+
+const carPaint = new Map();
+function paintMat(color, gloss = 0.42) {
+  const key = `${color}:${gloss}`;
+  if (!carPaint.has(key)) carPaint.set(key, new THREE.MeshStandardMaterial({ color, roughness: gloss, metalness: 0.25 }));
+  return carPaint.get(key);
+}
+
+function buildCar(style, color, accent, mats, put) {
+  const body = paintMat(color);
+  const second = paintMat(accent || color);
+  const tire = paintMat("#1b1a19", 0.9);
+  const chrome = paintMat("#d9dcdf", 0.25);
+  const brass = paintMat("#a8853c", 0.35);
+  const wood = paintMat("#7a5a36", 0.7);
+  const seat = paintMat("#3a2a22", 0.8);
+  // Car glass reads dark from the street.
+  const glass = paintMat("#27323b", 0.12);
+  const box = (mat, x, y, z, w, h, d) => put(mat, new THREE.BoxGeometry(w, h, d).translate(x, y, z));
+  const rounded = (mat, x, y, z, w, h, d, radius = 0.35) => put(mat, new RoundedBoxGeometry(w, h, d, 2, radius).translate(x, y, z));
+  const wheel = (x, z, r, w, hub, spokes) => {
+    put(tire, new THREE.CylinderGeometry(r, r, w, 18).rotateZ(Math.PI / 2).translate(x, r, z));
+    put(hub, new THREE.CylinderGeometry(r * 0.42, r * 0.42, w + 0.06, 12).rotateZ(Math.PI / 2).translate(x, r, z));
+    if (spokes) {
+      for (let i = 0; i < 6; i++) {
+        const spoke = new THREE.BoxGeometry(0.1, r * 1.5, 0.12).rotateX((i / 6) * Math.PI).translate(x + Math.sign(x) * 0.02, r, z);
+        put(spokes, spoke);
+      }
+    }
+  };
+  if (style === "touring") {
+    // An open touring car of about 1909: 34-inch wheels, brass radiator, no top raised.
+    for (const x of [-2.35, 2.35]) for (const z of [-4.1, 4.1]) wheel(x, z, 1.42, 0.32, wood, wood);
+    box(paintMat("#222", 0.8), 0, 1.55, 0, 3.8, 0.3, 10.6);
+    box(body, 0, 2.75, 3.9, 3.1, 1.7, 3.0);
+    box(brass, 0, 2.95, 5.55, 3.2, 2.1, 0.35);
+    box(body, 0, 2.95, -0.9, 5.0, 2.1, 6.3);
+    box(seat, 0, 4.45, 0.75, 4.7, 1.3, 0.5);
+    box(seat, 0, 4.6, -3.75, 4.8, 1.6, 0.5);
+    box(glass, 0, 4.8, 2.3, 4.2, 1.5, 0.06);
+    box(brass, 0, 4.05, 2.3, 4.4, 0.12, 0.12);
+    box(paintMat("#2b2522", 0.85), 0, 4.35, -4.6, 4.9, 0.55, 1.1);
+    for (const x of [-2.5, 2.5]) {
+      box(body, x, 3.0, 4.1, 0.95, 0.14, 3.1);
+      box(body, x, 3.0, -4.1, 0.95, 0.14, 3.1);
+      box(paintMat("#2a2a2a", 0.8), x * 1.04, 1.75, 0, 0.9, 0.12, 5.0);
+      put(brass, new THREE.CylinderGeometry(0.36, 0.3, 0.55, 12).rotateX(Math.PI / 2).translate(x * 0.62, 3.3, 5.9));
+    }
+    put(paintMat("#1a1a1a", 0.7), new THREE.TorusGeometry(0.62, 0.06, 6, 16).rotateX(-0.9).translate(0.95, 4.65, 1.3));
+    return 12.4;
+  }
+  if (style === "tee") {
+    // A black Model T-type touring car with the top up: about 11 feet long and 7 feet high.
+    for (const x of [-2.3, 2.3]) for (const z of [-3.95, 3.95]) wheel(x, z, 1.25, 0.28, wood, wood);
+    box(paintMat("#1e1e1e", 0.8), 0, 1.35, 0, 3.6, 0.28, 10.0);
+    box(body, 0, 2.55, 3.65, 2.9, 1.65, 2.9);
+    box(body, 0, 2.7, 5.15, 3.0, 2.0, 0.3);
+    box(body, 0, 2.75, -1.1, 4.9, 2.3, 5.9);
+    box(seat, 0, 4.25, 0.5, 4.6, 1.2, 0.45);
+    box(seat, 0, 4.4, -3.6, 4.6, 1.5, 0.45);
+    box(glass, 0, 4.7, 2.05, 4.2, 1.6, 0.06);
+    box(paintMat("#151515", 0.9), 0, 6.95, -1.0, 4.9, 0.16, 6.3);
+    for (const x of [-2.35, 2.35]) for (const z of [2.0, -4.1]) box(paintMat("#151515", 0.9), x, 5.45, z, 0.12, 2.9, 0.12);
+    for (const x of [-2.4, 2.4]) {
+      box(body, x, 2.7, 3.95, 0.9, 0.13, 2.8);
+      box(body, x, 2.7, -3.95, 0.9, 0.13, 2.8);
+      box(paintMat("#222", 0.8), x * 1.04, 1.55, 0, 0.85, 0.12, 4.8);
+      put(chrome, new THREE.CylinderGeometry(0.3, 0.26, 0.45, 12).rotateX(Math.PI / 2).translate(x * 0.6, 3.05, 5.45));
+    }
+    return 11;
+  }
+  if (style === "fifties") {
+    // A rounded sedan of the late 1940s or early 1950s: about 16.5 feet long, 5.3 feet high.
+    for (const x of [-2.6, 2.6]) for (const z of [-4.7, 4.75]) wheel(x, z, 1.15, 0.62, chrome, null);
+    rounded(body, 0, 2.15, 0, 6.0, 1.9, 15.6, 0.5);
+    for (const x of [-2.75, 2.75]) {
+      rounded(body, x, 2.35, 4.75, 0.9, 1.45, 4.3, 0.42);
+      rounded(body, x, 2.35, -4.7, 0.9, 1.45, 4.2, 0.42);
+    }
+    rounded(body, 0, 3.0, 5.1, 5.4, 0.85, 5.2, 0.4);
+    rounded(second, 0, 4.75, -0.6, 5.3, 0.9, 6.4, 0.44);
+    rounded(glass, 0, 4.0, -0.6, 5.45, 1.3, 7.0, 0.5);
+    rounded(body, 0, 3.0, -6.0, 5.6, 0.9, 3.4, 0.44);
+    box(chrome, 0, 1.45, 8.0, 6.3, 0.5, 0.35);
+    box(chrome, 0, 1.45, -8.0, 6.3, 0.5, 0.35);
+    box(chrome, 0, 2.3, 7.85, 3.0, 0.9, 0.12);
+    for (const x of [-2.15, 2.15]) put(chrome, new THREE.CylinderGeometry(0.34, 0.34, 0.2, 12).rotateX(Math.PI / 2).translate(x, 2.75, 7.9));
+    return 16.5;
+  }
+  if (style === "sixties") {
+    // A long, low sedan of the 1960s: about 17.5 feet long and 4.6 feet high.
+    for (const x of [-2.75, 2.75]) for (const z of [-4.9, 5.0]) wheel(x, z, 1.08, 0.66, chrome, null);
+    rounded(body, 0, 2.05, 0, 6.5, 1.75, 17.2, 0.2);
+    box(glass, 0, 3.4, -0.9, 5.6, 0.95, 7.2);
+    box(second, 0, 4.05, -0.9, 5.5, 0.35, 6.4);
+    box(chrome, 0, 1.3, 8.7, 6.6, 0.45, 0.3);
+    box(chrome, 0, 1.3, -8.7, 6.6, 0.45, 0.3);
+    box(chrome, 0, 2.2, 8.6, 5.6, 0.7, 0.1);
+    box(chrome, 0, 2.95, 0, 6.55, 0.08, 17.0);
+    return 17.5;
+  }
+  // Modern sedan or pickup, for slider years after 1980 that show the 1970 town.
+  for (const x of [-2.55, 2.55]) for (const z of [-4.6, 4.6]) wheel(x, z, 1.05, 0.62, chrome, null);
+  rounded(body, 0, 2.05, 0, 6.0, 2.0, 15.4, 0.4);
+  rounded(glass, 0, 3.65, -0.4, 5.4, 1.2, 7.6, 0.4);
+  rounded(second, 0, 4.35, -0.6, 5.2, 0.3, 6.4, 0.14);
+  box(paintMat("#2a2b2c", 0.7), 0, 1.35, 7.75, 6.1, 0.6, 0.3);
+  box(paintMat("#2a2b2c", 0.7), 0, 1.35, -7.75, 6.1, 0.6, 0.3);
+  return 15.4;
+}
+
+function addVehicles(data, mats, scene, year, modernPaved) {
+  const style = carStyleFor(year);
+  if (!style) return;
+  const palettes = {
+    touring: [["#1f2a22"], ["#2a1d1a"]],
+    tee: [["#1a1a1a"], ["#1a1a1a"], ["#22261f"], ["#1a1a1a"]],
+    fifties: [["#1c1c1e"], ["#e8e2d2"], ["#2f4436", "#d8d2c0"], ["#5a2a28"], ["#3d4d5e"], ["#1c1c1e"], ["#8a8172", "#e8e2d2"]],
+    sixties: [["#e9e5da"], ["#6b1f1f"], ["#36506e"], ["#2f4a3a"], ["#c7b98e"], ["#1d1e20"], ["#8fa4ad", "#e9e5da"]],
+    modern: [["#b9bcbf"], ["#efefec"], ["#7a1d1f"], ["#2a3b5c"], ["#3c3e40"]],
+  }[style];
+  // How many cars stand at the curbs downtown in each period (estimate).
+  const counts = { touring: 2, tee: 6, fifties: 16, sixties: 16, modern: 12 };
+  const n = counts[style];
+  const byName = (name) => data.streets.find((s) => s.name === name && s.axis);
+  const spots = [];
+  // Between the hitching rails (every 42 feet from x = -760) while they stand.
+  const between = (x) => (year < 1950 ? Math.round((x + 739) / 42) * 42 - 739 : x);
+  const mainXs = [-392, -350, -300, -255, -205, -150, -95, -45, 45, 95, 150, 210, 265, 330, -520, -600];
+  const eastMain = byName("East Main Street");
+  const westMain = byName("West Main Street");
+  mainXs.forEach((x0, i) => {
+    const x = between(x0);
+    if (Math.abs(x + 420) < 34 || Math.abs(x) < 34 || Math.abs(x - 420) < 34) return;
+    const onEast = i % 3 !== 2;
+    const street = onEast ? eastMain : westMain;
+    if (!street) return;
+    // The 1970 photo-matched slab in front of the 400 block stands above the street.
+    if (modernPaved && onEast && x > -495 && x < -205) return;
+    const half = modernPaved && onEast ? 19 : 25;
+    const side = Math.sign(street.at);
+    spots.push({ x, z: street.at + side * (half - 3.4), heading: i % 2 ? Math.PI / 2 : -Math.PI / 2 });
+  });
+  const hurst = byName("Hurst Street");
+  if (hurst && year >= 1920) {
+    for (const [z, side] of [[240, -1], [300, 1], [470, -1], [-260, 1], [-330, -1]]) {
+      spots.push({ x: hurst.at + side * 14.6, z, heading: side > 0 ? 0 : Math.PI });
+    }
+  }
+  const parts = new Map();
+  const picked = spots.slice(0, n);
+  picked.forEach((spot, i) => {
+    const [color, accent] = palettes[i % palettes.length];
+    const m = new THREE.Matrix4().makeRotationY(spot.heading);
+    m.setPosition(spot.x, 0.1, spot.z);
+    const put = (mat, geo) => {
+      geo.applyMatrix4(m);
+      if (!parts.has(mat)) parts.set(mat, []);
+      parts.get(mat).push(geo);
+    };
+    buildCar(style, color, accent, mats, put);
+  });
+  for (const [mat, geos] of parts) {
+    const normalized = geos.map((g) => {
+      const flat = g.index ? g.toNonIndexed() : g;
+      if (mat.vertexColors && !flat.getAttribute("color")) {
+        flat.setAttribute("color", new THREE.Float32BufferAttribute(new Float32Array(flat.getAttribute("position").count * 3).fill(1), 3));
+      }
+      return flat;
+    });
+    const mesh = new THREE.Mesh(mergeGeometries(normalized, false), mat);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    scene.add(mesh);
+  }
 }
 
 function makeProp(p, mats) {
