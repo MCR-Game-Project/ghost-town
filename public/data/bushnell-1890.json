@@ -33,9 +33,9 @@
       "facade": {
         "methodist1884": true,
         "photoMatch": true,
-        "photoSource": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.62 (drawing of the second Methodist church, 1884–1923)."
+        "photoSource": "Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.62 (drawing of the second Methodist church, 1884\u20131923)."
       },
-      "sourceMap": "Bushnell, Illinois, centennial, 1854–1954 (archive.org bushnellillinois00bush), PDF p.61–62",
+      "sourceMap": "Bushnell, Illinois, centennial, 1854\u20131954 (archive.org bushnellillinois00bush), PDF p.61\u201362",
       "notes": "Centennial book PDF p.61: the 1863 frame church was razed in the spring of 1883 and the new church was dedicated in May 1884; it burned on February 4, 1923 (also PDF p.38). Form from the PDF p.62 drawing: a brick front gable with a large pointed traceried window, small pointed windows, a lower side aisle on the left, a square corner tower at the right front with a pointed door, a round star window, a blank tablet, a corbelled band, a belfry with gablets and a tall spire, and a gabled side wing behind the tower. The tablet lettering cannot be read, so it is blank. The footprint (kept at 44 by 72), heights, brick colour and the lot (inferred until the 1906 Sanborn) are estimates."
     },
     {
@@ -74,7 +74,7 @@
       "facade": {
         "upperSign": "OPERA HOUSE"
       },
-      "notes": "Centennial book PDF p.16–17: the Opera House was built in 1882, upstairs. PDF p.55 puts it over Sperling's drug store, fifth of seventeen fronts from the Hurst corner of the 400 block of East Main, which falls in this stand-in (estimate). The ground-floor Hardware name stays a stand-in at this stop."
+      "notes": "Centennial book PDF p.16\u201317: the Opera House was built in 1882, upstairs. PDF p.55 puts it over Sperling's drug store, fifth of seventeen fronts from the Hurst corner of the 400 block of East Main, which falls in this stand-in (estimate). The ground-floor Hardware name stays a stand-in at this stop."
     }
   ],
   "add": [
@@ -559,7 +559,7 @@
       "x": -1848,
       "z": 150,
       "plan": "cottage",
-      "notes": "A 1½-story frame dwelling on block 98, between Ludwig Street and the T. P. & W., as drawn on the August 1893 Sanborn sheet 4. No family name is printed. It was moved off the T. P. & W. track in the November 2026 audit; the exact footing is an estimate."
+      "notes": "A 1\u00bd-story frame dwelling on block 98, between Ludwig Street and the T. P. & W., as drawn on the August 1893 Sanborn sheet 4. No family name is printed. It was moved off the T. P. & W. track in the November 2026 audit; the exact footing is an estimate."
     },
     {
       "kind": "house",
@@ -659,6 +659,31 @@
       "rotation": 0,
       "sourceMap": "Mark's undated photograph labeled Train Intersection",
       "notes": "A dark one-story depot in two connected gables, with BUSHNELL on the end, a platform, an order-board post, and a telegraph pole. Mark labels the picture Train Intersection. It is not the wooden T. P. & W. depot at East Main and Hurst, and it is not the wooden C. B. & Q. depot already drawn between the Main streets. It is placed beside the crossing of those two railroads, just southwest of Davis, which is the junction already in the model. The Sanborn lettering at that crossing was not read door by door in this pass, so the footprint and the year are estimates. The photograph is undated. The locomotive and the clothes suggest roughly 1890 to 1915, and that range is not stated as a fact. No railroad name is painted on, because the picture does not give one. No locomotive is drawn."
+    },
+    {
+      "id": "water-standpipe-1889",
+      "name": "City Water Works Standpipe",
+      "kind": "factory",
+      "use": "water standpipe",
+      "material": "brick",
+      "brick": "red",
+      "stories": 4,
+      "porch": false,
+      "party": [],
+      "confidence": "sourced",
+      "year": "1889",
+      "steeple": false,
+      "rotation": 0,
+      "sourceMap": "August 1893 Sanborn, sheet 4",
+      "facing": "+z",
+      "width": 16,
+      "depth": 16,
+      "x": -1519,
+      "z": 280,
+      "facade": {
+        "standpipe1889": true
+      },
+      "notes": "August 1893 Sanborn, sheet 4, draws the standpipe on block 88, lot 208 (east of City Water Works along the 8-inch water pipe to West Main), labeled 'IR. W. TANK 53\\' HIGH, 12\\' DIAM. ON BR. BASE 56\\'' (109 ft total). The 1907 county history dates the City Water Works to 1889 with a 40,000-gallon standpipe, and the 1954 centennial book (p. 22) notes the 1898 bird's-eye view was taken from the old water tower. The 16x16 ft brick-base plan size and conical tank cap are estimates; replaced after June 1914 (removed at the 1920 stop, exact raze year unprinted)."
     }
   ],
   "streets": [

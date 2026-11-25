@@ -1459,6 +1459,107 @@ export function buildTown(data, scene) {
     return 54;
   };
 
+  // 1889-1914 City Water Works standpipe (August 1893 Sanborn s4: "IR. W. TANK 53' HIGH, 12' DIAM. ON BR. BASE 56'").
+  const addStandpipe1889 = (b) => {
+    const bw = b.width * 0.96;
+    const baseH = 56;
+    box(mats.stone, 0, 1.25, 0, b.width + 0.8, 2.5, b.depth + 0.8);
+    box(mats.brick.red, 0, 2.5 + (baseH - 2.5) / 2, 0, bw, baseH - 2.5, bw);
+    box(mats.stone, 0, baseH - 0.5, 0, b.width + 0.8, 1.0, b.depth + 0.8);
+    box(mats.trimDark, 0, 5.2, bw / 2 + 0.08, 3.2, 6.8, 0.14);
+    for (const y of [18, 32, 46]) {
+      for (const side of [-1, 1]) {
+        box(mats.trimDark, 0, y, side * (bw / 2 + 0.06), 1.4, 3.4, 0.1);
+        box(mats.trimDark, side * (bw / 2 + 0.06), y, 0, 0.1, 3.4, 1.4);
+      }
+    }
+    const tankH = 53;
+    const tankR = 6.0;
+    const tank = new THREE.CylinderGeometry(tankR, tankR, tankH, 24);
+    tank.translate(0, baseH + tankH / 2, 0);
+    tank.applyMatrix4(buildingMatrix);
+    put(mats.metal, tank);
+    for (const ry of [baseH + 1, baseH + 14, baseH + 27, baseH + 40, baseH + tankH - 0.4]) {
+      const band = new THREE.CylinderGeometry(tankR + 0.15, tankR + 0.15, 0.45, 24);
+      band.translate(0, ry, 0);
+      band.applyMatrix4(buildingMatrix);
+      put(mats.trimDark, band);
+    }
+    const cap = new THREE.ConeGeometry(tankR + 0.5, 3.2, 24);
+    cap.translate(0, baseH + tankH + 1.6, 0);
+    cap.applyMatrix4(buildingMatrix);
+    put(mats.roofDark, cap);
+    return baseH + tankH + 3.2;
+  };
+
+  // 1914+ elevated steel water tower (1954 book p.32, 1974 USGS WT, Nagel Bros. photo; dimensions estimated).
+  const addWaterTower1914 = (b) => {
+    const legSpan = 9.5;
+    const topSpan = 6.4;
+    const legTopY = 68;
+    const strut = (x1, y1, z1, x2, y2, z2, r, mat) => {
+      const a = new THREE.Vector3(x1, y1, z1);
+      const c = new THREE.Vector3(x2, y2, z2);
+      const dir = new THREE.Vector3().subVectors(c, a);
+      const len = dir.length();
+      const geo = new THREE.CylinderGeometry(r, r, len, 8);
+      const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+      geo.applyQuaternion(q);
+      geo.translate((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
+      geo.applyMatrix4(buildingMatrix);
+      put(mat, geo);
+    };
+    const corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
+    for (const [sx, sz] of corners) {
+      box(mats.stone, sx * legSpan, 1.0, sz * legSpan, 2.8, 2.0, 2.8);
+      strut(sx * legSpan, 1.8, sz * legSpan, sx * topSpan, legTopY, sz * topSpan, 0.55, mats.metal);
+    }
+    const levels = [
+      [1.8, legSpan],
+      [24, legSpan + (topSpan - legSpan) * (22.2 / (legTopY - 1.8))],
+      [46, legSpan + (topSpan - legSpan) * (44.2 / (legTopY - 1.8))],
+      [66, topSpan + 0.15],
+    ];
+    for (let li = 1; li < levels.length; li++) {
+      const [y, sp] = levels[li];
+      const [py, psp] = levels[li - 1];
+      for (let ci = 0; ci < 4; ci++) {
+        const [ax, az] = corners[ci];
+        const [bx, bz] = corners[(ci + 1) % 4];
+        strut(ax * sp, y, az * sp, bx * sp, y, bz * sp, 0.28, mats.metal);
+        strut(ax * psp, py, az * psp, bx * sp, y, bz * sp, 0.14, mats.trimDark);
+        strut(bx * psp, py, bz * psp, ax * sp, y, az * sp, 0.14, mats.trimDark);
+      }
+    }
+    const riser = new THREE.CylinderGeometry(1.15, 1.15, legTopY - 2, 14);
+    riser.translate(0, (legTopY - 2) / 2, 0);
+    riser.applyMatrix4(buildingMatrix);
+    put(mats.metal, riser);
+    const tankR = 9.5;
+    const tankH = 22;
+    const bowl = new THREE.SphereGeometry(tankR, 24, 12, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2);
+    bowl.translate(0, legTopY, 0);
+    bowl.applyMatrix4(buildingMatrix);
+    put(mats.metal, bowl);
+    const tank = new THREE.CylinderGeometry(tankR, tankR, tankH, 24);
+    tank.translate(0, legTopY + tankH / 2, 0);
+    tank.applyMatrix4(buildingMatrix);
+    put(mats.metal, tank);
+    const walk = new THREE.CylinderGeometry(tankR + 1.3, tankR + 1.3, 0.4, 24);
+    walk.translate(0, legTopY + 0.2, 0);
+    walk.applyMatrix4(buildingMatrix);
+    put(mats.trimDark, walk);
+    const cap = new THREE.ConeGeometry(tankR + 0.8, 8.5, 24);
+    cap.translate(0, legTopY + tankH + 4.25, 0);
+    cap.applyMatrix4(buildingMatrix);
+    put(mats.roofDark, cap);
+    const mast = new THREE.CylinderGeometry(0.18, 0.24, 4.5, 8);
+    mast.translate(0, legTopY + tankH + 10.5, 0);
+    mast.applyMatrix4(buildingMatrix);
+    put(mats.trimDark, mast);
+    return legTopY + tankH + 12.8;
+  };
+
   const addCrossingShanty = (b) => {
     const body = paintOf(b);
     box(body, 0, 5, 0, b.width, 10, b.depth);
@@ -6911,7 +7012,7 @@ export function buildTown(data, scene) {
     }
     let height = 20;
     const handDrawn = Boolean(
-      b.facade?.hendeeHome || b.facade?.turretHouse || b.facade?.studBarn || b.facade?.hoseTower ||
+      b.facade?.hendeeHome || b.facade?.turretHouse || b.facade?.studBarn || b.facade?.hoseTower || b.facade?.standpipe1889 || b.facade?.waterTower1914 ||
       b.facade?.ballCream || b.facade?.mcpCorner || b.facade?.hurst292 || b.facade?.funeralHome ||
       b.facade?.hurstBuff || b.facade?.hurstPressed || b.facade?.signBand || b.facade?.pentRoof ||
       (b.id === "millinery-2" && b.facade?.storefront === "plate") ||
@@ -6938,6 +7039,8 @@ export function buildTown(data, scene) {
     else if (b.id === "hurst-crossing-shanty") height = addCrossingShanty(b);
     else if (b.facade?.studBarn) height = addStudBarn(b);
     else if (b.facade?.hoseTower) height = addHoseTower(b);
+    else if (b.facade?.standpipe1889) height = addStandpipe1889(b);
+    else if (b.facade?.waterTower1914) height = addWaterTower1914(b);
     else if (b.facade?.ballCream) height = addBallCream(b);
     else if (b.facade?.mcpCorner) height = addMcpCorner(b);
     else if (b.facade?.hurst292) height = addHurst292(b);
@@ -8219,7 +8322,7 @@ function addPolylineStreet(street, surfaceMat, scene) {
   }
   for (let i = 0; i < pts.length - 1; i++) {
     const a = i * 2;
-    indices.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
+    indices.push(a, a + 2, a + 1, a + 1, a + 2, a + 3);
   }
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
