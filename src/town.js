@@ -4,6 +4,7 @@ import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.j
 import { makeMaterials, makeSignTexture } from "./textures.js";
 import { mirrorPlat } from "./orient.js";
 import { drawFacadeSpec } from "./facade/assemble.js";
+import { addRolling, addStreetLamps, buildCarInto, carCount, Kit, makeHorse, makeWagon, paletteFor, styleForSlot, wagonKindFor } from "./vehicles.js";
 
 const FACING = { "+z": 0, "-z": Math.PI, "+x": Math.PI / 2, "-x": -Math.PI / 2 };
 
@@ -8080,41 +8081,22 @@ float sNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
     scene.add(puddles);
   }
 
+  // Street lamps along the business streets (preview/vehicles: period shapes, instanced in
+  // addStreetLamps). They stand only in years whose data has street lamps (none before 1880).
   const lampSpots = [];
-  const addLampLine = (axis, at, from, to, step) => {
+  const hasLamps = data.props.some((p) => p.type === "lamp");
+  const addLampLine = (axis, at, from, to, step, face, main) => {
+    if (!hasLamps) return;
     const start = Math.min(from, to);
     const end = Math.max(from, to);
     for (let p = start; p <= end; p += step) {
-      lampSpots.push(axis === "x" ? { x: p, z: at } : { x: at, z: p });
+      lampSpots.push(axis === "x" ? { x: p, z: at, face, main } : { x: at, z: p, face, main });
     }
   };
-  addLampLine("x", 180, -760, 360, 130);
-  addLampLine("x", -180, -760, 360, 130);
-  addLampLine("z", -430, -140, 140, 140);
-  addLampLine("z", 26, -480, -220, 130);
-  if (lampSpots.length) {
-    const n = lampSpots.length;
-    const posts = new THREE.InstancedMesh(new THREE.BoxGeometry(0.42, 1, 0.42), mats.trimDark, n);
-    const lanterns = new THREE.InstancedMesh(new THREE.BoxGeometry(0.9, 1.2, 0.9), mats.lamp, n);
-    const caps = new THREE.InstancedMesh(new THREE.BoxGeometry(1.15, 0.28, 1.15), mats.metal, n);
-    const lampDummy = new THREE.Object3D();
-    lampSpots.forEach((spot, i) => {
-      lampDummy.position.set(spot.x, 5.2, spot.z);
-      lampDummy.scale.set(1, 10.4, 1);
-      lampDummy.updateMatrix();
-      posts.setMatrixAt(i, lampDummy.matrix);
-      lampDummy.position.set(spot.x, 10.55, spot.z);
-      lampDummy.scale.set(1, 1, 1);
-      lampDummy.updateMatrix();
-      lanterns.setMatrixAt(i, lampDummy.matrix);
-      lampDummy.position.set(spot.x, 11.25, spot.z);
-      lampDummy.updateMatrix();
-      caps.setMatrixAt(i, lampDummy.matrix);
-    });
-    posts.castShadow = true;
-    caps.castShadow = true;
-    scene.add(posts, lanterns, caps);
-  }
+  addLampLine("x", 180, -760, 360, 130, [0, -1], true);
+  addLampLine("x", -180, -760, 360, 130, [0, 1], true);
+  addLampLine("z", -430, -140, 140, 140, [1, 0], false);
+  addLampLine("z", 26, -480, -220, 130, [-1, 0], false);
 
   const railViewport = { value: new THREE.Vector2(1280, 800) };
   // Keeps a rail from shrinking to a soft hairline in an aerial view.
@@ -8203,12 +8185,22 @@ float sNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
   // the 1954 Main Street photographs (p.113-p.116) show parked cars and none of them (estimate of the year).
   const horseYears = groundYear < 1950;
   const propRoot = new THREE.Group();
+  // preview/vehicles: wagons and horses pick a period kind by year and slot; lamp props join
+  // the instanced period street lamps (on Main, facing the street).
+  const slots = { wagon: 0, horse: 0 };
   for (const p of data.props) {
     if (!horseYears && ["horse", "wagon", "hitching", "trough"].includes(p.type)) continue;
-    propRoot.add(makeProp(p, mats));
+    if (p.type === "lamp") {
+      lampSpots.push({ x: p.x, z: p.z, main: true, face: [0, -Math.sign(p.z) || 1] });
+      continue;
+    }
+    if (p.type in slots) propRoot.add(makeProp({ ...p, year: groundYear, slot: slots[p.type]++ }, mats));
+    else propRoot.add(makeProp(p, mats));
   }
   scene.add(propRoot);
-  addVehicles(data, mats, scene, groundYear, modernPaved);
+  addStreetLamps(scene, lampSpots, groundYear);
+  addVehicles(data, mats, scene, groundYear, modernPaved, lampSpots);
+  addRolling(scene, data, groundYear);
 
   // Street looks taken from dated photographs. Each one is only on the years
   // whose patch sets streetStyle, and only on the street the picture shows.
@@ -8438,22 +8430,12 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
       }
       hitchPosts.castShadow = true;
       scene.add(hitchPosts, hitchRail);
-      const lampN = 6;
-      const lampPosts = new THREE.InstancedMesh(new THREE.BoxGeometry(0.4, 1, 0.4), mats.trimDark, lampN);
-      const lamps = new THREE.InstancedMesh(new THREE.BoxGeometry(0.85, 1.1, 0.85), mats.lamp, lampN);
-      for (let i = 0; i < lampN; i++) {
-        const x = -380 + i * 150;
-        const z = street.at + side * (street.width / 2 + 5.5);
-        dummy.position.set(x, 5.5, z);
-        dummy.scale.set(1, 11, 1);
-        dummy.updateMatrix();
-        lampPosts.setMatrixAt(i, dummy.matrix);
-        dummy.position.set(x, 11.2, z);
-        dummy.scale.set(1, 1, 1);
-        dummy.updateMatrix();
-        lamps.setMatrixAt(i, dummy.matrix);
+      // preview/vehicles: period lamp posts (instanced) instead of box lanterns.
+      const mainLamps = [];
+      for (let i = 0; i < 6; i++) {
+        mainLamps.push({ x: -380 + i * 150, z: street.at + side * (street.width / 2 + 5.5), main: true, face: [0, -side] });
       }
-      scene.add(lampPosts, lamps);
+      addStreetLamps(scene, mainLamps, groundYear);
       for (let i = 0; i < 4; i++) {
         const x = -400 + i * 110;
         const post = new THREE.Mesh(new THREE.BoxGeometry(0.5, 26, 0.5), mats.trunk);
@@ -8463,9 +8445,12 @@ float pNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
       const span = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, street.width * 0.7), mats.trimDark);
       span.position.set(-280, 22, street.at);
       scene.add(span);
-      const lamp = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.7, 1.4), mats.lamp);
-      lamp.position.set(-280, 21.2, street.at);
-      scene.add(lamp);
+      // An enclosed arc lamp hung from the span wire: hood, case, and globe (period shape).
+      const arc = new Kit();
+      arc.cyl(mats.trimDark, 0.12, 0.9, 0.45, -280, 21.7, street.at, "y", 12);
+      arc.cyl(mats.trimDark, 0.35, 0.35, 0.9, -280, 21.1, street.at, "y", 10);
+      arc.sphere(mats.lamp, 0.62, -280, 20.2, street.at, 1, 1.25, 1, 14);
+      arc.addTo(scene);
     }
   }
 
@@ -8804,278 +8789,14 @@ function ensureColor(root) {
   });
 }
 
-function makeHorse(mats) {
-  const g = new THREE.Group();
-  const add = (geo, mat, x, y, z, rotX = 0) => {
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(x, y, z);
-    mesh.rotation.x = rotX;
-    mesh.castShadow = true;
-    g.add(mesh);
-    return mesh;
-  };
-
-  // Light harness horse, about fifteen hands at the withers, facing +z.
-  add(new THREE.CylinderGeometry(0.82, 0.9, 3.5, 10), mats.horse, 0, 3.7, 0, Math.PI / 2);
-  const chest = add(new THREE.SphereGeometry(0.78, 10, 8), mats.horse, 0, 3.55, 1.45);
-  chest.scale.set(0.9, 1.02, 1.08);
-  const rump = add(new THREE.SphereGeometry(0.9, 10, 8), mats.horse, 0, 3.85, -1.45);
-  rump.scale.set(0.95, 1.05, 1.02);
-  const shoulder = add(new THREE.SphereGeometry(0.42, 8, 6), mats.horse, 0, 4.25, 1.2);
-  shoulder.scale.set(0.8, 0.65, 1.05);
-
-  add(new THREE.CylinderGeometry(0.22, 0.42, 2.05, 7), mats.horse, 0, 5.4, 2.0, 0.78);
-  add(new THREE.BoxGeometry(0.42, 0.48, 1.55), mats.horse, 0, 5.72, 3.1, 0.7);
-  add(new THREE.BoxGeometry(0.32, 0.28, 0.62), mats.horseDark, 0, 5.22, 4.02, 0.5);
-  add(new THREE.BoxGeometry(0.14, 0.22, 1.45), mats.horseDark, 0, 5.85, 1.85, 0.7);
-
-  for (const side of [-1, 1]) {
-    const ear = add(new THREE.ConeGeometry(0.08, 0.36, 5), mats.horseDark, side * 0.14, 6.42, 2.62, -0.35);
-    ear.rotation.z = side * 0.15;
-    add(new THREE.SphereGeometry(0.045, 6, 5), mats.horseDark, side * 0.26, 5.95, 3.42);
-    const bridle = add(new THREE.BoxGeometry(0.06, 0.06, 0.85), mats.trimDark, side * 0.2, 6.05, 3.05);
-    bridle.castShadow = false;
-  }
-  add(new THREE.BoxGeometry(0.42, 0.06, 0.08), mats.trimDark, 0, 5.35, 3.95);
-
-  const leg = (x, topZ, kneeZ, hoofZ, upperH, cannonH) => {
-    add(new THREE.BoxGeometry(0.34, upperH, 0.4), mats.horse, x, 2.85 - upperH / 2, (topZ + kneeZ) / 2);
-    add(new THREE.BoxGeometry(0.22, cannonH, 0.24), mats.horseDark, x, 0.28 + cannonH / 2, (kneeZ + hoofZ) / 2);
-    add(new THREE.BoxGeometry(0.32, 0.22, 0.4), mats.horseDark, x, 0.12, hoofZ);
-  };
-  leg(-0.42, 1.2, 1.28, 1.18, 1.35, 1.2);
-  leg(0.42, 1.2, 1.28, 1.18, 1.35, 1.2);
-  leg(-0.46, -1.25, -1.55, -1.35, 1.25, 1.25);
-  leg(0.46, -1.25, -1.55, -1.35, 1.25, 1.25);
-
-  add(new THREE.BoxGeometry(0.18, 0.55, 0.18), mats.horseDark, 0, 4.45, -2.15, 0.9);
-  add(new THREE.BoxGeometry(0.14, 1.35, 0.14), mats.horseDark, 0, 3.35, -2.45, 0.35);
-
-  const collar = add(new THREE.TorusGeometry(0.46, 0.09, 6, 12), mats.trimDark, 0, 4.85, 1.55, 1.15);
-  collar.castShadow = false;
-  add(new THREE.BoxGeometry(0.55, 0.12, 1.15), mats.trimDark, 0, 4.62, 0.15);
-  const girth = add(new THREE.TorusGeometry(0.98, 0.06, 6, 14), mats.trimDark, 0, 3.45, 0.25);
-  girth.castShadow = false;
-  for (const side of [-1, 1]) {
-    const trace = add(new THREE.BoxGeometry(0.07, 0.07, 3.3), mats.trimDark, side * 0.72, 3.85, -0.15);
-    trace.castShadow = false;
-  }
-  ensureColor(g);
-  return g;
-}
-
-function makeWagon(mats) {
-  const g = new THREE.Group();
-  const bed = new THREE.Mesh(new THREE.BoxGeometry(4.7, 0.18, 8.4), mats.siding.tan);
-  bed.position.set(0, 2.62, -0.2);
-  bed.castShadow = true;
-  bed.receiveShadow = true;
-  g.add(bed);
-  for (const x of [-2.35, 2.35]) {
-    const side = new THREE.Mesh(new THREE.BoxGeometry(0.14, 1.45, 8.3), mats.siding.tan);
-    side.position.set(x, 3.4, -0.2);
-    side.castShadow = true;
-    g.add(side);
-    const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.18, 8.1), mats.siding.red);
-    stripe.position.set(x + Math.sign(x) * 0.08, 3.95, -0.2);
-    g.add(stripe);
-  }
-  for (const z of [-4.3, 3.9]) {
-    const end = new THREE.Mesh(new THREE.BoxGeometry(4.7, 1.35, 0.14), mats.siding.tan);
-    end.position.set(0, 3.35, z);
-    end.castShadow = true;
-    g.add(end);
-  }
-  const seat = new THREE.Mesh(new THREE.BoxGeometry(3.3, 0.16, 1.15), mats.trim);
-  seat.position.set(0, 3.55, 2.35);
-  const seatBack = new THREE.Mesh(new THREE.BoxGeometry(3.3, 1.05, 0.12), mats.trim);
-  seatBack.position.set(0, 4.1, 1.85);
-  const foot = new THREE.Mesh(new THREE.BoxGeometry(3.1, 0.1, 1.3), mats.plank);
-  foot.position.set(0, 2.95, 3.35);
-  g.add(seat, seatBack, foot);
-  addWagonWheel(g, mats, -2.62, 2.15, -2.15, 2.15);
-  addWagonWheel(g, mats, 2.62, 2.15, -2.15, 2.15);
-  addWagonWheel(g, mats, -2.62, 1.72, 2.55, 1.72);
-  addWagonWheel(g, mats, 2.62, 1.72, 2.55, 1.72);
-  for (const y of [2.15, 1.72]) {
-    const axle = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 5.3, 8), mats.metal);
-    axle.rotation.z = Math.PI / 2;
-    axle.position.set(0, y, y > 2 ? -2.15 : 2.55);
-    g.add(axle);
-  }
-  for (const x of [-0.72, 0.72]) {
-    const shaft = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.16, 6.4), mats.trimDark);
-    shaft.position.set(x, 3.15, 7.15);
-    shaft.castShadow = true;
-    g.add(shaft);
-  }
-  const singletree = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.12, 0.14), mats.trimDark);
-  singletree.position.set(0, 3.15, 10.2);
-  const hound = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.12, 0.14), mats.trimDark);
-  hound.position.set(0, 3.05, 4.05);
-  g.add(singletree, hound);
-  ensureColor(g);
-  return g;
-}
-
-function addWagonWheel(group, mats, x, y, z, radius) {
-  const wheel = new THREE.Group();
-  const rim = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.09, 6, 18), mats.trim);
-  rim.rotation.y = Math.PI / 2;
-  const tire = new THREE.Mesh(new THREE.TorusGeometry(radius + 0.05, 0.055, 6, 18), mats.metal);
-  tire.rotation.y = Math.PI / 2;
-  const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.46, 8), mats.metal);
-  hub.rotation.z = Math.PI / 2;
-  wheel.add(rim, tire, hub);
-  for (let i = 0; i < 12; i++) {
-    const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.07, radius * 1.82, 0.08), mats.trim);
-    spoke.rotation.x = (i / 12) * Math.PI * 2;
-    wheel.add(spoke);
-  }
-  wheel.position.set(x, y, z);
-  wheel.traverse((obj) => {
-    obj.castShadow = true;
-  });
-  group.add(wheel);
-}
-
 // Round 4: period motor cars, parked at the curb on the business streets.
 // The White Way photograph of 1905 (p.39) shows one early open car among the buggies.
 // The town had about 25 autos in 1908 and 35 assessed in 1912 (p.29, p.32). The 1954 Main
 // Street photographs (p.113-p.116) show rounded late-1940s and early-1950s sedans.
-// Counts and models per stop are estimates; sizes are real sizes in feet.
-function carStyleFor(year) {
-  if (year < 1905) return null;
-  if (year < 1915) return "touring";
-  if (year < 1935) return "tee";
-  if (year < 1956) return "fifties";
-  if (year < 1980) return "sixties";
-  return "modern";
-}
-
-const carPaint = new Map();
-function paintMat(color, gloss = 0.42) {
-  const key = `${color}:${gloss}`;
-  if (!carPaint.has(key)) carPaint.set(key, new THREE.MeshStandardMaterial({ color, roughness: gloss, metalness: 0.25 }));
-  return carPaint.get(key);
-}
-
-function buildCar(style, color, accent, mats, put) {
-  const body = paintMat(color);
-  const second = paintMat(accent || color);
-  const tire = paintMat("#1b1a19", 0.9);
-  const chrome = paintMat("#d9dcdf", 0.25);
-  const brass = paintMat("#a8853c", 0.35);
-  const wood = paintMat("#7a5a36", 0.7);
-  const seat = paintMat("#3a2a22", 0.8);
-  // Car glass reads dark from the street.
-  const glass = paintMat("#27323b", 0.12);
-  const box = (mat, x, y, z, w, h, d) => put(mat, new THREE.BoxGeometry(w, h, d).translate(x, y, z));
-  const rounded = (mat, x, y, z, w, h, d, radius = 0.35) => put(mat, new RoundedBoxGeometry(w, h, d, 2, radius).translate(x, y, z));
-  const wheel = (x, z, r, w, hub, spokes) => {
-    put(tire, new THREE.CylinderGeometry(r, r, w, 18).rotateZ(Math.PI / 2).translate(x, r, z));
-    put(hub, new THREE.CylinderGeometry(r * 0.42, r * 0.42, w + 0.06, 12).rotateZ(Math.PI / 2).translate(x, r, z));
-    if (spokes) {
-      for (let i = 0; i < 6; i++) {
-        const spoke = new THREE.BoxGeometry(0.1, r * 1.5, 0.12).rotateX((i / 6) * Math.PI).translate(x + Math.sign(x) * 0.02, r, z);
-        put(spokes, spoke);
-      }
-    }
-  };
-  if (style === "touring") {
-    // An open touring car of about 1909: 34-inch wheels, brass radiator, no top raised.
-    for (const x of [-2.35, 2.35]) for (const z of [-4.1, 4.1]) wheel(x, z, 1.42, 0.32, wood, wood);
-    box(paintMat("#222", 0.8), 0, 1.55, 0, 3.8, 0.3, 10.6);
-    box(body, 0, 2.75, 3.9, 3.1, 1.7, 3.0);
-    box(brass, 0, 2.95, 5.55, 3.2, 2.1, 0.35);
-    box(body, 0, 2.95, -0.9, 5.0, 2.1, 6.3);
-    box(seat, 0, 4.45, 0.75, 4.7, 1.3, 0.5);
-    box(seat, 0, 4.6, -3.75, 4.8, 1.6, 0.5);
-    box(glass, 0, 4.8, 2.3, 4.2, 1.5, 0.06);
-    box(brass, 0, 4.05, 2.3, 4.4, 0.12, 0.12);
-    box(paintMat("#2b2522", 0.85), 0, 4.35, -4.6, 4.9, 0.55, 1.1);
-    for (const x of [-2.5, 2.5]) {
-      box(body, x, 3.0, 4.1, 0.95, 0.14, 3.1);
-      box(body, x, 3.0, -4.1, 0.95, 0.14, 3.1);
-      box(paintMat("#2a2a2a", 0.8), x * 1.04, 1.75, 0, 0.9, 0.12, 5.0);
-      put(brass, new THREE.CylinderGeometry(0.36, 0.3, 0.55, 12).rotateX(Math.PI / 2).translate(x * 0.62, 3.3, 5.9));
-    }
-    put(paintMat("#1a1a1a", 0.7), new THREE.TorusGeometry(0.62, 0.06, 6, 16).rotateX(-0.9).translate(0.95, 4.65, 1.3));
-    return 12.4;
-  }
-  if (style === "tee") {
-    // A black Model T-type touring car with the top up: about 11 feet long and 7 feet high.
-    for (const x of [-2.3, 2.3]) for (const z of [-3.95, 3.95]) wheel(x, z, 1.25, 0.28, wood, wood);
-    box(paintMat("#1e1e1e", 0.8), 0, 1.35, 0, 3.6, 0.28, 10.0);
-    box(body, 0, 2.55, 3.65, 2.9, 1.65, 2.9);
-    box(body, 0, 2.7, 5.15, 3.0, 2.0, 0.3);
-    box(body, 0, 2.75, -1.1, 4.9, 2.3, 5.9);
-    box(seat, 0, 4.25, 0.5, 4.6, 1.2, 0.45);
-    box(seat, 0, 4.4, -3.6, 4.6, 1.5, 0.45);
-    box(glass, 0, 4.7, 2.05, 4.2, 1.6, 0.06);
-    box(paintMat("#151515", 0.9), 0, 6.95, -1.0, 4.9, 0.16, 6.3);
-    for (const x of [-2.35, 2.35]) for (const z of [2.0, -4.1]) box(paintMat("#151515", 0.9), x, 5.45, z, 0.12, 2.9, 0.12);
-    for (const x of [-2.4, 2.4]) {
-      box(body, x, 2.7, 3.95, 0.9, 0.13, 2.8);
-      box(body, x, 2.7, -3.95, 0.9, 0.13, 2.8);
-      box(paintMat("#222", 0.8), x * 1.04, 1.55, 0, 0.85, 0.12, 4.8);
-      put(chrome, new THREE.CylinderGeometry(0.3, 0.26, 0.45, 12).rotateX(Math.PI / 2).translate(x * 0.6, 3.05, 5.45));
-    }
-    return 11;
-  }
-  if (style === "fifties") {
-    // A rounded sedan of the late 1940s or early 1950s: about 16.5 feet long, 5.3 feet high.
-    for (const x of [-2.6, 2.6]) for (const z of [-4.7, 4.75]) wheel(x, z, 1.15, 0.62, chrome, null);
-    rounded(body, 0, 2.15, 0, 6.0, 1.9, 15.6, 0.5);
-    for (const x of [-2.75, 2.75]) {
-      rounded(body, x, 2.35, 4.75, 0.9, 1.45, 4.3, 0.42);
-      rounded(body, x, 2.35, -4.7, 0.9, 1.45, 4.2, 0.42);
-    }
-    rounded(body, 0, 3.0, 5.1, 5.4, 0.85, 5.2, 0.4);
-    rounded(second, 0, 4.75, -0.6, 5.3, 0.9, 6.4, 0.44);
-    rounded(glass, 0, 4.0, -0.6, 5.45, 1.3, 7.0, 0.5);
-    rounded(body, 0, 3.0, -6.0, 5.6, 0.9, 3.4, 0.44);
-    box(chrome, 0, 1.45, 8.0, 6.3, 0.5, 0.35);
-    box(chrome, 0, 1.45, -8.0, 6.3, 0.5, 0.35);
-    box(chrome, 0, 2.3, 7.85, 3.0, 0.9, 0.12);
-    for (const x of [-2.15, 2.15]) put(chrome, new THREE.CylinderGeometry(0.34, 0.34, 0.2, 12).rotateX(Math.PI / 2).translate(x, 2.75, 7.9));
-    return 16.5;
-  }
-  if (style === "sixties") {
-    // A long, low sedan of the 1960s: about 17.5 feet long and 4.6 feet high.
-    for (const x of [-2.75, 2.75]) for (const z of [-4.9, 5.0]) wheel(x, z, 1.08, 0.66, chrome, null);
-    rounded(body, 0, 2.05, 0, 6.5, 1.75, 17.2, 0.2);
-    box(glass, 0, 3.4, -0.9, 5.6, 0.95, 7.2);
-    box(second, 0, 4.05, -0.9, 5.5, 0.35, 6.4);
-    box(chrome, 0, 1.3, 8.7, 6.6, 0.45, 0.3);
-    box(chrome, 0, 1.3, -8.7, 6.6, 0.45, 0.3);
-    box(chrome, 0, 2.2, 8.6, 5.6, 0.7, 0.1);
-    box(chrome, 0, 2.95, 0, 6.55, 0.08, 17.0);
-    return 17.5;
-  }
-  // Modern sedan or pickup, for slider years after 1980 that show the 1970 town.
-  for (const x of [-2.55, 2.55]) for (const z of [-4.6, 4.6]) wheel(x, z, 1.05, 0.62, chrome, null);
-  rounded(body, 0, 2.05, 0, 6.0, 2.0, 15.4, 0.4);
-  rounded(glass, 0, 3.65, -0.4, 5.4, 1.2, 7.6, 0.4);
-  rounded(second, 0, 4.35, -0.6, 5.2, 0.3, 6.4, 0.14);
-  box(paintMat("#2a2b2c", 0.7), 0, 1.35, 7.75, 6.1, 0.6, 0.3);
-  box(paintMat("#2a2b2c", 0.7), 0, 1.35, -7.75, 6.1, 0.6, 0.3);
-  return 15.4;
-}
-
-function addVehicles(data, mats, scene, year, modernPaved) {
-  const style = carStyleFor(year);
-  if (!style) return;
-  const palettes = {
-    touring: [["#1f2a22"], ["#2a1d1a"]],
-    tee: [["#1a1a1a"], ["#1a1a1a"], ["#22261f"], ["#1a1a1a"]],
-    fifties: [["#1c1c1e"], ["#e8e2d2"], ["#2f4436", "#d8d2c0"], ["#5a2a28"], ["#3d4d5e"], ["#1c1c1e"], ["#8a8172", "#e8e2d2"]],
-    sixties: [["#e9e5da"], ["#6b1f1f"], ["#36506e"], ["#2f4a3a"], ["#c7b98e"], ["#1d1e20"], ["#8fa4ad", "#e9e5da"]],
-    modern: [["#b9bcbf"], ["#efefec"], ["#7a1d1f"], ["#2a3b5c"], ["#3c3e40"]],
-  }[style];
-  // How many cars stand at the curbs downtown in each period (estimate).
-  const counts = { touring: 2, tee: 6, fifties: 16, sixties: 16, modern: 12 };
-  const n = counts[style];
+// Counts and models per stop are estimates; the models are in vehicles.js (preview/vehicles).
+function addVehicles(data, mats, scene, year, modernPaved, lamps = []) {
+  const n = carCount(year);
+  if (!n) return;
   const byName = (name) => data.streets.find((s) => s.name === name && s.axis);
   const spots = [];
   // Between the hitching rails (every 42 feet from x = -760) while they stand.
@@ -9101,32 +8822,30 @@ function addVehicles(data, mats, scene, year, modernPaved) {
       spots.push({ x: hurst.at + side * 14.6, z, heading: side > 0 ? 0 : Math.PI });
     }
   }
-  const parts = new Map();
-  const picked = spots.slice(0, n);
-  picked.forEach((spot, i) => {
-    const [color, accent] = palettes[i % palettes.length];
+  // preview/vehicles: keep a parked car clear of a curb lamp post (slide it along the curb a
+  // little, or leave that space empty).
+  const clear = spots.filter((spot) => {
+    const along = Math.abs(Math.sin(spot.heading)) > 0.5 ? "x" : "z";
+    const across = along === "x" ? "z" : "x";
+    for (const lamp of lamps) {
+      if (Math.abs(lamp[across] - spot[across]) > 6) continue;
+      const gap = spot[along] - lamp[along];
+      if (Math.abs(gap) >= 11) continue;
+      const shift = (gap >= 0 ? 11 : -11) - gap;
+      if (Math.abs(shift) > 9) return false;
+      spot[along] += shift;
+    }
+    return true;
+  });
+  const kit = new Kit();
+  clear.slice(0, n).forEach((spot, i) => {
+    const style = styleForSlot(year, i);
     const m = new THREE.Matrix4().makeRotationY(spot.heading);
     m.setPosition(spot.x, 0.1, spot.z);
-    const put = (mat, geo) => {
-      geo.applyMatrix4(m);
-      if (!parts.has(mat)) parts.set(mat, []);
-      parts.get(mat).push(geo);
-    };
-    buildCar(style, color, accent, mats, put);
+    kit.base = m;
+    buildCarInto(kit, style, paletteFor(style, i));
   });
-  for (const [mat, geos] of parts) {
-    const normalized = geos.map((g) => {
-      const flat = g.index ? g.toNonIndexed() : g;
-      if (mat.vertexColors && !flat.getAttribute("color")) {
-        flat.setAttribute("color", new THREE.Float32BufferAttribute(new Float32Array(flat.getAttribute("position").count * 3).fill(1), 3));
-      }
-      return flat;
-    });
-    const mesh = new THREE.Mesh(mergeGeometries(normalized, false), mat);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    scene.add(mesh);
-  }
+  kit.addTo(scene);
 }
 
 function makeProp(p, mats) {
@@ -9166,9 +8885,9 @@ function makeProp(p, mats) {
     board2.rotation.z = -0.6;
     g.add(board, board2);
   } else if (p.type === "wagon") {
-    g.add(makeWagon(mats));
+    g.add(makeWagon(wagonKindFor(p.year || 1880, p.slot || 0), p.slot || 0));
   } else if (p.type === "horse") {
-    g.add(makeHorse(mats));
+    g.add(makeHorse(p.slot || 0));
   } else if (p.type === "barrels") {
     for (const [x, z] of [[0, 0], [1.4, 0.4], [-0.2, 1.3]]) {
       const m = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, 2.2, 8), mats.siding.tan);

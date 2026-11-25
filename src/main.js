@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { buildTown } from "./town.js";
 import { ORIENT, platToEnu, worldToPlat } from "./orient.js";
+import { vehicleBand } from "./vehicles.js";
 
 const params = new URLSearchParams(location.search);
 const shot = params.get("shot");
@@ -1084,7 +1085,8 @@ onCensusYear = (year) => {
     if (value > 1940 && value < 1950) bands.push("after-stud-farm");
     // Round 4: W.P.A. black-top from 1938, and the cars change with the slider year.
     if (value >= 1938) bands.push("blacktop");
-    bands.push(value < 1905 ? "no-cars" : value < 1915 ? "touring" : value < 1935 ? "tee" : value < 1956 ? "fifties" : value < 1980 ? "sixties" : "modern");
+    // preview/vehicles: cars, street lamps, rolling stock, and wagons change with the slider year.
+    bands.push(vehicleBand(value));
     return bands.join("|") || "same";
   };
   if (built === shownBuiltYear && eraBand(year) === eraBand(shownSliderYear)) return;
