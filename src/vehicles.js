@@ -1706,32 +1706,212 @@ function tender(k, kind) {
   return L + 2;
 }
 
-// Streamlined E-unit (slant nose), stainless with a red band (CB&Q Zephyr style; estimate).
+// EMD E7/E8-style A-unit: a tall 70 ft carbody, short 'bulldog' nose, twin headlights,
+// and stainless sides with a CB&Q red band (estimate of the paint; the earlier slant-nose
+// wedge read as a modern bullet train).
 function dieselE(k) {
   const L = 70;
-  const W = 10.2;
-  const body = rmat(RC.diesel, 0.3, 0.8);
+  const W = 10.4;
+  const eave = 14.45;
+  const crown = 15.5;
+  const zF = L / 2;
+  const zR = -L / 2;
+  // Short, blunt bulldog: a vertical pilot, then a steep convex nose to a nearly upright windshield.
+  const zPilot = zF - 0.7;
+  const yPilotBot = 4.0;
+  const yPilotTop = 6.55;
+  const zMid = zF - 2.5;
+  const yMid = 9.15;
+  const zGlassBot = zF - 4.3;
+  const yGlassBot = 12.05;
+  const zGlassTop = zF - 4.95;
+  const yGlassTop = 14.4;
+  const zBrow = zF - 6.1;
+  const body = rmat(RC.diesel, 0.28, 0.82);
   const red = rmat(RC.dieselRed, 0.45, 0.2);
-  for (const zc of [L / 2 - 13, -L / 2 + 13]) {
-    for (const dz of [-6.5, 0, 6.5]) railWheelset(k, zc + dz, 1.5);
-    for (const sd of [-1, 1]) k.box(steelDark(), sd * (RX + 0.65), RT + 2.0, zc, 0.35, 1.2, 15.5);
+  const trim = rmat("#9aa1a6", 0.32, 0.8);
+  const dark = rmat("#1c1c1c", 0.55, 0.4);
+  // A point on the two-segment nose (pilot top → mid → windshield bottom) plus an outward offset.
+  const onNose = (t, outset) => {
+    const a = t < 0.5 ? 0 : 0.5;
+    const u = (t - a) * 2;
+    const z0 = a < 0.5 ? zPilot : zMid;
+    const y0 = a < 0.5 ? yPilotTop : yMid;
+    const z1 = a < 0.5 ? zMid : zGlassBot;
+    const y1 = a < 0.5 ? yMid : yGlassBot;
+    const z = z0 + (z1 - z0) * u;
+    const y = y0 + (y1 - y0) * u;
+    const dz = z1 - z0;
+    const dy = y1 - y0;
+    const len = Math.hypot(dz, dy) || 1;
+    // Outward (forward-and-up) normal in the y–z plane.
+    const nz = dy / len;
+    const ny = -dz / len;
+    const rx = -Math.atan2(-dz, dy);
+    return { x: 0, y: y + ny * outset, z: z + nz * outset, rx };
+  };
+  // Two 3-axle (A1A) trucks, 43 ft between centers, 14 ft wheelbase, under the body.
+  const tFront = zF - 13.5;
+  const tRear = zR + 13.5;
+  for (const zc of [tFront, tRear]) {
+    for (const dz of [-7, 0, 7]) railWheelset(k, zc + dz, 1.5);
+    for (const sd of [-1, 1]) {
+      const x = sd * (RX + 0.7);
+      k.box(steelDark(), x, RT + 2.15, zc, 0.38, 1.4, 16.4);
+      k.box(steelDark(), x, RT + 1.15, zc, 0.32, 0.4, 14.6);
+      for (const dz of [-7, 0, 7]) k.box(steelDark(), x + sd * 0.08, RT + 1.7, zc + dz, 0.5, 0.85, 1.0);
+    }
+    k.box(steelDark(), 0, RT + 2.9, zc, RX * 2 + 1.2, 0.7, 1.4);
   }
-  k.box(steelDark(), 0, 4.6, 0, W - 0.4, 1.0, L - 4);
-  k.profile(body, shp([["M", -L / 2, 4.2], ["L", L / 2 - 2.5, 4.2], ["Q", L / 2 + 0.6, 4.6, L / 2, 7.2], ["Q", L / 2 - 1.0, 11.2, L / 2 - 4.8, 12.9], ["Q", L / 2 - 7.5, 14.6, L / 2 - 10, 14.6], ["L", -L / 2, 14.6], ["L", -L / 2, 4.2]]), W, 0, 0.35, 12);
-  k.profile(red, shp([["M", -L / 2 + 0.4, 6.3], ["L", L / 2 + 0.15, 6.3], ["L", L / 2 + 0.25, 7.4], ["L", -L / 2 + 0.4, 7.4], ["L", -L / 2 + 0.4, 6.3]]), W + 0.12, 0, 0.02);
-  // Windshield on the slant of the nose, split by a centre post.
-  for (const sd of [-1, 1]) k.box(F.glass(), sd * 1.75, 12.15, L / 2 - 3.0, 3.2, 2.3, 0.1, -0.98);
-  k.box(body, 0, 12.15, L / 2 - 2.95, 0.3, 2.4, 0.14, -0.98);
+  k.box(steelDark(), 0, 4.45, 0, W - 0.6, 1.0, L - 3);
+  k.profile(
+    body,
+    shp([
+      ["M", zR, 4.05],
+      ["L", zF - 1.7, 4.05],
+      ["Q", zF - 1.1, 4.0, zPilot, yPilotBot],
+      ["L", zPilot, yPilotTop],
+      ["Q", zF - 1.4, 7.6, zMid, yMid],
+      ["Q", zF - 3.4, 10.6, zGlassBot, yGlassBot],
+      ["L", zGlassTop, yGlassTop],
+      ["Q", zF - 5.6, 15.3, zBrow, crown],
+      ["L", zR, crown],
+      ["L", zR, 4.05],
+    ]),
+    W,
+    0,
+    0.45,
+    18,
+  );
+  {
+    const g = new THREE.CylinderGeometry(W * 0.5 - 0.1, W * 0.5 - 0.1, L - 8.5, 18, 1, false, 0, Math.PI);
+    g.rotateX(Math.PI / 2);
+    g.scale(1, 0.22, 1);
+    g.translate(0, eave + 0.05, (zR + zBrow) / 2);
+    k.put(body, g);
+  }
+  // Red band along the sides, stopping at the cab, and wrapping the lower bulldog.
+  k.profile(
+    red,
+    shp([
+      ["M", zR + 0.35, 7.1],
+      ["L", zF - 6.4, 7.1],
+      ["L", zF - 6.4, 8.25],
+      ["L", zR + 0.35, 8.25],
+      ["L", zR + 0.35, 7.1],
+    ]),
+    W + 0.12,
+    0,
+    0.02,
+  );
+  {
+    const p = onNose(0.28, 0.4);
+    k.within(new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(p.rx, 0, 0, "YXZ")).setPosition(0, p.y, p.z), () => {
+      k.rbox(red, 0, 0, 0, W * 0.7, 1.15, 0.14, 0.08);
+    });
+  }
+  // Windshields high on the slant: two large panes, a centre post, and a visor.
+  const glassRx = -Math.atan2(zGlassBot - zGlassTop, yGlassTop - yGlassBot);
+  const glassY = (yGlassBot + yGlassTop) / 2;
+  const glassZ = (zGlassBot + zGlassTop) / 2 + 0.12;
   for (const sd of [-1, 1]) {
-    for (let i = 0; i < 4; i++) k.box(F.glass(), sd * (W / 2 + 0.3), 11.6, L / 2 - 20 - i * 8, 0.05, 1.3, 1.3);
-    k.box(F.glass(), sd * (W / 2 + 0.3), 11.8, L / 2 - 9.5, 0.05, 1.5, 2.2);
-    for (let i = 0; i < 8; i++) k.box(rmat("#a3a9ae", 0.35, 0.85), sd * (W / 2 + 0.31), 9.0 + i * 0.25, -6, 0.04, 0.08, L * 0.62);
+    k.box(trim, sd * 2.15, glassY, glassZ - 0.02, 3.9, 2.65, 0.06, glassRx);
+    k.box(F.glass(), sd * 2.15, glassY, glassZ, 3.7, 2.45, 0.1, glassRx);
   }
-  k.cyl(rmat("#2a2a2a", 0.5, 0.6), 0.7, 0.7, 0.5, 0, 9.8, L / 2 - 0.75, "z", 14);
-  k.cyl(F.lens(), 0.55, 0.55, 0.08, 0, 9.8, L / 2 - 0.48, "z", 14);
-  coupler(k, -L / 2, -1, false);
+  k.box(body, 0, glassY, glassZ + 0.02, 0.28, 2.6, 0.14, glassRx);
+  k.box(dark, 0, yGlassTop + 0.1, zGlassTop - 0.15, 7.8, 0.14, 0.7, 0.18);
+  // Side cab windows and a cab door with steps, tucked just behind the windshield.
+  for (const sd of [-1, 1]) {
+    const x = sd * (W / 2 + 0.05);
+    k.box(F.glass(), x, 13.1, zF - 7.3, 0.08, 2.05, 2.5);
+    k.box(trim, x, 13.1, zF - 7.3, 0.05, 2.25, 2.7);
+    k.box(F.glass(), x, 13.05, zF - 9.9, 0.08, 1.85, 1.8);
+    k.box(body, x, 10.15, zF - 12.0, 0.1, 6.0, 2.15);
+    k.box(F.glass(), x, 12.35, zF - 12.0, 0.12, 1.5, 1.3);
+    for (let i = 0; i < 4; i++) k.box(steelDark(), x + sd * 0.25, 4.4 + i * 0.85, zF - 12.0, 0.7, 0.08, 1.5);
+  }
+  // Rounded nose door on the lower bulldog, with a small window.
+  {
+    const p = onNose(0.34, 0.55);
+    k.within(new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(p.rx, 0, 0, "YXZ")).setPosition(0, p.y, p.z), () => {
+      k.rbox(trim, 0, 0, 0, 2.45, 4.0, 0.28, 0.28);
+      k.rbox(rmat("#8f969a", 0.35, 0.7), 0, -0.15, 0.08, 2.1, 3.55, 0.16, 0.2);
+      k.rbox(F.glass(), 0, 0.85, 0.18, 1.2, 1.2, 0.1, 0.08);
+    });
+  }
+  // Twin headlights in a protruding housing, stacked, just below the windshield, with number boards.
+  {
+    const p = onNose(0.78, 0.55);
+    k.within(new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(p.rx, 0, 0, "YXZ")).setPosition(0, p.y, p.z), () => {
+      k.rbox(dark, 0, 0, 0, 1.55, 2.7, 0.85, 0.12);
+      k.box(dark, 0, 1.42, 0.05, 1.75, 0.12, 1.05);
+      for (const dy of [0.58, -0.58]) {
+        k.cyl(F.chrome(), 0.52, 0.52, 0.22, 0, dy, 0.42, "z", 14);
+        k.cyl(F.lens(), 0.4, 0.4, 0.08, 0, dy, 0.56, "z", 14);
+      }
+    });
+    for (const sd of [-1, 1]) {
+      k.within(new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(p.rx, sd * 0.45, 0, "YXZ")).setPosition(sd * 1.85, p.y, p.z), () => {
+        k.box(dark, 0, 0, 0.05, 1.5, 1.05, 0.22);
+        k.box(paintMat("#efe6c8", 0.35, 0.05, { emissive: "#efe6c8", emissiveIntensity: 0.18 }), 0, 0, 0.18, 1.28, 0.82, 0.08);
+      });
+    }
+  }
+  // Classification lights at the upper corners of the nose.
+  {
+    const p = onNose(0.7, 0.2);
+    for (const sd of [-1, 1]) {
+      k.sphere(F.lens(), 0.18, sd * 3.6, p.y + 0.7, p.z - 0.8, 1, 1, 1, 8);
+      k.cyl(trim, 0.22, 0.22, 0.16, sd * 3.6, p.y + 0.7, p.z - 0.9, "z", 8);
+    }
+  }
+  // Anticlimber ribs on the short vertical pilot, coupler, and steps.
+  for (let i = 0; i < 4; i++) k.box(trim, 0, yPilotBot + 0.4 + i * 0.55, zPilot + 0.12, 8.8, 0.13, 0.22);
+  k.box(steelDark(), 0, 3.7, zPilot + 0.25, 2.4, 1.1, 0.55);
+  coupler(k, zPilot, 1, false);
+  for (const sd of [-1, 1]) {
+    k.box(steelDark(), sd * 3.6, 3.2, zF - 1.6, 1.5, 0.1, 2.2);
+    k.box(steelDark(), sd * 4.1, 3.7, zF - 2.2, 0.12, 1.0, 0.12);
+  }
+  // Grab irons up the nose corners, on the surface.
+  for (const sd of [-1, 1]) {
+    for (let i = 0; i < 5; i++) {
+      const p = onNose(0.08 + i * 0.18, 0.12);
+      k.box(steelDark(), sd * 2.45, p.y, p.z, 0.7, 0.05, 0.05);
+    }
+  }
+  // Four porthole windows along each engine-room side.
+  for (const sd of [-1, 1]) {
+    for (let i = 0; i < 4; i++) {
+      const z = zF - 18.5 - i * 6.6;
+      k.cyl(trim, 0.88, 0.88, 0.12, sd * (W / 2 + 0.05), 11.35, z, "x", 16);
+      k.cyl(F.glass(), 0.7, 0.7, 0.1, sd * (W / 2 + 0.1), 11.35, z, "x", 16);
+    }
+  }
+  // Stainless fluting on the long sides, under the portholes.
+  for (const sd of [-1, 1]) {
+    for (let i = 0; i < 7; i++) {
+      k.box(rmat("#a3a9ae", 0.35, 0.85), sd * (W / 2 + 0.05), 9.05 + i * 0.22, -6.0, 0.04, 0.08, 42);
+    }
+  }
+  // Rear side radiator / intake grilles.
+  for (const sd of [-1, 1]) {
+    k.box(dark, sd * (W / 2 + 0.06), 10.15, zR + 10.5, 0.1, 5.6, 10.5);
+    for (let i = 0; i < 9; i++) k.box(trim, sd * (W / 2 + 0.1), 7.7 + i * 0.62, zR + 10.5, 0.04, 0.07, 10.1);
+  }
+  // Roof radiator fan housings (two 36-inch fans toward the rear) and a cab horn.
+  for (const z of [zR + 11.5, zR + 18]) {
+    k.cyl(trim, 2.05, 2.05, 0.4, 0, crown + 0.15, z, "y", 16);
+    k.cyl(dark, 1.85, 1.85, 0.08, 0, crown + 0.38, z, "y", 16);
+    for (let i = 0; i < 4; i++) k.box(trim, 0, crown + 0.42, z, 3.5, 0.05, 0.07, 0, (i / 4) * Math.PI);
+  }
+  k.box(dark, 0.35, crown + 0.45, zBrow - 1.6, 0.28, 0.7, 1.5);
+  k.box(dark, -0.35, crown + 0.35, zBrow - 1.4, 0.22, 0.5, 1.1);
+  k.box(rmat("#1b1b1b", 0.9, 0), 0, 9.6, zR - 0.25, W - 3.2, 8.2, 0.7);
+  coupler(k, zR, -1, false);
   return L + 1.5;
 }
+
 
 // Lay units nose-to-tail: the first unit's front at `start`, the rest trailing behind it,
 // all facing `dir` (a unit vector in x–z). Each unit is [builder, ...args].
