@@ -797,10 +797,19 @@ function renderStats(data) {
   head.className = "year-head";
   const label = document.createElement("p");
   label.className = "eyebrow";
-  label.textContent = "Year";
+  label.textContent = "Year & Population";
   const readout = document.createElement("p");
   readout.className = "year-readout";
   readout.id = "year-readout";
+  const setReadout = (yearText, popLabel) => {
+    readout.replaceChildren(document.createTextNode(String(yearText)));
+    if (popLabel) {
+      const pop = document.createElement("span");
+      pop.className = "year-pop";
+      pop.textContent = ` - ${popLabel}`;
+      readout.appendChild(pop);
+    }
+  };
   const slider = document.createElement("input");
   slider.type = "range";
   slider.id = "year-slider";
@@ -854,8 +863,8 @@ function renderStats(data) {
 
   const show = (index) => {
     const entry = data.years[index];
-    readout.textContent = String(entry.year);
-    slider.setAttribute("aria-valuetext", String(entry.year));
+    setReadout(entry.year, entry.populationLabel);
+    slider.setAttribute("aria-valuetext", entry.populationLabel ? `${entry.year} - ${entry.populationLabel}` : String(entry.year));
     earlier.disabled = index <= 0;
     later.disabled = index >= years.length - 1;
     fillFacts(drops.census, entry.census);
@@ -879,10 +888,11 @@ function renderStats(data) {
   // A year between stops, such as 1945, is already built. The figures stay on the nearest earlier stop.
   if (Number.isFinite(requested) && !years.includes(requested)) {
     const nearest = years.reduce((found, year, index) => (year <= requested ? index : found), initial);
-    readout.textContent = String(requested);
-    slider.setAttribute("aria-valuetext", String(requested));
-    slider.value = String(nearest);
     const entry = data.years[nearest];
+    const betweenPop = entry.populationLabel ? `${entry.populationLabel} (${entry.year})` : "";
+    setReadout(requested, betweenPop);
+    slider.setAttribute("aria-valuetext", betweenPop ? `${requested} - ${betweenPop}` : String(requested));
+    slider.value = String(nearest);
     earlier.disabled = nearest <= 0;
     later.disabled = nearest >= years.length - 1;
     fillFacts(drops.census, entry.census);

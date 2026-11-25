@@ -6465,6 +6465,425 @@ export function buildTown(data, scene) {
     return wallH + 18;
   };
 
+
+  const pioneerGlass = mats.glass.clone();
+  pioneerGlass.color.set("#28333b");
+  pioneerGlass.envMapIntensity = 0.4;
+  pioneerGlass.roughness = 0.35;
+
+  const pioneerSashFront = (x, y, z, w, h) => {
+    const stile = Math.max(0.11, w * 0.08);
+    const meet = Math.max(0.13, stile * 1.15);
+    const recess = 0.4;
+    const glassZ = z + 0.04;
+    const outerZ = glassZ + recess;
+    const frameD = 0.13;
+    const frameZ = outerZ - frameD * 0.4;
+    box(mats.reveal, x, y, glassZ - 0.09, w * 0.96, h * 0.96, 0.08);
+    const jd = recess * 0.9;
+    box(mats.reveal, x - w / 2 + 0.035, y, glassZ + jd * 0.48, 0.07, h * 0.96, jd);
+    box(mats.reveal, x + w / 2 - 0.035, y, glassZ + jd * 0.48, 0.07, h * 0.96, jd);
+    box(mats.reveal, x, y + h / 2 - 0.035, glassZ + jd * 0.48, w * 0.96, 0.07, jd);
+    box(mats.reveal, x, y - h / 2 + 0.035, glassZ + jd * 0.48, w * 0.96, 0.07, jd);
+    const paneW = Math.max(0.18, w - stile * 2.4);
+    const paneH = Math.max(0.18, (h - meet - stile * 1.8) * 0.5);
+    const up = meet * 0.5 + paneH * 0.5;
+    box(pioneerGlass, x, y + up, glassZ, paneW, paneH, 0.035);
+    box(pioneerGlass, x, y - up, glassZ, paneW, paneH, 0.035);
+    box(mats.trim, x - w / 2, y, frameZ, stile, h + stile, frameD);
+    box(mats.trim, x + w / 2, y, frameZ, stile, h + stile, frameD);
+    box(mats.trim, x, y + h / 2, frameZ, w + stile, stile, frameD);
+    box(mats.trim, x, y - h / 2, frameZ, w + stile, stile * 0.8, frameD);
+    box(mats.trim, x, y, glassZ + 0.08, w - stile, meet, 0.1);
+    for (const yy of [y + up, y - up]) {
+      box(mats.trim, x - w * 0.16, yy, glassZ + 0.06, 0.04, paneH * 0.92, 0.05);
+      box(mats.trim, x + w * 0.16, yy, glassZ + 0.06, 0.04, paneH * 0.92, 0.05);
+      box(mats.trim, x, yy, glassZ + 0.06, paneW * 0.94, 0.04, 0.05);
+    }
+    box(mats.trim, x, y - h / 2 - 0.12, outerZ + 0.06, w + 0.55, 0.13, 0.5);
+    box(mats.trim, x, y + h / 2 + 0.16, outerZ, w + 0.42, 0.14, 0.34);
+  };
+
+  const pioneerSashSide = (x, y, z, out, w, h) => {
+    const stile = Math.max(0.1, w * 0.08);
+    const meet = Math.max(0.12, stile * 1.1);
+    const recess = 0.36;
+    const glassX = x + out * 0.04;
+    const outer = 0.04 + recess;
+    const frameD = 0.12;
+    const frameX = x + out * (outer - frameD * 0.4);
+    box(mats.reveal, glassX - out * 0.08, y, z, 0.08, h * 0.94, w * 0.94);
+    const paneW = Math.max(0.16, w - stile * 2.2);
+    const paneH = Math.max(0.16, (h - meet - stile * 1.6) * 0.5);
+    const up = meet * 0.5 + paneH * 0.5;
+    box(pioneerGlass, glassX, y + up, z, 0.035, paneH, paneW);
+    box(pioneerGlass, glassX, y - up, z, 0.035, paneH, paneW);
+    box(mats.trim, frameX, y, z - w / 2, frameD, h, stile);
+    box(mats.trim, frameX, y, z + w / 2, frameD, h, stile);
+    box(mats.trim, frameX, y + h / 2, z, frameD, stile, w);
+    box(mats.trim, frameX, y - h / 2, z, frameD, stile * 0.8, w);
+    box(mats.trim, glassX + out * 0.07, y, z, 0.08, meet, w - stile);
+    for (const yy of [y + up, y - up]) {
+      box(mats.trim, glassX + out * 0.06, yy, z - w * 0.16, 0.04, paneH * 0.9, 0.04);
+      box(mats.trim, glassX + out * 0.06, yy, z + w * 0.16, 0.04, paneH * 0.9, 0.04);
+      box(mats.trim, glassX + out * 0.06, yy, z, 0.04, 0.04, paneW * 0.92);
+    }
+    box(mats.trim, x + out * (outer + 0.04), y - h / 2 - 0.1, z, 0.42, 0.12, w + 0.4);
+    box(mats.trim, x + out * outer, y + h / 2 + 0.12, z, 0.28, 0.12, w + 0.36);
+  };
+
+  // Correct-winding gable infill wall (overlaps slightly into the wall top to prevent any seam gap).
+  const pioneerGableWall = (mat, span, rise, yBase, along, at, cx, cz) => {
+    const overlap = 0.15;
+    const yb = yBase - overlap;
+    const r = rise + overlap;
+    const thick = 0.42;
+    const feet = mat?.userData?.uvFeet || { u: 8, v: 3.2 };
+    const positions = [];
+    const normals = [];
+    const uvs = [];
+    const indices = [];
+    const push = (x, y, z, nx, ny, nz) => {
+      positions.push(x, y, z);
+      normals.push(nx, ny, nz);
+      const u = (along === "z" ? x - cx + span / 2 : z - cz + span / 2) / feet.u;
+      uvs.push(u, (y - yb) / feet.v);
+      return positions.length / 3 - 1;
+    };
+    const tri = (a, b, c) => indices.push(a, b, c);
+    if (along === "z") {
+      const zf = at + thick / 2;
+      const zb = at - thick / 2;
+      const x0 = cx - span / 2;
+      const x1 = cx + span / 2;
+      const fl = push(x0, yb, zf, 0, 0, 1);
+      const fr = push(x1, yb, zf, 0, 0, 1);
+      const fp = push(cx, yb + r, zf, 0, 0, 1);
+      tri(fl, fr, fp);
+      const bl = push(x0, yb, zb, 0, 0, -1);
+      const bp = push(cx, yb + r, zb, 0, 0, -1);
+      const br = push(x1, yb, zb, 0, 0, -1);
+      tri(bl, bp, br);
+    } else {
+      const xf = at + thick / 2;
+      const xb = at - thick / 2;
+      const z0 = cz - span / 2;
+      const z1 = cz + span / 2;
+      const fl = push(xf, yb, z0, 1, 0, 0);
+      const fr = push(xf, yb, z1, 1, 0, 0);
+      const fp = push(xf, yb + r, cz, 1, 0, 0);
+      tri(fl, fp, fr);
+      const bl = push(xb, yb, z0, -1, 0, 0);
+      const bp = push(xb, yb + r, cz, -1, 0, 0);
+      const br = push(xb, yb, z1, -1, 0, 0);
+      tri(bl, br, bp);
+    }
+    const face = new THREE.BufferGeometry();
+    face.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    face.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
+    face.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+    face.setIndex(indices);
+    face.applyMatrix4(buildingMatrix);
+    put(mat, face);
+  };
+
+  const pioneerStoop = (x, z, w = 4.4, d = 2.8) => {
+    box(mats.plank, x, 0.28, z + d / 2, w, 0.45, d);
+    box(mats.trimDark, x, 0.14, z + d + 0.4, w * 0.9, 0.24, 0.8);
+  };
+
+  const pioneerShedPorch = (x, z, span, depth = 4.2) => {
+    const top = 7.95;
+    box(mats.plank, x, 0.26, z + depth / 2, span, 0.36, depth);
+    localBox(mats.roof, x, top, z + depth / 2 + 0.15, span + 0.6, 0.16, depth + 0.6, 0.22);
+    const n = span >= 17 ? 4 : 3;
+    for (let i = 0; i < n; i++) {
+      const px = x - span / 2 + 0.45 + ((span - 0.9) * i) / (n - 1);
+      box(mats.trimDark, px, (top - 0.4) / 2 + 0.2, z + depth - 0.3, 0.24, top - 0.7, 0.24);
+    }
+  };
+
+  const pioneerSplitRailFence = (span, frontZ) => {
+    const zf = frontZ + 6.5;
+    const gap = 3.2;
+    for (const side of [-1, 1]) {
+      const xStart = side * gap;
+      const xEnd = side * (span / 2 + 3.5);
+      const len = Math.abs(xEnd - xStart);
+      if (len < 3) continue;
+      const mid = (xStart + xEnd) / 2;
+      const posts = Math.max(2, Math.round(len / 7) + 1);
+      for (let i = 0; i < posts; i++) {
+        const px = xStart + ((xEnd - xStart) * i) / (posts - 1);
+        box(mats.trimDark, px, 1.3, zf, 0.24, 2.6, 0.24);
+      }
+      box(mats.trimDark, mid, 1.9, zf, len, 0.14, 0.12);
+      box(mats.trimDark, mid, 1.0, zf, len, 0.14, 0.12);
+    }
+  };
+
+  const addPioneerHouse = (b) => {
+    const h = idHash(b.id);
+    const plan = b.plan || "side-gable";
+    const stories = Number(b.stories) || 1;
+    const isTwo = stories >= 1.95;
+    const isHalf = !isTwo && stories >= 1.4;
+    const plate = isTwo ? 17.4 : isHalf ? 11.4 : 8.8;
+    const body = paintOf(b);
+    const roofMat = h % 3 === 0 ? mats.roofDark : mats.roof;
+    const cornerMat = b.paint === "weathered" ? mats.trimDark : mats.trim;
+    const winW = 1.9;
+    const winH = 3.75;
+    const y1 = 4.65;
+
+    if (plan === "gable-ell") {
+      const uw = Math.max(12.5, b.width * 0.54);
+      const ud = b.depth;
+      const side = h % 2 === 0 ? -1 : 1;
+      const ux = side * (b.width - uw) / 2;
+      const uPlate = isTwo ? 17.2 : 11.6;
+      const uRise = Math.max(6.4, uw * 0.48);
+
+      const ew = b.width - uw + 0.5;
+      const ed = Math.max(12.5, b.depth * 0.64);
+      const ex = -side * (b.width - ew) / 2;
+      const ez = b.depth / 2 - 2.4 - ed / 2;
+      const ePlate = 8.8;
+      const eRise = Math.max(5.8, ed * 0.46);
+
+      box(mats.stone, ux, 0.28, 0, uw + 0.2, 0.56, ud + 0.2);
+      box(body, ux, uPlate / 2 + 0.35, 0, uw, uPlate, ud);
+      gableFrontAt(uw, ud, uRise, uPlate + 0.35, roofMat, ux, 0);
+      pioneerGableWall(body, uw, uRise * 0.92, uPlate + 0.35, "z", ud / 2 - 0.18, ux, 0);
+      pioneerGableWall(body, uw, uRise * 0.92, uPlate + 0.35, "z", -ud / 2 + 0.18, ux, 0);
+      for (const sx of [-1, 1]) {
+        for (const sz of [-1, 1]) {
+          box(cornerMat, ux + sx * (uw / 2 - 0.14), uPlate / 2 + 0.35, sz * (ud / 2 - 0.14), 0.34, uPlate, 0.34);
+        }
+      }
+
+      const eFrontZ = ez + ed / 2;
+      box(mats.stone, ex, 0.28, ez, ew + 0.2, 0.56, ed + 0.2);
+      box(body, ex, ePlate / 2 + 0.35, ez, ew, ePlate, ed);
+      gableAt(ew, ed, eRise, ePlate + 0.35, roofMat, ex, ez);
+      pioneerGableWall(body, ed, eRise * 0.92, ePlate + 0.35, "x", ex - side * (ew / 2 - 0.18), ex, ez);
+      box(cornerMat, ex - side * (ew / 2 - 0.14), ePlate / 2 + 0.35, ez + ed / 2 - 0.14, 0.34, ePlate, 0.34);
+      box(cornerMat, ex - side * (ew / 2 - 0.14), ePlate / 2 + 0.35, ez - ed / 2 + 0.14, 0.34, ePlate, 0.34);
+
+      if (uw >= 18) {
+        pioneerSashFront(ux - uw * 0.23, y1, ud / 2, winW, winH);
+        pioneerSashFront(ux + uw * 0.23, y1, ud / 2, winW, winH);
+      } else {
+        pioneerSashFront(ux, y1, ud / 2, winW, winH);
+      }
+      if (isTwo) {
+        if (uw >= 18) {
+          pioneerSashFront(ux - uw * 0.23, 13.2, ud / 2, winW, winH * 0.94);
+          pioneerSashFront(ux + uw * 0.23, 13.2, ud / 2, winW, winH * 0.94);
+        } else {
+          pioneerSashFront(ux, 13.2, ud / 2, winW, winH * 0.94);
+        }
+      } else {
+        pioneerSashFront(ux, uPlate + uRise * 0.34, ud / 2, 1.55, 2.7);
+      }
+
+      const doorX = ex - side * ew * 0.14;
+      paneledDoor(doorX, eFrontZ, 2.5, 6.4, false);
+      if (ew >= 13) pioneerSashFront(ex + side * ew * 0.22, y1, eFrontZ, winW * 0.92, winH * 0.94);
+      if (b.porch === "shed") pioneerShedPorch(ex, eFrontZ, Math.max(8.5, ew - 0.8), 4.0);
+      else pioneerStoop(doorX, eFrontZ, 4.2, 2.6);
+
+      const outerX = ux + side * (uw / 2);
+      pioneerSashSide(outerX, y1, ud * 0.22, side, winW, winH);
+      pioneerSashSide(outerX, y1, -ud * 0.22, side, winW, winH);
+      if (isTwo) {
+        pioneerSashSide(outerX, 13.2, ud * 0.22, side, winW, winH * 0.94);
+        pioneerSashSide(outerX, 13.2, -ud * 0.22, side, winW, winH * 0.94);
+      }
+
+      chimneyStack(mats.brick.red, ux, uPlate + uRise * 0.72 + 1.5, -ud * 0.15, 1.3, 4.8, 1.3);
+      if (h % 13 === 0) pioneerSplitRailFence(b.width, b.depth / 2);
+      return uPlate + uRise + 4;
+    }
+
+    box(mats.stone, 0, 0.28, 0, b.width + 0.2, 0.56, b.depth + 0.2);
+    box(body, 0, plate / 2 + 0.35, 0, b.width, plate, b.depth);
+    for (const sx of [-1, 1]) {
+      for (const sz of [-1, 1]) {
+        box(cornerMat, sx * (b.width / 2 - 0.14), plate / 2 + 0.35, sz * (b.depth / 2 - 0.14), 0.34, plate, 0.34);
+      }
+    }
+
+    const fz = b.depth / 2;
+    if (plan === "side-gable") {
+      const rise = Math.max(6.8, b.depth * 0.48);
+      gableAt(b.width, b.depth, rise, plate + 0.35, roofMat, 0, 0);
+      pioneerGableWall(body, b.depth, rise * 0.92, plate + 0.35, "x", b.width / 2 - 0.18, 0, 0);
+      pioneerGableWall(body, b.depth, rise * 0.92, plate + 0.35, "x", -b.width / 2 + 0.18, 0, 0);
+
+      paneledDoor(0, fz, 2.55, 6.45, false);
+      if (b.width >= 19) {
+        pioneerSashFront(-b.width * 0.3, y1, fz, winW, winH);
+        pioneerSashFront(b.width * 0.3, y1, fz, winW, winH);
+      } else {
+        pioneerSashFront(b.width * 0.28, y1, fz, winW * 0.9, winH * 0.94);
+      }
+      if (isTwo) {
+        pioneerSashFront(-b.width * 0.28, 13.2, fz, winW, winH * 0.94);
+        pioneerSashFront(0, 13.2, fz, winW, winH * 0.94);
+        pioneerSashFront(b.width * 0.28, 13.2, fz, winW, winH * 0.94);
+      }
+
+      for (const side of [-1, 1]) {
+        pioneerSashSide(side * (b.width / 2), y1, 0, side, winW, winH);
+        if (isHalf || isTwo) {
+          pioneerSashSide(side * (b.width / 2), plate + rise * 0.32, 0, side, 1.55, 2.65);
+        }
+      }
+
+      if (b.porch === "shed") pioneerShedPorch(0, fz, Math.min(b.width - 1.6, Math.max(12, b.width * 0.72)), 4.2);
+      else pioneerStoop(0, fz, 4.4, 2.8);
+
+      const chimX = h % 2 === 0 ? -b.width * 0.22 : b.width * 0.22;
+      chimneyStack(mats.brick.red, chimX, plate + rise * 0.75 + 1.5, 0, 1.3, 4.8, 1.3);
+      if (h % 13 === 0) pioneerSplitRailFence(b.width, fz);
+      return plate + rise + 4;
+    }
+
+    const rise = Math.max(6.8, b.width * 0.48);
+    gableFrontAt(b.width, b.depth, rise, plate + 0.35, roofMat, 0, 0);
+    pioneerGableWall(body, b.width, rise * 0.92, plate + 0.35, "z", fz - 0.18, 0, 0);
+    pioneerGableWall(body, b.width, rise * 0.92, plate + 0.35, "z", -fz + 0.18, 0, 0);
+
+    const doorSide = h % 2 === 0 ? -1 : 1;
+    const doorX = doorSide * Math.min(4.8, b.width * 0.23);
+    paneledDoor(doorX, fz, 2.55, 6.45, false);
+    pioneerSashFront(-doorX, y1, fz, winW, winH);
+    if (isTwo) {
+      pioneerSashFront(-b.width * 0.23, 13.2, fz, winW, winH * 0.94);
+      pioneerSashFront(b.width * 0.23, 13.2, fz, winW, winH * 0.94);
+    }
+    if (isHalf || isTwo) {
+      pioneerSashFront(0, plate + rise * 0.33, fz, 1.55, 2.7);
+    }
+
+    for (const side of [-1, 1]) {
+      pioneerSashSide(side * (b.width / 2), y1, b.depth * 0.22, side, winW, winH);
+      pioneerSashSide(side * (b.width / 2), y1, -b.depth * 0.22, side, winW, winH);
+      if (isTwo) {
+        pioneerSashSide(side * (b.width / 2), 13.2, b.depth * 0.22, side, winW, winH * 0.94);
+        pioneerSashSide(side * (b.width / 2), 13.2, -b.depth * 0.22, side, winW, winH * 0.94);
+      }
+    }
+
+    if (b.porch === "shed") pioneerShedPorch(0, fz, Math.max(10, b.width - 1.2), 4.0);
+    else pioneerStoop(doorX, fz, 4.2, 2.7);
+
+    chimneyStack(mats.brick.red, 0, plate + rise * 0.75 + 1.5, -b.depth * 0.12, 1.3, 4.8, 1.3);
+    if (h % 13 === 0) pioneerSplitRailFence(b.width, fz);
+    return plate + rise + 4;
+  };
+
+  const addPioneerStore = (b) => {
+    const h = idHash(b.id);
+    const stories = Number(b.stories) || 1;
+    const wallH = stories >= 2 ? 19.4 : 10.8;
+    const rise = Math.max(4.5, b.width * 0.26);
+    const parapetH = rise + 0.85;
+    const body = paintOf(b);
+    const trimMat = b.paint === "weathered" ? mats.trimDark : mats.trim;
+    const roofMat = h % 2 === 0 ? mats.roofDark : mats.roof;
+    const fz = b.depth / 2;
+
+    box(mats.stone, 0, 0.24, 0, b.width + 0.2, 0.48, b.depth + 0.2);
+    box(body, 0, wallH / 2 + 0.35, 0, b.width, wallH, b.depth);
+    for (const sx of [-1, 1]) {
+      for (const sz of [-1, 1]) {
+        box(trimMat, sx * (b.width / 2 - 0.14), wallH / 2 + 0.35, sz * (b.depth / 2 - 0.14), 0.36, wallH, 0.36);
+      }
+    }
+
+    // Steep wood-shingle gable behind false front (peak stays below parapet top)
+    gableFrontAt(b.width, b.depth - 1.1, rise, wallH + 0.2, roofMat, 0, -0.55);
+    pioneerGableWall(body, b.width, rise * 0.92, wallH + 0.2, "z", -fz + 0.18, 0, 0);
+
+    // Plain rectangular false-front parapet with simple flat cap board (no brackets/dentils/awnings)
+    box(body, 0, wallH + 0.35 + parapetH / 2, fz - 0.42, b.width, parapetH, 0.9);
+    box(trimMat, 0, wallH + 0.35 + parapetH + 0.14, fz - 0.3, b.width + 0.7, 0.32, 1.25);
+    box(trimMat, 0, wallH + 0.25, fz + 0.08, b.width + 0.28, 0.22, 0.3);
+
+    // Plain board sign area across the upper false front, NO lettering
+    const signW = Math.min(b.width - 2.6, b.width * 0.82);
+    const signH = Math.min(2.6, parapetH * 0.42);
+    const signY = wallH + 0.35 + parapetH * 0.52;
+    box(mats.trimDark, 0, signY, fz + 0.08, signW + 0.48, signH + 0.38, 0.14);
+    const signBoardMat = b.paint === "weathered" ? mats.siding.agedWhite : mats.trimCream;
+    box(signBoardMat, 0, signY, fz + 0.14, signW, signH, 0.08);
+
+    // Ground-floor door + small multi-pane 6-over-6 shop windows
+    paneledDoor(0, fz, 2.8, 6.65, false);
+    const winOff = Math.max(5.0, b.width * 0.28);
+    pioneerSashFront(-winOff, 4.75, fz, 2.65, 4.6);
+    pioneerSashFront(winOff, 4.75, fz, 2.65, 4.6);
+
+    if (stories >= 2) {
+      const n2 = b.width >= 26 ? 3 : 2;
+      for (let i = 0; i < n2; i++) {
+        const wx = n2 === 1 ? 0 : -b.width * 0.26 + ((b.width * 0.52) * i) / (n2 - 1);
+        pioneerSashFront(wx, 14.8, fz, 2.0, 3.85);
+      }
+    }
+
+    for (const side of [-1, 1]) {
+      pioneerSashSide(side * (b.width / 2), 5.0, fz * 0.38, side, 1.9, 3.7);
+      pioneerSashSide(side * (b.width / 2), 5.0, -fz * 0.35, side, 1.9, 3.7);
+      if (stories >= 2) {
+        pioneerSashSide(side * (b.width / 2), 14.8, fz * 0.38, side, 1.9, 3.7);
+        pioneerSashSide(side * (b.width / 2), 14.8, -fz * 0.35, side, 1.9, 3.7);
+      }
+    }
+
+    box(mats.plank, 0, 0.22, fz + 1.9, b.width, 0.36, 3.8);
+    chimneyStack(mats.brick.red, b.width * 0.22, wallH + rise * 0.65 + 1.4, -fz * 0.5, 1.3, 4.5, 1.3);
+    return wallH + parapetH + 2;
+  };
+
+  const addPioneerBarn = (b) => {
+    const mat = mats.boardBatten[b.paint] || mats.boardBatten.weathered;
+    const roofMat = mats.roofDark;
+    const wallH = b.kind === "barn" ? 13.0 : 9.4;
+    const rise = Math.max(5.5, b.width * 0.44);
+    const fz = b.depth / 2;
+
+    box(mats.stone, 0, 0.22, 0, b.width + 0.15, 0.44, b.depth + 0.15);
+    box(mat, 0, wallH / 2 + 0.25, 0, b.width, wallH, b.depth);
+
+    gableFrontAt(b.width, b.depth, rise, wallH + 0.25, roofMat, 0, 0);
+    pioneerGableWall(mat, b.width, rise * 0.92, wallH + 0.25, "z", fz - 0.18, 0, 0);
+    pioneerGableWall(mat, b.width, rise * 0.92, wallH + 0.25, "z", -fz + 0.18, 0, 0);
+
+    const dw = Math.min(9.2, b.width * 0.44);
+    const dh = b.kind === "barn" ? 7.6 : 6.4;
+    box(mats.trimDark, 0, dh / 2 + 0.3, fz + 0.06, dw + 0.4, dh + 0.2, 0.14);
+    box(mat, -dw * 0.25, dh / 2 + 0.3, fz + 0.12, dw * 0.47, dh - 0.15, 0.12);
+    box(mat, dw * 0.25, dh / 2 + 0.3, fz + 0.12, dw * 0.47, dh - 0.15, 0.12);
+    for (const sx of [-1, 1]) {
+      const dx = sx * dw * 0.25;
+      box(mats.trimDark, dx, dh * 0.82 + 0.3, fz + 0.19, dw * 0.44, 0.28, 0.08);
+      box(mats.trimDark, dx, dh * 0.22 + 0.3, fz + 0.19, dw * 0.44, 0.28, 0.08);
+      box(mats.trimDark, dx, dh * 0.52 + 0.3, fz + 0.19, dw * 0.44, 0.24, 0.08);
+    }
+
+    if (b.kind === "barn") {
+      box(mats.trimDark, 0, wallH + 2.0, fz + 0.08, 2.9, 3.3, 0.14);
+      box(mat, 0, wallH + 2.0, fz + 0.14, 2.5, 2.9, 0.1);
+      for (const side of [-1, 1]) {
+        pioneerSashSide(side * (b.width / 2), 5.2, 0, side, 1.8, 2.4);
+      }
+    }
+    return wallH + rise + 2;
+  };
+
   if (data.streetStyle?.rile) {
     const rile = data.streets.find((s) => s.name === "Rile Street");
     if (rile) {
@@ -6501,7 +6920,7 @@ export function buildTown(data, scene) {
       b.facade?.engineHouse || b.facade?.cityHall || b.facade?.westSide1897 || b.facade?.flatSchool ||
       b.facade?.stBernard1907 || b.facade?.stBernard1953 || b.facade?.fireHouse1953 ||
       b.facade?.methodist1884 || b.facade?.methodist1925 || b.facade?.stBernardRectory ||
-      b.facade?.presbyterian1869 || b.facade?.presbyterian1917 || b.facade?.baptist1866 || b.facade?.americanHouse ||
+      b.facade?.presbyterian1869 || b.facade?.presbyterian1917 || b.facade?.baptist1866 || b.facade?.americanHouse || b.facade?.pioneer ||
       b.id === "presbyterian-church-1917" || b.id === "junction-depot" || b.id === "hurst-crossing-shanty" ||
       b.id === "hendee-house-26" || b.id === "hendee-store-22"
     );
@@ -6542,6 +6961,9 @@ export function buildTown(data, scene) {
     else if (b.facade?.presbyterian1917) height = addGothicChurch(b);
     else if (b.facade?.baptist1866) height = addBaptistChurch(b);
     else if (b.facade?.americanHouse) height = addAmericanHouse(b);
+    else if (b.facade?.pioneer && b.kind === "house") height = addPioneerHouse(b);
+    else if (b.facade?.pioneer && (b.kind === "frame-store" || b.kind === "brick-store")) height = addPioneerStore(b);
+    else if (b.facade?.pioneer && (b.kind === "barn" || b.kind === "shed")) height = addPioneerBarn(b);
     else if (b.kind === "house") height = addHouse(b);
     else if (b.id === "hendee-store-22") height = addHendeeStore(b);
     else if (b.id === "hendee-house-26") height = addHendeeHouse(b);

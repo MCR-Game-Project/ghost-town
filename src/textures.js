@@ -194,6 +194,45 @@ function sidingMaps(stain) {
   });
 }
 
+function boardBattenMaps() {
+  const w = 512;
+  const h = 256;
+  const period = 64;
+  return packMaps(w, h, (px, height, rough) => {
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const board = Math.floor(x / period);
+        const lx = x % period;
+        const isBatten = lx < 7 || lx >= period - 7;
+        const seam = lx === 7 || lx === period - 8;
+        const tone = hash(board, 19);
+        const grain = Math.sin(y * 0.14 + board * 2.1) * 7 + (hash(board, y) - 0.5) * 14 + (hash(x, y) - 0.5) * 8;
+        let r = 212 + tone * 24 + grain;
+        let g = 204 + tone * 22 + grain;
+        let b = 192 + tone * 18 + grain;
+        if (isBatten) {
+          r += 8;
+          g += 7;
+          b += 6;
+        }
+        if (seam) {
+          r *= 0.56;
+          g *= 0.54;
+          b *= 0.52;
+        }
+        const i = y * w + x;
+        const o = i * 4;
+        px[o] = Math.max(0, Math.min(255, r));
+        px[o + 1] = Math.max(0, Math.min(255, g));
+        px[o + 2] = Math.max(0, Math.min(255, b));
+        px[o + 3] = 255;
+        height[i] = seam ? 0.1 : isBatten ? 0.92 : 0.45;
+        rough[i] = isBatten ? 0.86 : 0.9;
+      }
+    }
+  });
+}
+
 function shingleMaps(kind = "dark") {
   const w = 512;
   const h = 512;
@@ -718,6 +757,7 @@ export function makeMaterials() {
   const buffTex = brickMaps("buff");
   const greenTex = brickMaps("green");
   const sidingTex = sidingMaps(0.2);
+  const boardBattenTex = boardBattenMaps();
   const shingleTex = shingleMaps();
   const tanShingleTex = shingleMaps("tan");
   const tinTex = tinMaps();
@@ -754,6 +794,18 @@ export function makeMaterials() {
       uvFeet: sidingFeet,
       vary: true,
       normalScale: 0.65,
+    });
+
+  const boardBatten = (color) =>
+    std({
+      map: boardBattenTex.map,
+      normalMap: boardBattenTex.normalMap,
+      roughnessMap: boardBattenTex.roughnessMap,
+      color,
+      roughness: 1,
+      uvFeet: { u: 6.4, v: 6 },
+      vary: true,
+      normalScale: 0.85,
     });
 
   const shingle = (color) =>
@@ -820,6 +872,8 @@ export function makeMaterials() {
     },
     siding: {
       white: siding("#f4efe4"),
+      agedWhite: siding("#e7dfd0"),
+      weathered: siding("#a89a84"),
       cream: siding("#f0e2c4"),
       yellow: siding("#e6d48a"),
       gray: siding("#c9c2b6"),
@@ -828,6 +882,12 @@ export function makeMaterials() {
       tan: siding("#d9c4a0"),
       darkred: siding("#6e2e2a"),
       depot: siding("#8d4d3a"),
+    },
+    boardBatten: {
+      weathered: boardBatten("#9d8e7a"),
+      gray: boardBatten("#aba497"),
+      red: boardBatten("#7a3730"),
+      white: boardBatten("#e5dfd1"),
     },
     roof: shingle("#8a7562"),
     roofDark: shingle("#5c4a3c"),

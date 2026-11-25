@@ -170,7 +170,7 @@ The model follows that mix, not a traced outline of each lot. A front-gabled hou
 
 Paint is still the ordinary white, cream, yellow, gray, barn red, and green. The Picture menu is unchanged. It still only sets how sharp the picture is and how large the shadows are. The extra boards of a house are merged into the same few surfaces as the rest of the town.
 
-The figures panel on the right is `public/data/bushnell-years.json`. The slider starts at 1854, the year the town was laid out, and then stops on the census years from 1860 through 2020. No 1860 population for the town was found. Bushnell received its city charter in 1869, and Bushnell Township was set off in 1866. There is no 1886 stop. The 1885 business list sits under 1880, and the January 1886 Sanborn labels sit under 1890. Each line keeps the year of its own source. The older file `public/data/bushnell-1886.json` is the same 1885 and 1886 material, kept so that list still has one place to read.
+The figures panel on the right is `public/data/bushnell-years.json`. The slider starts at 1854, the year the town was laid out, and then stops on the census years from 1860 through 2020, showing each year's population beside the year readout. No 1854 or 1860 census count exists for Bushnell (Bushnell Township was set off in 1866 and the city charter came in 1869), so 1854 and 1860 show estimates marked `estimated`, while 1870 through 2020 use U.S. decennial census counts. There is no 1886 stop. The 1885 business list sits under 1880, and the January 1886 Sanborn labels sit under 1890. Each line keeps the year of its own source. The older file `public/data/bushnell-1886.json` is the same 1885 and 1886 material, kept so that list still has one place to read.
 
 ## The 1890 town
 
@@ -190,7 +190,7 @@ One building is added. Hiram and Daniel Markham opened a slab store in the summe
 - The German Methodist church, finished in 1857 at the southwest corner of West Hail and Jackson.
 - The store Hiram Markham built on the later Ball and Son corner, East Main at Gridley. Negley and Angle opened in it in April 1856. The 1860 tenant was not named, so the sign does not invent one.
 
-The first schoolhouse, 1856, stood on Sperry Street, block 57. In 1860 the school moved to Temperance hall. That hall was not located, so it is not drawn. The Reformed church was dedicated May 1, 1861, so it is not in this year. S. A. Hendee’s 1860 store was on the east side of the railroad, at a door the history does not name. James Cole’s 1855 frame store, 16 by 48 feet, stood on the later Seibert site and was afterward moved to New Philadelphia. The year it left was not found, so it is not drawn. The history’s count of 125 buildings by the end of 1856 has no lots, so those lots stay empty. No data found for a 1860 population.
+The first schoolhouse, 1856, stood on Sperry Street, block 57. In 1860 the school moved to Temperance hall. That hall was not located, so it is not drawn. The Reformed church was dedicated May 1, 1861, so it is not in this year. S. A. Hendee’s 1860 store was on the east side of the railroad, at a door the history does not name. James Cole’s 1855 frame store, 16 by 48 feet, stood on the later Seibert site and was afterward moved to New Philadelphia. The year it left was not found, so it is not drawn. The history’s count of 125 buildings by the close of 1856 names no individual lots; on the 1860 preview branch (`preview/population-1860`), 121 generic `inferred` / `estimated` dwellings, frame stores, and barns/stables are added beside the 4 sourced buildings (125 total) using best-estimate placement on the 1854 plat, and the 1860 population is shown as `estimated 400` (see the 1860 population & buildings section below).
 
 ## The 1870 town
 
@@ -729,3 +729,53 @@ Source: 1954 centennial book (PDF p.13, p.35, p.38–39, p.55, p.60–63) and `/
 - **American House (`american-house-52`, `addAmericanHouse`, PDF p.14 engraving).** Built as Bushnell's first hotel, owned by John D. Hail in 1855 (p.14). Rebuilt from the p.14 engraving: two joined white clapboard gable-front sections—a three-story left block (`26 × 46`) with shuttered windows and `AMERICAN HOUSE.` painted directly on the clapboards between the second and third floors, and a two-and-a-half-story right wing (`30 × 42`) with eave cornice, gable louver, and two ridge chimneys—fronted by a continuous full-width one-story gallery (`9` posts) with `BILLIARD HALL` painted on the right porch fascia and an open-sky second-story balcony with a continuous turned balustrade. Dropped the large hanging `AMERICAN HOUSE hotel` board. Widened from `40 × 58` at `(-489, -360)` to `56 × 46` at `(-484, -354)` (shifted `+6 ft` north in Z to keep `4 ft` clear of `cigar-factory-1893` from 1890 onward; stays `11 ft` clear of Hurst Street). `bushnell-1860.json` was not modified. Estimates: lot offset west of Hurst, wing widths, wall heights, and porch depth from the engraving.
 - **Old Engine House (`bushnell-engine-house`, PDF p.125).** Widened from `26 ft` (`x: 249`) to `34 ft` (`x: 251.5`) in `bushnell-1900.json` so it sits `0.5 ft` beside the `36-ft` brick City Hall (`1.5 ft` clear of `ball-bros`) as shown in the p.125 photograph, completely collision-neutral across all stops. Re-centered the wall-painted `BUSHNELL` and `FIRE DEPARTMENT` lettering for the `34-ft` front (`1900–1950`), and fixed `signFor` so `bushnell-1960.json`'s `"sign": ""` cleanly suppresses the fire signs from 1960 onward after the 1953 move to Hurst and Dean.
 - **Checks.** `npm run check` passes (`341` buildings, `66` sourced, `360` lots, `30` blocks). `collide.py` has `0` differences against Round 7 (`5e0b968`) across all `12` stops (`1854`–`1970`).
+
+### Sidebar population & 1860 town fill (`preview/population-1860`)
+
+Source for the 1856 building count and early settlement: *History of McDonough County, Illinois* (Springfield, IL: Continental Historical Co., 1885), Chapter XXXIII, "The City of Bushnell", pp. 824–826 (transcribed at [https://mcdonough.illinoisgenweb.org/1885citybushnell.html](https://mcdonough.illinoisgenweb.org/1885citybushnell.html)).
+
+**Exact quote for the 125 buildings at the close of 1856 (p. 826):**
+
+> "From this time forward the immigration to this part was quite large, and followed, one another rapidly, until, at the close of the year 1856, when there were 125 buildings upon the town site, including residences, stables, barns, etc."
+
+**Sidebar population figures (`public/data/bushnell-years.json`, `src/main.js`):**
+
+- **1854 — `estimated 20`** (estimate; no census). The 1885 history (pp. 824–825) names pioneer merchants Hiram and Daniel Markham and the four first settler families—Hiram Conover, John Beach, William Ervin, and William Vickers—who built houses for their families shortly after the May 1854 lot sale ("about 70 lots"). Counting roughly 5 households at ~4 persons per household gives ~20 residents.
+- **1860 — `estimated 400`** (estimate; no separate U.S. census count exists because Bushnell Township was not set off from Prairie City Township until 1866 and the city was not chartered until 1869). The 1885 history counts **125 buildings** on the town site by the close of 1856 ("including residences, stables, barns, etc."), and notes that despite crop failures in the first three or four years, "buildings for stores and dwellings were being erected, and the population was rapidly increasing." Splitting the 125 buildings into roughly 95–100 dwellings (96 houses plus the American House hotel and above-store quarters) and ~25–30 non-dwelling structures (stores, barns/stables, church, school), and applying ~3–4 persons per dwelling (~4 persons across ~100 households with modest growth through 1860), gives roughly **400** residents (`estimated 400`).
+- **1870–2020 — U.S. Decennial Census counts for the city of Bushnell:**
+  - 1870: **2,003**
+  - 1880: **2,316**
+  - 1890: **2,314**
+  - 1900: **2,490**
+  - 1910: **2,619**
+  - 1920: **2,716**
+  - 1930: **2,850**
+  - 1940: **2,906**
+  - 1950: **3,317**
+  - 1960: **3,710**
+  - 1970: **3,703**
+  - 1980: **3,811**
+  - 1990: **3,288**
+  - 2000: **3,221**
+  - 2010: **3,117**
+  - 2020: **2,718**
+
+**1860 map buildings (`public/data/bushnell-1860.json`, 125 total):**
+
+- **Existing sourced buildings kept (4):** Markham house (`markham-house-1854`), American House (`american-house-52`), German Methodist Church (`german-methodist-1857`), and Markham's store building (`markham-gridley-store`).
+- **Added generic estimated buildings (121, all flagged `confidence: "inferred"`, `estimated: true`, with generic labels and no invented personal or firm names):**
+  - **10 frame stores (`est-1860-store-01` .. `10`):** 1- and 2-story frame shops clustered near the railroad and depot ground along East Main (between Hurst and Gridley), West Main (between Hurst and Hail), and Hail Street.
+  - **94 frame dwellings (`est-1860-house-01` .. `94`):** small 1- to 2-story frame cottages, gable-front, side-gable, and gable-ell houses on the original 1854 plat lots, densest in the blocks surrounding Hail, Hurst, Gridley, East/West Main, Crafford, and Dean, and sparser outward toward Sperry, Jackson, and Barnes/Davis. East Park and West Park remain unbuilt except for the existing American House edge.
+  - **17 stables and barns (`est-1860-barn-01` .. `17`):** 7 frame barns and 10 smaller stables/outbuildings placed on the rear of residential lots clear of houses and mid-block alleys.
+- No other year files (`1854`, `1870`, `1880`+) were modified.
+
+- **1850s pioneer redraw (`facade.pioneer` on `est-1860-*` buildings in `src/town.js`, `src/textures.js`, and `public/data/bushnell-1860.json`):**
+  - Replaced the generic 1880s–1910s house/store/barn builders on all 121 added 1860 buildings (`est-1860-house-*`, `est-1860-store-*`, `est-1860-barn-*`) with period 1850s Illinois prairie railroad-town builders (`addPioneerHouse`, `addPioneerStore`, `addPioneerBarn`).
+  - **Period references:** Centennial book photograph *One of the first houses built in Bushnell* (`research/bushnell-book/photos/p012-one-of-first-houses.png` — 1-story side-gable clapboard dwelling with wood-shingle roof, simple brick ridge chimney, small 6-over-6 sash windows without shutters, narrow shed porch on slender square posts, no picket fence), early 1854–1860 buildings already in the model (`markham-house-1854`, `american-house-52`, `german-methodist-1857`), and 1870s/1885 county history period engravings (`research/bushnell-book/photos/p030-j-c-vail-house.png`, `p047-house.png`).
+  - **Houses (`est-1860-house-01` .. `94`, estimates):** Plain frame dwellings in white, aged whitewash, unpainted weathered clapboard, and muted gray; steep wood-shingle side-gable, gable-front, and gable-ell roofs (including 1½-story houses with gable attic windows); small 6-over-6 sash windows without shutters or Italianate hoods; simple brick ridge chimneys; mostly a small plank stoop with narrow shed porches on square posts on ~38% of lots; no hip roofs, no wraparound/turned-post porches, and no white picket fences (only occasional plain split-rail fences on outer lots).
+  - **Stores (`est-1860-store-01` .. `10`, estimates):** Plain clapboard false-front frame shops with steep wood-shingle gables behind plain rectangular parapets, blank framed wood signboard areas (no lettering), small 6-over-6 shop windows, paneled doors, and plain plank boardwalk stoops (no modern plate glass, awnings, dentils, or scroll brackets).
+  - **Barns (`est-1860-barn-01` .. `17`, estimates):** Plain board-and-batten barns and stables (`boardBattenMaps()` procedural texture in weathered wood, gray, muted red, and aged white) with steep wood-shingle gable roofs, braced double plank doors, hayloft shutters on larger barns, and no protruding side wings.
+
+### Combined preview `preview/combined-r8-1860`
+
+Merge of `preview/visual-r4` (`75e4023`, Round 8 facades) with `origin/preview/population-1860` (`5945365`, sidebar population and 121 estimated 1860 buildings). Both Round 8 and population-1860 `SOURCES.md` sections are kept. `american-house-52` in `bushnell-1860.json` now carries the Round 8 `56 × 46` footprint at `(-484, -354)` with `addAmericanHouse`. That footprint was checked against all 121 `est-1860-*` buildings: no overlaps, 11 ft clear of Hurst Street, and no estimated building was moved. `npm run check`, `collide.py` (1860 at 0), and a Vite production build were run on this combined branch.

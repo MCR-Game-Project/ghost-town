@@ -1,14 +1,14 @@
 {
   "place": "Bushnell, McDonough County, Illinois",
   "defaultYear": 1880,
-  "note": "The slider starts at 1854, the year the town was laid out, then uses the census years from 1860 through 2020. 1854 was not a census year. No 1860 population for the town was found. Firms from the 1885 history are listed under 1880, and January 1886 Sanborn labels are listed under 1890. Each line keeps its own source year.",
+  "note": "The slider starts at 1854, the year the town was laid out, then uses the census years from 1860 through 2020. No 1854 or 1860 census count exists for Bushnell; those two years show estimated figures marked 'estimated', while 1870 through 2020 show U.S. decennial census figures. Firms from the 1885 history are listed under 1880, and January 1886 Sanborn labels are listed under 1890. Each line keeps its own source year.",
   "years": [
     {
       "year": 1854,
       "census": [
         {
-          "text": "No population count was found. There was no census in 1854. The town was laid out this year, before the railroad was finished. The first public sale of lots was in May 1854: about 70 lots, about $6,000, priced from $30 to $120.",
-          "source": "1885 History of McDonough County, Bushnell chapter"
+          "text": "Estimated population about 20 (no 1854 census). The town was laid out in 1854 before the railroad was finished. The 1885 history names the pioneer merchants Hiram and Daniel Markham and the four first settler families (Hiram Conover, John Beach, William Ervin, and William Vickers), roughly 5 households at about 4 people each. The first public sale of lots was in May 1854: about 70 lots, about $6,000, priced from $30 to $120.",
+          "source": "1885 History of McDonough County, Bushnell chapter (estimate from named 1854\u2013early 1855 households)."
         }
       ],
       "school": [
@@ -25,18 +25,21 @@
           "source": "1885 History of McDonough County, Bushnell chapter",
           "note": "They opened in the summer of 1854 in a small slab store. The centennial book places it on the northeast corner of East Main and Wells. The 1885 history says it stood on the later normal-college site. That second site was not located, so the store is drawn on the centennial corner."
         }
-      ]
+      ],
+      "population": 20,
+      "populationEstimated": true,
+      "populationLabel": "estimated 20"
     },
     {
       "year": 1860,
       "census": [
         {
-          "text": "No data found for a population. Bushnell was not yet a city (the charter came in 1869), and Bushnell Township was not set off until 1866, from the south half of Prairie City Township. No 1860 count for the town was found.",
-          "source": "1885 History of McDonough County, Bushnell Township chapter, for the 1866 division. The city charter date is the one already used for this town."
+          "text": "Estimated population about 400. No separate 1860 U.S. census count exists for Bushnell (Bushnell Township was not set off from Prairie City Township until 1866, and the city was chartered in 1869).",
+          "source": "1885 History of McDonough County, Bushnell Township chapter (1866 division); 1869 charter date."
         },
         {
-          "text": "By the close of 1856 the history counts 125 buildings on the town site, including houses, stables, and barns. Their lots were not given, so those lots stay empty.",
-          "source": "1885 History of McDonough County, Bushnell chapter"
+          "text": "By the close of 1856, the 1885 history counts 125 buildings on the town site ('including residences, stables, barns, etc.'). Taking roughly 95\u2013100 dwellings among those 125 buildings (with modest continued building through 1860) at about 3\u20134 people per dwelling yields roughly 400 residents. Because individual lots were not recorded, the 121 generic dwellings, shops, and barns on the 1860 map are placed by estimate on the original 1854 plat near the railroad, Main streets, and Hail Street.",
+          "source": "1885 History of McDonough County, Chapter 33 (p. 826)."
         }
       ],
       "school": [
@@ -81,7 +84,10 @@
           "source": "1885 History of McDonough County, Bushnell chapter",
           "note": "Hiram Markham built it after the slab store, where Ball and Son later had the carriage shop, East Main at Gridley. Negley and Angle opened there in April 1856. Who kept the store in 1860 was not found."
         }
-      ]
+      ],
+      "population": 400,
+      "populationEstimated": true,
+      "populationLabel": "estimated 400"
     },
     {
       "year": 1870,
@@ -128,11 +134,11 @@
           "note": "Listed as the first flouring mill. The 1885 history calls the Nevious Bros. mill the Excelsior. The Depot Mill's date was not found."
         },
         {
-            "name": "West & Kaiser",
-            "type": "general store",
-            "year": "1869",
-            "source": "1885 History of McDonough County, Bushnell chapter",
-            "note": "The stand opened in March 1866 as a general store on the east side of the street. Stockton West came in, and by the fall of 1869 the firm was West and Kaiser, in a new room. Neither door was named."
+          "name": "West & Kaiser",
+          "type": "general store",
+          "year": "1869",
+          "source": "1885 History of McDonough County, Bushnell chapter",
+          "note": "The stand opened in March 1866 as a general store on the east side of the street. Stockton West came in, and by the fall of 1869 the firm was West and Kaiser, in a new room. Neither door was named."
         },
         {
           "name": "Lemuel Aller",
@@ -148,7 +154,10 @@
           "source": "1885 History of McDonough County, Bushnell chapter",
           "note": "Theodore F. Seibert's store was established in March 1870 by this firm. The corner was not named, so it is not drawn."
         }
-      ]
+      ],
+      "population": 2003,
+      "populationEstimated": false,
+      "populationLabel": "2,003"
     },
     {
       "year": 1880,
@@ -479,7 +488,10 @@
           "source": "1885 History of McDonough County, Bushnell chapter",
           "note": "The history says the fairs were held at Bushnell each year."
         }
-      ]
+      ],
+      "population": 2316,
+      "populationEstimated": false,
+      "populationLabel": "2,316"
     },
     {
       "year": 1890,
@@ -581,7 +593,10 @@
           "year": "1884 onward",
           "source": "Library of Congress Chronicling America. The paper began at Bushnell in 1884. The record used here does not give a closing date or the proprietor for this census year."
         }
-      ]
+      ],
+      "population": 2314,
+      "populationEstimated": false,
+      "populationLabel": "2,314"
     },
     {
       "year": 1900,
@@ -592,7 +607,7 @@
         },
         {
           "text": "On June 10, 1902, the centennial book says a windstorm tore trees out by the roots and blew roofs off downtown stores. It does not say which trees or how many, so the trees are left as they were.",
-          "source": "Bushnell, Illinois, centennial, 1854–1954."
+          "source": "Bushnell, Illinois, centennial, 1854\u20131954."
         }
       ],
       "school": [
@@ -622,7 +637,10 @@
           "year": "1884 onward",
           "source": "Library of Congress Chronicling America. The paper began at Bushnell in 1884. The record used here does not give a closing date or the proprietor for this census year."
         }
-      ]
+      ],
+      "population": 2490,
+      "populationEstimated": false,
+      "populationLabel": "2,490"
     },
     {
       "year": 1910,
@@ -749,7 +767,10 @@
           "year": "1884 onward",
           "source": "Library of Congress Chronicling America. The paper began at Bushnell in 1884. The record used here does not give a closing date or the proprietor for this census year."
         }
-      ]
+      ],
+      "population": 2619,
+      "populationEstimated": false,
+      "populationLabel": "2,619"
     },
     {
       "year": 1920,
@@ -777,7 +798,10 @@
           "year": "1884 onward",
           "source": "Library of Congress Chronicling America. The paper began at Bushnell in 1884. The record used here does not give a closing date or the proprietor for this census year."
         }
-      ]
+      ],
+      "population": 2716,
+      "populationEstimated": false,
+      "populationLabel": "2,716"
     },
     {
       "year": 1930,
@@ -801,7 +825,10 @@
           "year": "1884 onward",
           "source": "Library of Congress Chronicling America. The paper began at Bushnell in 1884. The record used here does not give a closing date or the proprietor for this census year."
         }
-      ]
+      ],
+      "population": 2850,
+      "populationEstimated": false,
+      "populationLabel": "2,850"
     },
     {
       "year": 1940,
@@ -825,7 +852,10 @@
           "year": "1884 onward",
           "source": "Library of Congress Chronicling America. The paper began at Bushnell in 1884. The record used here does not give a closing date or the proprietor for this census year."
         }
-      ]
+      ],
+      "population": 2906,
+      "populationEstimated": false,
+      "populationLabel": "2,906"
     },
     {
       "year": 1950,
@@ -840,7 +870,10 @@
         }
       ],
       "school": [],
-      "businesses": []
+      "businesses": [],
+      "population": 3317,
+      "populationEstimated": false,
+      "populationLabel": "3,317"
     },
     {
       "year": 1960,
@@ -855,7 +888,10 @@
         }
       ],
       "school": [],
-      "businesses": []
+      "businesses": [],
+      "population": 3710,
+      "populationEstimated": false,
+      "populationLabel": "3,710"
     },
     {
       "year": 1970,
@@ -870,7 +906,10 @@
         }
       ],
       "school": [],
-      "businesses": []
+      "businesses": [],
+      "population": 3703,
+      "populationEstimated": false,
+      "populationLabel": "3,703"
     },
     {
       "year": 1980,
@@ -881,7 +920,10 @@
         }
       ],
       "school": [],
-      "businesses": []
+      "businesses": [],
+      "population": 3811,
+      "populationEstimated": false,
+      "populationLabel": "3,811"
     },
     {
       "year": 1990,
@@ -896,7 +938,10 @@
         }
       ],
       "school": [],
-      "businesses": []
+      "businesses": [],
+      "population": 3288,
+      "populationEstimated": false,
+      "populationLabel": "3,288"
     },
     {
       "year": 2000,
@@ -907,7 +952,10 @@
         }
       ],
       "school": [],
-      "businesses": []
+      "businesses": [],
+      "population": 3221,
+      "populationEstimated": false,
+      "populationLabel": "3,221"
     },
     {
       "year": 2010,
@@ -918,7 +966,10 @@
         }
       ],
       "school": [],
-      "businesses": []
+      "businesses": [],
+      "population": 3117,
+      "populationEstimated": false,
+      "populationLabel": "3,117"
     },
     {
       "year": 2020,
@@ -929,7 +980,10 @@
         }
       ],
       "school": [],
-      "businesses": []
+      "businesses": [],
+      "population": 2718,
+      "populationEstimated": false,
+      "populationLabel": "2,718"
     }
   ]
 }
