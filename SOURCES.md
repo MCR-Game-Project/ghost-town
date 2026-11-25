@@ -860,7 +860,7 @@ Source: 1954 centennial book (PDF pages as cited) and existing `src/town.js` `PA
 
 ### Period pedestrians (`preview/people`)
 
-All pedestrian figures are parametric articulated forms (`src/people.js`, 22 instanced parts including tapered limbs, necks, shoulders, hands, and period hat/skirt silhouettes, with zero photo textures), animated gently in real time (`src/main.js`) when not in fixed shot mode.
+All pedestrian figures are parametric articulated forms (`src/people-geo.js` and `src/people.js`, compact active-slot `InstancedMesh` pools across sculpted anatomical parts: ~7.5-heads-tall proportions, smooth lofted torsos/skirts/coats with fold shading, sculpted facial features, voluminous hair, articulated 2-segment limbs, hands, shoes, and period hat silhouettes, with zero photo textures), animated gently in real time (`src/main.js`) when not in fixed shot mode.
 
 - **Counts (estimate):** Scaled proportionally to the Bushnell population figures in `public/data/bushnell-years.json`, with fewer figures in pioneer years: 4 in `1854` (estimated pop. 20), 10 in `1860` (estimated pop. 400), rising through 35 (`1870`, pop. 2,003), 40 (`1880`, pop. 2,316), 45 (`1910`, pop. 2,619), 49–50 (`1930`–`1940`, pop. 2,850–2,906), and 64 (`1960`–`1970`, pop. 3,710–3,703).
 - **Period dress (estimate):**
