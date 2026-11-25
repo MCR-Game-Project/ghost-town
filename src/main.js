@@ -3,6 +3,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { buildTown } from "./town.js";
 import { ORIENT, platToEnu, worldToPlat } from "./orient.js";
 import { vehicleBand } from "./vehicles.js";
+import { peopleBand } from "./people.js";
 
 const params = new URLSearchParams(location.search);
 const shot = params.get("shot");
@@ -120,6 +121,7 @@ let bob = 0;
 let mode = "walk";
 let colliders = [];
 let picks = null;
+let townUpdate = null;
 let town = null;
 let townSource = null;
 let townPatches = {};
@@ -604,6 +606,7 @@ function frame() {
   const detail = townGroup.getObjectByName("building-detail");
   if (detail) detail.visible = camera.position.y < 160;
   const dt = Math.min(clock.getDelta(), 0.05);
+  if (townUpdate && !shot) townUpdate(clock.elapsedTime);
   if (mode === "walk" && town) {
     const speed = keys.has("ShiftLeft") || keys.has("ShiftRight") ? 34 : 16;
     const forward = lookVector();
@@ -999,6 +1002,7 @@ function applyTownPatch(data, patch) {
 }
 
 function disposeTown() {
+  townUpdate = null;
   const doomed = [...townGroup.children];
   for (const obj of doomed) townGroup.remove(obj);
   for (const obj of doomed) {
@@ -1069,6 +1073,7 @@ function mountTown(builtYear, sliderYear = builtYear) {
   const built = buildTown(town, townGroup);
   colliders = built.colliders;
   picks = built.picks;
+  townUpdate = built.update || null;
   shownBuiltYear = builtYear;
   const quality = document.getElementById("quality");
   if (quality) applyQuality(quality.value);
@@ -1089,6 +1094,7 @@ onCensusYear = (year) => {
     if (value >= 1938) bands.push("blacktop");
     // preview/vehicles: cars, street lamps, rolling stock, and wagons change with the slider year.
     bands.push(vehicleBand(value));
+    bands.push(peopleBand(value));
     return bands.join("|") || "same";
   };
   if (built === shownBuiltYear && eraBand(year) === eraBand(shownSliderYear)) return;

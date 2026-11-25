@@ -5,6 +5,7 @@ import { makeMaterials, makeSignTexture } from "./textures.js";
 import { mirrorPlat } from "./orient.js";
 import { drawFacadeSpec } from "./facade/assemble.js";
 import { addRolling, addStreetLamps, buildCarInto, carCount, Kit, makeHorse, makeWagon, paletteFor, styleForSlot, wagonKindFor } from "./vehicles.js";
+import { addPeople } from "./people.js";
 
 const FACING = { "+z": 0, "-z": Math.PI, "+x": Math.PI / 2, "-x": -Math.PI / 2 };
 
@@ -8661,7 +8662,9 @@ float lHash(vec3 p){ p=fract(p*0.1031); p+=dot(p,p.yzx+33.33); return fract((p.x
 
   scene.add(picks);
 
-  return { colliders, picks, materials: mats };
+  const updatePeople = addPeople(data, scene, groundYear, colliders, modernPaved, allTrees);
+
+  return { colliders, picks, materials: mats, update: updatePeople };
 }
 
 const streetLabelCache = new Map();
