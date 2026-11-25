@@ -1,9 +1,51 @@
 import * as THREE from "three";
+import {
+  makeHeadGeo,
+  makeEyeWhitesGeo,
+  makeIrisesGeo,
+  makeBrowsGeo,
+  makeMouthGeo,
+  makeBeardGeo,
+  makeNeckGeo,
+  makeHairBaseGeo,
+  makeHairBunGeo,
+  makeHairSideBobGeo,
+  makeTorsoMenGeo,
+  makeTorsoShirtGeo,
+  makeTorsoWomenGeo,
+  makePelvisGeo,
+  makeCoatTailGeo,
+  makeShirtFrontGeo,
+  makeWomanCollarGeo,
+  makeLapelsGeo,
+  makeTieGeo,
+  makeVestGeo,
+  makeOverallsBibGeo,
+  makeShawlGeo,
+  makeSkirtFullGeo,
+  makeSkirtBustleGeo,
+  makeSkirtMidGeo,
+  makeSkirtShortGeo,
+  makeThighGeo,
+  makeCalfGeo,
+  makeShoeGeo,
+  makeUpperArmGeo,
+  makeForearmGeo,
+  makeHandGeo,
+  makePuffSleeveGeo,
+  makeHatCrownCylGeo,
+  makeFedoraCrownGeo,
+  makeHatDomeGeo,
+  makeHatBrimCurvedGeo,
+  makeHatBrimFlatGeo,
+  makeHatBandGeo,
+  makeBonnetGeo,
+} from "./people-geo.js";
 
 // Period pedestrians (preview/people): parametric articulated figures rendered with
-// InstancedMesh (no photo textures). Counts scale with Bushnell population; clothing
-// silhouettes and hats follow each era from 1854 through 1970+. All placements are
-// validated clear of buildings, street carriageways, railroad tracks, trees, and props.
+// InstancedMesh (no photo textures). Smooth sculpted forms (~7.5 heads tall), facial
+// features, voluminous hair, tailored coats/skirts, articulated 2-segment limbs,
+// hands, shoes, varied builds, and natural weight-shift / walking poses.
 
 const POPULATION_STOPS = [
   [1854, 20],
@@ -38,14 +80,13 @@ export function populationForYear(year) {
 export function peopleEraFor(year) {
   if (year < 1880) return "pioneer";     // 1854-1879: frock coats, vests, wide hats; full skirts, shawls, bonnets
   if (year < 1900) return "victorian";   // 1880-1899: sack suits, bowlers; bustles & leg-o'-mutton sleeves
-  if (year < 1910) return "edwardian";   // 1900-1909: sack suits, bowlers; shirtwaists & long skirts
+  if (year < 1910) return "edwardian";   // 1900-1909: sack suits, bowlers; shirtwaists & long flared skirts
   if (year < 1930) return "jazz";        // 1910-1929: boaters, fedoras; shorter skirts & cloche hats
   if (year < 1950) return "depression";  // 1930-1949: fedoras, overalls; print dresses
   return "midcentury";                   // 1950-1970+: casual slacks, skirts, work clothes
 }
 
 export function peopleBand(year) {
-  // Remount across era transitions and meaningful population steps.
   const popBucket = Math.round(populationForYear(year) / 250);
   return `${peopleEraFor(year)}:${popBucket}`;
 }
@@ -67,64 +108,96 @@ function makeRng(seed) {
 
 const pick = (arr, r) => arr[Math.floor(r() * arr.length) % arr.length];
 
-const SKIN_TONES = ["#e0c4a8", "#c99572", "#d4ab88", "#b07a58", "#e6ccb4", "#c4a07e", "#a87a5a"];
-const HAIR_TONES = ["#2c221b", "#483324", "#6e4e34", "#8a6d48", "#5b5550", "#1e1a18"];
+const SKIN_TONES = ["#e2c3a7", "#d4ac8a", "#c99674", "#e7cbb2", "#c39d7b", "#b68562"];
+const HAIR_TONES = ["#261d17", "#3f2c1f", "#5e432c", "#7c603f", "#55504c", "#1a1614", "#8e877e"];
+const EYE_TONES = ["#2c2018", "#352c24", "#2f3d48", "#483526"];
+
+function lipToneFor(skinHex) {
+  const c = new THREE.Color(skinHex);
+  c.lerp(new THREE.Color("#9e5c54"), 0.42);
+  return `#${c.getHexString()}`;
+}
 
 function dressProfile(era, role, rng) {
   // role: "man" | "woman" | "farmer" | "boy" | "girl"
   const skin = pick(SKIN_TONES, rng);
   const hair = pick(HAIR_TONES, rng);
+  const eyeColor = pick(EYE_TONES, rng);
+  const lipColor = lipToneFor(skin);
+  const buildW = 0.90 + rng() * 0.22; // slender -> stocky build variation
 
   if (role === "farmer") {
-    const shirt = pick(["#b8c2cc", "#d8d0be", "#9aa896", "#c4b299", "#b89682"], rng);
-    const denim = pick(["#394c68", "#425878", "#4f565e", "#5b5044"], rng);
-    const hatColor = era === "pioneer" ? "#6c563f" : era === "jazz" ? "#c9b37c" : "#6c655c";
-    const hatStyle = era === "pioneer" ? "wide" : era === "midcentury" ? "cap" : rng() < 0.55 ? "wide" : "cap";
+    const shirt = pick(["#b7c2cb", "#d6ceb8", "#97a693", "#c4b296", "#b6947f"], rng);
+    const denim = pick(["#384c68", "#415776", "#4e565f", "#5a4f43"], rng);
+    const hatColor = era === "pioneer" ? "#6c563f" : era === "jazz" ? "#cbb47d" : "#6b645a";
+    const hatStyle = era === "pioneer" ? "wide" : era === "midcentury" ? "cap" : rng() < 0.6 ? "wide" : "cap";
     return {
       role,
       skin,
       hair,
-      hScale: 0.98 + rng() * 0.06,
+      eyeColor,
+      lipColor,
+      hScale: 0.95 + rng() * 0.09,
+      buildW,
+      torsoKind: "shirt",
       torsoColor: shirt,
-      torsoScale: [1.04, 1.0, 1.0],
+      sleeveColor: shirt,
+      shortSleeve: false,
       legColor: denim,
-      skirtScale: [0, 0, 0],
-      skirtY: 0,
-      skirtZ: 0,
+      skirtKind: "none",
       skirtColor: denim,
-      accentType: "overalls",
-      accentColor: denim,
+      coatTailLen: 0,
+      hasLapels: false,
+      shirtColor: shirt,
+      tieColor: null,
+      vestColor: null,
+      overallsColor: denim,
+      shawlColor: null,
       puffSleeve: false,
+      beard: era !== "midcentury" && rng() < 0.42,
+      hairStyle: "short",
       hatStyle,
       hatColor,
-      showHair: hatStyle === "cap" || hatStyle === "none",
+      bandColor: "#332c26",
+      showHair: true,
     };
   }
 
   if (role === "boy" || role === "girl") {
-    const hScale = 0.66 + rng() * 0.14;
+    const hScale = 0.64 + rng() * 0.16;
     if (role === "boy") {
-      const shirt = pick(["#c9c1b0", "#8da0b2", "#9e856d", "#c98b6c", "#7d8c78"], rng);
-      const pants = pick(["#453f38", "#3a4554", "#594c3d", "#51555a"], rng);
-      const hatStyle = era === "pioneer" ? "wide" : era === "midcentury" ? "none" : rng() < 0.6 ? "cap" : "none";
+      const shirt = pick(["#ccc4b2", "#8ba0b3", "#a28870", "#c78b6e", "#7d8d78"], rng);
+      const pants = pick(["#453f38", "#3a4554", "#594c3d", "#505459"], rng);
+      const hatStyle = era === "pioneer" ? "wide" : era === "midcentury" ? "none" : rng() < 0.55 ? "cap" : "none";
       return {
         role,
         skin,
         hair,
+        eyeColor,
+        lipColor,
         hScale,
+        buildW: 0.88 + rng() * 0.14,
+        torsoKind: "shirt",
         torsoColor: shirt,
-        torsoScale: [0.92, 1.0, 0.92],
+        sleeveColor: shirt,
+        shortSleeve: era === "midcentury" && rng() < 0.55,
         legColor: pants,
-        skirtScale: [0, 0, 0],
-        skirtY: 0,
-        skirtZ: 0,
+        skirtKind: "none",
         skirtColor: pants,
-        accentType: "none",
-        accentColor: shirt,
+        coatTailLen: 0,
+        hasLapels: false,
+        shirtColor: shirt,
+        tieColor: null,
+        vestColor: null,
+        overallsColor: null,
+        shawlColor: null,
         puffSleeve: false,
+        beard: false,
+        hairStyle: "short",
         hatStyle,
         hatColor: pick(["#584c40", "#6e655a", "#3d4248"], rng),
-        showHair: hatStyle === "none" || hatStyle === "cap",
+        bandColor: "#2e2a26",
+        showHair: true,
       };
     }
     const dress = pick(
@@ -133,101 +206,151 @@ function dressProfile(era, role, rng) {
         : ["#b88d82", "#7c94a6", "#c6b692", "#8e9d86", "#a88392"],
       rng,
     );
-    const hatStyle = era === "pioneer" ? (rng() < 0.7 ? "bonnet" : "none") : "none";
+    const hatStyle = era === "pioneer" ? (rng() < 0.65 ? "bonnet" : "none") : "none";
     return {
       role,
       skin,
       hair,
+      eyeColor,
+      lipColor,
       hScale,
+      buildW: 0.86 + rng() * 0.14,
+      torsoKind: "woman",
       torsoColor: dress,
-      torsoScale: [0.88, 1.0, 0.88],
-      legColor: "#d8cdb8",
-      skirtScale: [0.76, 1.75, 0.76],
-      skirtY: 1.95,
-      skirtZ: 0,
+      sleeveColor: dress,
+      shortSleeve: era === "midcentury" && rng() < 0.65,
+      legColor: "#d6cab6",
+      skirtKind: "short",
       skirtColor: dress,
-      accentType: "pinafore",
-      accentColor: "#ded8ca",
+      coatTailLen: 0,
+      hasLapels: false,
+      shirtColor: null,
+      tieColor: null,
+      vestColor: "#e0dacb",
+      overallsColor: null,
+      shawlColor: null,
       puffSleeve: false,
+      beard: false,
+      hairStyle: "bob",
       hatStyle,
       hatColor: pick(["#d4c8b4", "#a88a74", "#8896a2"], rng),
+      bandColor: "#785a4e",
       showHair: hatStyle === "none",
     };
   }
 
   if (role === "man") {
-    const hScale = 0.97 + rng() * 0.08;
+    const hScale = 0.94 + rng() * 0.11;
+    const whiteShirt = pick(["#e7e3d8", "#dde2e6", "#eae4d6"], rng);
+    const tie = pick(["#5e2c2a", "#2b384c", "#3a4a3a", "#443a32", "#262528"], rng);
+
     if (era === "pioneer") {
-      const coat = pick(["#2b2927", "#3a322b", "#2f353d", "#473c32"], rng);
-      const pants = pick(["#49443e", "#5b5247", "#36383d", "#635a4e"], rng);
-      const vest = pick(["#6c5342", "#7b6c52", "#4e5b52", "#744440"], rng);
-      const hatStyle = rng() < 0.18 ? "tophat" : "wide";
+      const coat = pick(["#2a2826", "#39312a", "#2e343c", "#473c32"], rng);
+      const pants = pick(["#49443e", "#5b5247", "#36383d", "#62594d"], rng);
+      const vest = pick(["#6c5342", "#7b6c52", "#4e5b52", "#72433f"], rng);
+      const hatStyle = rng() < 0.22 ? "tophat" : "wide";
       return {
         role,
         skin,
         hair,
+        eyeColor,
+        lipColor,
         hScale,
+        buildW,
+        torsoKind: "man",
         torsoColor: coat,
-        torsoScale: [1.02, 1.02, 1.0],
+        sleeveColor: coat,
+        shortSleeve: false,
         legColor: pants,
-        skirtScale: [0.72, 1.38, 0.62],
-        skirtY: 2.15,
-        skirtZ: -0.02,
+        skirtKind: "none",
         skirtColor: coat,
-        accentType: "vest",
-        accentColor: vest,
+        coatTailLen: 1.0, // knee-length frock coat tails
+        hasLapels: true,
+        shirtColor: whiteShirt,
+        tieColor: tie,
+        vestColor: vest,
+        overallsColor: null,
+        shawlColor: null,
         puffSleeve: false,
+        beard: rng() < 0.58,
+        hairStyle: "short",
         hatStyle,
-        hatColor: pick(["#2a2623", "#463a2f", "#5e5042"], rng),
-        showHair: false,
+        hatColor: pick(["#282421", "#463a2f", "#5e5042"], rng),
+        bandColor: "#1f1c19",
+        showHair: true,
       };
     }
+
     if (era === "victorian" || era === "edwardian") {
-      const suit = pick(["#2f3136", "#3d3833", "#494642", "#353c46", "#54483d"], rng);
+      const suit = pick(["#2e3036", "#3c3732", "#484541", "#343b45", "#52463c"], rng);
       const hatStyle = rng() < 0.78 ? "bowler" : "boater";
       return {
         role,
         skin,
         hair,
+        eyeColor,
+        lipColor,
         hScale,
+        buildW,
+        torsoKind: "man",
         torsoColor: suit,
-        torsoScale: [1.02, 1.0, 1.0],
+        sleeveColor: suit,
+        shortSleeve: false,
         legColor: suit,
-        skirtScale: [0, 0, 0],
-        skirtY: 0,
-        skirtZ: 0,
+        skirtKind: "none",
         skirtColor: suit,
-        accentType: "vest",
-        accentColor: pick(["#585048", "#6b6154", "#474f58", "#6d5948"], rng),
+        coatTailLen: 0.62, // sack suit jacket hem
+        hasLapels: true,
+        shirtColor: whiteShirt,
+        tieColor: tie,
+        vestColor: pick(["#544c44", "#665c50", "#444c54", "#645242"], rng),
+        overallsColor: null,
+        shawlColor: null,
         puffSleeve: false,
+        beard: rng() < 0.36,
+        hairStyle: "short",
         hatStyle,
-        hatColor: hatStyle === "boater" ? "#d9c484" : pick(["#262628", "#3e362e"], rng),
-        showHair: false,
+        hatColor: hatStyle === "boater" ? "#dcc686" : pick(["#252527", "#3d352e"], rng),
+        bandColor: hatStyle === "boater" ? "#263246" : "#1a1919",
+        showHair: true,
       };
     }
+
     if (era === "jazz") {
-      const suit = pick(["#474b52", "#595047", "#3b424d", "#6e6559", "#3c3a38"], rng);
+      const suit = pick(["#454950", "#584f46", "#39404b", "#6c6357", "#3b3937"], rng);
       const hatStyle = rng() < 0.48 ? "boater" : "fedora";
       return {
         role,
         skin,
         hair,
+        eyeColor,
+        lipColor,
         hScale,
+        buildW,
+        torsoKind: "man",
         torsoColor: suit,
-        torsoScale: [1.01, 1.0, 1.0],
+        sleeveColor: suit,
+        shortSleeve: false,
         legColor: suit,
-        skirtScale: [0, 0, 0],
-        skirtY: 0,
-        skirtZ: 0,
+        skirtKind: "none",
         skirtColor: suit,
-        accentType: "vest",
-        accentColor: pick(["#5e564e", "#706658", "#4d555e", "#725e4e"], rng),
+        coatTailLen: 0.58,
+        hasLapels: true,
+        shirtColor: whiteShirt,
+        tieColor: tie,
+        vestColor: pick(["#5b534b", "#6c6255", "#4b535b"], rng),
+        overallsColor: null,
+        shawlColor: null,
         puffSleeve: false,
+        beard: rng() < 0.14,
+        hairStyle: "short",
         hatStyle,
-        hatColor: hatStyle === "boater" ? "#dcc786" : pick(["#5b554e", "#49433d", "#6f6a63"], rng),
-        showHair: false,
+        hatColor: hatStyle === "boater" ? "#dec886" : pick(["#59534c", "#47413b", "#6d6861"], rng),
+        bandColor: hatStyle === "boater" ? "#28344a" : "#2f2a26",
+        showHair: true,
       };
     }
+
     if (era === "depression") {
       const coat = pick(["#4f4c48", "#5b5146", "#3e464f", "#686259", "#4a443e"], rng);
       const slacks = pick(["#44423f", "#534e47", "#394048"], rng);
@@ -235,187 +358,279 @@ function dressProfile(era, role, rng) {
         role,
         skin,
         hair,
+        eyeColor,
+        lipColor,
         hScale,
+        buildW,
+        torsoKind: "man",
         torsoColor: coat,
-        torsoScale: [1.01, 1.0, 1.0],
+        sleeveColor: coat,
+        shortSleeve: false,
         legColor: slacks,
-        skirtScale: [0, 0, 0],
-        skirtY: 0,
-        skirtZ: 0,
+        skirtKind: "none",
         skirtColor: slacks,
-        accentType: "none",
-        accentColor: coat,
+        coatTailLen: 0.55,
+        hasLapels: true,
+        shirtColor: whiteShirt,
+        tieColor: tie,
+        vestColor: null,
+        overallsColor: null,
+        shawlColor: null,
         puffSleeve: false,
+        beard: false,
+        hairStyle: "short",
         hatStyle: rng() < 0.85 ? "fedora" : "none",
         hatColor: pick(["#5b544b", "#45413c", "#746b5f"], rng),
+        bandColor: "#2d2824",
         showHair: true,
       };
     }
+
     // midcentury 1950-1970+
-    const shirt = pick(["#ece8de", "#6e8aa4", "#c46a5a", "#7a8b68", "#d8c47a", "#5d6d7c", "#c4a882", "#b89578"], rng);
-    const slacks = pick(["#43484e", "#5b5346", "#363b42", "#6e675b"], rng);
-    const hatStyle = rng() < 0.22 ? "fedora" : rng() < 0.34 ? "cap" : "none";
+    const shirt = pick(["#eae5da", "#6e8aa4", "#c46a5a", "#7a8b68", "#d6c278", "#5d6d7c", "#c4a882"], rng);
+    const slacks = pick(["#42474e", "#5b5346", "#353a41", "#6c655a"], rng);
+    const hatStyle = rng() < 0.22 ? "fedora" : rng() < 0.36 ? "cap" : "none";
     return {
       role,
       skin,
       hair,
+      eyeColor,
+      lipColor,
       hScale,
+      buildW,
+      torsoKind: "shirt",
       torsoColor: shirt,
-      torsoScale: [1.0, 1.0, 0.98],
+      sleeveColor: shirt,
+      shortSleeve: rng() < 0.45,
       legColor: slacks,
-      skirtScale: [0, 0, 0],
-      skirtY: 0,
-      skirtZ: 0,
+      skirtKind: "none",
       skirtColor: slacks,
-      accentType: "none",
-      accentColor: shirt,
+      coatTailLen: 0,
+      hasLapels: false,
+      shirtColor: null,
+      tieColor: null,
+      vestColor: null,
+      overallsColor: null,
+      shawlColor: null,
       puffSleeve: false,
+      beard: false,
+      hairStyle: "short",
       hatStyle,
-      hatColor: pick(["#5b564e", "#484e58"], rng),
-      showHair: hatStyle === "none" || hatStyle === "cap",
+      hatColor: pick(["#5b564e", "#484e58", "#6d665b"], rng),
+      bandColor: "#2d2926",
+      showHair: true,
     };
   }
 
   // role === "woman"
-  const hScale = 0.90 + rng() * 0.07;
+  const hScale = 0.89 + rng() * 0.08;
+  const wBuild = 0.88 + rng() * 0.18;
+
   if (era === "pioneer") {
-    const dress = pick(["#5d4b58", "#475966", "#6c5b48", "#4e5c4a", "#784c4b", "#5c5750"], rng);
-    const shawl = pick(["#8e4844", "#5c6858", "#7d6b52", "#3a3735", "#94856e"], rng);
+    const dress = pick(["#5c4a57", "#465865", "#6b5a47", "#4d5b49", "#764b4a", "#5b564f"], rng);
+    const shawl = pick(["#864542", "#596555", "#7a6850", "#3b3836", "#8d7e68"], rng);
     return {
       role,
       skin,
       hair,
+      eyeColor,
+      lipColor,
       hScale,
+      buildW: wBuild,
+      torsoKind: "woman",
       torsoColor: dress,
-      torsoScale: [0.88, 0.98, 0.88],
-      legColor: "#2d2825",
-      skirtScale: [1.14, 2.75, 1.12],
-      skirtY: 1.48,
-      skirtZ: 0,
+      sleeveColor: dress,
+      shortSleeve: false,
+      legColor: "#2a2522",
+      skirtKind: "full",
       skirtColor: dress,
-      accentType: "shawl",
-      accentColor: shawl,
+      coatTailLen: 0,
+      hasLapels: false,
+      shirtColor: "#e6dfd1",
+      tieColor: null,
+      vestColor: null,
+      overallsColor: null,
+      shawlColor: shawl,
       puffSleeve: false,
+      beard: false,
+      hairStyle: "bun",
       hatStyle: "bonnet",
       hatColor: pick(["#b8a990", "#685848", "#494d54", "#846858"], rng),
-      showHair: false,
-    };
-  }
-  if (era === "victorian") {
-    const gown = pick(["#484050", "#3a4d57", "#624448", "#4b5442", "#594b3e"], rng);
-    const hatStyle = rng() < 0.65 ? "bonnet" : "edwardian";
-    return {
-      role,
-      skin,
-      hair,
-      hScale,
-      torsoColor: gown,
-      torsoScale: [0.86, 0.98, 0.86],
-      legColor: "#2a2624",
-      skirtScale: [0.92, 2.75, 1.18],
-      skirtY: 1.48,
-      skirtZ: -0.22,
-      skirtColor: gown,
-      accentType: "shawl",
-      accentColor: pick(["#8a7a64", "#393432", "#6e4e4a", "#5a5348"], rng),
-      puffSleeve: true,
-      hatStyle,
-      hatColor: pick(["#3f3834", "#5c4d44", "#7e7262"], rng),
+      bandColor: shawl,
       showHair: true,
     };
   }
+
+  if (era === "victorian") {
+    const gown = pick(["#484050", "#3a4d57", "#624448", "#4b5442", "#594b3e"], rng);
+    const hatStyle = rng() < 0.58 ? "bonnet" : "edwardian";
+    return {
+      role,
+      skin,
+      hair,
+      eyeColor,
+      lipColor,
+      hScale,
+      buildW: wBuild,
+      torsoKind: "woman",
+      torsoColor: gown,
+      sleeveColor: gown,
+      shortSleeve: false,
+      legColor: "#282422",
+      skirtKind: "bustle",
+      skirtColor: gown,
+      coatTailLen: 0,
+      hasLapels: false,
+      shirtColor: "#dfd8ca",
+      tieColor: null,
+      vestColor: null,
+      overallsColor: null,
+      shawlColor: pick(["#7e6f5c", "#3a3533", "#6a4b47", "#585147"], rng),
+      puffSleeve: true,
+      beard: false,
+      hairStyle: "bun",
+      hatStyle,
+      hatColor: pick(["#3f3834", "#5c4d44", "#7e7262"], rng),
+      bandColor: "#332a28",
+      showHair: true,
+    };
+  }
+
   if (era === "edwardian") {
-    // Shirtwaist blouse + long flared skirt
-    const blouse = pick(["#d8d2c4", "#cfd5da", "#d6c8c0", "#d2d6c8"], rng);
+    const blouse = pick(["#ded8ca", "#d2d9de", "#daccc4", "#d6dacb"], rng);
     const skirt = pick(["#30343a", "#453b35", "#38423a", "#4c393c"], rng);
     return {
       role,
       skin,
       hair,
+      eyeColor,
+      lipColor,
       hScale,
+      buildW: wBuild,
+      torsoKind: "woman",
       torsoColor: blouse,
-      torsoScale: [0.88, 0.98, 0.88],
-      legColor: "#282524",
-      skirtScale: [0.96, 2.75, 0.98],
-      skirtY: 1.48,
-      skirtZ: -0.04,
+      sleeveColor: blouse,
+      shortSleeve: false,
+      legColor: "#262322",
+      skirtKind: "full",
       skirtColor: skirt,
-      accentType: "belt",
-      accentColor: skirt,
+      coatTailLen: 0,
+      hasLapels: false,
+      shirtColor: null,
+      tieColor: null,
+      vestColor: skirt,
+      overallsColor: null,
+      shawlColor: null,
       puffSleeve: false,
+      beard: false,
+      hairStyle: "bun",
       hatStyle: "edwardian",
       hatColor: pick(["#4d443d", "#6d5f50", "#c9bfa6"], rng),
+      bandColor: skirt,
       showHair: true,
     };
   }
+
   if (era === "jazz") {
-    // 1910s-20s shorter skirts & cloche hats
     const dress = pick(["#647482", "#8e6a6a", "#a39072", "#5e6e5c", "#4b4b54", "#9e8b92"], rng);
-    const hose = "#cbb39a";
     return {
       role,
       skin,
       hair,
+      eyeColor,
+      lipColor,
       hScale,
+      buildW: wBuild,
+      torsoKind: "woman",
       torsoColor: dress,
-      torsoScale: [0.86, 0.98, 0.84],
-      legColor: hose,
-      skirtScale: [0.70, 1.85, 0.68],
-      skirtY: 1.92,
-      skirtZ: 0,
+      sleeveColor: dress,
+      shortSleeve: false,
+      legColor: "#cbb39a",
+      skirtKind: "mid",
       skirtColor: dress,
-      accentType: "belt",
-      accentColor: pick(["#dfd8c8", "#353330", "#7c5850"], rng),
+      coatTailLen: 0,
+      hasLapels: false,
+      shirtColor: "#e2dcd0",
+      tieColor: null,
+      vestColor: pick(["#dfd8c8", "#353330", "#7c5850"], rng),
+      overallsColor: null,
+      shawlColor: null,
       puffSleeve: false,
+      beard: false,
+      hairStyle: "bob",
       hatStyle: "cloche",
       hatColor: pick(["#7e695c", "#4c5660", "#b8a890", "#6e4e52"], rng),
-      showHair: false,
+      bandColor: "#383230",
+      showHair: true,
     };
   }
+
   if (era === "depression") {
-    // 1930s-40s print dresses (patterned pastel/floral-toned body + crisp collar/belt accent)
-    const dress = pick(["#7d96a8", "#b47c7e", "#8fa07c", "#b8a26c", "#957e9a", "#6e8682"], rng);
-    const trim = pick(["#e2dccf", "#dfd3b8", "#c87872", "#4e5e6c"], rng);
+    const dress = pick(["#7b94a6", "#b27a7c", "#8d9e7a", "#b6a06a", "#937c98", "#6c8480"], rng);
+    const trim = pick(["#e0dacc", "#dcd0b5", "#c4746e", "#4b5b69"], rng);
     return {
       role,
       skin,
       hair,
+      eyeColor,
+      lipColor,
       hScale,
+      buildW: wBuild,
+      torsoKind: "woman",
       torsoColor: dress,
-      torsoScale: [0.87, 0.98, 0.86],
-      legColor: "#cfa98d",
-      skirtScale: [0.78, 2.05, 0.78],
-      skirtY: 1.82,
-      skirtZ: 0,
+      sleeveColor: dress,
+      shortSleeve: rng() < 0.35,
+      legColor: "#cfa88c",
+      skirtKind: "mid",
       skirtColor: dress,
-      accentType: "belt",
-      accentColor: trim,
+      coatTailLen: 0,
+      hasLapels: false,
+      shirtColor: trim,
+      tieColor: null,
+      vestColor: trim,
+      overallsColor: null,
+      shawlColor: null,
       puffSleeve: false,
-      hatStyle: rng() < 0.35 ? "cloche" : "none",
+      beard: false,
+      hairStyle: "bob",
+      hatStyle: rng() < 0.38 ? "cloche" : "none",
       hatColor: pick(["#5c544d", "#48525c", "#a4927c"], rng),
+      bandColor: "#3c3532",
       showHair: true,
     };
   }
+
   // midcentury 1950-1970+
-  const blouse = pick(["#ebe6da", "#6e8aa4", "#c46a5a", "#7a8b68", "#d8c47a", "#5d6d7c", "#c4a882"], rng);
+  const blouse = pick(["#eae5da", "#6e8aa4", "#c46a5a", "#7a8b68", "#d8c47a", "#c4a882"], rng);
   const skirt = pick(["#49525c", "#6c5a4d", "#4c5c4e", "#6b474d", "#3d424a"], rng);
   return {
     role,
     skin,
     hair,
+    eyeColor,
+    lipColor,
     hScale,
+    buildW: wBuild,
+    torsoKind: "woman",
     torsoColor: blouse,
-    torsoScale: [0.87, 0.98, 0.86],
+    sleeveColor: blouse,
+    shortSleeve: rng() < 0.55,
     legColor: "#d4ae92",
-    skirtScale: [0.78, 1.80, 0.76],
-    skirtY: 1.94,
-    skirtZ: 0,
+    skirtKind: "short",
     skirtColor: skirt,
-    accentType: "belt",
-    accentColor: skirt,
+    coatTailLen: 0,
+    hasLapels: false,
+    shirtColor: null,
+    tieColor: null,
+    vestColor: skirt,
+    overallsColor: null,
+    shawlColor: null,
     puffSleeve: false,
+    beard: false,
+    hairStyle: "bob",
     hatStyle: "none",
     hatColor: "#5c544c",
+    bandColor: "#3c3532",
     showHair: true,
   };
 }
@@ -568,7 +783,6 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
     if (!["frame-store", "brick-store", "hotel", "bank"].includes(b.kind)) continue;
     const fv = facingVec[b.facing];
     if (!fv) continue;
-    // Stay clear of deep 8.5 ft porches (Hendee, Cole, hotels) by stepping 10-12 ft out or onto walk.
     const porchClear = b.id === "hendee-store-22" || b.id === "cole-building-10" || b.kind === "hotel" ? 11.5 : 4.5;
     const reach = b.depth / 2 + porchClear;
     for (const lat of [-b.width * 0.22, b.width * 0.22]) {
@@ -584,7 +798,6 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
   const depotSpots = [];
   for (const b of buildings) {
     if (b.id === "cbq-depot") {
-      // Platform spans x = b.x +- 50, z = -20.8 .. -8.8; stay on depot half z = -20.2..-18.6 clear of house track z=-16.
       for (const dx of [-34, -20, 16, 28, 38]) {
         const sx = b.x + dx;
         const sz = b.z + 16.5;
@@ -638,7 +851,15 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
     else if (rRoll < 0.84) role = "farmer";
     else role = rng() < 0.52 ? "boy" : "girl";
     const profile = dressProfile(era, role, rng);
-    actors.push({ ...spec, profile, phase: rng() * Math.PI * 2 });
+    actors.push({
+      ...spec,
+      profile,
+      phase: rng() * Math.PI * 2,
+      weightSide: rng() < 0.5 ? -1 : 1,
+      lookBias: (rng() - 0.5) * 0.42,
+      armBiasL: 0.16 + rng() * 0.24,
+      armBiasR: 0.16 + rng() * 0.24,
+    });
   };
 
   // Group nearby storefront spots so 2-3 people stand talking together.
@@ -647,7 +868,6 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
   const storeOrder = storeSpots.slice().sort((a, b) => {
     const aMain = a.z >= 160 && a.z <= 220 ? 0 : 1;
     const bMain = b.z >= 160 && b.z <= 220 ? 0 : 1;
-    // Prefer the commercial core of Main (roughly Gridley to the square) over the far west end.
     const aCore = Math.abs(a.x + 80);
     const bCore = Math.abs(b.x + 80);
     return aMain - bMain || aCore - bCore;
@@ -665,7 +885,6 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
     }
     storeGroups.push(g);
   }
-  // Spread conversation groups along Main (north sidewalk first) instead of packing one block.
   const isMainGroup = (g) => g.some((p) => p.z >= 160 && p.z <= 220);
   const mainFirst = storeGroups.filter(isMainGroup);
   const otherGroups = storeGroups.filter((g) => !isMainGroup(g));
@@ -687,8 +906,9 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
     const cluster = spots.slice(0, 3);
     if (cluster.length && cluster.length < n) {
       const c = cluster[0];
-      const towardStreet = c.z > 156 ? -3.0 : 3.0;
-      const tx = c.x + (cluster.length === 2 ? (c.x > cluster[0].x ? -2.2 : 2.2) : 0);
+      // Keep the conversation partner cleanly on the walk/yard without straddling boardwalk curbs.
+      const towardStreet = c.z > 156 ? -2.2 : 2.2;
+      const tx = c.x + (cluster.length === 2 ? (c.x > cluster[0].x ? -2.4 : 2.4) : 1.6);
       const tz = c.z + towardStreet;
       if (isClear(tx, tz)) cluster.push({ x: tx, z: tz, yaw: c.yaw + Math.PI });
     }
@@ -702,7 +922,6 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
     }
   };
 
-  // 1854/1860 pioneer distribution: small talking groups at Main / Markham storefronts.
   if (year <= 1860) {
     const nGroups = year <= 1854 ? 1 : 2;
     const per = year <= 1854 ? 2 : 3;
@@ -721,7 +940,6 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
       });
     }
   } else {
-    // 1870+: sidewalks, storefronts, depots, and residential yards proportional to population.
     const nDepot = depotSpots.length ? Math.max(2, Math.round(targetCount * 0.16)) : 0;
     const nStore = storeSpots.length ? Math.max(4, Math.round(targetCount * 0.24)) : 0;
     const nYard = yardSpots.length ? Math.max(3, Math.round(targetCount * 0.18)) : 0;
@@ -738,7 +956,6 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
       const az = seg.axis === "x" ? seg.at : a;
       const bx = seg.axis === "x" ? b : seg.at;
       const bz = seg.axis === "x" ? seg.at : b;
-      // Validate start, midpoint, and end clear of buildings/tracks/props.
       const mx = (ax + bx) / 2;
       const mz = (az + bz) / 2;
       if (isClear(ax, az) && isClear(mx, mz) && isClear(bx, bz)) {
@@ -807,135 +1024,355 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
   const count = actors.length;
   if (!count) return null;
 
-  // Shared unit geometries for instancing (zero photo textures).
-  const mat = new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.86, metalness: 0.02 });
-  const makeInst = (geo) => {
-    const m = new THREE.InstancedMesh(geo, mat, count);
-    m.castShadow = true;
-    m.receiveShadow = true;
-    m.frustumCulled = false;
-    return m;
+  // Two clean PBR materials (no photo textures): matte skin/fabric + slightly satin shoes/eyes.
+  const matCloth = new THREE.MeshStandardMaterial({
+    color: "#ffffff",
+    vertexColors: true,
+    roughness: 0.86,
+    metalness: 0.02,
+  });
+  const matTrim = new THREE.MeshStandardMaterial({
+    color: "#ffffff",
+    vertexColors: true,
+    roughness: 0.48,
+    metalness: 0.05,
+  });
+
+  const parts = [];
+  const makePart = (geo, mat = matCloth, shadow = true) => {
+    const slotOf = new Int16Array(count).fill(-1);
+    const colors = [];
+    const part = { geo, mat, shadow, slotOf, colors, mesh: null };
+    parts.push(part);
+    return part;
+  };
+  const bind = (part, i, color) => {
+    part.slotOf[i] = part.colors.length;
+    part.colors.push(new THREE.Color(color));
   };
 
-  // Pivoted limb geometries: top at y = 0 so X rotation swings cleanly around hip / shoulder.
-  // Tapered limbs, a pelvis, neck, shoulders, and hands keep close-up silhouettes from reading as sticks.
-  const legGeo = new THREE.CylinderGeometry(0.23, 0.11, 2.52, 10);
-  legGeo.translate(0, -1.26, 0);
-  const shoeGeo = new THREE.BoxGeometry(0.30, 0.18, 0.54);
-  shoeGeo.translate(0, -2.58, 0.10);
-  const armGeo = new THREE.CylinderGeometry(0.155, 0.09, 1.78, 10);
-  armGeo.translate(0, -0.89, 0);
-  const handGeo = new THREE.SphereGeometry(0.10, 8, 6);
-  handGeo.translate(0, -1.82, 0.02);
-  const torsoGeo = new THREE.CylinderGeometry(0.40, 0.34, 1.78, 12);
-  const hipGeo = new THREE.CylinderGeometry(0.38, 0.40, 0.55, 12);
-  const neckGeo = new THREE.CylinderGeometry(0.15, 0.16, 0.20, 8);
-  const shoulderGeo = new THREE.SphereGeometry(0.155, 8, 6);
-  const skirtGeo = new THREE.CylinderGeometry(0.28, 0.82, 1.0, 14);
-  const accentGeo = new THREE.CylinderGeometry(0.44, 0.40, 1.0, 12);
-  const headGeo = new THREE.SphereGeometry(0.34, 12, 10);
-  const hairGeo = new THREE.SphereGeometry(0.36, 12, 10);
-  const puffGeo = new THREE.SphereGeometry(0.22, 8, 6);
-  const crownGeo = new THREE.CylinderGeometry(0.34, 0.38, 1.0, 12);
-  const brimGeo = new THREE.CylinderGeometry(1.0, 1.0, 0.07, 16);
-  const domeGeo = new THREE.SphereGeometry(0.38, 12, 10);
+  // Head & Face
+  const heads = makePart(makeHeadGeo());
+  const eyeWhites = makePart(makeEyeWhitesGeo(), matTrim, false);
+  const irises = makePart(makeIrisesGeo(), matTrim, false);
+  const brows = makePart(makeBrowsGeo(), matCloth, false);
+  const mouths = makePart(makeMouthGeo(), matCloth, false);
+  const beards = makePart(makeBeardGeo(), matCloth, false);
+  const necks = makePart(makeNeckGeo());
+  const hairBases = makePart(makeHairBaseGeo());
+  const hairBuns = makePart(makeHairBunGeo(), matCloth, false);
+  const hairBobs = makePart(makeHairSideBobGeo(), matCloth, false);
 
-  const heads = makeInst(headGeo);
-  const hairs = makeInst(hairGeo);
-  const necks = makeInst(neckGeo);
-  const torsos = makeInst(torsoGeo);
-  const hips = makeInst(hipGeo);
-  const skirts = makeInst(skirtGeo);
-  const accents = makeInst(accentGeo);
-  const legsL = makeInst(legGeo);
-  const legsR = makeInst(legGeo);
-  const shoesL = makeInst(shoeGeo);
-  const shoesR = makeInst(shoeGeo);
-  const shouldersL = makeInst(shoulderGeo);
-  const shouldersR = makeInst(shoulderGeo);
-  const armsL = makeInst(armGeo);
-  const armsR = makeInst(armGeo);
-  const handsL = makeInst(handGeo);
-  const handsR = makeInst(handGeo);
-  const puffsL = makeInst(puffGeo);
-  const puffsR = makeInst(puffGeo);
-  const hatCrowns = makeInst(crownGeo);
-  const hatBrims = makeInst(brimGeo);
-  const hatDomes = makeInst(domeGeo);
+  // Torsos & Tailoring
+  const torsosMen = makePart(makeTorsoMenGeo());
+  const torsosShirt = makePart(makeTorsoShirtGeo());
+  const torsosWomen = makePart(makeTorsoWomenGeo());
+  const pelvises = makePart(makePelvisGeo());
+  const coatTails = makePart(makeCoatTailGeo());
+  const shirtFronts = makePart(makeShirtFrontGeo(), matCloth, false);
+  const womanCollars = makePart(makeWomanCollarGeo(), matCloth, false);
+  const lapels = makePart(makeLapelsGeo(), matCloth, false);
+  const ties = makePart(makeTieGeo(), matCloth, false);
+  const vests = makePart(makeVestGeo(), matCloth, false);
+  const overallsBibs = makePart(makeOverallsBibGeo(), matCloth, false);
+  const shawls = makePart(makeShawlGeo());
 
-  const allMeshes = [
-    heads, hairs, necks, torsos, hips, skirts, accents,
-    legsL, legsR, shoesL, shoesR,
-    shouldersL, shouldersR, armsL, armsR, handsL, handsR,
-    puffsL, puffsR, hatCrowns, hatBrims, hatDomes,
-  ];
+  // Skirts
+  const skirtsFull = makePart(makeSkirtFullGeo());
+  const skirtsBustle = makePart(makeSkirtBustleGeo());
+  const skirtsMid = makePart(makeSkirtMidGeo());
+  const skirtsShort = makePart(makeSkirtShortGeo());
+
+  // Articulated 2-segment Limbs, Hands & Shoes
+  const thighGeo = makeThighGeo();
+  const calfGeo = makeCalfGeo();
+  const shoeGeo = makeShoeGeo();
+  const uArmGeo = makeUpperArmGeo();
+  const fArmGeo = makeForearmGeo();
+  const handGeo = makeHandGeo();
+  const puffGeo = makePuffSleeveGeo();
+
+  const thighsL = makePart(thighGeo);
+  const thighsR = makePart(thighGeo);
+  const calvesL = makePart(calfGeo);
+  const calvesR = makePart(calfGeo);
+  const shoesL = makePart(shoeGeo, matTrim);
+  const shoesR = makePart(shoeGeo, matTrim);
+  const uArmsL = makePart(uArmGeo);
+  const uArmsR = makePart(uArmGeo);
+  const fArmsL = makePart(fArmGeo);
+  const fArmsR = makePart(fArmGeo);
+  const handsL = makePart(handGeo, matCloth, false);
+  const handsR = makePart(handGeo, matCloth, false);
+  const puffsL = makePart(puffGeo);
+  const puffsR = makePart(puffGeo);
+
+  // Hats
+  const hatCrowns = makePart(makeHatCrownCylGeo());
+  const hatFedoras = makePart(makeFedoraCrownGeo());
+  const hatDomes = makePart(makeHatDomeGeo());
+  const hatBrimsCurved = makePart(makeHatBrimCurvedGeo());
+  const hatBrimsFlat = makePart(makeHatBrimFlatGeo());
+  const hatBands = makePart(makeHatBandGeo(), matCloth, false);
+  const hatBonnets = makePart(makeBonnetGeo());
+
+  const c = new THREE.Color();
+  actors.forEach((a, i) => {
+    const p = a.profile;
+    const shoeCol = p.role === "farmer" ? "#3b2e23" : "#1b1512";
+    const forearmCol = p.shortSleeve ? p.skin : p.sleeveColor;
+    const calfCol = p.skirtKind === "mid" || p.skirtKind === "short" ? p.skin : p.legColor;
+    const lapelCol = c.set(p.torsoColor).multiplyScalar(0.92).getStyle();
+    const hasSkirt = p.skirtKind !== "none";
+    const longSkirt = p.skirtKind === "full" || p.skirtKind === "bustle";
+    const tucked = p.hatStyle === "bonnet" || p.hatStyle === "cloche";
+
+    bind(heads, i, p.skin);
+    bind(eyeWhites, i, "#f4f1ea");
+    bind(irises, i, p.eyeColor);
+    bind(brows, i, p.hair);
+    bind(mouths, i, p.lipColor);
+    if (p.beard) bind(beards, i, p.hair);
+    bind(necks, i, p.skin);
+    if (p.showHair) {
+      bind(hairBases, i, p.hair);
+      if (p.hairStyle === "bun" && !tucked) bind(hairBuns, i, p.hair);
+      else if (p.hairStyle === "bob" && !tucked) bind(hairBobs, i, p.hair);
+    }
+
+    if (p.torsoKind === "man") bind(torsosMen, i, p.torsoColor);
+    else if (p.torsoKind === "shirt") bind(torsosShirt, i, p.torsoColor);
+    else bind(torsosWomen, i, p.torsoColor);
+
+    if (!hasSkirt) bind(pelvises, i, p.legColor);
+    if (p.coatTailLen > 0) bind(coatTails, i, p.torsoColor);
+    if (p.hasLapels) {
+      bind(lapels, i, lapelCol);
+      bind(shirtFronts, i, p.shirtColor || "#e7e3d8");
+    } else if (p.shirtColor && (p.role === "woman" || p.role === "girl")) {
+      bind(womanCollars, i, p.shirtColor);
+    }
+    if (p.tieColor) bind(ties, i, p.tieColor);
+    if (p.vestColor) bind(vests, i, p.vestColor);
+    if (p.overallsColor) bind(overallsBibs, i, p.overallsColor);
+    if (p.shawlColor) bind(shawls, i, p.shawlColor);
+
+    if (p.skirtKind === "full") bind(skirtsFull, i, p.skirtColor);
+    else if (p.skirtKind === "bustle") bind(skirtsBustle, i, p.skirtColor);
+    else if (p.skirtKind === "mid") bind(skirtsMid, i, p.skirtColor);
+    else if (p.skirtKind === "short") bind(skirtsShort, i, p.skirtColor);
+
+    if (!hasSkirt) {
+      bind(thighsL, i, p.legColor);
+      bind(thighsR, i, p.legColor);
+    }
+    if (!longSkirt) {
+      bind(calvesL, i, calfCol);
+      bind(calvesR, i, calfCol);
+    }
+    bind(shoesL, i, shoeCol);
+    bind(shoesR, i, shoeCol);
+
+    bind(uArmsL, i, p.sleeveColor);
+    bind(uArmsR, i, p.sleeveColor);
+    bind(fArmsL, i, forearmCol);
+    bind(fArmsR, i, forearmCol);
+    bind(handsL, i, p.skin);
+    bind(handsR, i, p.skin);
+    if (p.puffSleeve) {
+      bind(puffsL, i, p.sleeveColor);
+      bind(puffsR, i, p.sleeveColor);
+    }
+
+    const hsMode = p.hatStyle;
+    if (hsMode === "wide" || hsMode === "fedora") {
+      bind(hatFedoras, i, p.hatColor);
+      bind(hatBrimsCurved, i, p.hatColor);
+      bind(hatBands, i, p.bandColor);
+    } else if (hsMode === "tophat") {
+      bind(hatCrowns, i, p.hatColor);
+      bind(hatBrimsCurved, i, p.hatColor);
+      bind(hatBands, i, p.bandColor);
+    } else if (hsMode === "bonnet") {
+      bind(hatBonnets, i, p.hatColor);
+      bind(hatBands, i, p.bandColor);
+    } else if (hsMode === "bowler" || hsMode === "cloche") {
+      bind(hatDomes, i, p.hatColor);
+      bind(hatBrimsCurved, i, p.hatColor);
+      bind(hatBands, i, p.bandColor);
+    } else if (hsMode === "boater" || hsMode === "edwardian") {
+      bind(hatCrowns, i, p.hatColor);
+      bind(hatBrimsFlat, i, p.hatColor);
+      bind(hatBands, i, p.bandColor);
+    } else if (hsMode === "cap") {
+      bind(hatDomes, i, p.hatColor);
+      bind(hatBrimsFlat, i, p.hatColor);
+    }
+  });
+
+  const allMeshes = [];
+  for (const part of parts) {
+    if (!part.colors.length) continue;
+    const m = new THREE.InstancedMesh(part.geo, part.mat, part.colors.length);
+    m.castShadow = part.shadow;
+    m.receiveShadow = part.shadow;
+    m.frustumCulled = false;
+    part.colors.forEach((col, slot) => m.setColorAt(slot, col));
+    if (m.instanceColor) m.instanceColor.needsUpdate = true;
+    part.mesh = m;
+    allMeshes.push(m);
+  }
+
   const group = new THREE.Group();
   group.name = "pedestrians";
   group.add(...allMeshes);
   scene.add(group);
 
-  const c = new THREE.Color();
-  actors.forEach((a, i) => {
-    const p = a.profile;
-    const shoe = p.role === "farmer" ? "#3a2e24" : "#1c1612";
-    const hipColor = p.skirtScale[1] > 0 && p.role !== "man" ? p.skirtColor : p.legColor;
-    heads.setColorAt(i, c.set(p.skin));
-    hairs.setColorAt(i, c.set(p.hair));
-    necks.setColorAt(i, c.set(p.skin));
-    torsos.setColorAt(i, c.set(p.torsoColor));
-    hips.setColorAt(i, c.set(hipColor));
-    skirts.setColorAt(i, c.set(p.skirtColor));
-    accents.setColorAt(i, c.set(p.accentColor));
-    legsL.setColorAt(i, c.set(p.legColor));
-    legsR.setColorAt(i, c.set(p.legColor));
-    shoesL.setColorAt(i, c.set(shoe));
-    shoesR.setColorAt(i, c.set(shoe));
-    shouldersL.setColorAt(i, c.set(p.torsoColor));
-    shouldersR.setColorAt(i, c.set(p.torsoColor));
-    armsL.setColorAt(i, c.set(p.torsoColor));
-    armsR.setColorAt(i, c.set(p.torsoColor));
-    handsL.setColorAt(i, c.set(p.skin));
-    handsR.setColorAt(i, c.set(p.skin));
-    puffsL.setColorAt(i, c.set(p.torsoColor));
-    puffsR.setColorAt(i, c.set(p.torsoColor));
-    hatCrowns.setColorAt(i, c.set(p.hatColor));
-    hatBrims.setColorAt(i, c.set(p.hatColor));
-    hatDomes.setColorAt(i, c.set(p.hatColor));
-  });
-  for (const m of allMeshes) {
-    if (m.instanceColor) m.instanceColor.needsUpdate = true;
-  }
-
+  // Reusable scratch transforms
   const rootMat = new THREE.Matrix4();
   const partMat = new THREE.Matrix4();
+  const headMat = new THREE.Matrix4();
+  const tParent = new THREE.Matrix4();
+  const hipMat = new THREE.Matrix4();
+  const kneeMat = new THREE.Matrix4();
+  const ankleMat = new THREE.Matrix4();
+  const shoulderMat = new THREE.Matrix4();
+  const elbowMat = new THREE.Matrix4();
+  const wristMat = new THREE.Matrix4();
   const finalMat = new THREE.Matrix4();
+
   const pos = new THREE.Vector3();
   const quat = new THREE.Quaternion();
   const scl = new THREE.Vector3();
   const euler = new THREE.Euler();
+  const zeroMat = new THREE.Matrix4().makeScale(0, 0, 0);
 
-  const setPart = (mesh, i, lx, ly, lz, rx, ry, rz, sx, sy, sz) => {
+  const setMat = (part, i, mat) => {
+    const s = part.slotOf[i];
+    if (s >= 0) part.mesh.setMatrixAt(s, mat);
+  };
+
+  const setLocal = (part, i, parentMat, lx, ly, lz, rx, ry, rz, sx, sy, sz) => {
+    const s = part.slotOf[i];
+    if (s < 0) return;
     pos.set(lx, ly, lz);
     euler.set(rx, ry, rz, "YXZ");
     quat.setFromEuler(euler);
     scl.set(sx, sy, sz);
     partMat.compose(pos, quat, scl);
-    finalMat.multiplyMatrices(rootMat, partMat);
-    mesh.setMatrixAt(i, finalMat);
+    finalMat.multiplyMatrices(parentMat, partMat);
+    part.mesh.setMatrixAt(s, finalMat);
   };
+
+  const computeLegChain = (hipX, hipY, hipRx, hipRz, kneeRx, ankleRx, buildS, soleOut, out) => {
+    pos.set(hipX, hipY, 0);
+    euler.set(hipRx, 0, hipRz, "YXZ");
+    quat.setFromEuler(euler);
+    scl.set(buildS, 1, buildS);
+    hipMat.compose(pos, quat, scl);
+
+    pos.set(0, -1.36, 0);
+    euler.set(kneeRx, 0, 0, "YXZ");
+    quat.setFromEuler(euler);
+    scl.set(1, 1, 1);
+    partMat.compose(pos, quat, scl);
+    kneeMat.multiplyMatrices(hipMat, partMat);
+
+    pos.set(0, -1.34, 0);
+    euler.set(ankleRx, 0, 0, "YXZ");
+    quat.setFromEuler(euler);
+    scl.set(1, 1, 1);
+    partMat.compose(pos, quat, scl);
+    ankleMat.multiplyMatrices(kneeMat, partMat);
+
+    // Lowest point of shoe sole in actor local Y (sole sits at local y = -0.22 in ankle space)
+    const e = ankleMat.elements;
+    const soleY = e[13] - 0.22 * e[5];
+    soleOut.y = soleY;
+    out.hip.copy(hipMat);
+    out.knee.copy(kneeMat);
+    out.ankle.copy(ankleMat);
+  };
+
+  const setArmChain = (i, side, sx, sy, uRx, uRy, uRz, elbowRx, buildS, uPart, fPart, hPart, puffPart, showPuff) => {
+    pos.set(sx, sy, 0);
+    euler.set(uRx, uRy, uRz, "YXZ");
+    quat.setFromEuler(euler);
+    scl.set(buildS, 1, buildS);
+    shoulderMat.compose(pos, quat, scl);
+
+    finalMat.multiplyMatrices(rootMat, shoulderMat);
+    setMat(uPart, i, finalMat);
+
+    if (showPuff) {
+      pos.set(0, 0, 0);
+      euler.set(0, 0, 0, "YXZ");
+      quat.setFromEuler(euler);
+      scl.set(1.08, 1.08, 1.08);
+      partMat.compose(pos, quat, scl);
+      finalMat.multiplyMatrices(rootMat, shoulderMat).multiply(partMat);
+      setMat(puffPart, i, finalMat);
+    }
+
+    pos.set(0, -0.98, 0);
+    euler.set(elbowRx, 0, side * -0.05, "YXZ");
+    quat.setFromEuler(euler);
+    scl.set(1, 1, 1);
+    partMat.compose(pos, quat, scl);
+    elbowMat.multiplyMatrices(shoulderMat, partMat);
+
+    finalMat.multiplyMatrices(rootMat, elbowMat);
+    setMat(fPart, i, finalMat);
+
+    pos.set(0, -0.86, 0);
+    euler.set(-0.08, side * 0.14, side * -0.04, "YXZ");
+    quat.setFromEuler(euler);
+    scl.set(1, 1, 1);
+    partMat.compose(pos, quat, scl);
+    wristMat.multiplyMatrices(elbowMat, partMat);
+
+    finalMat.multiplyMatrices(rootMat, wristMat);
+    setMat(hPart, i, finalMat);
+  };
+
+  const soleL = { y: 0 };
+  const soleR = { y: 0 };
+  const chainL = { hip: new THREE.Matrix4(), knee: new THREE.Matrix4(), ankle: new THREE.Matrix4() };
+  const chainR = { hip: new THREE.Matrix4(), knee: new THREE.Matrix4(), ankle: new THREE.Matrix4() };
 
   const applyPose = (elapsed) => {
     actors.forEach((a, i) => {
       const p = a.profile;
       const hs = p.hScale;
+      const child = p.role === "boy" || p.role === "girl";
+      const bw = p.buildW;
+      const bz = 0.52 + 0.48 * bw;
+
       let px = a.x;
       let pz = a.z;
       let py = a.y;
       let yaw = a.yaw;
-      let legSwing = 0;
-      let armSwing = 0;
-      let bob = 0;
+
+      let hipRxL = 0;
+      let hipRxR = 0;
+      let hipRzL = 0.025;
+      let hipRzR = -0.025;
+      let kneeRxL = 0.04;
+      let kneeRxR = 0.04;
+      let ankleRxL = -0.04;
+      let ankleRxR = -0.04;
+
+      let uArmRxL = 0.05;
+      let uArmRxR = 0.05;
+      let elbowRxL = -0.24;
+      let elbowRxR = -0.24;
+      let torsoYaw = 0;
+      let torsoLean = 0.02;
       let headYaw = 0;
+      let headPitch = 0;
+
+      const longSkirt = p.skirtKind === "full" || p.skirtKind === "bustle";
+      const hasSkirt = p.skirtKind !== "none";
 
       if (a.kind === "walk") {
         const dist = Math.hypot(a.bx - a.ax, a.bz - a.az);
@@ -944,125 +1381,205 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
           const along = dist > 0.1 ? ((a.x - a.ax) * (a.bx - a.ax) + (a.z - a.az) * (a.bz - a.az)) / (dist * dist) : 0.5;
           a.u0 = Math.max(0.02, Math.min(0.48, along * 0.5));
         }
-        const u = ((elapsed / period) + a.u0) % 1;
+        const u = (elapsed / period + a.u0) % 1;
         const going = u < 0.5;
         const t = going ? u * 2 : (1 - u) * 2;
         px = a.ax + (a.bx - a.ax) * t;
         pz = a.az + (a.bz - a.az) * t;
         py = groundYAt(px, pz);
         yaw = Math.atan2(a.bx - a.ax, a.bz - a.az) + (going ? 0 : Math.PI);
-        const stride = elapsed * a.speed * 1.9 + a.phase;
-        legSwing = Math.sin(stride) * 0.36;
-        armSwing = -Math.sin(stride) * 0.28;
-        bob = Math.abs(Math.sin(stride)) * 0.05;
+
+        const stride = elapsed * a.speed * 1.85 + a.phase;
+        const s = Math.sin(stride);
+        const c = Math.cos(stride);
+        const maxStride = longSkirt ? 0.12 : hasSkirt ? 0.18 : 0.34;
+
+        hipRxL = -s * maxStride;
+        hipRxR = s * maxStride;
+        kneeRxL = Math.max(0.04, (longSkirt ? 0.14 : 0.34) * Math.max(0, c) + 0.08 * Math.max(0, s));
+        kneeRxR = Math.max(0.04, (longSkirt ? 0.14 : 0.34) * Math.max(0, -c) + 0.08 * Math.max(0, -s));
+        ankleRxL = -(hipRxL + kneeRxL) * 0.85;
+        ankleRxR = -(hipRxR + kneeRxR) * 0.85;
+
+        uArmRxL = s * 0.28;
+        uArmRxR = -s * 0.28;
+        elbowRxL = -0.22 - 0.18 * Math.max(0, -s);
+        elbowRxR = -0.22 - 0.18 * Math.max(0, s);
+        torsoYaw = -s * 0.06;
+        torsoLean = 0.04;
+        headYaw = a.lookBias * 0.35 + Math.sin(stride * 0.5) * 0.05;
       } else {
-        const idle = elapsed * 1.1 + a.phase;
-        headYaw = Math.sin(idle) * 0.14;
-        armSwing = Math.sin(idle * 0.8) * 0.04;
+        // Natural weight-shift idle pose (distinct even at elapsed = 0 for static shots)
+        const idle = elapsed * 1.05 + a.phase;
+        const ws = a.weightSide;
+        const legReach = longSkirt ? 0.03 : hasSkirt ? 0.06 : 0.13;
+        if (ws < 0) {
+          hipRxL = 0.02;
+          kneeRxL = 0.03;
+          ankleRxL = -0.05;
+          hipRxR = -legReach;
+          kneeRxR = legReach * 1.45;
+          ankleRxR = -kneeRxR * 0.45;
+          hipRzR = -0.05;
+        } else {
+          hipRxR = 0.02;
+          kneeRxR = 0.03;
+          ankleRxR = -0.05;
+          hipRxL = -legReach;
+          kneeRxL = legReach * 1.45;
+          ankleRxL = -kneeRxL * 0.45;
+          hipRzL = 0.05;
+        }
+        torsoYaw = ws * 0.05 + Math.sin(idle * 0.5) * 0.02;
+        headYaw = a.lookBias + Math.sin(idle) * 0.12;
+        headPitch = Math.sin(idle * 0.7) * 0.03;
+        uArmRxL = 0.04 + Math.sin(idle * 0.8) * 0.03;
+        uArmRxR = 0.06 - Math.sin(idle * 0.8) * 0.03;
+        elbowRxL = -a.armBiasL;
+        elbowRxR = -a.armBiasR;
       }
 
-      pos.set(px, py + bob, pz);
+      const hipX = child ? 0.19 : 0.225;
+      const legScale = bw * (p.role === "woman" || child ? 0.88 : 0.96);
+      computeLegChain(-hipX, 2.92, hipRxL, hipRzL, kneeRxL, ankleRxL, legScale, soleL, chainL);
+      computeLegChain(hipX, 2.92, hipRxR, hipRzR, kneeRxR, ankleRxR, legScale, soleR, chainR);
+
+      // Grounding correction: keep the lowest planted sole flush on py (zero float, zero sink).
+      const groundLift = -Math.min(soleL.y, soleR.y);
+
+      pos.set(px, py + groundLift * hs, pz);
       euler.set(0, yaw, 0, "YXZ");
       quat.setFromEuler(euler);
       scl.set(hs, hs, hs);
       rootMat.compose(pos, quat, scl);
 
-      const child = p.role === "boy" || p.role === "girl";
-      const headS = child ? 1.16 : 1.0;
-      setPart(heads, i, 0, 5.08, 0, 0, headYaw, 0, headS, headS * 1.04, headS);
-      setPart(necks, i, 0, 4.76, 0, 0, 0, 0, 1.05, 1, 1.05);
+      // Legs & Shoes
+      if (!hasSkirt) {
+        finalMat.multiplyMatrices(rootMat, chainL.hip);
+        setMat(thighsL, i, finalMat);
+        finalMat.multiplyMatrices(rootMat, chainR.hip);
+        setMat(thighsR, i, finalMat);
+      }
+      if (!longSkirt) {
+        finalMat.multiplyMatrices(rootMat, chainL.knee);
+        setMat(calvesL, i, finalMat);
+        finalMat.multiplyMatrices(rootMat, chainR.knee);
+        setMat(calvesR, i, finalMat);
+      }
+      finalMat.multiplyMatrices(rootMat, chainL.ankle);
+      setMat(shoesL, i, finalMat);
+      finalMat.multiplyMatrices(rootMat, chainR.ankle);
+      setMat(shoesR, i, finalMat);
+
+      // Torso & Pelvis (with subtle natural yaw/lean)
+      pos.set(0, 0, 0);
+      euler.set(torsoLean, torsoYaw, 0, "YXZ");
+      quat.setFromEuler(euler);
+      scl.set(bw, 1, bz);
+      partMat.compose(pos, quat, scl);
+      tParent.multiplyMatrices(rootMat, partMat);
+
+      if (p.torsoKind === "man") setMat(torsosMen, i, tParent);
+      else if (p.torsoKind === "shirt") setMat(torsosShirt, i, tParent);
+      else setMat(torsosWomen, i, tParent);
+
+      if (!hasSkirt) setMat(pelvises, i, tParent);
+      setLocal(necks, i, tParent, 0, 0, 0, 0, 0, 0, 1 / bw, 1, 1 / bz);
+
+      // Tailoring layers
+      if (p.coatTailLen > 0) {
+        setLocal(coatTails, i, tParent, 0, 3.44 * (1 - p.coatTailLen), 0, 0, 0, 0, 1, p.coatTailLen, 1);
+      }
+      if (p.hasLapels) {
+        setMat(lapels, i, tParent);
+        setMat(shirtFronts, i, tParent);
+      } else if (p.shirtColor && (p.role === "woman" || p.role === "girl")) {
+        setMat(womanCollars, i, tParent);
+      }
+      if (p.tieColor) setMat(ties, i, tParent);
+      if (p.vestColor) {
+        if (p.role === "woman" || p.role === "girl") {
+          setLocal(vests, i, tParent, 0, 3.42 - 3.74 * 0.25, 0, 0, 0, 0, 0.84, 0.25, 0.84);
+        } else {
+          setMat(vests, i, tParent);
+        }
+      }
+      if (p.overallsColor) setMat(overallsBibs, i, tParent);
+      if (p.shawlColor) setMat(shawls, i, tParent);
+
+      // Skirts
+      if (p.skirtKind === "full") setMat(skirtsFull, i, tParent);
+      else if (p.skirtKind === "bustle") setMat(skirtsBustle, i, tParent);
+      else if (p.skirtKind === "mid") setMat(skirtsMid, i, tParent);
+      else if (p.skirtKind === "short") setMat(skirtsShort, i, tParent);
+
+      // Arms & Hands
+      const shoulderX = (p.torsoKind === "woman" ? 0.48 : p.torsoKind === "shirt" ? 0.53 : 0.57) * bw;
+      const armFlare = hasSkirt ? 0.16 : 0.08;
+      const armBuild = bw * (p.role === "woman" || child ? 0.84 : 0.96);
+      setArmChain(i, -1, -shoulderX, 4.50, uArmRxL, 0.04, -armFlare, elbowRxL, armBuild, uArmsL, fArmsL, handsL, puffsL, p.puffSleeve);
+      setArmChain(i, 1, shoulderX, 4.50, uArmRxR, -0.04, armFlare, elbowRxR, armBuild, uArmsR, fArmsR, handsR, puffsR, p.puffSleeve);
+
+      // Head matrix (shared by skull, eyes, brows, mouth, beard, hair, and hat)
+      const headS = child ? 1.18 : 1.0;
+      pos.set(0, 4.95, 0.035);
+      euler.set(headPitch, torsoYaw + headYaw, 0, "YXZ");
+      quat.setFromEuler(euler);
+      scl.set(headS, headS, headS);
+      partMat.compose(pos, quat, scl);
+      headMat.multiplyMatrices(rootMat, partMat);
+
+      setMat(heads, i, headMat);
+      setMat(eyeWhites, i, headMat);
+      setMat(irises, i, headMat);
+      setMat(brows, i, headMat);
+      setMat(mouths, i, headMat);
+      if (p.beard) setMat(beards, i, headMat);
+
       if (p.showHair) {
-        const bun = p.role === "woman" || p.role === "girl";
-        setPart(hairs, i, 0, 5.16, bun ? -0.12 : -0.07, 0, headYaw, 0, bun ? 1.06 : 1.10, bun ? 0.78 : 0.95, bun ? 1.18 : 1.12);
-      } else {
-        setPart(hairs, i, 0, 5.22, 0, 0, 0, 0, 0, 0, 0);
+        const tucked = p.hatStyle === "bonnet" || p.hatStyle === "cloche";
+        if (tucked) setLocal(hairBases, i, headMat, 0, -0.02, -0.04, 0, 0, 0, 0.85, 0.90, 0.88);
+        else setMat(hairBases, i, headMat);
+        if (p.hairStyle === "bun" && !tucked) setMat(hairBuns, i, headMat);
+        else if (p.hairStyle === "bob" && !tucked) setMat(hairBobs, i, headMat);
       }
 
-      setPart(torsos, i, 0, 3.72, 0, 0, 0, 0, p.torsoScale[0] * 1.28, p.torsoScale[1], p.torsoScale[2] * 0.92);
-      setPart(hips, i, 0, 2.62, 0, 0, 0, 0, p.role === "woman" || p.role === "girl" ? 1.12 : 1.18, 1, 0.95);
-
-      if (p.skirtScale[1] > 0) {
-        setPart(skirts, i, 0, p.skirtY, p.skirtZ, 0, 0, 0, p.skirtScale[0], p.skirtScale[1], p.skirtScale[2]);
-      } else {
-        setPart(skirts, i, 0, 2, 0, 0, 0, 0, 0, 0, 0);
-      }
-
-      if (p.accentType === "vest") {
-        setPart(accents, i, 0, 3.58, 0.14, 0, 0, 0, p.torsoScale[0] * 0.62, 1.12, p.torsoScale[2] * 0.62);
-      } else if (p.accentType === "shawl") {
-        // Drape over the shoulders, not a flat bib on the chest.
-        setPart(accents, i, 0, 4.28, -0.04, 0, 0, 0, 1.28, 0.50, 1.08);
-      } else if (p.accentType === "overalls") {
-        setPart(accents, i, 0, 3.35, 0.12, 0, 0, 0, p.torsoScale[0] * 0.78, 1.28, p.torsoScale[2] * 0.70);
-      } else if (p.accentType === "belt") {
-        setPart(accents, i, 0, 2.78, 0, 0, 0, 0, p.torsoScale[0] * 1.10, 0.18, p.torsoScale[2] * 0.92);
-      } else if (p.accentType === "pinafore") {
-        setPart(accents, i, 0, 3.15, 0.08, 0, 0, 0, 0.58, 1.12, 0.48);
-      } else {
-        setPart(accents, i, 0, 3, 0, 0, 0, 0, 0, 0, 0);
-      }
-
-      const hideLegs = p.skirtScale[1] > 2.4;
-      const ls = hideLegs ? 0 : 1;
-      const stance = child ? 0.20 : 0.28;
-      setPart(legsL, i, -stance, 2.58, 0, legSwing, 0, 0, ls, ls, ls);
-      setPart(legsR, i, stance, 2.58, 0, -legSwing, 0, 0, ls, ls, ls);
-      const shoeS = hideLegs ? 0.85 : 1;
-      setPart(shoesL, i, -stance, 2.58, 0, legSwing, 0, 0, shoeS, shoeS, shoeS);
-      setPart(shoesR, i, stance, 2.58, 0, -legSwing, 0, 0, shoeS, shoeS, shoeS);
-
-      const shoulderX = 0.42 + p.torsoScale[0] * 0.22;
-      setPart(shouldersL, i, -shoulderX + 0.04, 4.50, 0, 0, 0, 0, 0.92, 0.78, 0.92);
-      setPart(shouldersR, i, shoulderX - 0.04, 4.50, 0, 0, 0, 0, 0.92, 0.78, 0.92);
-      setPart(armsL, i, -shoulderX, 4.46, 0, armSwing, 0, 0.08, 1, 1, 1);
-      setPart(armsR, i, shoulderX, 4.46, 0, -armSwing, 0, -0.08, 1, 1, 1);
-      setPart(handsL, i, -shoulderX, 4.46, 0, armSwing, 0, 0.08, 1, 1, 1);
-      setPart(handsR, i, shoulderX, 4.46, 0, -armSwing, 0, -0.08, 1, 1, 1);
-
-      if (p.puffSleeve) {
-        setPart(puffsL, i, -shoulderX - 0.04, 4.12, 0, 0, 0, 0, 1.15, 1.20, 1.15);
-        setPart(puffsR, i, shoulderX + 0.04, 4.12, 0, 0, 0, 0, 1.15, 1.20, 1.15);
-      } else {
-        setPart(puffsL, i, 0, 4, 0, 0, 0, 0, 0, 0, 0);
-        setPart(puffsR, i, 0, 4, 0, 0, 0, 0, 0, 0, 0);
-      }
-
-      // Hats: dome crowns for bowler / cloche / bonnet; cylinders for the rest.
-      const zeroHat = () => {
-        setPart(hatCrowns, i, 0, 5.5, 0, 0, 0, 0, 0, 0, 0);
-        setPart(hatBrims, i, 0, 5.4, 0, 0, 0, 0, 0, 0, 0);
-        setPart(hatDomes, i, 0, 5.5, 0, 0, 0, 0, 0, 0, 0);
-      };
+      // Hats
       const hsMode = p.hatStyle;
-      zeroHat();
       if (hsMode === "wide") {
-        setPart(hatCrowns, i, 0, 5.58, 0, 0, headYaw, 0, 1.02, 0.36, 1.02);
-        setPart(hatBrims, i, 0, 5.40, 0, 0, headYaw, 0, 0.82, 1.0, 0.82);
+        setLocal(hatFedoras, i, headMat, 0, 0.80, -0.01, -0.03, 0, 0, 1.04, 1.15, 1.04);
+        setLocal(hatBrimsCurved, i, headMat, 0, 0.62, -0.01, -0.03, 0, 0, 0.78, 1.0, 0.80);
+        setLocal(hatBands, i, headMat, 0, 0.67, -0.01, -0.03, 0, 0, 1.00, 1.0, 1.04);
       } else if (hsMode === "tophat") {
-        setPart(hatCrowns, i, 0, 5.78, 0, 0, headYaw, 0, 0.90, 0.78, 0.90);
-        setPart(hatBrims, i, 0, 5.40, 0, 0, headYaw, 0, 0.62, 1.0, 0.62);
+        setLocal(hatCrowns, i, headMat, 0, 1.02, 0, 0, 0, 0, 0.96, 0.76, 0.96);
+        setLocal(hatBrimsCurved, i, headMat, 0, 0.64, 0, 0, 0, 0, 0.60, 1.0, 0.62);
+        setLocal(hatBands, i, headMat, 0, 0.70, 0, 0, 0, 0, 0.97, 1.1, 0.97);
       } else if (hsMode === "bonnet") {
-        setPart(hatDomes, i, 0, 5.28, -0.10, -0.22, headYaw, 0, 1.18, 0.82, 1.28);
-        setPart(hatBrims, i, 0, 5.10, 0.16, 0.18, headYaw, 0, 0.42, 1.0, 0.36);
+        setLocal(hatBonnets, i, headMat, 0, 0.44, -0.04, -0.18, 0, 0, 1.0, 1.0, 1.0);
+        setLocal(hatBands, i, headMat, 0, 0.22, -0.12, -0.18, 0, 0, 0.78, 0.7, 0.84);
       } else if (hsMode === "bowler") {
-        setPart(hatDomes, i, 0, 5.48, 0, 0, headYaw, 0, 1.00, 0.92, 1.00);
-        setPart(hatBrims, i, 0, 5.32, 0, 0, headYaw, 0, 0.54, 1.0, 0.54);
+        setLocal(hatDomes, i, headMat, 0, 0.70, -0.01, 0, 0, 0, 0.96, 1.08, 0.98);
+        setLocal(hatBrimsCurved, i, headMat, 0, 0.60, -0.01, 0, 0, 0, 0.54, 1.0, 0.56);
+        setLocal(hatBands, i, headMat, 0, 0.64, -0.01, 0, 0, 0, 0.94, 0.85, 0.98);
       } else if (hsMode === "boater") {
-        setPart(hatCrowns, i, 0, 5.50, 0, 0, headYaw, 0, 1.02, 0.22, 1.02);
-        setPart(hatBrims, i, 0, 5.38, 0, 0, headYaw, 0, 0.78, 1.0, 0.78);
+        setLocal(hatCrowns, i, headMat, 0, 0.74, 0, 0.03, 0, 0, 1.02, 0.25, 1.02);
+        setLocal(hatBrimsFlat, i, headMat, 0, 0.62, 0, 0.03, 0, 0, 0.72, 1.0, 0.72);
+        setLocal(hatBands, i, headMat, 0, 0.68, 0, 0.03, 0, 0, 0.98, 0.9, 0.98);
       } else if (hsMode === "fedora") {
-        setPart(hatCrowns, i, 0, 5.56, 0.04, 0.10, headYaw, 0, 0.94, 0.36, 1.06);
-        setPart(hatBrims, i, 0, 5.36, 0.06, 0.12, headYaw, 0, 0.70, 1.0, 0.74);
+        setLocal(hatFedoras, i, headMat, 0, 0.78, 0.01, 0.06, 0, 0, 1.0, 1.05, 1.02);
+        setLocal(hatBrimsCurved, i, headMat, 0, 0.62, 0.02, 0.08, 0, 0, 0.68, 1.0, 0.72);
+        setLocal(hatBands, i, headMat, 0, 0.66, 0.01, 0.06, 0, 0, 0.96, 0.9, 1.02);
       } else if (hsMode === "edwardian") {
-        setPart(hatCrowns, i, 0, 5.52, 0, 0, headYaw, 0, 0.98, 0.26, 0.98);
-        setPart(hatBrims, i, 0, 5.38, 0, 0, headYaw, 0, 0.92, 1.0, 0.92);
+        setLocal(hatCrowns, i, headMat, 0, 0.76, -0.01, -0.03, 0, 0, 0.96, 0.24, 0.96);
+        setLocal(hatBrimsFlat, i, headMat, 0, 0.65, -0.01, -0.03, 0, 0, 0.88, 1.0, 0.88);
+        setLocal(hatBands, i, headMat, 0, 0.70, -0.01, -0.03, 0, 0, 0.94, 0.85, 0.94);
       } else if (hsMode === "cloche") {
-        setPart(hatDomes, i, 0, 5.36, 0.06, 0, headYaw, 0, 1.08, 0.98, 1.12);
-        setPart(hatBrims, i, 0, 5.16, 0.08, 0.10, headYaw, 0, 0.48, 1.0, 0.50);
+        setLocal(hatDomes, i, headMat, 0, 0.60, 0.01, 0.06, 0, 0, 1.01, 1.06, 1.05);
+        setLocal(hatBrimsCurved, i, headMat, 0, 0.48, 0.03, 0.10, 0, 0, 0.44, 1.0, 0.48);
+        setLocal(hatBands, i, headMat, 0, 0.51, 0.01, 0.06, 0, 0, 0.99, 0.8, 1.03);
       } else if (hsMode === "cap") {
-        setPart(hatCrowns, i, 0, 5.46, -0.02, 0, headYaw, 0, 0.98, 0.22, 1.00);
-        setPart(hatDomes, i, 0, 5.40, -0.02, 0, headYaw, 0, 0.92, 0.55, 0.92);
-        setPart(hatBrims, i, 0, 5.32, 0.20, 0.10, headYaw, 0, 0.38, 1.0, 0.50);
+        setLocal(hatDomes, i, headMat, 0, 0.66, -0.02, -0.04, 0, 0, 0.94, 0.74, 0.98);
+        setLocal(hatBrimsFlat, i, headMat, 0, 0.58, 0.22, 0.10, 0, 0, 0.34, 1.0, 0.44);
       }
     });
 
@@ -1070,6 +1587,6 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
   };
 
   applyPose(0);
-    return (elapsed) => applyPose(elapsed);
-}
 
+  return (elapsed) => applyPose(elapsed);
+}
