@@ -271,8 +271,12 @@ button:hover { filter: brightness(1.08); }
 #stats .year-head { margin-bottom: 8px; }
 #stats .year-readout {
   margin: 0 0 6px;
-  font-size: 28px;
-  line-height: 1;
+  font-size: 26px;
+  line-height: 1.15;
+}
+#stats .year-pop {
+  font-size: 19px;
+  font-weight: 500;
 }
 #stats .year-row {
   display: flex;

@@ -170,7 +170,7 @@ The model follows that mix, not a traced outline of each lot. A front-gabled hou
 
 Paint is still the ordinary white, cream, yellow, gray, barn red, and green. The Picture menu is unchanged. It still only sets how sharp the picture is and how large the shadows are. The extra boards of a house are merged into the same few surfaces as the rest of the town.
 
-The figures panel on the right is `public/data/bushnell-years.json`. The slider starts at 1854, the year the town was laid out, and then stops on the census years from 1860 through 2020. No 1860 population for the town was found. Bushnell received its city charter in 1869, and Bushnell Township was set off in 1866. There is no 1886 stop. The 1885 business list sits under 1880, and the January 1886 Sanborn labels sit under 1890. Each line keeps the year of its own source. The older file `public/data/bushnell-1886.json` is the same 1885 and 1886 material, kept so that list still has one place to read.
+The figures panel on the right is `public/data/bushnell-years.json`. The slider starts at 1854, the year the town was laid out, and then stops on the census years from 1860 through 2020, showing each year's population beside the year readout. No 1854 or 1860 census count exists for Bushnell (Bushnell Township was set off in 1866 and the city charter came in 1869), so 1854 and 1860 show estimates marked `estimated`, while 1870 through 2020 use U.S. decennial census counts. There is no 1886 stop. The 1885 business list sits under 1880, and the January 1886 Sanborn labels sit under 1890. Each line keeps the year of its own source. The older file `public/data/bushnell-1886.json` is the same 1885 and 1886 material, kept so that list still has one place to read.
 
 ## The 1890 town
 
@@ -190,7 +190,7 @@ One building is added. Hiram and Daniel Markham opened a slab store in the summe
 - The German Methodist church, finished in 1857 at the southwest corner of West Hail and Jackson.
 - The store Hiram Markham built on the later Ball and Son corner, East Main at Gridley. Negley and Angle opened in it in April 1856. The 1860 tenant was not named, so the sign does not invent one.
 
-The first schoolhouse, 1856, stood on Sperry Street, block 57. In 1860 the school moved to Temperance hall. That hall was not located, so it is not drawn. The Reformed church was dedicated May 1, 1861, so it is not in this year. S. A. Hendee’s 1860 store was on the east side of the railroad, at a door the history does not name. James Cole’s 1855 frame store, 16 by 48 feet, stood on the later Seibert site and was afterward moved to New Philadelphia. The year it left was not found, so it is not drawn. The history’s count of 125 buildings by the end of 1856 has no lots, so those lots stay empty. No data found for a 1860 population.
+The first schoolhouse, 1856, stood on Sperry Street, block 57. In 1860 the school moved to Temperance hall. That hall was not located, so it is not drawn. The Reformed church was dedicated May 1, 1861, so it is not in this year. S. A. Hendee’s 1860 store was on the east side of the railroad, at a door the history does not name. James Cole’s 1855 frame store, 16 by 48 feet, stood on the later Seibert site and was afterward moved to New Philadelphia. The year it left was not found, so it is not drawn. The history’s count of 125 buildings by the close of 1856 names no individual lots; on the 1860 preview branch (`preview/population-1860`), 121 generic `inferred` / `estimated` dwellings, frame stores, and barns/stables are added beside the 4 sourced buildings (125 total) using best-estimate placement on the 1854 plat, and the 1860 population is shown as `estimated 400` (see the 1860 population & buildings section below).
 
 ## The 1870 town
 
@@ -704,3 +704,43 @@ Source: 1954 centennial book (PDF p.13, p.25, p.35) and `/workspace/gt-suggestio
 - **Cole Block (`cole-building-10`, PDF p.13, p.35).** Resolved the Round 3 footprint orientation question and restored the 1880 wraparound porch:
   - **Orientation and collision-neutral adjustment:** rotated from `48 × 74` (`x: -54, z: -228`) to `74 × 48` (`x: -67, z: -215`) so the long 13-bay facade faces East Main and the short 7-bay facade (with exterior side stair) faces Hail, matching both the p.13 engraving and the early-1900s p.35 photograph. To absorb the extra 26 ft along East Main without moving any sourced buildings or changing building-lot collision counts (`collide.py` counts remain identical across all stops), the two adjacent inferred/unverified stand-in stores (`bushnell-house-9` `50 → 36 ft` and `furniture-8` `36 → 24 ft`) were narrowed to fit the block span (widths are estimates).
   - **Walls, 1880 porch, and 1900+ signs:** shifted brick tone from pale cream to warm buff (estimate), kept alternating stone corner quoins with subtle brick dividing pilasters at bays 3, 7, and 10 (`3 + 4 + 3 + 3`), strengthened the bracketed dark cornice and two Hail-side chimneys, fixed the `shedPorch` roof slope direction (`+0.2` outward on front and side) for the 1880 wraparound porch with cream posts, plank walk, and stair dormer hood (removed from the 1900 stop per p.35), and adjusted the 1900 `BANK`, `FIRST NATIONAL BANK`, window gilt `BANK` signs, and East Main awning (`awningFrom: 4`) to the 74 × 48 footprint.
+
+
+### Sidebar population & 1860 town fill (`preview/population-1860`)
+
+Source for the 1856 building count and early settlement: *History of McDonough County, Illinois* (Springfield, IL: Continental Historical Co., 1885), Chapter XXXIII, "The City of Bushnell", pp. 824–826 (transcribed at [https://mcdonough.illinoisgenweb.org/1885citybushnell.html](https://mcdonough.illinoisgenweb.org/1885citybushnell.html)).
+
+**Exact quote for the 125 buildings at the close of 1856 (p. 826):**
+
+> "From this time forward the immigration to this part was quite large, and followed, one another rapidly, until, at the close of the year 1856, when there were 125 buildings upon the town site, including residences, stables, barns, etc."
+
+**Sidebar population figures (`public/data/bushnell-years.json`, `src/main.js`):**
+
+- **1854 — `estimated 20`** (estimate; no census). The 1885 history (pp. 824–825) names pioneer merchants Hiram and Daniel Markham and the four first settler families—Hiram Conover, John Beach, William Ervin, and William Vickers—who built houses for their families shortly after the May 1854 lot sale ("about 70 lots"). Counting roughly 5 households at ~4 persons per household gives ~20 residents.
+- **1860 — `estimated 400`** (estimate; no separate U.S. census count exists because Bushnell Township was not set off from Prairie City Township until 1866 and the city was not chartered until 1869). The 1885 history counts **125 buildings** on the town site by the close of 1856 ("including residences, stables, barns, etc."), and notes that despite crop failures in the first three or four years, "buildings for stores and dwellings were being erected, and the population was rapidly increasing." Splitting the 125 buildings into roughly 95–100 dwellings (96 houses plus the American House hotel and above-store quarters) and ~25–30 non-dwelling structures (stores, barns/stables, church, school), and applying ~3–4 persons per dwelling (~4 persons across ~100 households with modest growth through 1860), gives roughly **400** residents (`estimated 400`).
+- **1870–2020 — U.S. Decennial Census counts for the city of Bushnell:**
+  - 1870: **2,003**
+  - 1880: **2,316**
+  - 1890: **2,314**
+  - 1900: **2,490**
+  - 1910: **2,619**
+  - 1920: **2,716**
+  - 1930: **2,850**
+  - 1940: **2,906**
+  - 1950: **3,317**
+  - 1960: **3,710**
+  - 1970: **3,703**
+  - 1980: **3,811**
+  - 1990: **3,288**
+  - 2000: **3,221**
+  - 2010: **3,117**
+  - 2020: **2,718**
+
+**1860 map buildings (`public/data/bushnell-1860.json`, 125 total):**
+
+- **Existing sourced buildings kept (4):** Markham house (`markham-house-1854`), American House (`american-house-52`), German Methodist Church (`german-methodist-1857`), and Markham's store building (`markham-gridley-store`).
+- **Added generic estimated buildings (121, all flagged `confidence: "inferred"`, `estimated: true`, with generic labels and no invented personal or firm names):**
+  - **10 frame stores (`est-1860-store-01` .. `10`):** 1- and 2-story frame shops clustered near the railroad and depot ground along East Main (between Hurst and Gridley), West Main (between Hurst and Hail), and Hail Street.
+  - **94 frame dwellings (`est-1860-house-01` .. `94`):** small 1- to 2-story frame cottages, gable-front, side-gable, and gable-ell houses on the original 1854 plat lots, densest in the blocks surrounding Hail, Hurst, Gridley, East/West Main, Crafford, and Dean, and sparser outward toward Sperry, Jackson, and Barnes/Davis. East Park and West Park remain unbuilt except for the existing American House edge.
+  - **17 stables and barns (`est-1860-barn-01` .. `17`):** 7 frame barns and 10 smaller stables/outbuildings placed on the rear of residential lots clear of houses and mid-block alleys.
+- No other year files (`1854`, `1870`, `1880`+) were modified.
