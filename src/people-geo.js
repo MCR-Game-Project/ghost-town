@@ -33,6 +33,8 @@ function mergeParts(parts) {
   return mergeGeometries(prepped, false);
 }
 
+const segs = (lod, hi, lo) => (lod === "lo" ? lo : hi);
+
 const smoothstep = (e0, e1, x) => {
   const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
   return t * t * (3 - 2 * t);
@@ -154,8 +156,8 @@ export function buildLoft(rings, radialSegs = 24, options = {}) {
 // Sculpted head centered on headPivot (base of skull at y = 0, crown at y = 0.76).
 // Includes brow ridge, recessed eye sockets, defined nose bridge/tip + under-nose shadow,
 // cheekbone fullness, jaw/chin taper, lip contour, ears, and soft facial AO.
-export function makeHeadGeo() {
-  const geo = new THREE.SphereGeometry(1, 26, 20);
+export function makeHeadGeo(lod = "hi") {
+  const geo = new THREE.SphereGeometry(1, segs(lod, 26, 8), segs(lod, 20, 6));
   const pos = geo.getAttribute("position");
   const colors = new Float32Array(pos.count * 3);
 
@@ -240,9 +242,9 @@ export function makeHeadGeo() {
   return geo;
 }
 
-export function makeEyeWhitesGeo() {
+export function makeEyeWhitesGeo(lod = "hi") {
   const mk = (sx) => {
-    const g = new THREE.SphereGeometry(1, 10, 8);
+    const g = new THREE.SphereGeometry(1, segs(lod, 10, 6), segs(lod, 8, 5));
     g.scale(0.056, 0.032, 0.024);
     g.rotateY(sx * 0.16);
     g.translate(sx * 0.100, 0.402, 0.283);
@@ -251,13 +253,13 @@ export function makeEyeWhitesGeo() {
   return mergeParts([mk(-1), mk(1)]);
 }
 
-export function makeIrisesGeo() {
+export function makeIrisesGeo(lod = "hi") {
   const mk = (sx) => {
-    const iris = new THREE.SphereGeometry(1, 10, 8);
+    const iris = new THREE.SphereGeometry(1, segs(lod, 10, 6), segs(lod, 8, 5));
     iris.scale(0.033, 0.033, 0.022);
     iris.translate(sx * 0.100, 0.402, 0.299);
     ensureVertexColors(iris, 0.88, 0.88, 0.88);
-    const pupil = new THREE.SphereGeometry(1, 8, 6);
+    const pupil = new THREE.SphereGeometry(1, segs(lod, 8, 6), segs(lod, 6, 5));
     pupil.scale(0.017, 0.017, 0.016);
     pupil.translate(sx * 0.100, 0.402, 0.312);
     ensureVertexColors(pupil, 0.18, 0.18, 0.18);
@@ -266,9 +268,9 @@ export function makeIrisesGeo() {
   return mergeParts([mk(-1), mk(1)]);
 }
 
-export function makeBrowsGeo() {
+export function makeBrowsGeo(lod = "hi") {
   const mk = (sx) => {
-    const g = new THREE.CapsuleGeometry(0.017, 0.082, 4, 8);
+    const g = new THREE.CapsuleGeometry(0.017, 0.082, segs(lod, 4, 2), segs(lod, 8, 5));
     g.rotateZ(Math.PI / 2 - sx * 0.12);
     g.scale(1.0, 0.82, 0.78);
     g.translate(sx * 0.102, 0.460, 0.309);
@@ -277,12 +279,12 @@ export function makeBrowsGeo() {
   return mergeParts([mk(-1), mk(1)]);
 }
 
-export function makeMouthGeo() {
-  const upper = new THREE.SphereGeometry(1, 12, 8);
+export function makeMouthGeo(lod = "hi") {
+  const upper = new THREE.SphereGeometry(1, segs(lod, 12, 6), segs(lod, 8, 5));
   upper.scale(0.068, 0.017, 0.026);
   upper.translate(0, 0.246, 0.308);
   ensureVertexColors(upper, 0.86, 0.84, 0.84);
-  const lower = new THREE.SphereGeometry(1, 12, 8);
+  const lower = new THREE.SphereGeometry(1, segs(lod, 12, 6), segs(lod, 8, 5));
   lower.scale(0.058, 0.016, 0.025);
   lower.translate(0, 0.228, 0.307);
   ensureVertexColors(lower, 0.96, 0.94, 0.94);
@@ -290,11 +292,11 @@ export function makeMouthGeo() {
 }
 
 // Tailored mustache + trimmed jawline beard
-export function makeBeardGeo() {
-  const mustL = new THREE.CapsuleGeometry(0.018, 0.062, 4, 6);
+export function makeBeardGeo(lod = "hi") {
+  const mustL = new THREE.CapsuleGeometry(0.018, 0.062, segs(lod, 4, 2), segs(lod, 6, 4));
   mustL.rotateZ(Math.PI / 2 + 0.20);
   mustL.translate(-0.046, 0.278, 0.318);
-  const mustR = new THREE.CapsuleGeometry(0.018, 0.062, 4, 6);
+  const mustR = new THREE.CapsuleGeometry(0.018, 0.062, segs(lod, 4, 2), segs(lod, 6, 4));
   mustR.rotateZ(Math.PI / 2 - 0.20);
   mustR.translate(0.046, 0.278, 0.318);
   const chin = buildLoft(
@@ -303,13 +305,13 @@ export function makeBeardGeo() {
       { y: 0.12, rx: 0.19, rz: 0.20, oz: 0.11, shade: 0.93 },
       { y: 0.22, rx: 0.20, rz: 0.19, oz: 0.09, shade: 0.96 },
     ],
-    14,
+    segs(lod, 14, 7),
     { thetaStart: -Math.PI * 0.45, thetaLen: Math.PI * 0.90 },
   );
   return mergeParts([mustL, mustR, chin]);
 }
 
-export function makeNeckGeo() {
+export function makeNeckGeo(lod = "hi") {
   return buildLoft(
     [
       { y: 4.70, rx: 0.200, rz: 0.180, shade: 0.92 },
@@ -317,13 +319,13 @@ export function makeNeckGeo() {
       { y: 5.04, rx: 0.145, rz: 0.145, shade: 0.96 },
       { y: 5.16, rx: 0.150, rz: 0.150, shade: 0.90 },
     ],
-    16,
+    segs(lod, 16, 7),
   );
 }
 
 // Smooth, voluminous hair cap using continuous smoothstep blending (no faceted vertex jumps).
-export function makeHairBaseGeo() {
-  const geo = new THREE.SphereGeometry(1, 24, 18);
+export function makeHairBaseGeo(lod = "hi") {
+  const geo = new THREE.SphereGeometry(1, segs(lod, 24, 8), segs(lod, 18, 6));
   const pos = geo.getAttribute("position");
   const colors = new Float32Array(pos.count * 3);
 
@@ -368,15 +370,15 @@ export function makeHairBaseGeo() {
   return geo;
 }
 
-export function makeHairBunGeo() {
-  const g = new THREE.SphereGeometry(1, 16, 12);
+export function makeHairBunGeo(lod = "hi") {
+  const g = new THREE.SphereGeometry(1, segs(lod, 16, 8), segs(lod, 12, 6));
   g.scale(0.160, 0.140, 0.135);
   g.translate(0, 0.38, -0.34);
   return ensureVertexColors(g, 0.94, 0.94, 0.94);
 }
 
 // Smoothly sculpted voluminous bob / swept nape hair
-export function makeHairSideBobGeo() {
+export function makeHairSideBobGeo(lod = "hi") {
   const hood = buildLoft(
     [
       { y: 0.12, rx: 0.33, rz: 0.34, oz: -0.06, pleatAmp: 0.032, pleatFreq: 10, shade: 0.86 },
@@ -384,10 +386,10 @@ export function makeHairSideBobGeo() {
       { y: 0.48, rx: 0.35, rz: 0.38, oz: -0.03, pleatAmp: 0.018, pleatFreq: 10, shade: 0.99 },
       { y: 0.66, rx: 0.28, rz: 0.31, oz: -0.02, shade: 1.00 },
     ],
-    20,
+    segs(lod, 20, 8),
     { thetaStart: Math.PI * 0.32, thetaLen: Math.PI * 1.36 },
   );
-  const backRoll = new THREE.SphereGeometry(1, 16, 12);
+  const backRoll = new THREE.SphereGeometry(1, segs(lod, 16, 8), segs(lod, 12, 6));
   backRoll.scale(0.28, 0.18, 0.18);
   backRoll.translate(0, 0.24, -0.25);
   ensureVertexColors(backRoll, 0.92, 0.92, 0.92);
@@ -395,7 +397,7 @@ export function makeHairSideBobGeo() {
 }
 
 // Anatomical men's coat/jacket torso (y = 3.24..4.80)
-export function makeTorsoMenGeo() {
+export function makeTorsoMenGeo(lod = "hi") {
   return buildLoft(
     [
       { y: 3.24, rx: 0.50, rz: 0.33, ox: 0, oz: 0.00, pleatAmp: 0.020, pleatFreq: 8, shade: 0.93 },
@@ -405,12 +407,12 @@ export function makeTorsoMenGeo() {
       { y: 4.62, rx: 0.62, rz: 0.31, ox: 0, oz: 0.01, pleatAmp: 0.005, pleatFreq: 8, shade: 1.00 },
       { y: 4.80, rx: 0.24, rz: 0.20, ox: 0, oz: 0.00, shade: 0.92 },
     ],
-    24,
+    segs(lod, 24, 8),
     { capBottom: true, capTop: true },
   );
 }
 
-export function makeTorsoShirtGeo() {
+export function makeTorsoShirtGeo(lod = "hi") {
   return buildLoft(
     [
       { y: 3.34, rx: 0.39, rz: 0.23, pleatAmp: 0.0, pleatFreq: 10, shade: 0.90 },
@@ -420,12 +422,12 @@ export function makeTorsoShirtGeo() {
       { y: 4.68, rx: 0.56, rz: 0.28, shade: 0.99 },
       { y: 4.82, rx: 0.22, rz: 0.19, shade: 0.92 },
     ],
-    24,
+    segs(lod, 24, 8),
     { capBottom: true, capTop: true },
   );
 }
 
-export function makeTorsoWomenGeo() {
+export function makeTorsoWomenGeo(lod = "hi") {
   return buildLoft(
     [
       { y: 3.36, rx: 0.37, rz: 0.25, pleatAmp: 0.016, pleatFreq: 8, shade: 0.94 },
@@ -435,12 +437,12 @@ export function makeTorsoWomenGeo() {
       { y: 4.65, rx: 0.46, rz: 0.23, shade: 0.98 },
       { y: 4.78, rx: 0.19, rz: 0.17, shade: 0.92 },
     ],
-    24,
+    segs(lod, 24, 8),
     { capBottom: true, capTop: true },
   );
 }
 
-export function makePelvisGeo() {
+export function makePelvisGeo(lod = "hi") {
   return buildLoft(
     [
       { y: 2.68, rx: 0.44, rz: 0.31, shade: 0.90 },
@@ -449,13 +451,13 @@ export function makePelvisGeo() {
       { y: 3.42, rx: 0.445, rz: 0.285, shade: 0.78 },
       { y: 3.48, rx: 0.440, rz: 0.280, shade: 0.88 },
     ],
-    22,
+    segs(lod, 22, 8),
     { capBottom: true, capTop: true },
   );
 }
 
 // Open-front coat skirt / tails for frock coats and sack suits (y = 2.18..3.44)
-export function makeCoatTailGeo() {
+export function makeCoatTailGeo(lod = "hi") {
   return buildLoft(
     [
       { y: 2.18, rx: 0.58, rz: 0.40, pleatAmp: 0.030, pleatFreq: 9, shade: 0.90 },
@@ -463,12 +465,12 @@ export function makeCoatTailGeo() {
       { y: 3.05, rx: 0.50, rz: 0.34, pleatAmp: 0.016, pleatFreq: 9, shade: 0.97 },
       { y: 3.44, rx: 0.47, rz: 0.31, pleatAmp: 0.009, pleatFreq: 9, shade: 0.95 },
     ],
-    22,
+    segs(lod, 22, 8),
     { thetaStart: Math.PI * 0.16, thetaLen: Math.PI * 1.68 },
   );
 }
 
-export function makeShirtFrontGeo() {
+export function makeShirtFrontGeo(lod = "hi") {
   const vFront = new THREE.ConeGeometry(0.145, 0.78, 4);
   vFront.rotateY(Math.PI / 4);
   vFront.rotateX(Math.PI);
@@ -479,24 +481,24 @@ export function makeShirtFrontGeo() {
       { y: 4.66, rx: 0.23, rz: 0.21, ox: 0, oz: 0.02, shade: 0.94 },
       { y: 4.78, rx: 0.19, rz: 0.18, ox: 0, oz: 0.01, shade: 1.00 },
     ],
-    18,
+    segs(lod, 18, 7),
   );
   return mergeParts([vFront, collarRing]);
 }
 
 // Modest rounded collar for women's dresses and blouses
-export function makeWomanCollarGeo() {
+export function makeWomanCollarGeo(lod = "hi") {
   return buildLoft(
     [
       { y: 4.62, rx: 0.26, rz: 0.23, oz: 0.02, shade: 0.94 },
       { y: 4.74, rx: 0.21, rz: 0.19, oz: 0.01, shade: 1.00 },
       { y: 4.82, rx: 0.18, rz: 0.17, shade: 0.96 },
     ],
-    18,
+    segs(lod, 18, 7),
   );
 }
 
-export function makeLapelsGeo() {
+export function makeLapelsGeo(lod = "hi") {
   const mk = (sx) => {
     const strip = new THREE.BoxGeometry(0.11, 0.84, 0.05);
     strip.rotateZ(sx * 0.20);
@@ -507,7 +509,7 @@ export function makeLapelsGeo() {
   return mergeParts([mk(-1), mk(1)]);
 }
 
-export function makeTieGeo() {
+export function makeTieGeo(lod = "hi") {
   const knot = new THREE.BoxGeometry(0.075, 0.075, 0.045);
   knot.translate(0, 4.66, 0.375);
   const blade = new THREE.ConeGeometry(0.052, 0.52, 4);
@@ -518,27 +520,27 @@ export function makeTieGeo() {
   return mergeParts([knot, blade]);
 }
 
-export function makeVestGeo() {
+export function makeVestGeo(lod = "hi") {
   return buildLoft(
     [
       { y: 3.36, rx: 0.47, rz: 0.320, shade: 0.90 },
       { y: 3.74, rx: 0.51, rz: 0.352, ox: 0, oz: 0.018, shade: 0.97 },
       { y: 4.12, rx: 0.53, rz: 0.368, ox: 0, oz: 0.025, shade: 1.00 },
     ],
-    14,
+    segs(lod, 14, 7),
     { thetaStart: -Math.PI * 0.14, thetaLen: Math.PI * 0.28 },
   );
 }
 
 // Curved denim bib + shoulder straps hugging torsoShirt cleanly
-export function makeOverallsBibGeo() {
+export function makeOverallsBibGeo(lod = "hi") {
   const bib = buildLoft(
     [
       { y: 3.36, rx: 0.485, rz: 0.318, shade: 0.94 },
       { y: 3.82, rx: 0.550, rz: 0.375, ox: 0, oz: 0.02, shade: 0.98 },
       { y: 4.24, rx: 0.565, rz: 0.390, ox: 0, oz: 0.025, shade: 1.00 },
     ],
-    14,
+    segs(lod, 14, 7),
     { thetaStart: -Math.PI * 0.24, thetaLen: Math.PI * 0.48 },
   );
   const mkStrap = (sx) => {
@@ -550,7 +552,7 @@ export function makeOverallsBibGeo() {
   return mergeParts([bib, mkStrap(-1), mkStrap(1)]);
 }
 
-export function makeShawlGeo() {
+export function makeShawlGeo(lod = "hi") {
   return buildLoft(
     [
       { y: 3.88, rx: 0.60, rz: 0.38, pleatAmp: 0.028, pleatFreq: 10, shade: 0.90 },
@@ -558,12 +560,12 @@ export function makeShawlGeo() {
       { y: 4.56, rx: 0.54, rz: 0.30, shade: 1.00 },
       { y: 4.74, rx: 0.24, rz: 0.20, shade: 0.94 },
     ],
-    22,
+    segs(lod, 22, 8),
     { thetaStart: Math.PI * 0.14, thetaLen: Math.PI * 1.72 },
   );
 }
 
-export function makeSkirtFullGeo() {
+export function makeSkirtFullGeo(lod = "hi") {
   return buildLoft(
     [
       { y: 0.26, rx: 0.98, rz: 0.90, pleatAmp: 0.052, pleatFreq: 10, shade: 0.88 },
@@ -573,12 +575,12 @@ export function makeSkirtFullGeo() {
       { y: 3.25, rx: 0.44, rz: 0.34, pleatAmp: 0.014, pleatFreq: 10, shade: 0.98 },
       { y: 3.44, rx: 0.39, rz: 0.27, pleatAmp: 0.008, pleatFreq: 10, shade: 0.93 },
     ],
-    28,
+    segs(lod, 28, 8),
     { capBottom: true },
   );
 }
 
-export function makeSkirtBustleGeo() {
+export function makeSkirtBustleGeo(lod = "hi") {
   return buildLoft(
     [
       { y: 0.26, rx: 0.92, rz: 0.84, backBustle: 0.22, pleatAmp: 0.050, pleatFreq: 10, shade: 0.88 },
@@ -588,12 +590,12 @@ export function makeSkirtBustleGeo() {
       { y: 3.26, rx: 0.43, rz: 0.32, backBustle: 0.20, pleatAmp: 0.014, pleatFreq: 10, shade: 0.98 },
       { y: 3.44, rx: 0.39, rz: 0.27, backBustle: 0.06, pleatAmp: 0.008, pleatFreq: 10, shade: 0.93 },
     ],
-    28,
+    segs(lod, 28, 8),
     { capBottom: true },
   );
 }
 
-export function makeSkirtMidGeo() {
+export function makeSkirtMidGeo(lod = "hi") {
   return buildLoft(
     [
       { y: 1.24, rx: 0.74, rz: 0.70, pleatAmp: 0.046, pleatFreq: 9, shade: 0.89 },
@@ -602,12 +604,12 @@ export function makeSkirtMidGeo() {
       { y: 3.18, rx: 0.46, rz: 0.34, pleatAmp: 0.012, pleatFreq: 9, shade: 0.99 },
       { y: 3.44, rx: 0.40, rz: 0.28, pleatAmp: 0.006, pleatFreq: 9, shade: 0.93 },
     ],
-    26,
+    segs(lod, 26, 8),
     { capBottom: true },
   );
 }
 
-export function makeSkirtShortGeo() {
+export function makeSkirtShortGeo(lod = "hi") {
   return buildLoft(
     [
       { y: 1.66, rx: 0.72, rz: 0.66, pleatAmp: 0.048, pleatFreq: 10, shade: 0.90 },
@@ -616,13 +618,13 @@ export function makeSkirtShortGeo() {
       { y: 3.24, rx: 0.45, rz: 0.33, pleatAmp: 0.012, pleatFreq: 10, shade: 0.99 },
       { y: 3.44, rx: 0.40, rz: 0.28, pleatAmp: 0.005, pleatFreq: 10, shade: 0.93 },
     ],
-    26,
+    segs(lod, 26, 8),
     { capBottom: true },
   );
 }
 
 // Sculpted 2-segment leg: thigh (hip=0 to knee=-1.36) and calf (knee=0 to ankle=-1.34)
-export function makeThighGeo() {
+export function makeThighGeo(lod = "hi") {
   const shaft = buildLoft(
     [
       { y: -1.36, rx: 0.160, rz: 0.160, shade: 0.90 },
@@ -630,16 +632,16 @@ export function makeThighGeo() {
       { y: -0.45, rx: 0.215, rz: 0.218, shade: 0.99 },
       { y: 0.00, rx: 0.228, rz: 0.222, shade: 0.97 },
     ],
-    14,
+    segs(lod, 14, 7),
   );
-  const hipCap = new THREE.SphereGeometry(1, 12, 8);
+  const hipCap = new THREE.SphereGeometry(1, segs(lod, 12, 6), segs(lod, 8, 5));
   hipCap.scale(0.220, 0.215, 0.205);
-  const kneeCap = new THREE.SphereGeometry(0.158, 12, 8);
+  const kneeCap = new THREE.SphereGeometry(0.158, segs(lod, 12, 6), segs(lod, 8, 5));
   kneeCap.translate(0, -1.36, 0);
   return mergeParts([shaft, hipCap, kneeCap]);
 }
 
-export function makeCalfGeo() {
+export function makeCalfGeo(lod = "hi") {
   const shaft = buildLoft(
     [
       { y: -1.34, rx: 0.112, rz: 0.115, shade: 0.89 },
@@ -647,27 +649,27 @@ export function makeCalfGeo() {
       { y: -0.40, rx: 0.166, rz: 0.175, oz: -0.02, shade: 0.99 },
       { y: 0.00, rx: 0.158, rz: 0.158, shade: 0.96 },
     ],
-    14,
+    segs(lod, 14, 7),
   );
-  const ankleCap = new THREE.SphereGeometry(0.112, 10, 8);
+  const ankleCap = new THREE.SphereGeometry(0.112, segs(lod, 10, 6), segs(lod, 8, 5));
   ankleCap.translate(0, -1.34, 0);
   return mergeParts([shaft, ankleCap]);
 }
 
-export function makeShoeGeo() {
-  const vamp = new THREE.SphereGeometry(1, 12, 8);
+export function makeShoeGeo(lod = "hi") {
+  const vamp = new THREE.SphereGeometry(1, segs(lod, 12, 6), segs(lod, 8, 5));
   vamp.scale(0.148, 0.105, 0.275);
   vamp.translate(0, -0.115, 0.14);
   const heel = new THREE.BoxGeometry(0.23, 0.10, 0.20);
   heel.translate(0, -0.17, -0.06);
   const sole = new THREE.BoxGeometry(0.25, 0.045, 0.44);
   sole.translate(0, -0.197, 0.17);
-  const collar = new THREE.CylinderGeometry(0.125, 0.14, 0.14, 12);
+  const collar = new THREE.CylinderGeometry(0.125, 0.14, 0.14, segs(lod, 12, 6));
   collar.translate(0, -0.05, 0);
   return mergeParts([vamp, heel, sole, collar]);
 }
 
-export function makeUpperArmGeo() {
+export function makeUpperArmGeo(lod = "hi") {
   const shaft = buildLoft(
     [
       { y: -0.98, rx: 0.138, rz: 0.138, shade: 0.91 },
@@ -675,15 +677,15 @@ export function makeUpperArmGeo() {
       { y: -0.14, rx: 0.175, rz: 0.175, shade: 1.00 },
       { y: 0.00, rx: 0.168, rz: 0.168, shade: 0.98 },
     ],
-    14,
+    segs(lod, 14, 7),
   );
-  const deltoid = new THREE.SphereGeometry(0.168, 12, 8);
-  const elbow = new THREE.SphereGeometry(0.138, 10, 8);
+  const deltoid = new THREE.SphereGeometry(0.168, segs(lod, 12, 6), segs(lod, 8, 5));
+  const elbow = new THREE.SphereGeometry(0.138, segs(lod, 10, 6), segs(lod, 8, 5));
   elbow.translate(0, -0.98, 0);
   return mergeParts([shaft, deltoid, elbow]);
 }
 
-export function makeForearmGeo() {
+export function makeForearmGeo(lod = "hi") {
   const shaft = buildLoft(
     [
       { y: -0.86, rx: 0.102, rz: 0.098, shade: 0.90 },
@@ -691,39 +693,39 @@ export function makeForearmGeo() {
       { y: -0.12, rx: 0.140, rz: 0.138, shade: 1.00 },
       { y: 0.00, rx: 0.134, rz: 0.134, shade: 0.97 },
     ],
-    14,
+    segs(lod, 14, 7),
   );
-  const wristCap = new THREE.SphereGeometry(0.098, 10, 8);
+  const wristCap = new THREE.SphereGeometry(0.098, segs(lod, 10, 6), segs(lod, 8, 5));
   wristCap.translate(0, -0.86, 0);
   return mergeParts([shaft, wristCap]);
 }
 
-export function makeHandGeo() {
-  const palm = new THREE.SphereGeometry(1, 10, 8);
+export function makeHandGeo(lod = "hi") {
+  const palm = new THREE.SphereGeometry(1, segs(lod, 10, 6), segs(lod, 8, 5));
   palm.scale(0.068, 0.135, 0.105);
   palm.translate(0, -0.13, 0.01);
-  const fingers = new THREE.SphereGeometry(1, 10, 8);
+  const fingers = new THREE.SphereGeometry(1, segs(lod, 10, 6), segs(lod, 8, 5));
   fingers.scale(0.056, 0.14, 0.088);
   fingers.translate(0, -0.27, 0.015);
-  const thumb = new THREE.CapsuleGeometry(0.028, 0.10, 4, 6);
+  const thumb = new THREE.CapsuleGeometry(0.028, 0.10, segs(lod, 4, 2), segs(lod, 6, 4));
   thumb.rotateX(0.45);
   thumb.translate(0, -0.14, 0.10);
   return mergeParts([palm, fingers, thumb]);
 }
 
-export function makePuffSleeveGeo() {
-  const g = new THREE.SphereGeometry(1, 16, 12);
+export function makePuffSleeveGeo(lod = "hi") {
+  const g = new THREE.SphereGeometry(1, segs(lod, 16, 8), segs(lod, 12, 6));
   g.scale(0.23, 0.26, 0.23);
   g.translate(0, -0.22, 0);
   return ensureVertexColors(g, 0.98, 0.98, 0.98);
 }
 
-export function makeHatCrownCylGeo() {
-  const g = new THREE.CylinderGeometry(0.32, 0.36, 1.0, 22);
+export function makeHatCrownCylGeo(lod = "hi") {
+  const g = new THREE.CylinderGeometry(0.32, 0.36, 1.0, segs(lod, 22, 8));
   return ensureVertexColors(g, 0.96, 0.96, 0.96);
 }
 
-export function makeFedoraCrownGeo() {
+export function makeFedoraCrownGeo(lod = "hi") {
   return buildLoft(
     [
       { y: -0.20, rx: 0.36, rz: 0.40, shade: 0.92 },
@@ -731,19 +733,19 @@ export function makeFedoraCrownGeo() {
       { y: 0.16, rx: 0.25, rz: 0.36, frontPinch: 0.03, shade: 1.00 },
       { y: 0.22, rx: 0.18, rz: 0.30, frontPinch: 0.04, shade: 0.94 },
     ],
-    22,
+    segs(lod, 22, 8),
     { capBottom: true, capTop: true },
   );
 }
 
-export function makeHatDomeGeo() {
-  const g = new THREE.SphereGeometry(1, 20, 14);
+export function makeHatDomeGeo(lod = "hi") {
+  const g = new THREE.SphereGeometry(1, segs(lod, 20, 8), segs(lod, 14, 6));
   g.scale(0.36, 0.32, 0.38);
   return ensureVertexColors(g, 0.96, 0.96, 0.96);
 }
 
-export function makeHatBrimCurvedGeo() {
-  const geo = new THREE.CylinderGeometry(1.0, 1.0, 0.055, 28, 1);
+export function makeHatBrimCurvedGeo(lod = "hi") {
+  const geo = new THREE.CylinderGeometry(1.0, 1.0, 0.055, segs(lod, 28, 10), 1);
   const pos = geo.getAttribute("position");
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i);
@@ -757,17 +759,17 @@ export function makeHatBrimCurvedGeo() {
   return ensureVertexColors(geo, 0.95, 0.95, 0.95);
 }
 
-export function makeHatBrimFlatGeo() {
-  const g = new THREE.CylinderGeometry(1.0, 1.0, 0.045, 28);
+export function makeHatBrimFlatGeo(lod = "hi") {
+  const g = new THREE.CylinderGeometry(1.0, 1.0, 0.045, segs(lod, 28, 10));
   return ensureVertexColors(g, 0.97, 0.97, 0.97);
 }
 
-export function makeHatBandGeo() {
-  const g = new THREE.CylinderGeometry(0.37, 0.38, 0.11, 22);
+export function makeHatBandGeo(lod = "hi") {
+  const g = new THREE.CylinderGeometry(0.37, 0.38, 0.11, segs(lod, 22, 8));
   return ensureVertexColors(g, 0.92, 0.92, 0.92);
 }
 
-export function makeBonnetGeo() {
+export function makeBonnetGeo(lod = "hi") {
   const hood = buildLoft(
     [
       { y: -0.20, rx: 0.42, rz: 0.46, shade: 0.88 },
@@ -775,10 +777,10 @@ export function makeBonnetGeo() {
       { y: 0.28, rx: 0.39, rz: 0.43, shade: 1.00 },
       { y: 0.40, rx: 0.25, rz: 0.29, shade: 0.96 },
     ],
-    24,
+    segs(lod, 24, 8),
     { thetaStart: Math.PI * 0.24, thetaLen: Math.PI * 1.52 },
   );
-  const back = new THREE.SphereGeometry(1, 16, 12);
+  const back = new THREE.SphereGeometry(1, segs(lod, 16, 8), segs(lod, 12, 6));
   back.scale(0.36, 0.34, 0.34);
   back.translate(0, 0.06, -0.13);
   return mergeParts([hood, back]);
