@@ -8641,17 +8641,46 @@ float lHash(vec3 p){ p=fract(p*0.1031); p+=dot(p,p.yzx+33.33); return fract((p.x
   };
   const leafMat = foliage(pioneerPrairie ? "#568040" : "#3e6b34", pioneerPrairie ? "leaf-sapling-a" : "leaf-gaps-a");
   const leafDarkMat = foliage(pioneerPrairie ? "#436830" : "#2c5228", pioneerPrairie ? "leaf-sapling-b" : "leaf-gaps-b");
-  const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.38, 0.62, 1, 8), mats.trunk, allTrees.length);
-  const lobes = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 12, 9), leafMat, allTrees.length * lobeCount);
-  const lobesDark = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 8), leafDarkMat, allTrees.length * lobeCount);
+  // Near canopies keep the original 18-lobe (8 on prairie saplings), 12×9 / 10×8 spheres.
+  // Mid and far trees drop lobe count and sphere segments. Far trees are a 3-lobe stand-in.
+  const makeLobePattern = (count) => {
+    const pattern = [];
+    for (let k = 0; k < count; k++) {
+      const ang = k * 2.399963;
+      const ring = 1.15 + (k % 5) * 0.62;
+      const y = 0.15 + (k % 6) * 0.72;
+      pattern.push([Math.cos(ang) * ring, y, Math.sin(ang) * ring * 0.82, 0.95 + (k % 4) * 0.22, 0.72 + (k % 3) * 0.16]);
+    }
+    return pattern;
+  };
+  const solidFoliage = (color) =>
+    new THREE.MeshStandardMaterial({ color, roughness: 0.84, metalness: 0, side: THREE.DoubleSide });
+  const hiLobes = lobeCount;
+  const midLobes = pioneerPrairie ? 5 : 8;
+  const farLobes = 3;
+  const hiPattern = makeLobePattern(hiLobes);
+  const midPattern = makeLobePattern(midLobes);
+  const farPattern = makeLobePattern(farLobes);
+  const treeCount = allTrees.length;
   const dummy = new THREE.Object3D();
-  const lobePattern = [];
-  for (let k = 0; k < lobeCount; k++) {
-    const ang = k * 2.399963;
-    const ring = 1.15 + (k % 5) * 0.62;
-    const y = 0.15 + (k % 6) * 0.72;
-    lobePattern.push([Math.cos(ang) * ring, y, Math.sin(ang) * ring * 0.82, 0.95 + (k % 4) * 0.22, 0.72 + (k % 3) * 0.16]);
-  }
+  const packLobes = (pattern, t, i, s, trunkH) => {
+    const packed = [];
+    pattern.forEach((lobe, k) => {
+      const spin = i * 1.7 + k * 0.4;
+      const ox = Math.cos(spin) * lobe[0] * s;
+      const oz = Math.sin(spin) * lobe[2] * s;
+      dummy.position.set(t.x + ox, trunkH + lobe[1] * s * 0.85, t.z + oz);
+      dummy.scale.set(lobe[3] * s, lobe[4] * s, lobe[3] * s * 0.86);
+      dummy.rotation.set(0, spin, 0);
+      dummy.updateMatrix();
+      packed.push({ matrix: dummy.matrix.clone(), dark: k % 2 === 1 });
+    });
+    return packed;
+  };
+  const trunkMats = new Array(treeCount);
+  const hiPacked = new Array(treeCount);
+  const midPacked = new Array(treeCount);
+  const farPacked = new Array(treeCount);
   allTrees.forEach((t, i) => {
     const s = t.scale || 1;
     const trunkH = (8 + (i % 3) * 0.6) * s;
@@ -8660,23 +8689,77 @@ float lHash(vec3 p){ p=fract(p*0.1031); p+=dot(p,p.yzx+33.33); return fract((p.x
     dummy.scale.set(ts, trunkH, ts);
     dummy.rotation.set(0, i * 0.7, 0);
     dummy.updateMatrix();
-    trunks.setMatrixAt(i, dummy.matrix);
-    lobePattern.forEach((lobe, k) => {
-      const spin = i * 1.7 + k * 0.4;
-      const ox = Math.cos(spin) * lobe[0] * s;
-      const oz = Math.sin(spin) * lobe[2] * s;
-      dummy.position.set(t.x + ox, trunkH + lobe[1] * s * 0.85, t.z + oz);
-      dummy.scale.set(lobe[3] * s, lobe[4] * s, lobe[3] * s * 0.86);
-      dummy.rotation.set(0, spin, 0);
-      dummy.updateMatrix();
-      (k % 2 ? lobesDark : lobes).setMatrixAt(i * lobeCount + k, dummy.matrix);
-    });
+    trunkMats[i] = dummy.matrix.clone();
+    hiPacked[i] = packLobes(hiPattern, t, i, s, trunkH);
+    midPacked[i] = packLobes(midPattern, t, i, s, trunkH);
+    farPacked[i] = packLobes(farPattern, t, i, s, trunkH);
   });
-  for (const mesh of [trunks, lobes, lobesDark]) {
+  const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.38, 0.62, 1, 8), mats.trunk, Math.max(1, treeCount));
+  const lobesHi = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 12, 9), leafMat, Math.max(1, treeCount * hiLobes));
+  const lobesHiDark = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 8), leafDarkMat, Math.max(1, treeCount * hiLobes));
+  const midLeaf = solidFoliage(pioneerPrairie ? "#568040" : "#3e6b34");
+  const midLeafDark = solidFoliage(pioneerPrairie ? "#436830" : "#2c5228");
+  const lobesMid = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 6, 5), midLeaf, Math.max(1, treeCount * midLobes));
+  const lobesMidDark = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 6, 5), midLeafDark, Math.max(1, treeCount * midLobes));
+  const lobesFar = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 5, 4), midLeaf, Math.max(1, treeCount * farLobes));
+  const lobesFarDark = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 5, 4), midLeafDark, Math.max(1, treeCount * farLobes));
+  for (const mesh of [trunks, lobesHi, lobesHiDark, lobesMid, lobesMidDark, lobesFar, lobesFarDark]) {
     mesh.castShadow = true;
     mesh.receiveShadow = true;
+    mesh.frustumCulled = false;
     scene.add(mesh);
   }
+  for (let i = 0; i < treeCount; i++) trunks.setMatrixAt(i, trunkMats[i]);
+  trunks.count = treeCount;
+  trunks.instanceMatrix.needsUpdate = true;
+  // Hysteresis so a tree walking the cutoff does not flicker between lobe sets.
+  const TREE_NEAR = 520;
+  const TREE_NEAR_OUT = 600;
+  const TREE_MID = 1500;
+  const TREE_MID_OUT = 1700;
+  const treeLod = new Int8Array(treeCount);
+  const fillLobes = (meshLit, meshDark, packedList, indices) => {
+    let lit = 0;
+    let dark = 0;
+    for (const i of indices) {
+      for (const lobe of packedList[i]) {
+        if (lobe.dark) meshDark.setMatrixAt(dark++, lobe.matrix);
+        else meshLit.setMatrixAt(lit++, lobe.matrix);
+      }
+    }
+    meshLit.count = lit;
+    meshDark.count = dark;
+    meshLit.instanceMatrix.needsUpdate = true;
+    meshDark.instanceMatrix.needsUpdate = true;
+    meshLit.visible = lit > 0;
+    meshDark.visible = dark > 0;
+  };
+  const applyTreeLod = (cam) => {
+    if (!treeCount) {
+      trunks.count = 0;
+      lobesHi.visible = lobesHiDark.visible = lobesMid.visible = lobesMidDark.visible = lobesFar.visible = lobesFarDark.visible = false;
+      return;
+    }
+    const cx = cam?.position?.x ?? 0;
+    const cz = cam?.position?.z ?? 0;
+    const near = [];
+    const mid = [];
+    const far = [];
+    for (let i = 0; i < treeCount; i++) {
+      const t = allTrees[i];
+      const d = Math.hypot(t.x - cx, t.z - cz);
+      let lod = treeLod[i];
+      if (lod === 0) lod = d > TREE_MID_OUT ? 2 : d > TREE_NEAR_OUT ? 1 : 0;
+      else if (lod === 1) lod = d < TREE_NEAR ? 0 : d > TREE_MID_OUT ? 2 : 1;
+      else lod = d < TREE_NEAR ? 0 : d < TREE_MID ? 1 : 2;
+      treeLod[i] = lod;
+      (lod === 0 ? near : lod === 1 ? mid : far).push(i);
+    }
+    fillLobes(lobesHi, lobesHiDark, hiPacked, near);
+    fillLobes(lobesMid, lobesMidDark, midPacked, mid);
+    fillLobes(lobesFar, lobesFarDark, farPacked, far);
+  };
+  applyTreeLod(null);
 
   addStreetNames(data, mats, scene);
 
@@ -8732,8 +8815,11 @@ float lHash(vec3 p){ p=fract(p*0.1031); p+=dot(p,p.yzx+33.33); return fract((p.x
   scene.add(picks);
 
   const updatePeople = addPeople(data, scene, groundYear, colliders, modernPaved, allTrees);
-
-  return { colliders, picks, materials: mats, update: updatePeople };
+  const update = (elapsed, cam) => {
+    applyTreeLod(cam);
+    if (updatePeople) updatePeople(elapsed, cam);
+  };
+  return { colliders, picks, materials: mats, update };
 }
 
 function placeStreetLabel(scene, material, width, height, x, y, z, travelX, travelZ) {
