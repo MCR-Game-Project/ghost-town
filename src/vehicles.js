@@ -590,7 +590,9 @@ function brassCar(k, kind, pal) {
 }
 
 // Black Model T-type touring car with the top up (about 1915-1927).
-function modelT(k, pal) {
+// brass: the 1909-1916 car with the brass radiator shell, brass lamp rims, and a flat dash
+// (no curved cowl); without it, the 1917-1927 black-shell car.
+function modelT(k, pal, brass = false) {
   const body = paintMat(pal.body, 0.4, 0.15);
   const black = F.black();
   const wood = paintMat("#5a4027", 0.6, 0.05);
@@ -606,10 +608,11 @@ function modelT(k, pal) {
   k.cyl(F.iron(), 0.05, 0.05, track * 1.6, 0, r + 0.65, zf + 0.2, "x", 6);
   for (const sd of [-1, 1]) k.box(black, sd * 1.25, 1.6, 0, 0.14, 0.3, 10.6);
   // Black radiator shell, tall narrow hood, curved cowl (1917 on).
-  k.rbox(body, 0, 2.95, 5.25, 2.25, 1.95, 0.32, 0.12);
+  k.rbox(brass ? F.brass() : body, 0, 2.95, 5.25, 2.25, 1.95, 0.32, 0.12);
   k.box(paintMat("#2b2926", 0.85, 0.2), 0, 2.85, 5.4, 1.85, 1.5, 0.05);
   k.rbox(body, 0, 2.9, 3.75, 2.1, 1.25, 2.8, 0.2);
-  k.profile(body, shp([["M", 1.15, 2.1], ["L", 2.4, 2.1], ["L", 2.4, 3.55], ["Q", 1.9, 3.95, 1.15, 4.0], ["L", 1.15, 2.1]]), 3.4, 0, 0.18);
+  if (brass) k.box(paintMat("#3a2a1c", 0.6, 0.05), 0, 3.0, 2.3, 3.4, 1.85, 0.12);
+  else k.profile(body, shp([["M", 1.15, 2.1], ["L", 2.4, 2.1], ["L", 2.4, 3.55], ["Q", 1.9, 3.95, 1.15, 4.0], ["L", 1.15, 2.1]]), 3.4, 0, 0.18);
   // Touring body.
   k.profile(body, shp([["M", -5.25, 1.85], ["L", 1.2, 1.85], ["L", 1.2, 3.95], ["L", -1.05, 3.85], ["L", -5.0, 3.85], ["Q", -5.75, 3.7, -5.45, 2.5], ["L", -5.25, 1.85]]), 4.4, 0, 0.12);
   k.rbox(F.leather(), 0, 4.2, -0.3, 3.9, 1.0, 0.4, 0.12, -0.1);
@@ -630,8 +633,8 @@ function modelT(k, pal) {
     k.profile(black, fenderShape(zf, r, r + 0.1, r + 0.2, 0.5, Math.PI + 0.1), 0.8, sd * track, 0.03);
     k.profile(black, fenderShape(zr, r, r + 0.1, r + 0.2, -0.1, Math.PI - 0.55), 0.8, sd * track, 0.03);
     k.box(paintMat("#262626", 0.9, 0), sd * track, 1.15, 0, 0.8, 0.07, zf - zr - 2 * r - 0.3);
-    headlamp(k, sd * 1.05, 3.3, 5.6, 0.36, black, 0.45);
-    k.cyl(F.nickel(), 0.37, 0.37, 0.05, sd * 1.05, 3.3, 5.83, "z", 12);
+    headlamp(k, sd * 1.05, 3.3, 5.6, 0.36, brass ? F.brass() : black, 0.45);
+    k.cyl(brass ? F.brass() : F.nickel(), 0.37, 0.37, 0.05, sd * 1.05, 3.3, 5.83, "z", 12);
   }
   k.cyl(black, 0.04, 0.04, 2.2, 0, 2.85, 5.6, "x", 5);
   steering(k, 1.0, 4.65, -0.25, 0.6, wood);
@@ -681,6 +684,100 @@ function sedan20s(k, pal) {
   );
   plate(k, -6.35, 2.2, -1);
   return 13.1;
+}
+
+// Two-door sedan of about 1933-1936 (Ford V8 / Chevrolet Master type): raked V-front grille,
+// louvred hood, sloped windshield, deep valanced fenders with running boards, bullet
+// headlamps on the grille bar, wire wheels with big hubcaps, and the spare on the back.
+function sedan34(k, pal) {
+  const body = paintMat(pal.body, 0.32, 0.28);
+  const fm = paintMat(pal.fender || pal.body, 0.32, 0.28);
+  const r = 1.18;
+  const track = 2.3;
+  const zf = 4.65;
+  const zr = -4.65;
+  const wheelPaint = paintMat(pal.wheel || pal.body, 0.4, 0.3);
+  const wire = { pneumatic: true, tread: 0.5, spokes: 28, spoke: wheelPaint, rim: wheelPaint, hub: F.chrome(), cap: F.chrome(), hubR: 0.42, hubLen: 0.3, spokeW: 0.03, spokeD: 0.035, phase: 0.05 };
+  fourWheels(k, track, zf, zr, (x, z) => spokedWheel(k, x, r, z, r, wire));
+  for (const sd of [-1, 1]) k.box(F.black(), sd * 1.25, 1.55, 0, 0.14, 0.3, 11.4);
+  // Raked grille and shell; the hood runs back to the cowl.
+  k.rbox(body, 0, 3.2, 6.55, 2.5, 2.55, 0.35, 0.16, -0.16);
+  k.box(paintMat("#1b1b1b", 0.6, 0.3), 0, 3.15, 6.73, 2.05, 2.15, 0.05, -0.16);
+  for (let i = -4; i <= 4; i++) k.box(F.chrome(), i * 0.22, 3.15, 6.76, 0.05, 2.1, 0.06, -0.16);
+  k.rbox(body, 0, 3.55, 4.6, 2.55, 1.75, 3.9, 0.3);
+  for (let i = 0; i < 4; i++) for (const sd of [-1, 1]) k.box(paintMat("#1c1c1c", 0.6, 0.2), sd * 1.29, 3.75 - i * 0.32, 4.35, 0.02, 0.08, 1.6);
+  // Body and cabin in one side profile: sloped windshield, rounded back with a small bustle.
+  k.profile(body, shp([["M", -6.3, 1.85], ["L", 2.75, 1.85], ["L", 2.75, 4.35], ["L", 2.45, 4.5], ["L", 1.6, 6.05], ["L", -2.6, 6.15], ["Q", -4.4, 6.1, -5.15, 4.6], ["Q", -6.1, 4.25, -6.45, 3.1], ["L", -6.3, 1.85]]), 4.75, 0, 0.2, 10);
+  k.profile(F.glass(), shp([["M", 1.25, 4.6], ["L", 0.65, 5.75], ["L", -1.55, 5.8], ["L", -1.55, 4.6], ["L", 1.25, 4.6]]), 4.82, 0, 0);
+  k.profile(F.glass(), shp([["M", -1.85, 4.6], ["L", -1.85, 5.8], ["L", -2.7, 5.82], ["Q", -3.8, 5.7, -4.3, 4.6], ["L", -1.85, 4.6]]), 4.82, 0, 0);
+  k.profile(F.glass(), shp([["M", 2.42, 4.5], ["L", 1.6, 6.05], ["L", 1.45, 6.0], ["L", 2.25, 4.5], ["L", 2.42, 4.5]]), 4.1, 0, 0.02);
+  k.box(F.glass(), 0, 5.1, -5.0, 1.8, 0.5, 0.05, 0.6);
+  k.box(F.chrome(), 0, 4.4, -1.6, 4.85, 0.05, 8.6);
+  // Valanced fenders (no pontoon yet), running boards, bullet lamps on the grille bar.
+  for (const sd of [-1, 1]) {
+    const x = sd * 2.45;
+    k.profile(fm, shp([["M", zf + 2.05, 1.95], ["Q", zf + 1.9, 3.05, zf + 0.3, 3.15], ["Q", zf - 1.6, 3.1, zf - 2.6, 1.65], ["L", zf - 2.6, 1.4], ["W", zf, r, 1.36, 1.4], ["L", zf + 1.75, 1.6], ["L", zf + 2.05, 1.95]]), 1.0, x, 0.12, 10);
+    k.profile(fm, shp([["M", zr + 1.7, 1.45], ["Q", zr + 1.5, 2.95, zr - 0.1, 3.0], ["Q", zr - 1.6, 2.9, zr - 2.0, 1.75], ["L", zr - 2.0, 1.4], ["W", zr, r, 1.36, 1.4], ["L", zr + 1.7, 1.45]]), 0.95, x * 0.99, 0.12, 10);
+    k.box(paintMat("#1e1e1e", 0.9, 0), sd * 2.45, 1.4, (zf + zr) / 2 - 0.2, 0.85, 0.08, zf - zr - 4.3);
+    k.sphere(F.chrome(), 0.34, sd * 1.5, 4.0, 6.3, 1, 1, 1.45, 10);
+    k.cyl(F.lens(), 0.3, 0.3, 0.03, sd * 1.5, 4.0, 6.78, "z", 12);
+    k.sphere(F.tail(), 0.12, sd * 2.45, 3.0, zr - 1.7, 1, 1.2, 1, 8);
+  }
+  k.box(F.chrome(), 0, 4.0, 6.3, 3.0, 0.07, 0.07);
+  for (const zz of [7.2, -6.95]) k.rbox(F.chrome(), 0, 1.65, zz, 5.1, 0.35, 0.18, 0.08);
+  k.within(new THREE.Matrix4().makeRotationY(Math.PI / 2).setPosition(0, 3.0, -6.6), () => spokedWheel(k, -0.01, 0, 0, r, { ...wire, hubLen: 0.25 }));
+  plate(k, -7.05, 2.25, -1);
+  return 14.6;
+}
+
+// Closed-cab pickup of about 1928-1931 (Ford Model A type): nickel radiator shell, bowl
+// headlamps on a tie bar, upright cab, crescent fenders, wire wheels, wooden-floored bed.
+function pickupA(k, pal) {
+  const body = paintMat(pal.body, 0.38, 0.2);
+  const fm = paintMat("#141414", 0.4, 0.2);
+  const r = 1.18;
+  const track = 2.3;
+  const zf = 4.3;
+  const zr = -4.3;
+  const wheelPaint = paintMat("#1b1b1b", 0.45, 0.3);
+  const wire = { pneumatic: true, tread: 0.4, spokes: 24, spoke: wheelPaint, rim: wheelPaint, hub: wheelPaint, cap: F.chrome(), hubR: 0.3, hubLen: 0.35, spokeW: 0.035, spokeD: 0.04, phase: 0.1 };
+  fourWheels(k, track, zf, zr, (x, z) => spokedWheel(k, x, r, z, r, wire));
+  for (const sd of [-1, 1]) k.box(F.black(), sd * 1.3, 1.6, -0.4, 0.14, 0.3, 11.6);
+  k.rbox(F.nickel(), 0, 2.95, 5.6, 2.4, 2.05, 0.3, 0.14);
+  k.box(paintMat("#24221f", 0.85, 0.2), 0, 2.9, 5.76, 1.95, 1.65, 0.04);
+  k.rbox(body, 0, 2.95, 3.75, 2.35, 1.45, 3.4, 0.2);
+  for (let i = 0; i < 8; i++) for (const sd of [-1, 1]) k.box(fm, sd * 1.19, 2.95, 4.6 - i * 0.18, 0.02, 0.6, 0.06);
+  k.box(F.chrome(), 0, 3.0, 5.95, 2.6, 0.06, 0.06);
+  for (const sd of [-1, 1]) {
+    k.sphere(F.chrome(), 0.42, sd * 1.15, 3.2, 5.95, 1, 1, 0.75, 12);
+    k.cyl(F.lens(), 0.36, 0.36, 0.03, sd * 1.15, 3.2, 6.27, "z", 12);
+  }
+  // Upright cab with a flat windshield and a short visor.
+  const zc0 = 2.05;
+  const zc1 = -1.35;
+  k.profile(body, shp([["M", zc1, 1.85], ["L", zc0, 1.85], ["L", zc0, 3.65], ["L", zc0 - 0.2, 4.0], ["L", zc0 - 0.35, 6.0], ["L", zc1 + 0.3, 6.05], ["Q", zc1, 6.0, zc1, 5.6], ["L", zc1, 1.85]]), 4.5, 0, 0.12);
+  k.profile(F.glass(), shp([["M", zc0 - 0.6, 4.2], ["L", zc0 - 0.65, 5.6], ["L", zc1 + 0.4, 5.6], ["L", zc1 + 0.4, 4.2], ["L", zc0 - 0.6, 4.2]]), 4.56, 0, 0);
+  k.box(F.glass(), 0, 5.0, zc0 - 0.3, 3.8, 1.5, 0.05);
+  k.box(paintMat("#191919", 0.7, 0.05), 0, 6.08, zc0 - 0.25, 4.4, 0.06, 0.6);
+  k.box(F.glass(), 0, 5.1, zc1 - 0.02, 2.2, 0.55, 0.05);
+  // Bed: wooden floor, steel sides, tailgate.
+  const zb0 = zc1 - 0.25;
+  const zb1 = zr - 1.9;
+  const bl = zb0 - zb1;
+  const zc = (zb0 + zb1) / 2;
+  k.box(paintMat("#6a5236", 0.85, 0), 0, 2.55, zc, 3.9, 0.12, bl);
+  for (const sd of [-1, 1]) k.box(body, sd * 1.95, 3.15, zc, 0.12, 1.2, bl);
+  k.box(body, 0, 3.15, zb0, 4.0, 1.2, 0.12);
+  k.box(body, 0, 3.1, zb1, 4.0, 1.1, 0.12);
+  for (const sd of [-1, 1]) {
+    k.profile(fm, fenderShape(zf, r, r + 0.12, r + 0.28, 0.35, Math.PI + 0.15), 1.0, sd * (track + 0.05), 0.05);
+    k.profile(fm, fenderShape(zr, r, r + 0.12, r + 0.28, 0.05, Math.PI - 0.05), 0.95, sd * (track + 0.05), 0.05);
+    k.box(paintMat("#222", 0.9, 0), sd * (track + 0.05), 1.3, 0, 1.0, 0.07, zf - zr - 2 * r - 0.5);
+    k.rbox(F.tail(), sd * 1.8, 2.6, zb1 - 0.12, 0.2, 0.25, 0.12, 0.04);
+  }
+  for (const dy of [0, 0.32]) k.box(F.chrome(), 0, 1.45 + dy, 6.4, 5.0, 0.13, 0.07);
+  plate(k, zb1 - 0.1, 2.2, -1);
+  return 12.9;
 }
 
 // Streamlined sedan of about 1936-1948: rounded body, pontoon fenders with lamps, running
@@ -906,13 +1003,21 @@ function modernCar(k, pal) {
 
 // Which models stand at the curb in a given year (estimates; see SOURCES.md). A fleet lists
 // models with weights; slots walk the list so each street gets a plausible mix of old and new.
+// Cars stayed in use for years after they were built, so each band keeps some older models.
 const FLEETS = [
   [1905, [["runabout", 3], ["touring", 2]]],
-  [1910, [["touring", 3], ["runabout", 1], ["tee", 2]]],
-  [1915, [["tee", 6], ["touring", 1]]],
+  // Model T on sale from October 1908 (brass radiator through the 1916 model year).
+  [1909, [["touring", 3], ["runabout", 1], ["teeBrass", 2]]],
+  [1915, [["teeBrass", 5], ["touring", 2]]],
+  // Black radiator shell and curved cowl from the 1917 model year.
+  [1917, [["tee", 5], ["teeBrass", 2], ["touring", 1]]],
   [1925, [["sedan20s", 3], ["tee", 2]]],
-  [1933, [["rounded", 5], ["sedan20s", 2], ["pickup40s", 2]]],
-  [1942, [["rounded", 6], ["pickup40s", 2], ["sedan20s", 1]]],
+  // Model A on sale from December 1927; Model T production ended in May 1927.
+  [1928, [["sedan20s", 4], ["tee", 3], ["pickupA", 2]]],
+  [1933, [["sedan34", 4], ["sedan20s", 3], ["pickupA", 2], ["tee", 1]]],
+  [1937, [["rounded", 4], ["sedan34", 4], ["sedan20s", 2], ["pickup40s", 2], ["pickupA", 1]]],
+  // No new civilian cars were built from February 1942 to 1945; older cars stayed in use.
+  [1942, [["rounded", 6], ["sedan34", 2], ["pickup40s", 2], ["sedan20s", 1]]],
   [1949, [["fifties", 5], ["rounded", 3], ["pickup40s", 2]]],
   [1957, [["finned", 4], ["fifties", 3], ["pickup60s", 2], ["rounded", 1]]],
   [1963, [["sixties", 5], ["pickup60s", 3], ["finned", 2]]],
@@ -925,19 +1030,36 @@ function fleetFor(year) {
   return pick;
 }
 
+// How many cars stand at the downtown curbs (estimate; the town had about 25 autos in 1908
+// and 35 assessed in 1912; national registrations rose from about 0.5 million in 1910 to
+// 8 million in 1920 and 23 million in 1930).
+export function carCount(year) {
+  if (year < 1905) return 0;
+  if (year < 1909) return 2;
+  if (year < 1915) return 3;
+  if (year < 1920) return 5;
+  if (year < 1928) return 8;
+  if (year < 1935) return 14;
+  if (year < 1980) return 20;
+  return 12;
+}
+
 // The fleet band (for remounting the town when the slider crosses a change).
 export function carBand(year) {
   const f = fleetFor(year);
-  return f ? `c${f[0]}` : "c0";
+  return `${f ? `c${f[0]}` : "c0"}n${carCount(year)}`;
 }
 
-// How many cars stand at the downtown curbs (estimate; the town had about 25 autos in 1908).
-export function carCount(year) {
-  if (year < 1905) return 0;
-  if (year < 1915) return 2;
-  if (year < 1935) return 6;
-  if (year < 1980) return 16;
-  return 12;
+// Horse-drawn rigs and saddle horses on Main by year (estimates; SOURCES.md). The data has
+// three wagon spots and two saddle-horse spots; this lists which of them stay. Horses outnumber
+// cars into the 1910s, cars outnumber them in the 1920s, and by about 1937 only an occasional
+// farm wagon still comes to town (tractors and trucks took over farm hauling through the 1930s).
+export function horseMixFor(year) {
+  if (year < 1915) return { wagons: [0, 1, 2], horses: [0, 1] };
+  if (year < 1925) return { wagons: [0, 2], horses: [1] };
+  if (year < 1937) return { wagons: [0], horses: [1] };
+  if (year < 1950) return { wagons: [2], horses: [] };
+  return { wagons: [], horses: [] };
 }
 
 export function styleForSlot(year, slot) {
@@ -954,6 +1076,15 @@ const PALETTES = {
   runabout: [{ body: "#2f2018" }, { body: "#1e2b22", accent: "#b39a4f" }, { body: "#5e1f1a" }],
   touring: [{ body: "#2a3a2c" }, { body: "#5a1d1a" }, { body: "#1b2333" }, { body: "#3b2a22" }],
   tee: [{ body: "#141414" }],
+  teeBrass: [{ body: "#141414" }, { body: "#1f2a22" }, { body: "#22293a" }],
+  sedan34: [
+    { body: "#161616" },
+    { body: "#26324a", wheel: "#1b1b1b" },
+    { body: "#4a2522", wheel: "#1b1b1b" },
+    { body: "#2c3b2f", wheel: "#1b1b1b" },
+    { body: "#5d6166", fender: "#1b1b1b", wheel: "#1b1b1b" },
+  ],
+  pickupA: [{ body: "#1a1a1a" }, { body: "#2d3a2c" }, { body: "#3a3f47" }],
   sedan20s: [
     { body: "#2d3a4a", wheel: "#1b1b1b" },
     { body: "#5b5446", wheel: "#1b1b1b" },
@@ -1012,6 +1143,12 @@ export function buildCarInto(k, style, pal) {
       return brassCar(k, "touring", pal);
     case "tee":
       return modelT(k, pal);
+    case "teeBrass":
+      return modelT(k, pal, true);
+    case "sedan34":
+      return sedan34(k, pal);
+    case "pickupA":
+      return pickupA(k, pal);
     case "sedan20s":
       return sedan20s(k, pal);
     case "rounded":
@@ -1035,6 +1172,9 @@ export const CAR_LENGTH = {
   runabout: 10.4,
   touring: 12.6,
   tee: 11.1,
+  teeBrass: 11.1,
+  sedan34: 14.6,
+  pickupA: 12.9,
   sedan20s: 13.1,
   rounded: 16.2,
   fifties: 17.2,
@@ -1986,6 +2126,7 @@ export function addRolling(scene, data, year) {
 
 // Remount key: changes whenever the cars, lamps, rolling stock, or wagons change.
 export function vehicleBand(year) {
-  const wagon = year >= 1925 ? "w2" : year >= 1890 ? "w1" : "w0";
+  const mix = horseMixFor(year);
+  const wagon = `${year >= 1925 ? "w2" : year >= 1890 ? "w1" : "w0"}-${mix.wagons.join("")}-${mix.horses.join("")}`;
   return `${carBand(year)}:${lampStyleFor(year)}:${railEraFor(year)}:${wagon}`;
 }
