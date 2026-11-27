@@ -40,6 +40,7 @@ export function buildTown(data, scene) {
   const DETAIL_CELL = 400;
   const signs = [];
   const extraTrees = [];
+  let applyTuftLod = null;
   const colliders = [];
   const picks = new THREE.Group();
   picks.name = "picks";
@@ -7579,7 +7580,7 @@ export function buildTown(data, scene) {
   // Round 4: the plane is split into small cells and sits a little below the streets. As two
   // 40,000-foot triangles at y = 0 it won the depth test over the dirt streets in the
   // software renderer, so every dirt street read as lawn.
-  const prairie = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000, 100, 100), groundGrassMat);
+  const prairie = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000, 40, 40), groundGrassMat);
   prairie.rotation.x = -Math.PI / 2;
   prairie.position.y = -0.3;
   prairie.receiveShadow = true;
@@ -8156,7 +8157,33 @@ float sNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
       if (grassMesh.instanceColor) grassMesh.instanceColor.needsUpdate = true;
       grassMesh.castShadow = false;
       grassMesh.receiveShadow = true;
+      grassMesh.frustumCulled = false;
       scene.add(grassMesh);
+      const tuftMats = tufts.map((_, i) => {
+        const m = new THREE.Matrix4();
+        grassMesh.getMatrixAt(i, m);
+        return m.clone();
+      });
+      const tuftLod = new Int8Array(tufts.length);
+      const TUFT_NEAR = 900;
+      const TUFT_OUT = 1100;
+      applyTuftLod = (cam) => {
+        const cx = cam?.position?.x ?? 0;
+        const cz = cam?.position?.z ?? 0;
+        let n = 0;
+        for (let i = 0; i < tufts.length; i++) {
+          const d = Math.hypot(tufts[i].tx - cx, tufts[i].tz - cz);
+          let show = tuftLod[i];
+          if (show) show = d < TUFT_OUT ? 1 : 0;
+          else show = d < TUFT_NEAR ? 1 : 0;
+          tuftLod[i] = show;
+          if (show) grassMesh.setMatrixAt(n++, tuftMats[i]);
+        }
+        grassMesh.count = n;
+        grassMesh.instanceMatrix.needsUpdate = true;
+        grassMesh.visible = n > 0;
+      };
+      applyTuftLod(null);
     }
   }
   vergeMesh.receiveShadow = true;
@@ -8878,6 +8905,7 @@ float lHash(vec3 p){ p=fract(p*0.1031); p+=dot(p,p.yzx+33.33); return fract((p.x
   const update = (elapsed, cam) => {
     applyTreeLod(cam);
     applyDetailLod(cam);
+    if (applyTuftLod) applyTuftLod(cam);
     if (updatePeople) updatePeople(elapsed, cam);
   };
   return { colliders, picks, materials: mats, update };

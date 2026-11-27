@@ -1645,6 +1645,13 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
 
       if (haveCam) {
         const dist = Math.hypot(px - camX, pz - camZ);
+        // Past a long block a person is a speck; skip the silhouette entirely.
+        if (a._gone) a._gone = dist > 620;
+        else a._gone = dist > 720;
+        if (a._gone) {
+          lodFar[i] = 1;
+          return;
+        }
         if (a._far) a._far = dist > 60;
         else a._far = dist > 72;
         lodFar[i] = a._far ? 1 : 0;
@@ -1799,11 +1806,13 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
     for (const part of parts) {
       if (part.meshHi) {
         part.meshHi.count = part.hiN;
+        part.meshHi.visible = part.hiN > 0;
         part.meshHi.instanceMatrix.needsUpdate = true;
         if (part.meshHi.instanceColor) part.meshHi.instanceColor.needsUpdate = true;
       }
       if (part.meshLo) {
         part.meshLo.count = part.loN;
+        part.meshLo.visible = part.loN > 0;
         part.meshLo.instanceMatrix.needsUpdate = true;
         if (part.meshLo.instanceColor) part.meshLo.instanceColor.needsUpdate = true;
       }
