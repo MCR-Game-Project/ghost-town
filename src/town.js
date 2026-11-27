@@ -8217,6 +8217,7 @@ float sNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
   // preview/vehicles: fewer rigs as the cars take over (horseMixFor in vehicles.js).
   const mix = horseMixFor(groundYear);
   const keep = { wagon: new Set(mix.wagons), horse: new Set(mix.horses) };
+  const rigSpots = [];
   for (const p of data.props) {
     if (!horseYears && ["horse", "wagon", "hitching", "trough"].includes(p.type)) continue;
     if (p.type in keep && !keep[p.type].has(slots[p.type])) {
@@ -8227,12 +8228,15 @@ float sNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
       lampSpots.push({ x: p.x, z: p.z, main: true, face: [0, -Math.sign(p.z) || 1] });
       continue;
     }
-    if (p.type in slots) propRoot.add(makeProp({ ...p, year: groundYear, slot: slots[p.type]++ }, mats));
+    if (p.type in slots) {
+      rigSpots.push({ x: p.x, z: p.z });
+      propRoot.add(makeProp({ ...p, year: groundYear, slot: slots[p.type]++ }, mats));
+    }
     else propRoot.add(makeProp(p, mats));
   }
   scene.add(propRoot);
   addStreetLamps(scene, lampSpots, groundYear);
-  addVehicles(data, mats, scene, groundYear, modernPaved, lampSpots);
+  addVehicles(data, mats, scene, groundYear, modernPaved, lampSpots, rigSpots);
   addRolling(scene, data, groundYear);
 
   // Street looks taken from dated photographs. Each one is only on the years
@@ -8829,7 +8833,7 @@ function ensureColor(root) {
 // The town had about 25 autos in 1908 and 35 assessed in 1912 (p.29, p.32). The 1954 Main
 // Street photographs (p.113-p.116) show rounded late-1940s and early-1950s sedans.
 // Counts and models per stop are estimates; the models are in vehicles.js (preview/vehicles).
-function addVehicles(data, mats, scene, year, modernPaved, lamps = []) {
+function addVehicles(data, mats, scene, year, modernPaved, lamps = [], rigs = []) {
   const n = carCount(year);
   if (!n) return;
   const byName = (name) => data.streets.find((s) => s.name === name && s.axis);
@@ -8866,6 +8870,8 @@ function addVehicles(data, mats, scene, year, modernPaved, lamps = []) {
   // preview/vehicles: keep a parked car clear of a curb lamp post (slide it along the curb a
   // little, or leave that space empty).
   const clear = spots.filter((spot) => {
+    // preview/vehicles round 2: leave a curb space empty beside a standing horse or wagon.
+    if (rigs.some((r) => Math.abs(r.x - spot.x) < 12 && Math.abs(r.z - spot.z) < 9)) return false;
     const along = Math.abs(Math.sin(spot.heading)) > 0.5 ? "x" : "z";
     const across = along === "x" ? "z" : "x";
     for (const lamp of lamps) {
