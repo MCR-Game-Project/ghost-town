@@ -1007,11 +1007,8 @@ function applyTownPatch(data, patch) {
   if (patch.removeBoardwalks) data.boardwalks = [];
 }
 
-function disposeTown() {
-  townUpdate = null;
-  const doomed = [...townGroup.children];
-  for (const obj of doomed) townGroup.remove(obj);
-  for (const obj of doomed) {
+function disposeObjects(roots) {
+  for (const obj of roots) {
     obj.traverse((node) => {
       if (node.geometry) node.geometry.dispose();
       const list = node.material ? (Array.isArray(node.material) ? node.material : [node.material]) : [];
@@ -1025,7 +1022,72 @@ function disposeTown() {
   }
 }
 
+function disposeTown() {
+  townUpdate = null;
+  const doomed = [...townGroup.children];
+  for (const obj of doomed) townGroup.remove(obj);
+  disposeObjects(doomed);
+}
+
+function eraBand(value) {
+  const bands = [];
+  if (value >= 1965 && value < 1970) bands.push("after-mickelberry");
+  // 1941–1949 keep the 1920 town and take the stud-farm signs and flags off.
+  if (value > 1940 && value < 1950) bands.push("after-stud-farm");
+  // Round 4 & preview/paving: paving spans and W.P.A. black-top change with the slider year.
+  const paveYears = [1902, 1904, 1907, 1909, 1910, 1911, 1923, 1924, 1926, 1928];
+  bands.push("pave-" + paveYears.filter((y) => value >= y).length);
+  if (value >= 1938) bands.push("blacktop");
+  // preview/vehicles: cars, street lamps, rolling stock, and wagons change with the slider year.
+  bands.push(vehicleBand(value));
+  bands.push(peopleBand(value));
+  return bands.join("|") || "same";
+}
+
+const townCache = new Map();
+let mountedKey = null;
+
+function stashTown(key) {
+  if (!key || !townGroup.children.length) return;
+  townCache.set(key, {
+    children: [...townGroup.children],
+    colliders,
+    picks,
+    townUpdate,
+    town,
+    shownBuiltYear,
+  });
+  for (const child of [...townGroup.children]) townGroup.remove(child);
+  while (townCache.size > 1) {
+    const oldest = townCache.keys().next().value;
+    const evicted = townCache.get(oldest);
+    townCache.delete(oldest);
+    disposeObjects(evicted.children);
+  }
+}
+
+function mountKey(builtYear, sliderYear) {
+  return `${builtYear}|${eraBand(sliderYear)}`;
+}
+
 function mountTown(builtYear, sliderYear = builtYear) {
+  const key = mountKey(builtYear, sliderYear);
+  if (key === mountedKey && townGroup.children.length) return;
+  if (mountedKey && mountedKey !== key) stashTown(mountedKey);
+  if (townCache.has(key)) {
+    const entry = townCache.get(key);
+    townCache.delete(key);
+    for (const child of entry.children) townGroup.add(child);
+    colliders = entry.colliders;
+    picks = entry.picks;
+    townUpdate = entry.townUpdate;
+    town = entry.town;
+    shownBuiltYear = entry.shownBuiltYear;
+    mountedKey = key;
+    const quality = document.getElementById("quality");
+    if (quality) applyQuality(quality.value);
+    return;
+  }
   disposeTown();
   const data = structuredClone(townSource);
   if (builtYear < 1880) applyTownPatch(data, townPatches[builtYear]);
@@ -1081,34 +1143,126 @@ function mountTown(builtYear, sliderYear = builtYear) {
   picks = built.picks;
   townUpdate = built.update || null;
   shownBuiltYear = builtYear;
+  mountedKey = key;
   const quality = document.getElementById("quality");
   if (quality) applyQuality(quality.value);
 }
 
+let yearLoadGen = 0;
 onCensusYear = (year) => {
   if (!townSource) return;
   const built = builtTownYear(year);
   setTownNote(year, built);
-  const eraBand = (value) => {
-    const bands = [];
-    if (value >= 1965 && value < 1970) bands.push("after-mickelberry");
-    // 1941–1949 keep the 1920 town and take the stud-farm signs and flags off.
-    if (value > 1940 && value < 1950) bands.push("after-stud-farm");
-    // Round 4 & preview/paving: paving spans and W.P.A. black-top change with the slider year.
-    const paveYears = [1902, 1904, 1907, 1909, 1910, 1911, 1923, 1924, 1926, 1928];
-    bands.push("pave-" + paveYears.filter((y) => value >= y).length);
-    if (value >= 1938) bands.push("blacktop");
-    // preview/vehicles: cars, street lamps, rolling stock, and wagons change with the slider year.
-    bands.push(vehicleBand(value));
-    bands.push(peopleBand(value));
-    return bands.join("|") || "same";
-  };
   if (built === shownBuiltYear && eraBand(year) === eraBand(shownSliderYear)) return;
   shownSliderYear = year;
-  mountTown(built, year);
-  // The year changes the town. It does not move the camera.
-  if (mode === "overview") setOverviewCaption();
+  const gen = ++yearLoadGen;
+  ensurePatches(built)
+    .then(() => {
+      if (gen !== yearLoadGen) return;
+      mountTown(built, year);
+      // The year changes the town. It does not move the camera.
+      if (mode === "overview") setOverviewCaption();
+    })
+    .catch((error) => console.error(error));
 };
+
+const YEAR_PATCH_FILES = {
+  1854: "bushnell-1854.json",
+  1860: "bushnell-1860.json",
+  1870: "bushnell-1870.json",
+  1890: "bushnell-1890.json",
+  1900: "bushnell-1900.json",
+  1905: "bushnell-1905.json",
+  1910: "bushnell-1910.json",
+  1920: "bushnell-1920.json",
+  1950: "bushnell-1950.json",
+  1960: "bushnell-1960.json",
+  1970: "bushnell-1970.json",
+};
+const RURAL_FILES = {
+  1880: "bushnell-rural-1880.json",
+  1920: "bushnell-rural-1920.json",
+  1950: "bushnell-rural-1950.json",
+  1970: "bushnell-rural-1970.json",
+};
+const inflight = new Map();
+const ruralLoaded = {};
+
+async function fetchJson(name) {
+  const response = await fetch(`${import.meta.env.BASE_URL}data/${name}`);
+  if (!response.ok) throw new Error("A town file did not load.");
+  return response.json();
+}
+
+function once(key, fn) {
+  if (inflight.has(key)) return inflight.get(key);
+  const pending = fn().finally(() => inflight.delete(key));
+  inflight.set(key, pending);
+  return pending;
+}
+
+async function loadYearPatch(year) {
+  if (townPatches[year]) return townPatches[year];
+  const name = YEAR_PATCH_FILES[year];
+  if (!name) return null;
+  return once(`year-${year}`, async () => {
+    if (townPatches[year]) return townPatches[year];
+    const patch = await fetchJson(name);
+    townPatches[year] = patch;
+    return patch;
+  });
+}
+
+async function loadRural(year) {
+  if (ruralLoaded[year]) return;
+  const name = RURAL_FILES[year];
+  if (!name) return;
+  return once(`rural-${year}`, async () => {
+    if (ruralLoaded[year]) return;
+    const extra = await fetchJson(name);
+    ruralLoaded[year] = true;
+    if (year === 1880) {
+      townPatches.rural1880 = extra;
+      return;
+    }
+    const patch = await loadYearPatch(year);
+    patch.add = [...(patch.add || []), ...(extra.add || [])];
+    patch.streets = [...(patch.streets || []), ...(extra.streets || [])];
+    if (extra.remove?.length) patch.remove = [...(patch.remove || []), ...extra.remove];
+  });
+}
+
+async function ensurePatches(builtYear) {
+  if (!townSource) townSource = await once("base", () => fetchJson("bushnell-1880.json"));
+  if (builtYear < 1880) {
+    await loadYearPatch(builtYear);
+    return;
+  }
+  await loadRural(1880);
+  for (const year of [1890, 1900, 1905, 1910, 1920, 1950, 1960, 1970]) {
+    if (builtYear >= year) await loadYearPatch(year);
+  }
+  for (const year of [1920, 1950, 1970]) {
+    if (builtYear >= year) await loadRural(year);
+  }
+}
+
+async function prefetchRest() {
+  for (const year of [1854, 1860, 1870, 1890, 1900, 1905, 1910, 1920, 1950, 1960, 1970]) {
+    try {
+      await loadYearPatch(year);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  for (const year of [1880, 1920, 1950, 1970]) {
+    try {
+      await loadRural(year);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+}
 
 async function loadStats() {
   const response = await fetch(`${import.meta.env.BASE_URL}data/bushnell-years.json`);
@@ -1118,53 +1272,7 @@ async function loadStats() {
 
 async function main() {
   bindStats();
-  const files = [
-    ["base", "bushnell-1880.json"],
-    [1854, "bushnell-1854.json"],
-    [1860, "bushnell-1860.json"],
-    [1870, "bushnell-1870.json"],
-    [1890, "bushnell-1890.json"],
-    [1900, "bushnell-1900.json"],
-    [1905, "bushnell-1905.json"],
-    [1910, "bushnell-1910.json"],
-    [1920, "bushnell-1920.json"],
-    [1950, "bushnell-1950.json"],
-    [1960, "bushnell-1960.json"],
-    [1970, "bushnell-1970.json"],
-  ];
-  const responses = await Promise.all(
-    files.map(([, name]) => fetch(`${import.meta.env.BASE_URL}data/${name}`)),
-  );
-  if (responses.some((response) => !response.ok)) throw new Error("A town file did not load.");
-  const payloads = await Promise.all(responses.map((response) => response.json()));
-  townSource = payloads[0];
-  const ruralNotes = await Promise.all(
-    ["bushnell-rural-1880.json", "bushnell-rural-1920.json", "bushnell-rural-1950.json", "bushnell-rural-1970.json"].map(async (name) => {
-      const response = await fetch(`${import.meta.env.BASE_URL}data/${name}`);
-      if (!response.ok) throw new Error("A countryside file did not load.");
-      return response.json();
-    }),
-  );
-  townPatches = {
-    1854: payloads[1],
-    1860: payloads[2],
-    1870: payloads[3],
-    1890: payloads[4],
-    1900: payloads[5],
-    1905: payloads[6],
-    1910: payloads[7],
-    1920: payloads[8],
-    1950: payloads[9],
-    1960: payloads[10],
-    1970: payloads[11],
-  };
-  townPatches.rural1880 = ruralNotes[0];
-  for (const [year, extra] of [[1920, ruralNotes[1]], [1950, ruralNotes[2]], [1970, ruralNotes[3]]]) {
-    const patch = townPatches[year];
-    patch.add = [...(patch.add || []), ...(extra.add || [])];
-    patch.streets = [...(patch.streets || []), ...(extra.streets || [])];
-    if (extra.remove?.length) patch.remove = [...(patch.remove || []), ...extra.remove];
-  }
+  if (!townPatches) townPatches = {};
   addNorthArrow(scene);
   const quality = document.getElementById("quality");
   quality.value = shot ? "fine" : "street";
@@ -1172,7 +1280,9 @@ async function main() {
   const openingYear = Number(params.get("year"));
   const sliderYear = Number.isFinite(openingYear) ? openingYear : 1880;
   shownSliderYear = sliderYear;
+  await ensurePatches(builtTownYear(sliderYear));
   mountTown(builtTownYear(sliderYear), sliderYear);
+  prefetchRest();
 
   const select = document.getElementById("places");
   for (const place of town.places) {
