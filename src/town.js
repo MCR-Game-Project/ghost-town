@@ -7380,10 +7380,15 @@ export function buildTown(data, scene) {
       b.facade?.stBernard1907 || b.facade?.stBernard1953 || b.facade?.fireHouse1953 ||
       b.facade?.methodist1884 || b.facade?.methodist1925 || b.facade?.stBernardRectory ||
       b.facade?.presbyterian1869 || b.facade?.presbyterian1917 || b.facade?.baptist1866 || b.facade?.americanHouse || b.facade?.pioneer ||
-      b.id === "presbyterian-church-1917" || b.id === "junction-depot" || b.id === "hurst-crossing-shanty" ||
+      b.id === "presbyterian-church-1917" || b.id === "junction-depot" || b.id === "tpw-depot" || b.id === "hurst-crossing-shanty" ||
       b.id === "hendee-house-26" || b.id === "hendee-store-22"
     );
-    if (b.facadeSpec && !handDrawn) {
+    // Citation-only facadeSpecs (photo, camera, empty estimates) must not replace a hand-drawn front.
+    // drawFacadeSpec defaults a missing floor/bay list to a two-story red-brick hip box.
+    const specHasGeom = Boolean(
+      b.facadeSpec && (b.facadeSpec.floors || b.facadeSpec.bays || b.facadeSpec.wallKind || b.facadeSpec.storefront || b.facadeSpec.storefronts || b.facadeSpec.roof)
+    );
+    if (b.facadeSpec && !handDrawn && specHasGeom) {
       height = drawFacadeSpec(b, {
         box, put, mats, THREE, buildingMatrix, frontSash, archHood, hipRoof, gable, gableAt,
         dentilCourse, bracketRow, drawPediment, chimneyStack, paneledDoor, localBox,
