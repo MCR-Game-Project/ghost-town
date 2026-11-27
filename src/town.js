@@ -33,8 +33,11 @@ export function buildTown(data, scene) {
   // Round 4: shop windows read dark in every street photograph, not as pale panels.
   const shopGlass = new THREE.MeshStandardMaterial({ color: "#2a333b", roughness: 0.16, metalness: 0.35, envMapIntensity: 0.85 });
   const buckets = new Map();
-  const detailBuckets = new Map();
+  const detailCells = new Map();
   let detailOn = false;
+  let detailX = 0;
+  let detailZ = 0;
+  const DETAIL_CELL = 400;
   const signs = [];
   const extraTrees = [];
   const colliders = [];
@@ -54,9 +57,23 @@ export function buildTown(data, scene) {
       colors[i * 3 + 2] = c.b;
     }
     geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-    const dest = detailOn ? detailBuckets : buckets;
-    if (!dest.has(mat)) dest.set(mat, []);
-    dest.get(mat).push(geo);
+    if (detailOn) {
+      const ix = Math.floor(detailX / DETAIL_CELL);
+      const iz = Math.floor(detailZ / DETAIL_CELL);
+      const key = `${ix}:${iz}`;
+      let dest = detailCells.get(key);
+      if (!dest) {
+        dest = new Map();
+        dest.cx = (ix + 0.5) * DETAIL_CELL;
+        dest.cz = (iz + 0.5) * DETAIL_CELL;
+        detailCells.set(key, dest);
+      }
+      if (!dest.has(mat)) dest.set(mat, []);
+      dest.get(mat).push(geo);
+      return;
+    }
+    if (!buckets.has(mat)) buckets.set(mat, []);
+    buckets.get(mat).push(geo);
   };
 
   // Box faces are 0–1 in UV. Scale them by the material's foot-size so a brick stays a brick.
@@ -163,6 +180,8 @@ export function buildTown(data, scene) {
     geo.applyMatrix4(buildingMatrix);
     put(mats.glass, geo);
     const count = Math.max(2, bars);
+    const prevDetail = detailOn;
+    detailOn = true;
     for (let i = 1; i < count; i++) {
       const ang = (Math.PI * i) / count;
       const len = radius * 0.98;
@@ -172,6 +191,7 @@ export function buildTown(data, scene) {
       muntin.applyMatrix4(buildingMatrix);
       put(mats.trim, muntin);
     }
+    detailOn = prevDetail;
   };
 
   // Pointed (Gothic) head: two straight raking blocks meeting at an apex, with a
@@ -297,8 +317,11 @@ export function buildTown(data, scene) {
     box(frame, x - w / 2 + stile * 0.72, y, glassZ + 0.07, stile * 0.4, h - stile * 1.5, 0.09);
     box(frame, x + w / 2 - stile * 0.72, y, glassZ + 0.07, stile * 0.4, h - stile * 1.5, 0.09);
     if (muntin === "two") {
+      const prevDetail = detailOn;
+      detailOn = true;
       box(frame, x, y + up, glassZ + 0.06, 0.065, paneH * 0.94, 0.06);
       box(frame, x, y - up, glassZ + 0.06, 0.065, paneH * 0.94, 0.06);
+      detailOn = prevDetail;
     }
     box(sillMat, x, y - h / 2 - 0.26, outerZ + 0.12, w + 1.15, 0.32, 0.95);
     box(mats.trimDark, x, y - h / 2 - 0.46, outerZ + 0.28, w + 0.7, 0.1, 0.34);
@@ -372,6 +395,8 @@ export function buildTown(data, scene) {
   };
 
   const dentilCourse = (y, z, width, size = {}) => {
+    const prevDetail = detailOn;
+    detailOn = true;
     const dw = size.w ?? 0.26;
     const dh = size.h ?? 0.28;
     const dd = size.d ?? 0.26;
@@ -382,9 +407,12 @@ export function buildTown(data, scene) {
       const x = -width / 2 + (width * (i + 0.5)) / n;
       box(mat, x, y, z, dw, dh, dd);
     }
+    detailOn = prevDetail;
   };
 
   const bracketRow = (y, z, width, mat = mats.trimDark) => {
+    const prevDetail = detailOn;
+    detailOn = true;
     const n = Math.max(4, Math.round(width / 3.4));
     for (let i = 0; i < n; i++) {
       const x = -width / 2 + 0.5 + ((width - 1) * i) / Math.max(1, n - 1);
@@ -392,6 +420,7 @@ export function buildTown(data, scene) {
       box(mat, x, y - 0.72, z + 0.08, 0.3, 0.9, 0.32);
       box(mat, x, y - 0.45, z + 0.24, 0.28, 0.28, 0.36);
     }
+    detailOn = prevDetail;
   };
 
   const drawAwning = (width, fz, y = 10.2) => {
@@ -781,7 +810,10 @@ export function buildTown(data, scene) {
     // Railing at the open ends.
     for (const sd of [-1, 1]) {
       box(mats.siding.white, sd * (w / 2 - 0.1), 3.3, fz + depth / 2, 0.2, 0.25, depth - 1);
+      const prevDetail = detailOn;
+      detailOn = true;
       for (let k = 0; k < 6; k++) box(mats.siding.white, sd * (w / 2 - 0.1), 2.2, fz + 0.8 + (k * (depth - 1.6)) / 5, 0.14, 2.2, 0.14);
+      detailOn = prevDetail;
     }
     return { y: h + 2.2, z: zc };
   };
@@ -1255,6 +1287,8 @@ export function buildTown(data, scene) {
 
   const begin = (x, z, facing, extraDeg = 0) => {
     const rot = (FACING[facing] ?? 0) + THREE.MathUtils.degToRad(extraDeg || 0);
+    detailX = x;
+    detailZ = z;
     buildingMatrix.compose(
       new THREE.Vector3(x, 0, z),
       new THREE.Quaternion().setFromEuler(new THREE.Euler(0, rot, 0)),
@@ -2061,17 +2095,23 @@ export function buildTown(data, scene) {
       const railZ = z + depth / 2 - 0.32;
       box(mats.trim, mid, 2.2, railZ, gap, 0.14, 0.12);
       box(mats.trim, mid, 1.05, railZ, gap, 0.14, 0.12);
+      const prevDetail = detailOn;
+      detailOn = true;
       box(mats.picket, mid, 1.62, railZ, gap - 0.12, 2.0, 0.06);
+      detailOn = prevDetail;
     }
   };
 
   const houseBrackets = (x, z, span, y) => {
+    const prevDetail = detailOn;
+    detailOn = true;
     const n = Math.max(4, Math.round(span / 4.4));
     for (let i = 0; i < n; i++) {
       const px = x - span / 2 + (span * (i + 0.5)) / n;
       box(mats.trimDark, px, y - 0.4, z + 0.2, 0.24, 0.75, 0.42);
       box(mats.trimDark, px, y - 0.78, z + 0.05, 0.18, 0.42, 0.18);
     }
+    detailOn = prevDetail;
   };
 
   const houseChimney = (x, z, plate, rise) => {
@@ -8775,12 +8815,32 @@ float lHash(vec3 p){ p=fract(p*0.1031); p+=dot(p,p.yzx+33.33); return fract((p.x
       parent.add(mesh);
     }
   };
-  // Merge static building parts. Fine muntins sit in a second mesh that the view hides from the air.
+  // Merge static building parts. Fine muntins, dentils, brackets, and porch
+  // pickets sit in per-block groups that the walk view hides past ~640 feet,
+  // and that the air view still hides above 160 feet.
   mergeBucket(buckets, scene);
   const detail = new THREE.Group();
   detail.name = "building-detail";
-  mergeBucket(detailBuckets, detail);
+  for (const dest of detailCells.values()) {
+    const group = new THREE.Group();
+    group.userData.cx = dest.cx;
+    group.userData.cz = dest.cz;
+    mergeBucket(dest, group);
+    detail.add(group);
+  }
   scene.add(detail);
+  const DETAIL_NEAR = 640;
+  const DETAIL_OUT = 760;
+  const applyDetailLod = (cam) => {
+    const cx = cam?.position?.x ?? 0;
+    const cz = cam?.position?.z ?? 0;
+    for (const group of detail.children) {
+      const d = Math.hypot(group.userData.cx - cx, group.userData.cz - cz);
+      if (group.visible) group.visible = d < DETAIL_OUT;
+      else group.visible = d < DETAIL_NEAR;
+    }
+  };
+  applyDetailLod(null);
 
   for (const s of signs) {
     const tex = makeSignTexture(s.title, s.subtitle, s.style);
@@ -8817,6 +8877,7 @@ float lHash(vec3 p){ p=fract(p*0.1031); p+=dot(p,p.yzx+33.33); return fract((p.x
   const updatePeople = addPeople(data, scene, groundYear, colliders, modernPaved, allTrees);
   const update = (elapsed, cam) => {
     applyTreeLod(cam);
+    applyDetailLod(cam);
     if (updatePeople) updatePeople(elapsed, cam);
   };
   return { colliders, picks, materials: mats, update };
