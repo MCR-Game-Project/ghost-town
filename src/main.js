@@ -210,6 +210,7 @@ function menuIsOpen() {
 
 function syncHint() {
   const clean = document.body.classList.contains("clean");
+  document.body.dataset.mode = mode;
   document.getElementById("walk-hint").hidden = clean || mode !== "walk" || menuIsOpen();
   document.getElementById("overview-hint").hidden = clean || mode !== "overview";
 }
@@ -422,6 +423,8 @@ window.addEventListener("pointerup", () => {
   dragging = false;
 });
 window.addEventListener("pointermove", (event) => {
+  // Fingers are handled below by position, since phones do not all report movementX.
+  if (event.pointerType === "touch") return;
   if (mode !== "walk") return;
   if (event.target instanceof Element && event.target.closest("#stats, #tools, #help, #walk-hint")) return;
   const locked = document.pointerLockElement === canvas;
@@ -430,6 +433,28 @@ window.addEventListener("pointermove", (event) => {
   yaw -= event.movementX * sens;
   pitch = Math.max(-1.15, Math.min(1.05, pitch - event.movementY * sens));
 });
+
+// Drag a finger on the picture to look around while walking. Each finger is
+// tracked on its own, so holding a walk arrow does not also turn the view.
+const lookTouches = new Map();
+canvas.addEventListener("pointerdown", (event) => {
+  if (event.pointerType !== "touch") return;
+  lookTouches.set(event.pointerId, { x: event.clientX, y: event.clientY });
+});
+window.addEventListener("pointermove", (event) => {
+  const last = lookTouches.get(event.pointerId);
+  if (!last) return;
+  const dx = event.clientX - last.x;
+  const dy = event.clientY - last.y;
+  last.x = event.clientX;
+  last.y = event.clientY;
+  if (mode !== "walk") return;
+  yaw -= dx * 0.006;
+  pitch = Math.max(-1.15, Math.min(1.05, pitch - dy * 0.006));
+});
+for (const type of ["pointerup", "pointercancel"]) {
+  window.addEventListener(type, (event) => lookTouches.delete(event.pointerId));
+}
 
 document.addEventListener("pointerlockchange", () => {
   const locked = document.pointerLockElement === canvas;
@@ -528,9 +553,43 @@ document.querySelectorAll("#touch button").forEach((btn) => {
     keys.delete(code);
   };
   btn.addEventListener("pointerdown", down);
+  btn.addEventListener("contextmenu", (event) => event.preventDefault());
   btn.addEventListener("pointerup", up);
   btn.addEventListener("pointercancel", up);
 });
+
+// Phone layout: one Menu button opens the year, Go to, and Picture drawer.
+// On a desktop the button is hidden and the drawer has no box, so none of this shows.
+const menuButton = document.getElementById("menu-btn");
+function setDrawer(open) {
+  document.body.classList.toggle("menu-open", open);
+  menuButton.setAttribute("aria-expanded", open ? "true" : "false");
+  menuButton.textContent = open ? "Close" : "Menu";
+}
+menuButton.addEventListener("click", () => setDrawer(!document.body.classList.contains("menu-open")));
+canvas.addEventListener("pointerdown", () => setDrawer(false));
+document.getElementById("mode").addEventListener("click", () => setDrawer(false));
+document.getElementById("places").addEventListener("change", () => setDrawer(false));
+document.getElementById("stop").addEventListener("click", () => setDrawer(false));
+
+// On a phone the building card shows only its name; a tap opens the notes.
+const buildingCard = document.getElementById("card");
+buildingCard.addEventListener("click", () => buildingCard.classList.toggle("expanded"));
+const cardTitle = document.getElementById("card-title");
+let cardFor = "";
+new MutationObserver(() => {
+  if (cardTitle.textContent === cardFor) return;
+  cardFor = cardTitle.textContent;
+  buildingCard.classList.remove("expanded");
+}).observe(
+  cardTitle,
+  { childList: true, characterData: true, subtree: true },
+);
+
+// Keep a pinch from zooming the whole page on a phone (iOS ignores user-scalable).
+if (window.matchMedia("(pointer: coarse)").matches) {
+  document.addEventListener("gesturestart", (event) => event.preventDefault());
+}
 
 function describePlace() {
   if (!town) return;
