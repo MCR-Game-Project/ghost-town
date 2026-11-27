@@ -21,6 +21,12 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.08;
+window.__renderStats = () => {
+  const r = renderer.info.render;
+  const m = renderer.info.memory;
+  return { triangles: r.triangles, calls: r.calls, geometries: m.geometries, textures: m.textures };
+};
+
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xb9d0e4);
