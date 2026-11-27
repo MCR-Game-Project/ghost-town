@@ -4493,8 +4493,9 @@ export function buildTown(data, scene) {
     frontSash(shedX, 5.2, 8.2, 2.2, 3.4, "flat");
     box(mats.trunk, -b.width / 2 - 8, 12, fz + 8, 0.7, 24, 0.7);
     box(mats.trunk, -b.width / 2 - 8, 23, fz + 8, 8, 0.28, 0.35);
-    extraTrees.push({ x: b.x + b.width * 0.42, z: b.z + 18, kind: "maple", scale: 1.7 });
-    extraTrees.push({ x: b.x + b.width * 0.62, z: b.z + 8, kind: "elm", scale: 1.55 });
+    const frontZ = b.facing === "-z" ? -1 : 1;
+    extraTrees.push({ x: b.x + b.width * 0.42, z: b.z + frontZ * 18, kind: "maple", scale: 1.7 });
+    extraTrees.push({ x: b.x + b.width * 0.62, z: b.z + frontZ * 8, kind: "elm", scale: 1.55 });
     downspouts(b.width, b.depth, wallH);
     signFor(b, 11);
     return 26;

@@ -813,7 +813,7 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
     }
     for (const b of buildings) {
       if (b.id === "cbq-depot" && x >= b.x - b.width / 2 - 8 && x <= b.x + b.width / 2 + 8 && Math.abs(z - (b.z + 21.2)) <= 6.2) return 0.75;
-      if (b.id === "tpw-depot" && x >= b.x - b.width / 2 - 8 && x <= b.x + b.width / 2 + 8 && Math.abs(z - (b.z + 19.2)) <= 6.2) return 0.36;
+      if (b.id === "tpw-depot" && x >= b.x - b.width / 2 - 8 && x <= b.x + b.width / 2 + 8 && Math.abs(z - (b.z - 19.2)) <= 6.2) return 0.36;
       if (b.id === "junction-depot" && x >= b.x - b.width / 2 - 10 && x <= b.x + b.width / 2 + 10 && Math.abs(z - (b.z + 23)) <= 8.2) return 0.35;
     }
     for (const w of data.boardwalks || []) {
@@ -909,8 +909,8 @@ export function addPeople(data, scene, year, colliders, modernPaved, trees = [])
     } else if (b.id === "tpw-depot") {
       for (const dx of [-28, -10, 14, 30]) {
         const sx = b.x + dx;
-        const sz = b.z + 18.0;
-        if (isClear(sx, sz, true)) depotSpots.push({ x: sx, z: sz, yaw: 0.1, minX: b.x - 36, maxX: b.x + 36 });
+        const sz = b.z - 18.0;
+        if (isClear(sx, sz, true)) depotSpots.push({ x: sx, z: sz, yaw: Math.PI - 0.1, minX: b.x - 36, maxX: b.x + 36 });
       }
     } else if (b.id === "junction-depot") {
       for (const dx of [-24, 0, 22]) {
