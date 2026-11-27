@@ -832,7 +832,7 @@ All period refinements below apply **only** to generic, non-sourced / unnamed ba
 All of these are parametric shapes in `src/vehicles.js` (no photo textures), merged per material (cars, wagons, trains) or instanced (street lamps). They change with the slider year (`vehicleBand` in `src/main.js`). Sizes are real sizes in feet. Unless a line says *sourced*, the model, colour, and date range are estimates from general period practice, not from a Bushnell record.
 
 - **Wagons and buggies (estimate).** The wagon props pick a kind by year and slot: before 1890 a farm wagon, a freight wagon, or a top buggy; 1890–1924 a farm wagon, a two-seat fringed surrey, or a top buggy; from 1925 (while horses are drawn, before the 1950 stop) farm and freight wagons only. The farm/freight wagon is the Studebaker/Bain pattern: box on bolsters, 14-spoke rear wheels of 52 in. and 12-spoke front wheels of 44 in. with iron tyres, flare boards, spring seat, pole, doubletree, and neck yoke, drawn by a pair of draft horses (about 16 hands) in collar, hames, and traces. Green box and red running gear are the common factory finish of the period (estimate). Buggies and the surrey run on light 16/14-spoke wheels with elliptic springs and one driving horse in shafts. The tied saddle horses are about 15 hands. The wagons and buggies at the TP&W depot in `public/photos/tpw-depot-1914.png` set the general proportions.
-- **Cars (estimate; counts unchanged).** Counts per stop stay as before (2 from 1905, 6 from 1915, 16 from 1935, 12 after 1980). The 1908 and 1912 auto counts and the 1905 White Way photograph are in the earlier round 4 notes. The mix changes with the slider year: 1905 brass-era runabouts and touring cars (brass radiator and lamps, 32–34 in. wood artillery wheels, upright windshield, folded top); from 1910 a Model T joins; 1915–1924 mostly black Model T-type tourings with the top up (as in `public/photos/west-main-400-500-1907.png` and the 1915 Hail–Crafford view); 1925–1932 closed two-door sedans of the Model A/Chevrolet type (nickel radiator shell, bowl headlamps, wire wheels, rear spare); 1933–1948 streamlined sedans with pontoon fenders, running boards, and waterfall grilles, plus stepside pickups; 1949–1956 envelope-body sedans with two-tone roofs, skirts, and whitewalls (the rounded cars of the 1954 Main Street photographs, p.113–p.116); 1957–1962 finned sedans with wraparound windshields and quad lamps; 1963–1979 flat-sided sedans and fleetside pickups; after 1980 a plain late sedan. Parked cars are now slid along the curb (or left out) so none stands on a lamp post.
+- **Cars (estimate; counts unchanged).** *(Counts and mix revised in the horse-to-car transition round below.)* Counts per stop stay as before (2 from 1905, 6 from 1915, 16 from 1935, 12 after 1980). The 1908 and 1912 auto counts and the 1905 White Way photograph are in the earlier round 4 notes. The mix changes with the slider year: 1905 brass-era runabouts and touring cars (brass radiator and lamps, 32–34 in. wood artillery wheels, upright windshield, folded top); from 1910 a Model T joins; 1915–1924 mostly black Model T-type tourings with the top up (as in `public/photos/west-main-400-500-1907.png` and the 1915 Hail–Crafford view); 1925–1932 closed two-door sedans of the Model A/Chevrolet type (nickel radiator shell, bowl headlamps, wire wheels, rear spare); 1933–1948 streamlined sedans with pontoon fenders, running boards, and waterfall grilles, plus stepside pickups; 1949–1956 envelope-body sedans with two-tone roofs, skirts, and whitewalls (the rounded cars of the 1954 Main Street photographs, p.113–p.116); 1957–1962 finned sedans with wraparound windshields and quad lamps; 1963–1979 flat-sided sedans and fleetside pickups; after 1980 a plain late sedan. Parked cars are now slid along the curb (or left out) so none stands on a lamp post.
 - **Street lamps.** Lamps stand only in years whose data has street lamps (none in 1854, 1860, 1870, as before). Their places are unchanged; each lamp now faces the street.
   - Before 1893: kerosene lanterns on wooden posts with a ladder bar (estimate; the oil lamps were already inferred).
   - 1893–1914: single-globe cast-iron curb posts. The date is *sourced* only as a "by" date: the August 1893 Sanborn is the first map that labels an electric light works (Vanderveer & Logsdon), and the May 1898 sheet labels the Bushnell Electric Light & Power Co. The year electric street lights were first lit was not found, so 1893 is an **estimate**. The post shape follows the single-globe curb post in `public/photos/west-main-400-500-1907.png`.
@@ -847,6 +847,44 @@ All of these are parametric shapes in `src/vehicles.js` (no photo textures), mer
   - 1915–1949: 4-6-2 Pacific with an electric headlight and air pumps; 40-ft steel boxcars with outside posts and ribbed ends, steel hoppers with coal, tank car, reefer, caboose; heavyweight green coaches on six-wheel trucks.
   - 1950 on: an EMD E7/E8-style A-unit (70 ft, bulldog nose, twin headlights, porthole side windows, two 3-axle trucks) in stainless with a red band, and fluted stainless coaches (C. B. & Q. Zephyr-inspired paint; estimate). Steel freight cars with a silver tank car. (The first pass of this unit was a long low wedge that read as a modern bullet train; it was reshaped to the E-unit outline.)
   - Colours are kept distinct by car type: freight-car red/brown boxcars, cream reefers, black hoppers and tanks, red caboose, green or brown coaches. The rails keep their own colour.
+
+### Horse-to-car transition (`preview/vehicles`, round 2)
+
+Mark noticed horses still in the street at 1940. This round thins out the horse-drawn rigs year by year and fills the curbs with the cars of each period. No Bushnell record gives a count of horses or cars on Main in a given year, so **every count and share below is an estimate**. The estimates follow well-documented national and rural-Midwest trends, and the town's own 1908 and 1912 auto counts (centennial book p.29, p.32).
+
+Trends used (national, well documented; not Bushnell figures):
+- U.S. motor-vehicle registrations rose from roughly half a million in 1910 to about 8 million in 1920 and about 23 million in 1930 (U.S. Bureau of Public Roads / *Historical Statistics of the United States*).
+- Ford's Model T went on sale in October 1908. The brass radiator shell lasted through the 1916 model year; the black shell and curved cowl came with the 1917 model. Model T production ended in May 1927, and the Model A went on sale in December 1927.
+- Horses and mules on U.S. farms peaked about 1915–1920 and fell steadily through the 1920s and 1930s as tractors and trucks spread (USDA / census of agriculture). In 1940 there were roughly 1.6 million tractors on about 6 million farms, so many farms still worked horses; an occasional farm wagon in town is kept until the 1950 stop.
+- U.S. civilian car production stopped in February 1942 and resumed in late 1945, so the wartime street keeps older cars.
+- Cars stayed on the road for many years, so each period keeps some older models alongside the new ones.
+
+Mix on Main by slider year (the data has three wagon spots and two tied saddle-horse spots):
+
+| Years | Wagons / buggies | Saddle horses | Parked cars | Car models (weights) |
+|---|---|---|---|---|
+| to 1904 | 3 | 2 | 0 | none |
+| 1905–1908 | 3 | 2 | 2 | brass runabout 3, brass touring 2 |
+| 1909–1914 | 3 | 2 | 3 | brass touring 3, runabout 1, brass-radiator Model T 2 |
+| 1915–1916 | 2 | 1 | 5 | brass-radiator Model T 5, touring 2 |
+| 1917–1919 | 2 | 1 | 5 | Model T (black shell) 5, brass Model T 2, touring 1 |
+| 1920–1924 | 2 | 1 | 8 | as 1917 |
+| 1925–1927 | 1 | 1 | 8 | late-1920s closed sedan 3, Model T 2 |
+| 1928–1932 | 1 | 1 | 14 | Model A-type sedan 4, Model T 3, Model A-type pickup 2 |
+| 1933–1934 | 1 | 1 | 14 | 1933–36 sedan 4, Model A-type sedan 3, Model A pickup 2, Model T 1 |
+| 1935–1936 | 1 | 1 | 20 | as 1933 |
+| 1937–1941 | 1 farm wagon | 0 | 20 | rounded 1936–48 sedan 4, 1933–36 sedan 4, Model A-type sedan 2, stepside pickup 2, Model A pickup 1 |
+| 1942–1948 | 1 farm wagon | 0 | 20 | rounded sedan 6, 1933–36 sedan 2, stepside pickup 2, Model A-type sedan 1 |
+| 1949–1979 | 0 | 0 | 20 (was 16; the first 16 keep their places) | models unchanged from the earlier round (1949–56 envelope sedans, finned 1957–62, 1963–79 cars, later sedan) |
+
+From 1925 the cars also park along the second Main curb (spots added after the earlier ones, so earlier cars keep their places). After 1980, 12 cars as before. Which spots keep their rig: the first East Main wagon and the West Main saddle horse stay into the 1930s; from 1937 only the farm wagon at the east end of East Main remains. Hitching rails and troughs still stand until the 1950 stop as before (when they came out in Bushnell was not found).
+
+New parametric car models (no photo textures, clean paint, merged per material like the others):
+- **Brass-radiator Model T** (1909–1916 type): the Model T touring with a brass radiator shell, brass lamp rims, and a flat wooden dash instead of the later curved cowl.
+- **1933–1936 two-door sedan** (Ford V8 / Chevrolet Master type): raked grille with vertical bars, louvred hood, sloped windshield, deep valanced fenders with running boards, bullet headlamps on a grille bar, wire wheels with large hubcaps, rear-mounted spare.
+- **Model A-type closed-cab pickup** (1928–1931 type): the same nickel radiator shell, bowl headlamps on a tie bar, and wire wheels as the Model A-type sedan, with an upright cab and a wooden-floored bed.
+
+The existing models keep their roles: the late-1920s closed sedan (nickel shell, wire wheels) stands for the Model A / Chevrolet type, the rounded sedan for about 1936–1948, the stepside pickup for the late 1930s and 1940s. Colours are estimates; the early cars are mostly black, as most Model Ts were.
 
 ### Remaining dated paving spans (`preview/paving`)
 
