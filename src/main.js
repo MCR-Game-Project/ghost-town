@@ -572,6 +572,31 @@ document.getElementById("mode").addEventListener("click", () => setDrawer(false)
 document.getElementById("places").addEventListener("change", () => setDrawer(false));
 document.getElementById("stop").addEventListener("click", () => setDrawer(false));
 
+// On a phone a small year dial sits in the top right corner. It works the
+// slider's own - and + buttons, so both always show the same year stop.
+const dialYear = document.querySelector("#dial-year b");
+const dialEarlier = document.getElementById("dial-earlier");
+const dialLater = document.getElementById("dial-later");
+function syncDial() {
+  const readout = document.getElementById("year-readout");
+  const earlier = document.getElementById("year-earlier");
+  const later = document.getElementById("year-later");
+  if (!readout || !earlier || !later) return;
+  const year = readout.firstChild ? readout.firstChild.textContent.trim() : "";
+  if (dialYear.textContent !== year) dialYear.textContent = year;
+  dialEarlier.disabled = earlier.disabled;
+  dialLater.disabled = later.disabled;
+}
+dialEarlier.addEventListener("click", () => document.getElementById("year-earlier")?.click());
+dialLater.addEventListener("click", () => document.getElementById("year-later")?.click());
+new MutationObserver(syncDial).observe(document.getElementById("stats-content"), {
+  childList: true,
+  characterData: true,
+  attributes: true,
+  attributeFilter: ["disabled"],
+  subtree: true,
+});
+
 // On a phone the building card shows only its name; a tap opens the notes.
 const buildingCard = document.getElementById("card");
 buildingCard.addEventListener("click", () => buildingCard.classList.toggle("expanded"));
