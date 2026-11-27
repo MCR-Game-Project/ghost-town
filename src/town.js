@@ -8735,6 +8735,16 @@ float lHash(vec3 p){ p=fract(p*0.1031); p+=dot(p,p.yzx+33.33); return fract((p.x
   return { colliders, picks, materials: mats, update: updatePeople };
 }
 
+function placeStreetLabel(scene, material, width, height, x, y, z, travelX, travelZ) {
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height), material);
+  mesh.rotation.order = "YXZ";
+  mesh.rotation.x = -Math.PI / 2;
+  mesh.rotation.y = Math.atan2(-travelZ, travelX);
+  mesh.position.set(x, y, z);
+  mesh.renderOrder = 2;
+  scene.add(mesh);
+}
+
 const streetLabelCache = new Map();
 
 function addPolylineStreet(street, surfaceMat, scene) {
@@ -8773,17 +8783,38 @@ function addPolylineStreet(street, surfaceMat, scene) {
   const mid = pts[Math.floor((pts.length - 1) / 2)];
   const painted = streetLabelTexture(street.name, "road");
   const letterH = 16;
-  const label = new THREE.Mesh(new THREE.PlaneGeometry(letterH * painted.aspect, letterH), new THREE.MeshBasicMaterial({
+  const letterW = letterH * painted.aspect;
+  const roadMat = new THREE.MeshBasicMaterial({
     map: painted.tex,
     transparent: true,
     depthWrite: false,
     polygonOffset: true,
     polygonOffsetFactor: -4,
-  }));
-  label.rotation.x = -Math.PI / 2;
-  label.position.set(mid[0], 0.22, mid[1]);
-  label.renderOrder = 2;
-  scene.add(label);
+  });
+  const i = Math.max(0, Math.floor((pts.length - 1) / 2));
+  const a = pts[Math.max(0, i - 1)];
+  const b = pts[Math.min(pts.length - 1, i + 1)];
+  let tx = b[0] - a[0];
+  let tz = b[1] - a[1];
+  const len = Math.hypot(tx, tz) || 1;
+  tx /= len;
+  tz /= len;
+  const rx = -tz;
+  const rz = tx;
+  const lane = street.width * 0.22;
+  for (const dir of [1, -1]) {
+    placeStreetLabel(
+      scene,
+      roadMat,
+      letterW,
+      letterH,
+      mid[0] + dir * rx * lane,
+      0.22,
+      mid[1] + dir * rz * lane,
+      dir * tx,
+      dir * tz,
+    );
+  }
 }
 
 function streetLabelTexture(name, ink) {
@@ -8845,10 +8876,6 @@ function addStreetNames(data, mats, scene) {
     const count = Math.max(2, Math.round(span / 780));
     for (let i = 0; i < count; i++) {
       const along = street.from + ((i + 0.5) * span) / count;
-      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(letterW, letterH), roadMat);
-      mesh.rotation.order = "YXZ";
-      mesh.rotation.y = street.axis === "z" ? Math.PI / 2 : 0;
-      mesh.rotation.x = -Math.PI / 2;
       // Dirt roads sit near 0.05. 1970 asphalt tops out near 0.25, and the
       // 400-block approach slab that replaces grass in the Something Special
       // photograph tops out near 1.3. Keep the letters on the walking surface.
@@ -8863,13 +8890,14 @@ function addStreetNames(data, mats, scene) {
           along < -220;
         if (onApproach) y = 1.38;
       }
-      mesh.position.set(
-        street.axis === "x" ? along : street.at + lane,
-        y,
-        street.axis === "z" ? along : street.at + lane,
-      );
-      mesh.renderOrder = 2;
-      scene.add(mesh);
+      // One label in each lane, reading toward an approaching driver or pedestrian.
+      for (const dir of [1, -1]) {
+        const x = street.axis === "x" ? along : street.at - dir * lane;
+        const z = street.axis === "z" ? along : street.at + dir * lane;
+        const travelX = street.axis === "x" ? dir : 0;
+        const travelZ = street.axis === "z" ? dir : 0;
+        placeStreetLabel(scene, roadMat, letterW, letterH, x, y, z, travelX, travelZ);
+      }
     }
   });
 }
