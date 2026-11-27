@@ -877,7 +877,7 @@ Mix on Main by slider year (the data has three wagon spots and two tied saddle-h
 | 1942–1948 | 1 farm wagon | 0 | 20 | rounded sedan 6, 1933–36 sedan 2, stepside pickup 2, Model A-type sedan 1 |
 | 1949–1979 | 0 | 0 | 20 (was 16; the first 16 keep their places) | models unchanged from the earlier round (1949–56 envelope sedans, finned 1957–62, 1963–79 cars, later sedan) |
 
-From 1925 the cars also park along the second Main curb (spots added after the earlier ones, so earlier cars keep their places). After 1980, 12 cars as before. Which spots keep their rig: the first East Main wagon and the West Main saddle horse stay into the 1930s; from 1937 only the farm wagon at the east end of East Main remains. Hitching rails and troughs still stand until the 1950 stop as before (when they came out in Bushnell was not found).
+From 1925 the cars also park along the second Main curb (spots added after the earlier ones, so earlier cars keep their places). After 1980, 12 cars as before. Which spots keep their rig: the first East Main wagon and the West Main saddle horse stay into the 1930s; from 1937 only one farm wagon remains, on East Main in front of the fire department block. A curb space beside a standing horse or wagon is left empty so a parked car never touches it. Hitching rails and troughs still stand until the 1950 stop as before (when they came out in Bushnell was not found).
 
 New parametric car models (no photo textures, clean paint, merged per material like the others):
 - **Brass-radiator Model T** (1909–1916 type): the Model T touring with a brass radiator shell, brass lamp rims, and a flat wooden dash instead of the later curved cowl.
