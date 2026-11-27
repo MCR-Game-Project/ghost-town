@@ -4,7 +4,7 @@ import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.j
 import { makeMaterials, makeSignTexture } from "./textures.js";
 import { mirrorPlat } from "./orient.js";
 import { drawFacadeSpec } from "./facade/assemble.js";
-import { addRolling, addStreetLamps, buildCarInto, carCount, Kit, makeHorse, makeWagon, paletteFor, styleForSlot, wagonKindFor } from "./vehicles.js";
+import { addRolling, addStreetLamps, buildCarInto, carCount, horseMixFor, Kit, makeHorse, makeWagon, paletteFor, styleForSlot, wagonKindFor } from "./vehicles.js";
 import { addPeople } from "./people.js";
 
 const FACING = { "+z": 0, "-z": Math.PI, "+x": Math.PI / 2, "-x": -Math.PI / 2 };
@@ -8214,8 +8214,15 @@ float sNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
   // preview/vehicles: wagons and horses pick a period kind by year and slot; lamp props join
   // the instanced period street lamps (on Main, facing the street).
   const slots = { wagon: 0, horse: 0 };
+  // preview/vehicles: fewer rigs as the cars take over (horseMixFor in vehicles.js).
+  const mix = horseMixFor(groundYear);
+  const keep = { wagon: new Set(mix.wagons), horse: new Set(mix.horses) };
   for (const p of data.props) {
     if (!horseYears && ["horse", "wagon", "hitching", "trough"].includes(p.type)) continue;
+    if (p.type in keep && !keep[p.type].has(slots[p.type])) {
+      slots[p.type]++;
+      continue;
+    }
     if (p.type === "lamp") {
       lampSpots.push({ x: p.x, z: p.z, main: true, face: [0, -Math.sign(p.z) || 1] });
       continue;
@@ -8832,10 +8839,9 @@ function addVehicles(data, mats, scene, year, modernPaved, lamps = []) {
   const mainXs = [-392, -350, -300, -255, -205, -150, -95, -45, 45, 95, 150, 210, 265, 330, -520, -600];
   const eastMain = byName("East Main Street");
   const westMain = byName("West Main Street");
-  mainXs.forEach((x0, i) => {
+  const mainSpot = (x0, i, onEast) => {
     const x = between(x0);
     if (Math.abs(x + 420) < 34 || Math.abs(x) < 34 || Math.abs(x - 420) < 34) return;
-    const onEast = i % 3 !== 2;
     const street = onEast ? eastMain : westMain;
     if (!street) return;
     // The 1970 photo-matched slab in front of the 400 block stands above the street.
@@ -8843,13 +8849,20 @@ function addVehicles(data, mats, scene, year, modernPaved, lamps = []) {
     const half = modernPaved && onEast ? 19 : 25;
     const side = Math.sign(street.at);
     spots.push({ x, z: street.at + side * (half - 3.4), heading: i % 2 ? Math.PI / 2 : -Math.PI / 2 });
-  });
+  };
+  mainXs.forEach((x0, i) => mainSpot(x0, i, i % 3 !== 2));
+  // preview/vehicles round 2: from the later 1920s the other Main curb fills too. Before 1950
+  // those spots come ahead of Hurst Street; from 1950 they come after, so the 1950-1970 cars
+  // keep their earlier places.
+  const otherCurb = () => mainXs.forEach((x0, i) => mainSpot(x0, i + 1, i % 3 === 2));
+  if (year >= 1925 && year < 1950) otherCurb();
   const hurst = byName("Hurst Street");
   if (hurst && year >= 1920) {
     for (const [z, side] of [[240, -1], [300, 1], [470, -1], [-260, 1], [-330, -1]]) {
       spots.push({ x: hurst.at + side * 14.6, z, heading: side > 0 ? 0 : Math.PI });
     }
   }
+  if (year >= 1950) otherCurb();
   // preview/vehicles: keep a parked car clear of a curb lamp post (slide it along the curb a
   // little, or leave that space empty).
   const clear = spots.filter((spot) => {
