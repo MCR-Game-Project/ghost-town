@@ -430,3 +430,221 @@ body.clean #stats { display: none !important; }
   #touch { display: block; }
   #card { bottom: 118px; }
 }
+
+/* Phone layout. Desktop never matches these rules: the drawer wrapper has no
+   box of its own, and the Menu button and touch-only lines stay hidden. */
+#drawer { display: contents; }
+#menu-btn { display: none; }
+.touch-only { display: none; }
+
+@media (max-width: 700px), (pointer: coarse) and (max-height: 520px) {
+  html, body, #app { overscroll-behavior: none; }
+  body { touch-action: manipulation; -webkit-text-size-adjust: 100%; }
+  #view, #touch, #touch button {
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  button, select, #card { -webkit-tap-highlight-color: transparent; }
+
+  .keys-only { display: none; }
+  .touch-only { display: revert; }
+  span.touch-only { display: inline; }
+
+  #topbar {
+    top: calc(8px + env(safe-area-inset-top));
+    left: calc(8px + env(safe-area-inset-left));
+    right: auto;
+    max-width: calc(100% - 96px - env(safe-area-inset-left) - env(safe-area-inset-right));
+    display: block;
+    padding: 5px 10px 6px;
+    box-shadow: 0 4px 12px rgba(30, 16, 6, 0.22);
+  }
+  #topbar .eyebrow { display: none; }
+  #topbar h1 { font-size: 15px; }
+  #where {
+    margin-top: 2px;
+    max-width: none;
+    font-size: 12px;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #menu-btn {
+    display: block;
+    position: absolute;
+    top: calc(8px + env(safe-area-inset-top));
+    right: calc(8px + env(safe-area-inset-right));
+    z-index: 8;
+    min-width: 72px;
+    padding: 8px 12px;
+    font-size: 15px;
+    box-shadow: 0 4px 12px rgba(30, 16, 6, 0.3);
+  }
+  #help:not([hidden]) ~ #menu-btn,
+  #help:not([hidden]) ~ #drawer { display: none; }
+
+  #drawer { display: none; }
+  body.menu-open #drawer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: absolute;
+    top: calc(52px + env(safe-area-inset-top));
+    right: calc(8px + env(safe-area-inset-right));
+    z-index: 7;
+    width: min(300px, calc(100% - 16px - env(safe-area-inset-left) - env(safe-area-inset-right)));
+    max-height: calc(100% - 60px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  body.menu-open #drawer #stats,
+  body.menu-open #drawer #tools {
+    position: static;
+    width: auto;
+    max-height: none;
+    flex: 0 0 auto;
+  }
+  #stats { order: -1; }
+  #stats-body { overflow: visible; padding: 8px 10px 10px; }
+  #stats-toggle { padding: 8px 10px; font-size: 14px; }
+  #stats .year-readout { font-size: 20px; }
+  #stats .year-pop { font-size: 15px; }
+  #stats .year-step { flex-basis: 40px; width: 40px; height: 40px; }
+  #stats .year-drop summary { font-size: 14px; padding: 6px 0; }
+  #stats p, #stats li { font-size: 13.5px; }
+  #tools {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 8px;
+    padding: 8px;
+  }
+  #tools label { font-size: 12px; }
+  #tools select { padding: 6px 6px; font-size: 14px; }
+  #tools #mode { grid-column: 1 / -1; padding: 8px 10px; font-size: 14px; }
+
+  #card {
+    top: calc(56px + env(safe-area-inset-top));
+    bottom: auto;
+    left: calc(8px + env(safe-area-inset-left));
+    width: min(300px, calc(100% - 96px - env(safe-area-inset-left)));
+    padding: 5px 9px 6px;
+    pointer-events: auto;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(30, 16, 6, 0.22);
+  }
+  #card .tag { font-size: 10px; }
+  #card h2 { font-size: 15px; }
+  #card .use {
+    margin: 1px 0 0;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #card #card-notes { display: none; }
+  #card.expanded .use { white-space: normal; }
+  #card.expanded #card-notes {
+    display: block;
+    margin-top: 4px;
+    max-height: 38vh;
+    overflow-y: auto;
+    font-size: 12.5px;
+    line-height: 1.35;
+  }
+  #card::after {
+    content: "Tap for notes";
+    display: block;
+    margin-top: 2px;
+    font-size: 10.5px;
+    color: var(--brick);
+  }
+  #card.expanded::after { content: "Tap to close"; }
+
+  #touch {
+    left: calc(10px + env(safe-area-inset-left));
+    bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+  #touch .pad { display: flex; flex-direction: column; align-items: center; }
+  #touch .pad button {
+    min-width: 0;
+    width: 52px;
+    height: 52px;
+    margin: 2px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 0;
+    background: rgba(124, 52, 44, 0.72);
+    border-color: rgba(78, 34, 28, 0.8);
+  }
+  #touch .pad button::before { font-size: 20px; line-height: 1; }
+  #touch .pad button[data-key="KeyW"]::before { content: "\25B2"; }
+  #touch .pad button[data-key="KeyA"]::before { content: "\25C0"; }
+  #touch .pad button[data-key="KeyS"]::before { content: "\25BC"; }
+  #touch .pad button[data-key="KeyD"]::before { content: "\25B6"; }
+  body[data-mode="overview"] #touch { display: none; }
+
+  #walk-hint {
+    top: auto;
+    left: auto;
+    right: calc(10px + env(safe-area-inset-right));
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    transform: none;
+    padding: 0;
+  }
+  #walk-hint p { display: none; }
+  #walk-hint button { padding: 8px 12px; font-size: 14px; }
+
+  #overview-hint {
+    top: auto;
+    left: calc(8px + env(safe-area-inset-left));
+    right: calc(8px + env(safe-area-inset-right));
+    bottom: calc(8px + env(safe-area-inset-bottom));
+    max-width: none;
+    padding: 5px 10px;
+    transform: none;
+  }
+  #overview-hint p { font-size: 12.5px; }
+
+  #compass {
+    top: calc(52px + env(safe-area-inset-top));
+    right: calc(10px + env(safe-area-inset-right));
+    width: 44px;
+    height: 44px;
+  }
+  #compass .rose span { top: 3px; font-size: 11px; }
+  #compass .needle {
+    top: 15px;
+    margin-left: -5px;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    border-bottom-width: 18px;
+  }
+
+  #status {
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    max-width: calc(100% - 16px);
+    font-size: 13px;
+  }
+
+  #help {
+    padding: calc(8px + env(safe-area-inset-top)) calc(8px + env(safe-area-inset-right))
+      calc(8px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left));
+  }
+  #help .sheet {
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 14px 16px 14px;
+  }
+  #help h2 { font-size: 18px; }
+  #help p { font-size: 14px; line-height: 1.4; margin: 8px 0; }
+  #help li { font-size: 13.5px; margin: 4px 0; }
+  #help .row button { padding: 9px 12px; font-size: 15px; }
+}
+
+body.clean #menu-btn { display: none !important; }
