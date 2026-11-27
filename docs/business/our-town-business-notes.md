@@ -43,18 +43,38 @@ Prices are rough estimates, not market research.
 7. **Open contributions.** Anyone can contribute photos or history about a town's buildings, culture, or events.
 8. **Accuracy pre-check.** Every contribution is checked by the software for accuracy before it reaches the town administrator: dates against the town's known timeline, addresses against the map, duplicates, image quality, and spam.
 9. **Photo upload batches.** There's no lifetime limit on how many photos a person can contribute. Everyone starts at up to 10 photos per batch. Each time most of a batch is approved (at least 8 out of 10, confirmed by Mark), that person's batch size doubles: 10, 20, 40, 80, and so on. If most of a batch is denied, they drop back to 10.
-10. **Review flow:** contributor → software accuracy check → town administrator (2 business days) → Mark if overdue or flagged → published. Denials include a short reason. Denied items are deleted after 30 days.
+10. **Contributor terms (must be accepted before every submission).** See "Contributor Terms (draft)" below. Every contributor grants a free, permanent license to use their photo, note, or event history anywhere, including printed books.
+11. **Donor credit.** With every photo, note, or event entry, the contributor chooses whether to be credited by name, e.g. "Photo donated by Mark Rauschert", or to stay anonymous ("Photo donated anonymously").
+12. **Building history index.** Every building has a public history page listing all approved photos, notes, and events about it, each with its date, era, and donor credit.
+13. **Review flow:** contributor → software accuracy check → town administrator (2 business days) → Mark if overdue or flagged → published. Denials include a short reason. Denied items are deleted after 30 days.
 
 ## Features to add
 
+- **Building history index:** click a building to see every approved photo, note, and event tied to it, sorted by year, with donor credits.
+- **Submission form:** terms checkbox (required), "Credit me by name" or "Keep me anonymous", name as it should appear, which building or event, and the year or era.
 - **Event history:** disasters (fires, floods, tornadoes), trade fairs, carnivals, parades and other community events, tied to dates and places in the town.
 - Review queue with daily alerts for administrators and Mark.
 - Upload batch sizes that grow with approvals (rule 9), and a bot check.
 - Per-town sponsor management (sign spots, sidebar, revenue tracking, royalty statements).
+
+## Contributor Terms (draft, plain-language, not yet reviewed by a lawyer)
+
+By submitting a photo, note, or event history ("Contribution") to Our Town (ustadt.com), you agree that:
+
+1. **You have the right to share it.** You took the photo or own it, or you have permission from whoever does. You won't knowingly submit anything copied without permission.
+2. **You give us free use of it.** You grant Mark Rauschert and Our Town a free, permanent, worldwide, non-exclusive license to use, copy, edit, crop, display, publish, and share your Contribution in any form. That includes the website, apps, printed books, exhibits, and promotional material, and it includes the right to let the town's sponsoring group use it the same way. No payment or royalty is owed for this use.
+3. **You still own it.** You keep your copyright and can use your Contribution any way you like.
+4. **Credit.** If you choose to be credited, we'll show your name as you entered it, e.g. "Photo donated by Mark Rauschert". If you choose anonymous, we won't show your name. We'll try to keep credits accurate, but a missing or wrong credit doesn't end this license.
+5. **Review.** Every Contribution is checked for accuracy and reviewed before it is published. We can decline, edit, or remove any Contribution at any time.
+6. **Accuracy and respect.** To the best of your knowledge, your Contribution is accurate. It won't include private information about living people without their permission, and it won't include anything hateful or illegal.
+7. **Removal requests.** You can ask to have your Contribution taken off the website. We'll remove it, but copies already printed or published, such as books, can't be recalled.
+8. **Changes.** These terms may be updated. The terms you accepted when you submitted apply to that Contribution.
 
 ## Open questions
 
 - Who keeps the ad money: the town, Mark, or a split? (The draft above assumes Mark collects and pays the town a commission.)
 - Commission rate.
 - Dollar amounts for each ad spot and town-size tier.
+- Have a lawyer review the Contributor Terms before launch.
+- Whether book or print royalties ever go back to the town's sponsoring group.
 - Final build-fee and yearly-plan prices after timing a second town.
