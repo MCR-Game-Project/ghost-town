@@ -42,7 +42,7 @@ Prices are rough estimates, not market research.
    - Example: at 15% earning $12 a month, the town is paid once the unexpired balance reaches $100 (about month 9). At $1 a month, the balance never reaches $100 within 12 months, so nothing is paid.
 7. **Open contributions.** Anyone can contribute photos or history about a town's buildings, culture, or events.
 8. **Accuracy pre-check.** Every contribution is checked by the software for accuracy before it reaches the town administrator: dates against the town's known timeline, addresses against the map, duplicates, image quality, and spam.
-9. **Photo upload batches.** There's no lifetime limit on how many photos a person can contribute. Everyone starts at up to 10 photos per batch. Each time most of a batch is approved (proposed: at least 8 out of 10), that person's batch size doubles: 10, 20, 40, 80, and so on. If most of a batch is denied, they drop back to 10.
+9. **Photo upload batches.** There's no lifetime limit on how many photos a person can contribute. Everyone starts at up to 10 photos per batch. Each time most of a batch is approved (at least 8 out of 10, confirmed by Mark), that person's batch size doubles: 10, 20, 40, 80, and so on. If most of a batch is denied, they drop back to 10.
 10. **Review flow:** contributor → software accuracy check → town administrator (2 business days) → Mark if overdue or flagged → published. Denials include a short reason. Denied items are deleted after 30 days.
 
 ## Features to add
