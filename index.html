@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <title>Bushnell, Illinois</title>
     <link rel="stylesheet" href="/src/style.css" />
   </head>
@@ -38,10 +38,13 @@
           </p>
           <ul>
             <li><b>Drag the picture</b> to look around. The year slider stays usable while you walk.</li>
-            <li><b>W A S D</b> walks. <b>Shift</b> hurries.</li>
-            <li><b>M</b>, or the button below, lifts you up to see the whole town. From up there, scroll to swoop toward the pointer, click a spot to fly there, and double-click to start walking.</li>
-            <li>Press <b>Esc</b> or <b>Q</b> to let go of the mouse and come back to this menu.</li>
-            <li><b>Town figures</b>, on the right, opens a census-year slider. Census, School, and Businesses each open on their own. Every number carries the year it was written down.</li>
+            <li class="touch-only"><b>Hold the arrows</b> at the bottom left to walk.</li>
+            <li class="touch-only"><b>Menu</b>, at the top right, holds the year slider, Go to, and See the whole town. From up there, drag to turn and tap a spot to fly closer. Keep tapping to land and walk.</li>
+            <li class="touch-only"><b>Stop walking</b> brings back this page.</li>
+            <li class="keys-only"><b>W A S D</b> walks. <b>Shift</b> hurries.</li>
+            <li class="keys-only"><b>M</b>, or the button below, lifts you up to see the whole town. From up there, scroll to swoop toward the pointer, click a spot to fly there, and double-click to start walking.</li>
+            <li class="keys-only">Press <b>Esc</b> or <b>Q</b> to let go of the mouse and come back to this menu.</li>
+            <li class="keys-only"><b>Town figures</b>, on the right, opens a census-year slider. Census, School, and Businesses each open on their own. Every number carries the year it was written down.</li>
           </ul>
           <div class="row">
             <button id="start" type="button">Start walking</button>
@@ -51,6 +54,9 @@
         </div>
       </div>
 
+      <button id="menu-btn" type="button" aria-expanded="false" aria-controls="drawer">Menu</button>
+
+      <div id="drawer">
       <div id="tools">
         <label>
           Go to
@@ -75,6 +81,7 @@
           </div>
         </div>
       </aside>
+      </div>
 
       <div id="touch">
         <div class="pad">
@@ -93,7 +100,7 @@
       </div>
 
       <div id="overview-hint" hidden>
-        <p>Scroll to swoop toward the pointer. Click a spot to fly there. Double-click, or zoom to the street, to start walking.</p>
+        <p><span class="keys-only">Scroll to swoop toward the pointer. Click a spot to fly there. Double-click, or zoom to the street, to start walking.</span><span class="touch-only">Drag to turn. Tap a spot to fly closer, and keep tapping to land and walk.</span></p>
       </div>
 
       <div id="compass" hidden aria-hidden="true">
