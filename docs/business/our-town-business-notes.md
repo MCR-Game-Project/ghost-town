@@ -50,6 +50,7 @@ Prices are rough estimates, not market research.
 
 ## Features to add
 
+- **Newsstand:** a newsstand in town where visitors can read past issues of the newspapers that were actually published in the town in each era. Which papers show depends on the year being viewed. Issues come from library and historical-society microfilm or digitized archives (e.g. Library of Congress Chronicling America, Illinois Digital Newspaper Collections). Only papers and dates confirmed by a source are included, with the source credited. Rights and permission must be checked per archive.
 - **Building history index:** click a building to see every approved photo, note, and event tied to it, sorted by year, with donor credits.
 - **Submission form:** terms checkbox (required), "Credit me by name" or "Keep me anonymous", name as it should appear, which building or event, and the year or era.
 - **Event history:** disasters (fires, floods, tornadoes), trade fairs, carnivals, parades and other community events, tied to dates and places in the town.
