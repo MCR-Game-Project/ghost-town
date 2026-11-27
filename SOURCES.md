@@ -555,7 +555,7 @@ The William Bradbury house is not drawn. Mark dates the photograph about 1920 an
 
 ### East Side School, Cole and Hurst
 
-The building in Mark's photograph is the school already drawn at Cole and Hurst, not a second lot. Arthur Loomis, in the 1885 history, describes the 1875–76 building as two stories on a high stone basement, with eight classrooms. The centennial book says that building burned in 1896 and that the East Side school opened in the winter of 1904. The photograph is that later school: three brick stories, a hipped roof, and a corner tower with an open belfry. The 1875 front comes off at the 1900 stop. The 1904 front appears at the 1910 stop, the first stop after that winter. Mark says it was torn down in the late 1980s, so it stays through 1970.
+The building in Mark's photograph is the school already drawn at Cole and Hurst, not a second lot. Arthur Loomis, in the 1885 history, describes the 1875–76 building as two stories on a high stone basement, with eight classrooms. The centennial book says that building burned in 1896 and that the East Side school opened in the winter of 1904. The photograph is that later school: three brick stories, a hipped roof, and a corner tower with an open belfry. The 1875 front comes off at the 1900 stop. The 1904 front appears at the 1905 stop, the first stop after that winter. Mark says it was torn down in the late 1980s, so it stays through 1970.
 
 ### Nagel Bros. Grain & Feed
 
