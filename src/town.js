@@ -8207,8 +8207,9 @@ float sNoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
   wire.position.set(-480, 22.6, -18);
   scene.add(wire);
 
-  // Props. From the 1950 stop the horses, wagons, hitching rails, and troughs are gone:
-  // the 1954 Main Street photographs (p.113-p.116) show parked cars and none of them (estimate of the year).
+  // Props. Horses and wagons are gone from the 1940 stop (horseMixFor). Hitching rails and
+  // troughs stay until the 1950 stop: the 1954 Main Street photographs (p.113-p.116) show
+  // parked cars and none of them (estimate of the year).
   const horseYears = groundYear < 1950;
   const propRoot = new THREE.Group();
   // preview/vehicles: wagons and horses pick a period kind by year and slot; lamp props join

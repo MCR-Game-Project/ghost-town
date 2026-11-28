@@ -1040,7 +1040,8 @@ export function carCount(year) {
   if (year < 1920) return 5;
   if (year < 1928) return 8;
   if (year < 1935) return 14;
-  if (year < 1980) return 20;
+  if (year < 1950) return 20;
+  if (year < 1980) return 16;
   return 12;
 }
 
@@ -1054,11 +1055,14 @@ export function carBand(year) {
 // three wagon spots and two saddle-horse spots; this lists which of them stay. Horses outnumber
 // cars into the 1910s, cars outnumber them in the 1920s, and by about 1937 only an occasional
 // farm wagon still comes to town (tractors and trucks took over farm hauling through the 1930s).
+// From 1940 there are no horses or wagons of any kind (Mark, Nov 2026: horses gone by 1940).
 export function horseMixFor(year) {
   if (year < 1915) return { wagons: [0, 1, 2], horses: [0, 1] };
   if (year < 1925) return { wagons: [0, 2], horses: [1] };
   if (year < 1937) return { wagons: [0], horses: [1] };
-  if (year < 1950) return { wagons: [2], horses: [] };
+  // 1937–1939: one farm wagon only (estimate). Farm horses were still in use in the late
+  // 1930s, but Mark asked that none appear from the 1940 stop on.
+  if (year < 1940) return { wagons: [2], horses: [] };
   return { wagons: [], horses: [] };
 }
 
